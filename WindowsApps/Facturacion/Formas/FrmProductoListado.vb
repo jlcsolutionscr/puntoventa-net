@@ -1,5 +1,7 @@
-﻿Imports System.Threading.Tasks
+﻿Imports System.Collections.Generic
+Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmProductoListado
 #Region "Variables"
@@ -7,7 +9,6 @@ Public Class FrmProductoListado
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 14
     Private intCantidadDePaginas As Integer
-    Private listado As IList
     Private bolReady As Boolean = False
 #End Region
 
@@ -78,7 +79,10 @@ Public Class FrmProductoListado
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, True, chkFiltrarActivos.Checked, False, chkConDescuento.Checked, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            Dim listado = New List(Of ProductoDetalle)()
+            If intCantidadDePaginas > 0 Then
+                listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, True, chkFiltrarActivos.Checked, False, chkConDescuento.Checked, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            End If
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -239,7 +243,7 @@ Public Class FrmProductoListado
     End Sub
 
     Private Sub chkFiltrarActivos_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarActivos.CheckedChanged
-        btnFiltrar_Click(btnFiltrar, New EventArgs())
+        BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 
     Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged

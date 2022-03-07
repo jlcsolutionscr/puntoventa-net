@@ -1,6 +1,7 @@
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
-Imports System.Threading.Tasks
+Imports System.Collections.Generic
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmLinea
 #Region "Variables"
@@ -70,12 +71,14 @@ Public Class FrmLinea
         End If
     End Sub
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.listaSucursales)
+        cboSucursal.DataSource = listado
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
-    End Function
+        cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -102,7 +105,7 @@ Public Class FrmLinea
         Try
             IniciaDetalleSucursal()
             EstablecerPropiedadesDataGridView()
-            Await CargarCombos()
+            CargarCombos()
             If intIdLinea > 0 Then
                 datos = Await Puntoventa.ObtenerLinea(intIdLinea, FrmPrincipal.usuarioGlobal.Token)
                 If datos Is Nothing Then

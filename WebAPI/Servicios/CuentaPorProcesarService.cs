@@ -382,7 +382,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Include("DesglosePagoMovimientoCuentaPorCobrar.FormaPago").FirstOrDefault(x => x.IdMovCxC == intIdMovimiento);
+                MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Include("DesglosePagoMovimientoCuentaPorCobrar").FirstOrDefault(x => x.IdMovCxC == intIdMovimiento);
                 movimiento.NombrePropietario = "Información no disponible";
                 Cliente cliente = dbContext.ClienteRepository.Find(movimiento.CuentaPorCobrar.IdPropietario);
                 if (cliente != null) movimiento.NombrePropietario = cliente.Nombre;
@@ -703,7 +703,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Include("DesglosePagoMovimientoCuentaPorPagar.FormaPago").FirstOrDefault(x => x.IdMovCxP == intIdMovimiento);
+                MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Include("DesglosePagoMovimientoCuentaPorPagar").FirstOrDefault(x => x.IdMovCxP == intIdMovimiento);
                 movimiento.NombrePropietario = "Información no disponible";
                 Proveedor proveedor = dbContext.ProveedorRepository.Find(movimiento.CuentaPorPagar.IdPropietario);
                 if (proveedor != null) movimiento.NombrePropietario = proveedor.Nombre;
@@ -893,7 +893,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                MovimientoApartado movimiento = dbContext.MovimientoApartadoRepository.Include("Apartado").Include("DesglosePagoMovimientoApartado.FormaPago").FirstOrDefault(x => x.IdMovApartado == intIdMovimiento);
+                MovimientoApartado movimiento = dbContext.MovimientoApartadoRepository.Include("Apartado").Include("DesglosePagoMovimientoApartado").FirstOrDefault(x => x.IdMovApartado == intIdMovimiento);
                 return movimiento;
             }
             catch (Exception ex)
@@ -1054,7 +1054,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                MovimientoOrdenServicio movimiento = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Include("DesglosePagoMovimientoOrdenServicio.FormaPago").FirstOrDefault(x => x.IdMovOrden == intIdMovimiento);
+                MovimientoOrdenServicio movimiento = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Include("DesglosePagoMovimientoOrdenServicio").FirstOrDefault(x => x.IdMovOrden == intIdMovimiento);
                 return movimiento;
             }
             catch (Exception ex)

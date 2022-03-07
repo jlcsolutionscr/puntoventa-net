@@ -1,5 +1,7 @@
+Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmBusquedaCompra
 #Region "Variables"
@@ -8,7 +10,7 @@ Public Class FrmBusquedaCompra
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
-    Private bolReady As Boolean = False
+    Private bolCargado As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -82,7 +84,8 @@ Public Class FrmBusquedaCompra
     Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = FrmPrincipal.listaSucursales
+        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.listaSucursales)
+        cboSucursal.DataSource = listado
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Sub
@@ -143,7 +146,7 @@ Public Class FrmBusquedaCompra
             Await ValidarCantidadCompras()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
-            bolReady = True
+            bolCargado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -170,7 +173,7 @@ Public Class FrmBusquedaCompra
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If bolReady Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 #End Region
 End Class

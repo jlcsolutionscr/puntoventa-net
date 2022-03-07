@@ -1,5 +1,7 @@
+Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmBusquedaCuentaPorCobrar
 #Region "Variables"
@@ -7,8 +9,7 @@ Public Class FrmBusquedaCuentaPorCobrar
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
-    Private intId As Integer = 0
-    Private bolReady As Boolean = False
+    Private bolCargado As Boolean = False
     Public bolPendientes As Boolean = True
 #End Region
 
@@ -55,7 +56,11 @@ Public Class FrmBusquedaCuentaPorCobrar
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCuentasPorCobrar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, bolPendientes, intNumeroPagina, intFilasPorPagina, txtReferencia.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            Dim listado = New List(Of CuentaPorProcesar)
+            If intCantidadDePaginas > 0 Then
+                listado = Await Puntoventa.ObtenerListadoCuentasPorCobrar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, bolPendientes, intNumeroPagina, intFilasPorPagina, txtReferencia.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            End If
+            dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -97,7 +102,7 @@ Public Class FrmBusquedaCuentaPorCobrar
 #End Region
 
 #Region "Eventos Controles"
-    Private Sub FrmBusquedaCompra_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub FrmBusquedaCuentaPorCobrar_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         For Each ctl As Control In Controls
             If TypeOf (ctl) Is TextBox Then
                 AddHandler DirectCast(ctl, TextBox).Enter, AddressOf EnterTexboxHandler
@@ -151,7 +156,7 @@ Public Class FrmBusquedaCuentaPorCobrar
             Await ValidarCantidadCxC()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
-            bolReady = True
+            bolCargado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -167,18 +172,13 @@ Public Class FrmBusquedaCuentaPorCobrar
     End Sub
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        If txtReferencia.Text = "" Then
-            intId = 0
-        Else
-            intId = CInt(txtReferencia.Text)
-        End If
         Await ValidarCantidadCxC()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If bolReady Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 #End Region
 End Class

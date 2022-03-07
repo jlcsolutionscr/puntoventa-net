@@ -12,7 +12,7 @@ Public Class FrmInventario
     Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
     Private intIdSucursal As Integer = FrmPrincipal.equipoGlobal.IdSucursal
-    Private bolInizializado As Boolean = False
+    Private bolCargado As Boolean = False
     Private newFormReport As FrmReportViewer
     Private assembly As Assembly = Assembly.LoadFrom("Common.dll")
     Private strEmpresa As String = IIf(FrmPrincipal.empresaGlobal.NombreComercial = "", FrmPrincipal.empresaGlobal.NombreEmpresa, FrmPrincipal.empresaGlobal.NombreComercial)
@@ -90,13 +90,18 @@ Public Class FrmInventario
         cboLinea.SelectedValue = 0
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = FrmPrincipal.listaSucursales
+        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.listaSucursales)
+        cboSucursal.DataSource = listado
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
     End Function
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Threading.Tasks.Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, chkIncluyeServicios.Checked, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            Dim listado = New List(Of ProductoDetalle)()
+            If intCantidadDePaginas > 0 Then
+                listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, chkIncluyeServicios.Checked, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            End If
+            dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -202,7 +207,7 @@ Public Class FrmInventario
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
-            bolInizializado = True
+            bolCargado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -255,32 +260,32 @@ Public Class FrmInventario
     End Sub
 
     Private Sub chkFiltrarActivos_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarActivos.CheckedChanged
-        If bolInizializado And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolCargado And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If bolInizializado And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolCargado And Not cboSucursal.SelectedValue Is Nothing Then
             intIdSucursal = cboSucursal.SelectedValue
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
-        If bolInizializado And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolCargado And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Sub chkFiltrarExistencias_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarExistencias.CheckedChanged
-        If bolInizializado And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolCargado And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Sub chkIncluyeServicios_CheckedChanged(sender As Object, e As EventArgs) Handles chkIncluyeServicios.CheckedChanged
-        If bolInizializado And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolCargado And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub

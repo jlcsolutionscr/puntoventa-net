@@ -9,7 +9,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 {
     public interface ITrasladoService
     {
-        IList<LlaveDescripcion> ObtenerListadoSucursalDestino(int intIdEmpresa, int intIdSucursalOrigen);
         string AgregarTraslado(Traslado traslado);
         void AplicarTraslado(int intIdTraslado, int intIdUsuario);
         void AnularTraslado(int intIdTraslado, int intIdUsuario, string strMotivoAnulacion);
@@ -34,26 +33,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 //_logger.LogError("Error al inicializar el servicio: ", ex);
                 throw new Exception("Se produjo un error al inicializar el servicio de Traslados. Por favor consulte con su proveedor.");
-            }
-        }
-
-        public IList<LlaveDescripcion> ObtenerListadoSucursalDestino(int intIdEmpresa, int intIdSucursalOrigen)
-        {
-            var listaSucursales = new List<LlaveDescripcion>();
-            try
-            {
-                var listado = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal != intIdSucursalOrigen);
-                foreach (var value in listado)
-                {
-                    LlaveDescripcion item = new LlaveDescripcion(value.IdSucursal, value.NombreSucursal);
-                    listaSucursales.Add(item);
-                }
-                return listaSucursales;
-            }
-            catch (Exception ex)
-            {
-                //_logger.LogError("Error al obtener el listado de sucursales: ", ex);
-                throw new Exception("Se produjo un error consultando el listado de sucursales. Por favor consulte con su proveedor.");
             }
         }
 

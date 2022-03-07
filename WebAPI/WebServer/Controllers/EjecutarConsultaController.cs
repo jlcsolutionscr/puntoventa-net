@@ -85,7 +85,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static string strFechaInicial;
         private static string strFechaFinal;
         private static byte[] bytLogo;
-        private static string strRespuesta = "";
 
         public EjecutarConsultaController(
             IConfiguration configuration,
@@ -137,6 +136,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 strEntidad = datosJO.Property("Entidad").Value.ToString();
             else if (datosJO.Property("Parametros") != null)
                 parametrosJO = JObject.Parse(datosJO.Property("Parametros").Value.ToString());
+            string strRespuesta = "";
             switch (strNombreMetodo)
             {
                 case "GuardarDatosCierreCaja":
@@ -1267,13 +1267,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     decimal decPorcentaje = _servicioMantenimiento.AutorizacionPorcentaje(strCodigoUsuario, strClave, intIdEmpresa);
                     strRespuesta = decPorcentaje.ToString();
-                    break;
-                case "ObtenerListadoSucursalDestino":
-                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                    intIdSucursal = int.Parse(parametrosJO.Property("IdSucursalOrigen").Value.ToString());
-                    IList<LlaveDescripcion> listadoSucursalesDestino = _servicioTraslado.ObtenerListadoSucursalDestino(intIdEmpresa, intIdSucursal);
-                    if (listadoSucursalesDestino.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoSucursalesDestino);
                     break;
                 case "AgregarTraslado":
                     traslado = JsonConvert.DeserializeObject<Traslado>(strEntidad);

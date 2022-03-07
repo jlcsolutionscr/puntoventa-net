@@ -35,24 +35,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _strCorreoNotificacionErrores = configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value;
         }
 
-        [HttpGet("validarcredencialesadmin")]
-        public string ValidarCredencialesAdmin(string usuario, string clave)
-        {
-            try
-            {
-                string strClaveFormateada = clave.Replace(" ", "+");
-                Usuario usuarioEntity = _servicioMantenimiento.ValidarCredencialesAdmin(usuario, strClaveFormateada);
-                string strRespuesta = "";
-                if (usuarioEntity != null)
-                    strRespuesta = JsonConvert.SerializeObject(usuarioEntity);
-                return strRespuesta;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         [HttpGet("enviarhistoricoerrores")]
         public void EnviarHistoricoErrores()
         {

@@ -412,11 +412,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         private Empresa ObtenerEmpresaPorUsuario(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
         {
-            Empresa empresa = dbContext.EmpresaRepository.Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+            Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
             Usuario usuario = null;
             if (strUsuario.ToUpper() == "ADMIN" || strUsuario.ToUpper() == "CONTADOR")
             {
-                usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.CodigoUsuario == strUsuario);
+                usuario = dbContext.UsuarioRepository.AsNoTracking().Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strUsuario);
                 usuario.IdEmpresa = empresa.IdEmpresa;
                 usuario.IdSucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa).IdSucursal;
             }
@@ -424,22 +424,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                 if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
+                usuario = dbContext.UsuarioRepository.AsNoTracking().Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
             }
             if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
             if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
             TerminalPorSucursal terminal = null;
             SucursalPorEmpresa sucursal = null;
-            if (strValorRegistro == "WebAPI")
+            if (strValorRegistro == "WebAPI" || strUsuario.ToUpper() == "ADMIN")
             {
-                sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == usuario.IdSucursal);
-                terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == sucursal.IdSucursal).FirstOrDefault();
+                sucursal = dbContext.SucursalPorEmpresaRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == usuario.IdSucursal);
+                terminal = dbContext.TerminalPorSucursalRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == sucursal.IdSucursal);
             }
             else
             {
-                terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == strValorRegistro).FirstOrDefault();
+                terminal = dbContext.TerminalPorSucursalRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == strValorRegistro);
                 if (terminal == null) throw new BusinessException("El dispositivo no se encuentra registrado en el sistema.");
-                sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdSucursal).FirstOrDefault();
+                sucursal = dbContext.SucursalPorEmpresaRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdSucursal);
             }
             if (terminal == null || sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
             EquipoRegistrado equipo = new EquipoRegistrado
@@ -490,44 +490,38 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public decimal AutorizacionPorcentaje(string strUsuario, string strClave, int intIdEmpresa)
         {
-
+            try
             {
-                try
-                {
-                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
-                    if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos.Verifique los credenciales suministrados.");
-                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
-                    return usuario.PorcMaxDescuento;
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al autorizar un porcentaje de descuento con credenciales: ", ex);
-                    throw new Exception("Error al obtener la autorización del descuento. Por favor consulte con su proveedor.");
-                }
+                Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
+                if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos.Verifique los credenciales suministrados.");
+                if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
+                return usuario.PorcMaxDescuento;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al autorizar un porcentaje de descuento con credenciales: ", ex);
+                throw new Exception("Error al obtener la autorización del descuento. Por favor consulte con su proveedor.");
             }
         }
 
         public string ObtenerUltimaVersionApp()
         {
             string strUltimaVersion = "";
-
+            try
             {
-                try
-                {
-                    var version = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == 1).FirstOrDefault();
-                    if (version is null) throw new BusinessException("No se logró obtener el parámetro con descripción 'Version' de la tabla de parámetros del sistema.");
-                    strUltimaVersion = version.Valor;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al consultar el parámetro 'Version' del sistema: ", ex);
-                    throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
-                }
+                var version = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == 1).FirstOrDefault();
+                if (version is null) throw new BusinessException("No se logró obtener el parámetro con descripción 'Version' de la tabla de parámetros del sistema.");
+                strUltimaVersion = version.Valor;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al consultar el parámetro 'Version' del sistema: ", ex);
+                throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
             }
             return strUltimaVersion;
         }
@@ -535,124 +529,106 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public string ObtenerUltimaVersionMobileApp()
         {
             string strUltimaVersion = "";
-
+            try
             {
-                try
-                {
-                    var version = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == 4).FirstOrDefault();
-                    if (version is null) throw new BusinessException("No se logró obtener el parámetro con descripción 'Version' de la tabla de parámetros del sistema.");
-                    strUltimaVersion = version.Valor;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al consultar el parámetro 'Version' del sistema: ", ex);
-                    throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
-                }
+                var version = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == 4).FirstOrDefault();
+                if (version is null) throw new BusinessException("No se logró obtener el parámetro con descripción 'Version' de la tabla de parámetros del sistema.");
+                strUltimaVersion = version.Valor;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al consultar el parámetro 'Version' del sistema: ", ex);
+                throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
             }
             return strUltimaVersion;
         }
 
         public IList<ParametroSistema> ObtenerListadoParametros()
         {
-
-            {
                 var listaEmpresa = new List<LlaveDescripcion>();
-                try
-                {
-                    return dbContext.ParametroSistemaRepository.ToList();
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al consultar el listado d parámetros del sistema: ", ex);
-                    throw new Exception("Error al consultar el listado d parámetros del sistema. . .");
-                }
+            try
+            {
+                return dbContext.ParametroSistemaRepository.ToList();
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al consultar el listado d parámetros del sistema: ", ex);
+                throw new Exception("Error al consultar el listado d parámetros del sistema. . .");
             }
         }
 
         public void ActualizarParametroSistema(int intIdParametro, string strValor)
         {
-
+            try
             {
-                try
-                {
-                    var parametro = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == intIdParametro).FirstOrDefault();
-                    if (parametro is null) throw new BusinessException("No se logró obtener el parámetro con Id: " + intIdParametro + " de la tabla de parámetros del sistema.");
-                    parametro.Valor = strValor;
-                    dbContext.NotificarModificacion(parametro);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al actualizar el parámetro del sistema: ", ex);
-                    throw new Exception("Se produjo un error actualizando el parámetro del sistema. Por favor consulte con su proveedor.");
-                }
+                var parametro = dbContext.ParametroSistemaRepository.Where(x => x.IdParametro == intIdParametro).FirstOrDefault();
+                if (parametro is null) throw new BusinessException("No se logró obtener el parámetro con Id: " + intIdParametro + " de la tabla de parámetros del sistema.");
+                parametro.Valor = strValor;
+                dbContext.NotificarModificacion(parametro);
+                dbContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar el parámetro del sistema: ", ex);
+                throw new Exception("Se produjo un error actualizando el parámetro del sistema. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoEmpresa()
         {
-
-            {
                 var listaEmpresa = new List<LlaveDescripcion>();
-                try
+            try
+            {
+                var listado = dbContext.EmpresaRepository.Select(x => new { x.IdEmpresa, x.NombreComercial });
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.EmpresaRepository.Select(x => new { x.IdEmpresa, x.NombreComercial });
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdEmpresa, value.NombreComercial);
-                        listaEmpresa.Add(item);
-                    }
-                    return listaEmpresa;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdEmpresa, value.NombreComercial);
+                    listaEmpresa.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al validar la lista de empresas para usuario administrador: ", ex);
-                    throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
-                }
+                return listaEmpresa;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al validar la lista de empresas para usuario administrador: ", ex);
+                throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
             }
         }
 
         public string AgregarEmpresa(Empresa empresa)
         {
-
+            try
             {
-                try
-                {
-                    if (empresa.Logotipo == null) empresa.Logotipo = new byte[0];
-                    dbContext.EmpresaRepository.Add(empresa);
-                    dbContext.Commit();
-                    return empresa.IdEmpresa.ToString();
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al agregar la empresa: ", ex);
-                    throw new Exception("Se produjo un error agregando la información de la empresa. Por favor consulte con su proveedor.");
-                }
+                if (empresa.Logotipo == null) empresa.Logotipo = new byte[0];
+                dbContext.EmpresaRepository.Add(empresa);
+                dbContext.Commit();
+                return empresa.IdEmpresa.ToString();
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al agregar la empresa: ", ex);
+                throw new Exception("Se produjo un error agregando la información de la empresa. Por favor consulte con su proveedor.");
             }
         }
 
         public Empresa ObtenerEmpresa(int intIdEmpresa)
         {
-
+            try
             {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    return empresa;
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener la empresa: ", ex);
-                    throw new Exception("Se produjo un error consultando la información de la empresa. Por favor consulte con su proveedor.");
-                }
+                Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                return empresa;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener la empresa: ", ex);
+                throw new Exception("Se produjo un error consultando la información de la empresa. Por favor consulte con su proveedor.");
             }
         }
 
@@ -690,150 +666,132 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public List<LlaveDescripcion> ObtenerListadoReportePorEmpresa(int intIdEmpresa)
         {
-
-            {
                 var listaReportes = new List<LlaveDescripcion>();
-                try
+            try
+            {
+                Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                var listado = dbContext.ReportePorEmpresaRepository.Include("CatalogoReporte").Where(x => x.IdEmpresa == intIdEmpresa);
+                foreach (var value in listado)
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    var listado = dbContext.ReportePorEmpresaRepository.Include("CatalogoReporte").Where(x => x.IdEmpresa == intIdEmpresa);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdReporte, value.CatalogoReporte.NombreReporte);
-                        listaReportes.Add(item);
-                    }
-                    return listaReportes;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdReporte, value.CatalogoReporte.NombreReporte);
+                    listaReportes.Add(item);
                 }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
-                    throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
-                }
+                return listaReportes;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
+                throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
             }
         }
 
         public List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa, bool bolAdministrator)
         {
-
-            {
                 var listaRoles = new List<LlaveDescripcion>();
-                try
+            try
+            {
+                var intIdLowerRole = bolAdministrator ? 0 : 2;
+                var listado = dbContext.RolePorEmpresaRepository.Include("Role").Where(x => x.IdEmpresa == intIdEmpresa && x.IdRole > intIdLowerRole);
+                foreach (var value in listado)
                 {
-                    var intIdLowerRole = bolAdministrator ? 0 : 2;
-                    var listado = dbContext.RolePorEmpresaRepository.Include("Role").Where(x => x.IdEmpresa == intIdEmpresa && x.IdRole > intIdLowerRole);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdRole, value.Role.Descripcion);
-                        listaRoles.Add(item);
-                    }
-                    return listaRoles;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdRole, value.Role.Descripcion);
+                    listaRoles.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
-                }
+                return listaRoles;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
             }
         }
 
         public void ActualizarReportePorEmpresa(int intIdEmpresa, List<ReportePorEmpresa> listado)
         {
-
+            try
             {
-                try
-                {
-                    List<ReportePorEmpresa> listadoReportePorEmpresaAnt = dbContext.ReportePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
-                    foreach (ReportePorEmpresa reporte in listadoReportePorEmpresaAnt)
-                        dbContext.ReportePorEmpresaRepository.Remove(reporte);
-                    foreach (ReportePorEmpresa reporte in listado)
-                        dbContext.ReportePorEmpresaRepository.Add(reporte);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al actualizar el listado de reportes por empresa: ", ex);
-                    throw new Exception("Se produjo un error al actualizar el listado de reportes por empresa. Por favor consulte con su proveedor.");
-                }
+                List<ReportePorEmpresa> listadoReportePorEmpresaAnt = dbContext.ReportePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
+                foreach (ReportePorEmpresa reporte in listadoReportePorEmpresaAnt)
+                    dbContext.ReportePorEmpresaRepository.Remove(reporte);
+                foreach (ReportePorEmpresa reporte in listado)
+                    dbContext.ReportePorEmpresaRepository.Add(reporte);
+                dbContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al actualizar el listado de reportes por empresa: ", ex);
+                throw new Exception("Se produjo un error al actualizar el listado de reportes por empresa. Por favor consulte con su proveedor.");
             }
         }
 
         public void ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado)
         {
-
+            try
             {
-                try
-                {
-                    List<RolePorEmpresa> listadoReportePorEmpresaAnt = dbContext.RolePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
-                    foreach (RolePorEmpresa reporte in listadoReportePorEmpresaAnt)
-                        dbContext.RolePorEmpresaRepository.Remove(reporte);
-                    foreach (RolePorEmpresa reporte in listado)
-                        dbContext.RolePorEmpresaRepository.Add(reporte);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al actualizar el listado de roles por empresa: ", ex);
-                    throw new Exception("Se produjo un error al actualizar el listado de roles por empresa. Por favor consulte con su proveedor.");
-                }
+                List<RolePorEmpresa> listadoReportePorEmpresaAnt = dbContext.RolePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
+                foreach (RolePorEmpresa reporte in listadoReportePorEmpresaAnt)
+                    dbContext.RolePorEmpresaRepository.Remove(reporte);
+                foreach (RolePorEmpresa reporte in listado)
+                    dbContext.RolePorEmpresaRepository.Add(reporte);
+                dbContext.Commit();
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al actualizar el listado de roles por empresa: ", ex);
+                throw new Exception("Se produjo un error al actualizar el listado de roles por empresa. Por favor consulte con su proveedor.");
             }
         }
 
         public string ObtenerLogotipoEmpresa(int intIdEmpresa)
         {
-
+            try
             {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    string strLogotipo = "";
-                    if (empresa.Logotipo != null)
-                        strLogotipo = Convert.ToBase64String(empresa.Logotipo);
-                    return strLogotipo;
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
-                    throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
-                }
+                Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                string strLogotipo = "";
+                if (empresa.Logotipo != null)
+                    strLogotipo = Convert.ToBase64String(empresa.Logotipo);
+                return strLogotipo;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
+                throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
             }
         }
 
         public void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo)
         {
-
+            try
             {
-                try
+                Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                if (strLogo != "")
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (strLogo != "")
-                    {
-                        byte[] bytLogotipo = Convert.FromBase64String(strLogo);
-                        empresa.Logotipo = bytLogotipo;
-                    }
-                    else
-                        empresa.Logotipo = null;
-                    dbContext.Commit();
+                    byte[] bytLogotipo = Convert.FromBase64String(strLogo);
+                    empresa.Logotipo = bytLogotipo;
                 }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al actualizar el logotipo de la empresa: ", ex);
-                    throw new Exception("Se produjo un error registrando el logotipo de la empresa. Por favor consulte con su proveedor.");
-                }
+                else
+                    empresa.Logotipo = null;
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al actualizar el logotipo de la empresa: ", ex);
+                throw new Exception("Se produjo un error registrando el logotipo de la empresa. Por favor consulte con su proveedor.");
             }
         }
 
@@ -1189,295 +1147,267 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void ActualizarVendedor(Vendedor vendedor)
         {
-
+            try
             {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(vendedor.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.NotificarModificacion(vendedor);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al actualizar el vendedor: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del vendedor. Por favor consulte con su proveedor.");
-                }
+                Empresa empresa = dbContext.EmpresaRepository.Find(vendedor.IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                dbContext.NotificarModificacion(vendedor);
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar el vendedor: ", ex);
+                throw new Exception("Se produjo un error actualizando la información del vendedor. Por favor consulte con su proveedor.");
             }
         }
 
         public void EliminarVendedor(int intIdVendedor)
         {
-
+            try
             {
-                try
-                {
-                    Vendedor vendedor = dbContext.VendedorRepository.Find(intIdVendedor);
-                    if (vendedor == null)
-                        throw new BusinessException("El vendedor por eliminar no existe.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(vendedor.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.VendedorRepository.Remove(vendedor);
-                    dbContext.Commit();
-                }
-                catch (DbUpdateException ex)
-                {
-                    //_logger.LogError("Validación al eliminar el vendedor: ", ex);
-                    throw new BusinessException("No es posible eliminar el vendedor seleccionado. Posee registros relacionados en el sistema.");
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al eliminar el vendedor: ", ex);
-                    throw new Exception("Se produjo un error eliminando al vendedor. Por favor consulte con su proveedor.");
-                }
+                Vendedor vendedor = dbContext.VendedorRepository.Find(intIdVendedor);
+                if (vendedor == null)
+                    throw new BusinessException("El vendedor por eliminar no existe.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(vendedor.IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                dbContext.VendedorRepository.Remove(vendedor);
+                dbContext.Commit();
+            }
+            catch (DbUpdateException ex)
+            {
+                //_logger.LogError("Validación al eliminar el vendedor: ", ex);
+                throw new BusinessException("No es posible eliminar el vendedor seleccionado. Posee registros relacionados en el sistema.");
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al eliminar el vendedor: ", ex);
+                throw new Exception("Se produjo un error eliminando al vendedor. Por favor consulte con su proveedor.");
             }
         }
 
         public Vendedor ObtenerVendedor(int intIdVendedor)
         {
-
+            try
             {
-                try
-                {
-                    Vendedor Vendedor = dbContext.VendedorRepository.Find(intIdVendedor);
-                    if (Vendedor == null)
-                        throw new BusinessException("El Vendedor por consultar no existe");
-                    return Vendedor;
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el vendedor: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del vendedor. Por favor consulte con su proveedor.");
-                }
+                Vendedor Vendedor = dbContext.VendedorRepository.Find(intIdVendedor);
+                if (Vendedor == null)
+                    throw new BusinessException("El Vendedor por consultar no existe");
+                return Vendedor;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el vendedor: ", ex);
+                throw new Exception("Se produjo un error consultando la información del vendedor. Por favor consulte con su proveedor.");
             }
         }
 
         public Vendedor ObtenerVendedorPorDefecto(int intIdEmpresa)
         {
-
+            try
             {
-                try
-                {
-                    Vendedor Vendedor = dbContext.VendedorRepository.Where(x => x.IdEmpresa == intIdEmpresa).FirstOrDefault();
-                    if (Vendedor == null)
-                        throw new BusinessException("La empresa no posee registrado ningún vendedor");
-                    return Vendedor;
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el vendedor: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del vendedor. Por favor consulte con su proveedor.");
-                }
+                Vendedor Vendedor = dbContext.VendedorRepository.Where(x => x.IdEmpresa == intIdEmpresa).FirstOrDefault();
+                if (Vendedor == null)
+                    throw new BusinessException("La empresa no posee registrado ningún vendedor");
+                return Vendedor;
+            }
+            catch (BusinessException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el vendedor: ", ex);
+                throw new Exception("Se produjo un error consultando la información del vendedor. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre)
         {
-
-            {
                 var listaVendedor = new List<LlaveDescripcion>();
-                try
+            try
+            {
+                var listado = dbContext.VendedorRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                if (!strNombre.Equals(string.Empty))
+                    listado = listado.Where(x => x.Nombre.Contains(strNombre));
+                listado = listado.OrderBy(x => x.IdVendedor);
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.VendedorRepository.Where(x => x.IdEmpresa == intIdEmpresa);
-                    if (!strNombre.Equals(string.Empty))
-                        listado = listado.Where(x => x.Nombre.Contains(strNombre));
-                    listado = listado.OrderBy(x => x.IdVendedor);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdVendedor, value.Nombre);
-                        listaVendedor.Add(item);
-                    }
-                    return listaVendedor;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdVendedor, value.Nombre);
+                    listaVendedor.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el listado de vendedores: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de vendedores. Por favor consulte con su proveedor.");
-                }
+                return listaVendedor;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de vendedores: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de vendedores. Por favor consulte con su proveedor.");
             }
         }
 
         public Role ObtenerRole(int intIdRole)
         {
-
+            try
             {
-                try
-                {
-                    return dbContext.RoleRepository.Find(intIdRole);
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el registro de role de usuario: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del role de acceso. Por favor consulte con su proveedor.");
-                }
+                return dbContext.RoleRepository.Find(intIdRole);
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el registro de role de usuario: ", ex);
+                throw new Exception("Se produjo un error consultando la información del role de acceso. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoRoles()
         {
-
+            var listaRoles = new List<LlaveDescripcion>();
+            try
             {
-                var listaRoles = new List<LlaveDescripcion>();
-                try
+                var listado = dbContext.RoleRepository;
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.RoleRepository;
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdRole, value.Descripcion);
-                        listaRoles.Add(item);
-                    }
-                    return listaRoles;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdRole, value.Descripcion);
+                    listaRoles.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
-                }
+                return listaRoles;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
             }
         }
 
         public void AgregarLinea(Linea linea)
         {
-
+            try
             {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(linea.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.LineaRepository.Add(linea);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al agregar la línea de producto: ", ex);
-                    throw new Exception("Se produjo un error agregando la información de la línea. Por favor consulte con su proveedor.");
-                }
+                Empresa empresa = dbContext.EmpresaRepository.Find(linea.IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                dbContext.LineaRepository.Add(linea);
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al agregar la línea de producto: ", ex);
+                throw new Exception("Se produjo un error agregando la información de la línea. Por favor consulte con su proveedor.");
             }
         }
 
         public void ActualizarLinea(Linea linea)
         {
-
+            try
             {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(linea.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.NotificarModificacion(linea);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al actualizar la línea de producto: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la línea. Por favor consulte con su proveedor.");
-                }
+                Empresa empresa = dbContext.EmpresaRepository.Find(linea.IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                List<LineaPorSucursal> listadoDetalleAnterior = dbContext.LineaPorSucursalRepository.Where(x => x.IdLinea == linea.IdLinea).ToList();
+                List<LineaPorSucursal> listadoDetalle = linea.LineaPorSucursal.ToList();
+                linea.LineaPorSucursal = null;
+                foreach (LineaPorSucursal detalle in listadoDetalleAnterior)
+                    dbContext.NotificarEliminacion(detalle);
+                dbContext.NotificarModificacion(linea);
+                foreach (LineaPorSucursal detalle in listadoDetalle)
+                    dbContext.LineaPorSucursalRepository.Add(detalle);
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar la línea de producto: ", ex);
+                throw new Exception("Se produjo un error actualizando la información de la línea. Por favor consulte con su proveedor.");
             }
         }
 
         public void EliminarLinea(int intIdLinea)
         {
-
+            try
             {
-                try
-                {
-                    Linea linea = dbContext.LineaRepository.Find(intIdLinea);
-                    if (linea == null)
-                        throw new BusinessException("La línea por eliminar no existe.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(linea.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.LineaRepository.Remove(linea);
-                    dbContext.Commit();
-                }
-                catch (DbUpdateException ex)
-                {
-                    //_logger.LogError("Validación al agregar el parámetro contable: ", ex);
-                    throw new BusinessException("No es posible eliminar la línea seleccionada. Posee registros relacionados en el sistema.");
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al eliminar la línea de producto: ", ex);
-                    throw new Exception("Se produjo un error eliminando la línea. Por favor consulte con su proveedor.");
-                }
+                Linea linea = dbContext.LineaRepository.Find(intIdLinea);
+                if (linea == null)
+                    throw new BusinessException("La línea por eliminar no existe.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(linea.IdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                dbContext.LineaRepository.Remove(linea);
+                dbContext.Commit();
+            }
+            catch (DbUpdateException ex)
+            {
+                //_logger.LogError("Validación al agregar el parámetro contable: ", ex);
+                throw new BusinessException("No es posible eliminar la línea seleccionada. Posee registros relacionados en el sistema.");
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al eliminar la línea de producto: ", ex);
+                throw new Exception("Se produjo un error eliminando la línea. Por favor consulte con su proveedor.");
             }
         }
 
         public Linea ObtenerLinea(int intIdLinea)
         {
-
+            try
             {
-                try
-                {
-                    return dbContext.LineaRepository.Find(intIdLinea);
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener la línea de producto: ", ex);
-                    throw new Exception("Se produjo un error consultando la información de la línea. Por favor consulte con su proveedor.");
-                }
+                Linea linea = dbContext.LineaRepository.Include("LineaPorSucursal.SucursalPorEmpresa").FirstOrDefault(x => x.IdLinea == intIdLinea);
+                return linea;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener la línea de producto: ", ex);
+                throw new Exception("Se produjo un error consultando la información de la línea. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion)
         {
-
-            {
                 var listaLinea = new List<LlaveDescripcion>();
-                try
+            try
+            {
+                var listado = dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                if (!strDescripcion.Equals(string.Empty))
+                    listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                listado = listado.OrderBy(x => x.IdLinea).ThenBy(x => x.Descripcion);
+                foreach (var value in listado)
                 {
-                    var listado = dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa);
-                    if (!strDescripcion.Equals(string.Empty))
-                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
-                    listado = listado.OrderBy(x => x.IdLinea).ThenBy(x => x.Descripcion);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdLinea, value.Descripcion);
-                        listaLinea.Add(item);
-                    }
-                    return listaLinea;
+                    LlaveDescripcion item = new LlaveDescripcion(value.IdLinea, value.Descripcion);
+                    listaLinea.Add(item);
                 }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el listado de líneas general: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de líneas. Por favor consulte con su proveedor.");
-                }
+                return listaLinea;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de líneas general: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de líneas. Por favor consulte con su proveedor.");
             }
         }
 
@@ -1504,264 +1434,238 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AgregarProducto(Producto producto)
         {
-
+            try
             {
-                try
+                bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
+                if (existe) throw new BusinessException("El código o código de proveedor de producto ingresado ya está registrado en la empresa.");
+                if (producto.Tipo == StaticTipoProducto.Transitorio)
                 {
-                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
-                    if (existe) throw new BusinessException("El código o código de proveedor de producto ingresado ya está registrado en la empresa.");
-                    if (producto.Tipo == StaticTipoProducto.Transitorio)
-                    {
-                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
-                        if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
-                    }
-                    if (producto.Tipo == StaticTipoProducto.ImpuestodeServicio)
-                    {
-                        bool impuestoServ = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
-                        if (impuestoServ) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
-                    }
-                    if (producto.Imagen == null) producto.Imagen = new byte[0];
-                    dbContext.ProductoRepository.Add(producto);
-                    dbContext.Commit();
+                    bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
+                    if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
                 }
-                catch (BusinessException ex)
+                if (producto.Tipo == StaticTipoProducto.ImpuestodeServicio)
                 {
-                    dbContext.RollBack();
-                    throw ex;
+                    bool impuestoServ = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
+                    if (impuestoServ) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
                 }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al agregar el producto: ", ex);
-                    throw new Exception("Se produjo un error agregando la información del producto. Por favor consulte con su proveedor.");
-                }
+                if (producto.Imagen == null) producto.Imagen = new byte[0];
+                dbContext.ProductoRepository.Add(producto);
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al agregar el producto: ", ex);
+                throw new Exception("Se produjo un error agregando la información del producto. Por favor consulte con su proveedor.");
             }
         }
 
         public void ActualizarProducto(Producto producto)
         {
-
+            try
             {
-                try
+                bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
+                if (existe) throw new BusinessException("El código o código de proveedor del producto ingresado ya está registrado en la empresa.");
+                if (producto.Tipo == StaticTipoProducto.Transitorio)
                 {
-                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
-                    if (existe) throw new BusinessException("El código o código de proveedor del producto ingresado ya está registrado en la empresa.");
-                    if (producto.Tipo == StaticTipoProducto.Transitorio)
-                    {
-                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
-                        if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
-                    }
-                    if (producto.Tipo == StaticTipoProducto.ImpuestodeServicio)
-                    {
-                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
-                        if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
-                    }
-                    if (producto.Imagen == null) producto.Imagen = new byte[0];
-                    dbContext.NotificarModificacion(producto);
-                    dbContext.Commit();
+                    bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
+                    if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
                 }
-                catch (BusinessException ex)
+                if (producto.Tipo == StaticTipoProducto.ImpuestodeServicio)
                 {
-                    dbContext.RollBack();
-                    throw ex;
+                    bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
+                    if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
                 }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al actualizar el producto: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del producto. Por favor consulte con su proveedor.");
-                }
+                if (producto.Imagen == null) producto.Imagen = new byte[0];
+                dbContext.NotificarModificacion(producto);
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar el producto: ", ex);
+                throw new Exception("Se produjo un error actualizando la información del producto. Por favor consulte con su proveedor.");
             }
         }
 
         public void ActualizarPrecioVentaProductos(int intIdEmpresa, int intIdLinea, string strCodigo, string strDescripcion, decimal decPorcentajeAumento)
         {
-
+            try
             {
-                try
+                Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Tipo));
+                if (intIdLinea > 0)
+                    listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
+                else if (!strCodigo.Equals(string.Empty))
+                    listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
+                else if (!strDescripcion.Equals(string.Empty))
+                    listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
+                listaProductos = listaProductos.OrderBy(x => x.IdProducto);
+                foreach (Producto producto in listaProductos)
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Tipo));
-                    if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
-                    else if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
-                    else if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
-                    listaProductos = listaProductos.OrderBy(x => x.IdProducto);
-                    foreach (Producto producto in listaProductos)
-                    {
-                        producto.PrecioVenta1 = producto.PrecioVenta1 * (1 + (decPorcentajeAumento / 100));
-                        producto.PrecioVenta2 = producto.PrecioVenta2 * (1 + (decPorcentajeAumento / 100));
-                        producto.PrecioVenta3 = producto.PrecioVenta3 * (1 + (decPorcentajeAumento / 100));
-                        producto.PrecioVenta4 = producto.PrecioVenta4 * (1 + (decPorcentajeAumento / 100));
-                        producto.PrecioVenta5 = producto.PrecioVenta5 * (1 + (decPorcentajeAumento / 100));
-                        dbContext.NotificarModificacion(producto);
-                    }
-                    dbContext.Commit();
+                    producto.PrecioVenta1 = producto.PrecioVenta1 * (1 + (decPorcentajeAumento / 100));
+                    producto.PrecioVenta2 = producto.PrecioVenta2 * (1 + (decPorcentajeAumento / 100));
+                    producto.PrecioVenta3 = producto.PrecioVenta3 * (1 + (decPorcentajeAumento / 100));
+                    producto.PrecioVenta4 = producto.PrecioVenta4 * (1 + (decPorcentajeAumento / 100));
+                    producto.PrecioVenta5 = producto.PrecioVenta5 * (1 + (decPorcentajeAumento / 100));
+                    dbContext.NotificarModificacion(producto);
                 }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al actualizar el precio de venta del inventario: ", ex);
-                    throw new Exception("Se produjo un error actualizando el precio de venta del inventario. Por favor consulte con su proveedor.");
-                }
+                dbContext.Commit();
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al actualizar el precio de venta del inventario: ", ex);
+                throw new Exception("Se produjo un error actualizando el precio de venta del inventario. Por favor consulte con su proveedor.");
             }
         }
 
         public void EliminarProducto(int intIdProducto)
         {
-
+            try
             {
-                try
-                {
-                    Producto producto = dbContext.ProductoRepository.Find(intIdProducto);
-                    if (producto == null) throw new BusinessException("El producto por eliminar no existe.");
-                    dbContext.ProductoRepository.Remove(producto);
-                    dbContext.Commit();
-                }
-                catch (DbUpdateException ex)
-                {
-                    //_logger.LogError("Validación al agregar el parámetro contable: ", ex);
-                    throw new BusinessException("No es posible eliminar el producto seleccionado. Posee registros relacionados en el sistema.");
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    //_logger.LogError("Error al eliminar el producto: ", ex);
-                    throw new Exception("Se produjo un error eliminando el producto. Por favor consulte con su proveedor.");
-                }
+                Producto producto = dbContext.ProductoRepository.Find(intIdProducto);
+                if (producto == null) throw new BusinessException("El producto por eliminar no existe.");
+                dbContext.ProductoRepository.Remove(producto);
+                dbContext.Commit();
+            }
+            catch (DbUpdateException ex)
+            {
+                //_logger.LogError("Validación al agregar el parámetro contable: ", ex);
+                throw new BusinessException("No es posible eliminar el producto seleccionado. Posee registros relacionados en el sistema.");
+            }
+            catch (BusinessException ex)
+            {
+                dbContext.RollBack();
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                dbContext.RollBack();
+                //_logger.LogError("Error al eliminar el producto: ", ex);
+                throw new Exception("Se produjo un error eliminando el producto. Por favor consulte con su proveedor.");
             }
         }
 
         public Producto ObtenerProducto(int intIdProducto, int intIdSucursal)
         {
-
+            try
             {
-                try
+                Producto producto = dbContext.ProductoRepository.Include("Proveedor").FirstOrDefault(x => x.IdProducto == intIdProducto);
+                if (producto != null)
                 {
-                    Producto producto = dbContext.ProductoRepository.Include("Proveedor").FirstOrDefault(x => x.IdProducto == intIdProducto);
-                    if (producto != null)
-                    {
-                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
-                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
-                        producto.Existencias = decCantidad;
-                    }
-                    return producto;
+                    var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
+                    decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                    producto.Existencias = decCantidad;
                 }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el producto: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
-                }
+                return producto;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el producto: ", ex);
+                throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
             }
         }
 
         public Producto ObtenerProductoEspecial(int intIdEmpresa, int intIdTipo)
         {
 
+            try
             {
-                try
-                {
-                    return dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Tipo == intIdTipo);
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el código de producto transitorio: ", ex);
-                    throw new Exception("Se produjo un error consultando el producto transitorio. Por favor consulte con su proveedor.");
-                }
+                return dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Tipo == intIdTipo);
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el código de producto transitorio: ", ex);
+                throw new Exception("Se produjo un error consultando el producto transitorio. Por favor consulte con su proveedor.");
             }
         }
 
         public Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, int intIdSucursal)
         {
-
+            try
             {
-                try
+                Producto producto = dbContext.ProductoRepository.Include("Proveedor").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo));
+                if (producto != null)
                 {
-                    Producto producto = dbContext.ProductoRepository.Include("Proveedor").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo));
-                    if (producto != null)
-                    {
-                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
-                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
-                        producto.Existencias = decCantidad;
-                    }
-                    return producto;
+                    var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
+                    decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                    producto.Existencias = decCantidad;
                 }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el producto: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
-                }
+                return producto;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el producto: ", ex);
+                throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
             }
         }
 
         public Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo, int intIdSucursal)
         {
-
+            try
             {
-                try
+                Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.CodigoProveedor.Equals(strCodigo));
+                if (producto != null)
                 {
-                    Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.CodigoProveedor.Equals(strCodigo));
-                    if (producto != null)
-                    {
-                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
-                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
-                        producto.Existencias = decCantidad;
-                    }
-                    return producto;
+                    var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
+                    decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                    producto.Existencias = decCantidad;
                 }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el producto: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
-                }
+                return producto;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el producto: ", ex);
+                throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
             }
         }
 
         public int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
         {
-
+            try
             {
-                try
-                {
-                    List<ReporteInventario> listaReporte = new List<ReporteInventario>();
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Tipo));
-                    if (!bolIncluyeServicios)
-                        listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
-                    if (bolFiltraActivos)
-                        listaProductos = listaProductos.Where(x => x.Activo);
-                    if (bolFiltraConDescuento)
-                        listaProductos = listaProductos.Where(x => x.PorcDescuento > 0);
-                    if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
-                    if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
-                    if (!strCodigoProveedor.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
-                    if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
-                    if (bolFiltraExistencias)
-                        return listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).Count();
-                    else
-                        return listaProductos.Count();
-                }
-                catch (Exception ex)
-                {
-                    //_logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
-                }
+                List<ReporteInventario> listaReporte = new List<ReporteInventario>();
+                var listaProductos = dbContext.ProductoRepository.Include("Linea.LineaPorSucursal").Where(x => x.IdEmpresa == intIdEmpresa && x.Linea.LineaPorSucursal.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal).Select(z => z.IdLinea).Contains(x.IdLinea) && new int[] { 1, 2, 3 }.Contains(x.Tipo));
+                if (!bolIncluyeServicios)
+                    listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
+                if (bolFiltraActivos)
+                    listaProductos = listaProductos.Where(x => x.Activo);
+                if (bolFiltraConDescuento)
+                    listaProductos = listaProductos.Where(x => x.PorcDescuento > 0);
+                if (intIdLinea > 0)
+                    listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
+                if (!strCodigo.Equals(string.Empty))
+                    listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
+                if (!strCodigoProveedor.Equals(string.Empty))
+                    listaProductos = listaProductos.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
+                if (!strDescripcion.Equals(string.Empty))
+                    listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
+                if (bolFiltraExistencias)
+                    return listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).Count();
+                else
+                    return listaProductos.Count();
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
             }
         }
 
@@ -1773,7 +1677,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     List<ProductoDetalle> listaReporte = new List<ProductoDetalle>();
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Tipo));
+                    var listaProductos = dbContext.ProductoRepository.Include("Linea.LineaPorSucursal").Where(x => x.IdEmpresa == intIdEmpresa && x.Linea.LineaPorSucursal.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal).Select(z => z.IdLinea).Contains(x.IdLinea) && new int[] { 1, 2, 3 }.Contains(x.Tipo));
                     if (!bolIncluyeServicios)
                         listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
                     if (bolFiltraActivos)

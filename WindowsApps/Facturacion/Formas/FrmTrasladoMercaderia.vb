@@ -146,11 +146,12 @@ Public Class FrmTrasladoMercaderia
         txtTotal.Text = FormatNumber(decTotal, 2)
     End Sub
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboIdSucursalDestino.ValueMember = "Id"
         cboIdSucursalDestino.DisplayMember = "Descripcion"
-        cboIdSucursalDestino.DataSource = Await Puntoventa.ObtenerListadoSucursalDestino(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
-    End Function
+        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.listaSucursales.Where(Function(x) x.Id <> FrmPrincipal.equipoGlobal.IdSucursal).ToList())
+        cboIdSucursalDestino.DataSource = listado
+    End Sub
 
     Private Sub CargarDatosProducto(producto As Producto)
         If producto Is Nothing Then
@@ -217,7 +218,7 @@ Public Class FrmTrasladoMercaderia
         e.Handled = False
     End Sub
 
-    Private Async Sub FrmTrasladoMercaderia_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmTrasladoMercaderia_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             IniciaDetalleTraslado()
             EstablecerPropiedadesDataGridView()
@@ -227,7 +228,7 @@ Public Class FrmTrasladoMercaderia
             grdDetalleTraslado.DataSource = dtbDetalleTraslado
             txtCantidad.Text = ""
             txtTotal.Text = FormatNumber(0, 2)
-            Await CargarCombos()
+            CargarCombos()
             If cboIdSucursalDestino.Items.Count = 0 Then
                 MessageBox.Show("La empresa no posee sucursales adicionales.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
