@@ -20,8 +20,7 @@ Public Class FrmMenuReportes
     Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.listaSucursales)
-        cboSucursal.DataSource = listado
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Sub
@@ -32,7 +31,7 @@ Public Class FrmMenuReportes
         LstReporte.DataSource = FrmPrincipal.lstListaReportes
     End Sub
 
-    Private Async Sub FrmMenuReportes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmMenuReportes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             CargarCombos()
             FechaInicio.Text = Date.Now.Day & "/" & Date.Now.Month & "/" & Date.Now.Year

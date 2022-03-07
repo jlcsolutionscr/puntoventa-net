@@ -2,7 +2,6 @@ Imports LeandroSoftware.Common.Dominio.Entidades
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports System.Text.RegularExpressions
-Imports System.Linq
 Imports LeandroSoftware.Common.Constantes
 Imports System.Collections.Generic
 
@@ -177,16 +176,16 @@ Public Class FrmFacturaCompra
         Next
         cboTipoIdentificacion.ValueMember = "Id"
         cboTipoIdentificacion.DisplayMember = "Descripcion"
-        cboTipoIdentificacion.DataSource = FrmPrincipal.listaTipoIdentificacion
+        cboTipoIdentificacion.DataSource = FrmPrincipal.ObtenerListadoTipoIdentificacion()
+        cboTipoExoneracion.ValueMember = "Id"
+        cboTipoExoneracion.DisplayMember = "Descripcion"
+        cboTipoExoneracion.DataSource = FrmPrincipal.ObtenerListadoTipoExoneracion()
+        cboTipoImpuesto.ValueMember = "Id"
+        cboTipoImpuesto.DisplayMember = "Descripcion"
+        cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
         cboProvincia.ValueMember = "Id"
         cboProvincia.DisplayMember = "Descripcion"
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
-        cboTipoExoneracion.ValueMember = "Id"
-        cboTipoExoneracion.DisplayMember = "Descripcion"
-        cboTipoExoneracion.DataSource = FrmPrincipal.listaTipoExoneracion
-        cboTipoImpuesto.ValueMember = "Id"
-        cboTipoImpuesto.DisplayMember = "Descripcion"
-        cboTipoImpuesto.DataSource = FrmPrincipal.listaTipoImpuesto
         bolInicializado = True
     End Function
 #End Region

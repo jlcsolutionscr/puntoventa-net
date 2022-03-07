@@ -154,7 +154,7 @@ Public Class FrmAplicaAbonoCxC
     Private Async Function CargarCombos() As Task
         cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        cboFormaPago.DataSource = FrmPrincipal.listaFormaPagoCliente
+        cboFormaPago.DataSource = FrmPrincipal.ObtenerListadoFormaPagoCliente()
         cboTipoBanco.ValueMember = "Id"
         cboTipoBanco.DisplayMember = "Descripcion"
         cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
@@ -360,9 +360,6 @@ Public Class FrmAplicaAbonoCxC
 
     Private Async Sub cboFormaPago_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboFormaPago.SelectedIndexChanged
         If bolReady And cboFormaPago.SelectedValue IsNot Nothing Then
-            cboTipoBanco.SelectedIndex = 0
-            txtTipoTarjeta.Text = ""
-            txtDocumento.Text = ""
             If cboFormaPago.SelectedValue <> StaticFormaPago.Cheque And cboFormaPago.SelectedValue <> StaticFormaPago.TransferenciaDepositoBancario Then
                 Try
                     Await CargarListaBancoAdquiriente()
@@ -403,6 +400,9 @@ Public Class FrmAplicaAbonoCxC
                 lblTipoTarjeta.Visible = False
                 txtDocumento.ReadOnly = False
             End If
+            cboTipoBanco.SelectedIndex = 0
+            txtTipoTarjeta.Text = ""
+            txtDocumento.Text = ""
         End If
     End Sub
 

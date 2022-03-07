@@ -88,8 +88,7 @@ Public Class FrmBusquedaProducto
         cboLinea.SelectedValue = 0
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.listaSucursales)
-        cboSucursal.DataSource = listado
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = intIdSucursal
         cboSucursal.Enabled = True
     End Function

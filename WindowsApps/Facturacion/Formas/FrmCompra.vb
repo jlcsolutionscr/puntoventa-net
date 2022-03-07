@@ -5,7 +5,6 @@ Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.Common.Constantes
 Imports System.Collections.Generic
 Imports System.Threading.Tasks
-Imports System.Linq
 Imports Microsoft.Reporting.WinForms
 Imports System.IO
 
@@ -272,7 +271,7 @@ Public Class FrmCompra
         For Each detalle As DesglosePagoCompra In compra.DesglosePagoCompra
             dtrRowDesglosePago = dtbDesglosePago.NewRow
             dtrRowDesglosePago.Item(0) = detalle.IdFormaPago
-            dtrRowDesglosePago.Item(1) = FrmPrincipal.listaFormaPagoEmpresa.FirstOrDefault(Function(x) x.Id = detalle.IdFormaPago).Descripcion
+            dtrRowDesglosePago.Item(1) = FrmPrincipal.ObtenerDescripcionFormaPagoEmpresa(detalle.IdFormaPago)
             dtrRowDesglosePago.Item(2) = detalle.IdCuentaBanco
             dtrRowDesglosePago.Item(3) = detalle.DescripcionCuenta
             dtrRowDesglosePago.Item(4) = detalle.NroMovimiento
@@ -401,20 +400,19 @@ Public Class FrmCompra
     Private Async Function CargarCombos() As Task
         cboCondicionVenta.ValueMember = "Id"
         cboCondicionVenta.DisplayMember = "Descripcion"
-        cboCondicionVenta.DataSource = FrmPrincipal.listaCondicionVenta
+        cboCondicionVenta.DataSource = FrmPrincipal.ObtenerListadoCondicionVenta()
         cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        cboFormaPago.DataSource = FrmPrincipal.listaFormaPagoEmpresa
+        cboFormaPago.DataSource = FrmPrincipal.ObtenerListadoFormaPagoEmpresa()
         cboCuentaBanco.ValueMember = "Id"
         cboCuentaBanco.DisplayMember = "Descripcion"
         cboCuentaBanco.DataSource = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
-        cboTipoMoneda.DataSource = FrmPrincipal.listaTipoMoneda
+        cboTipoMoneda.DataSource = FrmPrincipal.ObtenerListadoTipoMoneda()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.listaSucursales)
-        cboSucursal.DataSource = listado
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Function

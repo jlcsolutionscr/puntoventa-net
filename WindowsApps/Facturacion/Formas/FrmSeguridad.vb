@@ -5,7 +5,7 @@ Public Class FrmSeguridad
 #Region "Eventos Controles"
     Private Sub FrmSeguridad_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            cboEmpresa.DataSource = FrmPrincipal.listaEmpresa
+            cboEmpresa.DataSource = FrmPrincipal.ObtenerListadoEmpresas()
             cboEmpresa.ValueMember = "Id"
             cboEmpresa.DisplayMember = "Descripcion"
             CmdAceptar.Enabled = True

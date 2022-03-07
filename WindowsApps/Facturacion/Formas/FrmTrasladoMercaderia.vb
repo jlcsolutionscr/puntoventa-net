@@ -1,5 +1,4 @@
 Imports System.Collections.Generic
-Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.DatosComunes
 Imports LeandroSoftware.Common.Dominio.Entidades
@@ -149,7 +148,7 @@ Public Class FrmTrasladoMercaderia
     Private Sub CargarCombos()
         cboIdSucursalDestino.ValueMember = "Id"
         cboIdSucursalDestino.DisplayMember = "Descripcion"
-        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.listaSucursales.Where(Function(x) x.Id <> FrmPrincipal.equipoGlobal.IdSucursal).ToList())
+        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.ObtenerListadoSucursales().Where(Function(x) x.Id <> FrmPrincipal.equipoGlobal.IdSucursal).ToList())
         cboIdSucursalDestino.DataSource = listado
     End Sub
 

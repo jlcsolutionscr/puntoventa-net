@@ -16,7 +16,7 @@ Public Class FrmCliente
     Private Async Function CargarCombos() As Task
         cboTipoIdentificacion.ValueMember = "Id"
         cboTipoIdentificacion.DisplayMember = "Descripcion"
-        cboTipoIdentificacion.DataSource = FrmPrincipal.listaTipoIdentificacion
+        cboTipoIdentificacion.DataSource = FrmPrincipal.ObtenerListadoTipoIdentificacion()
         cboVendedor.ValueMember = "Id"
         cboVendedor.DisplayMember = "Descripcion"
         cboVendedor.DataSource = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
@@ -25,10 +25,10 @@ Public Class FrmCliente
         cboIdTipoPrecio.DataSource = Await Puntoventa.ObtenerListadoTipodePrecio(FrmPrincipal.usuarioGlobal.Token)
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
-        cboTipoImpuesto.DataSource = FrmPrincipal.listaTipoImpuesto
+        cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
         cboTipoExoneracion.ValueMember = "Id"
         cboTipoExoneracion.DisplayMember = "Descripcion"
-        cboTipoExoneracion.DataSource = FrmPrincipal.listaTipoExoneracion
+        cboTipoExoneracion.DataSource = FrmPrincipal.ObtenerListadoTipoExoneracion()
     End Function
 #End Region
 
@@ -72,7 +72,7 @@ Public Class FrmCliente
                 txtFax.Text = datos.Fax
                 txtCorreoElectronico.Text = datos.CorreoElectronico
                 chkPermiteCredito.Checked = datos.PermiteCredito
-                If datos.IdVendedor <> Nothing Then cboVendedor.SelectedValue = datos.IdVendedor
+                cboVendedor.SelectedValue = datos.IdVendedor
                 cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
                 chkExonerado.Checked = datos.AplicaTasaDiferenciada
                 cboTipoImpuesto.SelectedValue = datos.IdImpuesto
@@ -162,7 +162,7 @@ Public Class FrmCliente
                         txtCelular.Text = datos.Celular
                         txtFax.Text = datos.Fax
                         txtCorreoElectronico.Text = datos.CorreoElectronico
-                        If datos.IdVendedor <> Nothing Then cboVendedor.SelectedValue = datos.IdVendedor
+                        cboVendedor.SelectedValue = datos.IdVendedor
                         cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
                         chkExonerado.Checked = datos.AplicaTasaDiferenciada
                         cboTipoImpuesto.SelectedValue = datos.IdImpuesto

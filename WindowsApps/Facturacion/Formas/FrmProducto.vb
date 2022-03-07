@@ -1,9 +1,7 @@
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.Constantes
-Imports LeandroSoftware.Common.DatosComunes
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports System.IO
-Imports System.Linq
 Imports System.Threading.Tasks
 
 Public Class FrmProducto
@@ -55,10 +53,10 @@ Public Class FrmProducto
     Private Async Function CargarCombos() As Task
         cboTipoProducto.ValueMember = "Id"
         cboTipoProducto.DisplayMember = "Descripcion"
-        cboTipoProducto.DataSource = FrmPrincipal.listaTipoProducto
+        cboTipoProducto.DataSource = FrmPrincipal.ObtenerListadoTipoProducto()
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
-        cboTipoImpuesto.DataSource = FrmPrincipal.listaTipoImpuesto
+        cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
         cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
         cboLinea.ValueMember = "Id"
         cboLinea.DisplayMember = "Descripcion"

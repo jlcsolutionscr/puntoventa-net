@@ -1,8 +1,5 @@
-Imports System.Collections.Generic
-Imports System.Linq
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
-Imports LeandroSoftware.Common.DatosComunes
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.Common.Seguridad
 
@@ -84,8 +81,7 @@ Public Class FrmUsuario
         cboRole.DataSource = Await Puntoventa.ObtenerListadoRolesPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.listaSucursales)
-        cboSucursal.DataSource = listado
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         inicializando = False
     End Function

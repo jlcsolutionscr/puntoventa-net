@@ -1,4 +1,3 @@
-Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.Common.DatosComunes
@@ -143,8 +142,7 @@ Public Class FrmAjusteInventario
     Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.listaSucursales)
-        cboSucursal.DataSource = listado
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Sub
@@ -184,7 +182,7 @@ Public Class FrmAjusteInventario
         e.Handled = False
     End Sub
 
-    Private Async Sub FrmAjusteInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmAjusteInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             IniciaDetalleAjusteInventario()
             EstablecerPropiedadesDataGridView()

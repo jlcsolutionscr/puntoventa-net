@@ -15,7 +15,7 @@ Public Class FrmCargaProductoTransitorio
     Private Sub CargarCombos()
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
-        cboTipoImpuesto.DataSource = FrmPrincipal.listaTipoImpuesto
+        cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
         cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
     End Sub
 

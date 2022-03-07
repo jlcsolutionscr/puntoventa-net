@@ -2,7 +2,6 @@ Imports LeandroSoftware.Common.DatosComunes
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.Common.Constantes
 Imports System.Collections.Generic
-Imports System.Linq
 
 Public Class FrmOrdenCompra
 #Region "Variables"

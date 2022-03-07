@@ -1,7 +1,5 @@
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
-Imports System.Collections.Generic
-Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmLinea
 #Region "Variables"
@@ -74,8 +72,7 @@ Public Class FrmLinea
     Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.listaSucursales)
-        cboSucursal.DataSource = listado
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Sub

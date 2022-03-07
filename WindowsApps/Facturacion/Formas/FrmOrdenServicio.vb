@@ -6,8 +6,6 @@ Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.DatosComunes
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.Common.Constantes
-Imports LeandroSoftware.Common.Utilitario
-Imports System.Linq
 
 Public Class FrmOrdenServicio
 #Region "Variables"
@@ -410,10 +408,10 @@ Public Class FrmOrdenServicio
     Private Sub CargarCombos()
         cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        cboFormaPago.DataSource = FrmPrincipal.listaFormaPagoCliente
+        cboFormaPago.DataSource = FrmPrincipal.ObtenerListadoFormaPagoCliente()
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
-        cboTipoMoneda.DataSource = FrmPrincipal.listaTipoMoneda
+        cboTipoMoneda.DataSource = FrmPrincipal.ObtenerListadoTipoMoneda()
     End Sub
 
     Private Async Function CargarListaBancoAdquiriente() As Task
@@ -743,7 +741,7 @@ Public Class FrmOrdenServicio
                 cboHoraEntrega.SelectedIndex = IIf(ordenServicio.HoraEntrega = "Tarde", 1, 0)
                 txtOtrosDetalles.Text = ordenServicio.OtrosDetalles
                 If cliente.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = FrmPrincipal.listaTipoExoneracion.FirstOrDefault(Function(x) x.Id = cliente.IdTipoExoneracion).Descripcion
+                    txtTipoExoneracion.Text = FrmPrincipal.ObtenerDescripcionTipoExoneracion(cliente.IdTipoExoneracion)
                     txtNumDocExoneracion.Text = cliente.NumDocExoneracion
                     txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
                     txtFechaExoneracion.Text = cliente.FechaEmisionDoc
@@ -807,7 +805,7 @@ Public Class FrmOrdenServicio
                     txtVendedor.Text = vendedor.Nombre
                 End If
                 If cliente.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = FrmPrincipal.listaTipoExoneracion.FirstOrDefault(Function(x) x.Id = cliente.IdTipoExoneracion).Descripcion
+                    txtTipoExoneracion.Text = FrmPrincipal.ObtenerDescripcionTipoExoneracion(cliente.IdTipoExoneracion)
                     txtNumDocExoneracion.Text = cliente.NumDocExoneracion
                     txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
                     txtFechaExoneracion.Text = cliente.FechaEmisionDoc

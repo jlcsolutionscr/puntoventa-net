@@ -1,6 +1,4 @@
-﻿Imports System.Threading.Tasks
-
-Public Class FrmCatalogoContableListado
+﻿Public Class FrmCatalogoContableListado
 #Region "Variables"
 #End Region
 
