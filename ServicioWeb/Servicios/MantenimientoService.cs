@@ -519,17 +519,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void ValidarCertificadoHacienda(string strPin, string strCertificado)
         {
+            byte[] bytCertificado = Convert.FromBase64String(strCertificado);
+            X509Certificate2 uidCert;
             try
             {
-                byte[] bytCertificado = Convert.FromBase64String(strCertificado);
-                X509Certificate2 uidCert = new X509Certificate2(bytCertificado, strPin, X509KeyStorageFlags.MachineKeySet);
-                if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
+                uidCert = new X509Certificate2(bytCertificado, strPin, X509KeyStorageFlags.MachineKeySet);
             }
             catch (Exception ex)
             {
                 log.Error("Error al validar la llave criptográfica: ", ex);
-                throw new BusinessException("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información suministrada");
+                throw new Exception("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información suministrada");
             }
+            if (uidCert.NotAfter <= DateTime.Now) throw new Exception("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
         }
 
         public decimal AutorizacionPorcentaje(string strUsuario, string strClave, int intIdEmpresa)
