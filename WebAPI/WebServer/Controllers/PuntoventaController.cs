@@ -109,14 +109,15 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpGet("descargaractualizacion")]
-        public Stream DescargarActualizacion()
+        public FileStreamResult DescargarActualizacion()
         {
             try
             {
                 string strVersion = _servicioMantenimiento.ObtenerUltimaVersionApp().Replace('.', '-');
                 string downloadFilePath = Path.Combine(_environment.ContentRootPath, "appupdates/" + strVersion + "/puntoventaJLC.msi");
-                FileStream content = System.IO.File.Open(downloadFilePath, FileMode.Open);
-                return System.IO.File.OpenRead(downloadFilePath);
+                FileStream fileStream = new FileStream(downloadFilePath, FileMode.Open, FileAccess.Read);
+                Response.Headers.Add("content-disposition", "attachment; filename=puntoventaJLC.msi");
+                return File(fileStream, "application/octet-stream");
             }
             catch (Exception ex)
             {
