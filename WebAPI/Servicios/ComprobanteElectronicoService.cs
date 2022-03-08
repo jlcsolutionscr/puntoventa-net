@@ -2071,20 +2071,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 SigningDate = DateTime.Now,
                 SignaturePackaging = SignaturePackaging.ENVELOPED
             };
+            CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(empresa.IdEmpresa);
+            if (credenciales == null) throw new BusinessException("La empresa no tiene registrado los credenciales ATV para generar documentos electrónicos");
+            X509Certificate2 uidCert;
             try
             {
-                CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(empresa.IdEmpresa);
-                if (credenciales == null) throw new BusinessException("La empresa no tiene registrado los credenciales ATV para generar documentos electrónicos");
-                X509Certificate2 uidCert = new X509Certificate2(credenciales.Certificado, credenciales.PinCertificado, X509KeyStorageFlags.MachineKeySet);
-                if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
-                using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))
-                using (MemoryStream smDatos = new MemoryStream(mensajeEncoded))
-                {
-                    signatureDocument = xadesService.Sign(smDatos, signatureParameters);
-                }
-            } catch(Exception)
+                uidCert = new X509Certificate2(credenciales.Certificado, credenciales.PinCertificado, X509KeyStorageFlags.MachineKeySet);
+            }
+            catch (Exception)
             {
                 throw new BusinessException("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información registrada");
+            }
+            if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
+            using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))
+            using (MemoryStream smDatos = new MemoryStream(mensajeEncoded))
+            {
+                signatureDocument = xadesService.Sign(smDatos, signatureParameters);
             }
             // Almacenaje del documento en base de datos
             byte[] signedDataEncoded = Encoding.UTF8.GetBytes(signatureDocument.Document.OuterXml);
