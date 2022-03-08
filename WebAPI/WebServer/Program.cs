@@ -24,6 +24,8 @@ builder.Services.AddScoped<IContabilidadService, ContabilidadService>();
 builder.Services.AddScoped<ITrasladoService, TrasladoService>();
 builder.Services.AddScoped<ICuentaPorProcesarService, CuentaPorProcesarService>();
 
+builder.Services.AddSingleton<ILoggerManager, LoggerManager>();
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
