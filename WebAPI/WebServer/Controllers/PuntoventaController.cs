@@ -124,7 +124,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
         }
 
-        [HttpGet("obtenerlistadoempresasadministrador")]
+        [HttpGet("obtenerlistadoempresasadmin")]
         public string ObtenerListadoEmpresasAdministrador()
         {
             try

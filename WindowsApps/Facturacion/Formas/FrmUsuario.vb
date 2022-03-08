@@ -131,6 +131,7 @@ Public Class FrmUsuario
                 chkRegistraDispositivo.Checked = datos.PermiteRegistrarDispositivo
                 cboSucursal.SelectedValue = datos.IdSucursal
                 CargarDetalleRole(datos)
+                If FrmPrincipal.usuarioGlobal.CodigoUsuario = "ADMIN" Then txtUsuario.ReadOnly = False
             Else
                 txtUsuario.ReadOnly = False
                 datos = New Usuario

@@ -139,7 +139,11 @@ Public Class FrmLinea
             datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Descripcion = txtDescripcion.Text
-        datos.LineaPorSucursal.Clear()
+        If datos.LineaPorSucursal IsNot Nothing Then
+            datos.LineaPorSucursal.Clear()
+        Else
+            datos.LineaPorSucursal = New Generic.List(Of LineaPorSucursal)
+        End If
         For I As Short = 0 To dtbLineaPorSucursal.Rows.Count - 1
             lineaPorSucursal = New LineaPorSucursal With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
