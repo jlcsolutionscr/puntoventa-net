@@ -10,7 +10,7 @@
     <UseGlobalApplicationHostFile />
     <LastActiveSolutionConfig>Release|Any CPU</LastActiveSolutionConfig>
     <ActiveDebugTarget />
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
