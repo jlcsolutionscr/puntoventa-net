@@ -39,7 +39,7 @@ app.UseExceptionHandler(c => c.Run(async context =>
     await context.Response.WriteAsync(jsonString);
 }));
 
-app.UseCors();
+app.UseCors("CorsPolicy");
 
 app.UseCustomAuthorization();
 
