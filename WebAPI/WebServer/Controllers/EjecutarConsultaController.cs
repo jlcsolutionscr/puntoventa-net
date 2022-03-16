@@ -154,42 +154,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (listadoTipodePrecio.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoTipodePrecio);
                     break;
-                case "ObtenerListadoTipoProducto":
-                    strCodigo = parametrosJO.Property("CodigoUsuario").Value.ToString();
-                    IList<LlaveDescripcion> listadoTipoProducto = _servicioMantenimiento.ObtenerListadoTipoProducto(strCodigo);
-                    if (listadoTipoProducto.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoTipoProducto);
-                    break;
-                case "ObtenerListadoTipoExoneracion":
-                    IList<LlaveDescripcion> listadoTipoExoneracion = _servicioMantenimiento.ObtenerListadoTipoExoneracion();
-                    if (listadoTipoExoneracion.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoTipoExoneracion);
-                    break;
-                case "ObtenerListadoTipoImpuesto":
-                    IList<LlaveDescripcionValor> listadoTipoImpuesto = _servicioMantenimiento.ObtenerListadoTipoImpuesto();
-                    if (listadoTipoImpuesto.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoTipoImpuesto);
-                    break;
-                case "ObtenerListadoFormaPagoCliente":
-                    IList<LlaveDescripcion> listadoFormaPagoFactura = _servicioMantenimiento.ObtenerListadoFormaPagoCliente();
-                    if (listadoFormaPagoFactura.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoFormaPagoFactura);
-                    break;
-                case "ObtenerListadoFormaPagoEmpresa":
-                    IList<LlaveDescripcion> listadoFormaPagoCompra = _servicioMantenimiento.ObtenerListadoFormaPagoEmpresa();
-                    if (listadoFormaPagoCompra.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoFormaPagoCompra);
-                    break;
-                case "ObtenerListadoTipoMoneda":
-                    IList<LlaveDescripcion> listadoTipoMoneda = _servicioMantenimiento.ObtenerListadoTipoMoneda();
-                    if (listadoTipoMoneda.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoTipoMoneda);
-                    break;
-                case "ObtenerListadoCondicionVenta":
-                    IList<LlaveDescripcion> listadoCondicionVenta = _servicioMantenimiento.ObtenerListadoCondicionVenta();
-                    if (listadoCondicionVenta.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoCondicionVenta);
-                    break;
                 case "ObtenerListadoRolesPorEmpresa":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     IList<LlaveDescripcion> listadoRoles = _servicioMantenimiento.ObtenerListadoRolePorEmpresa(intIdEmpresa, false);
@@ -545,11 +509,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     TerminalPorSucursal terminal = _servicioMantenimiento.ObtenerTerminalPorSucursal(intIdEmpresa, intIdSucursal, intIdTerminal);
                     if (terminal != null)
                         strRespuesta = JsonConvert.SerializeObject(terminal);
-                    break;
-                case "ObtenerListadoTipoIdentificacion":
-                    IList<LlaveDescripcion> listadoTipoIdentificacion = _servicioMantenimiento.ObtenerListadoTipoIdentificacion();
-                    if (listadoTipoIdentificacion.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoTipoIdentificacion);
                     break;
                 case "ObtenerListadoCatalogoReportes":
                     IList<LlaveDescripcion> listadoReportes = _servicioMantenimiento.ObtenerListadoCatalogoReportes();

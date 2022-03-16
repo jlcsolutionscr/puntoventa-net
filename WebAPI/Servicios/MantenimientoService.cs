@@ -77,9 +77,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Linea ObtenerLinea(int intIdLinea);
         IList<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion);
         // Métodos para administrar los productos
-        IList<LlaveDescripcion> ObtenerListadoTipoProducto(string strUsuario);
-        IList<LlaveDescripcion> ObtenerListadoTipoExoneracion();
-        IList<LlaveDescripcionValor> ObtenerListadoTipoImpuesto();
         LlaveDescripcionValor ObtenerParametroImpuesto(int intIdImpuesto);
         void AgregarProducto(Producto producto);
         void ActualizarProducto(Producto producto);
@@ -93,18 +90,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
         int ObtenerTotalMovimientosPorProducto(int intIdProducto, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         IList<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int intIdSucursal, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal);
-        // Métodos para obtener las condiciones de venta para facturación
-        IList<LlaveDescripcion> ObtenerListadoCondicionVenta();
-        // Métodos para obtener las formas de pago por tipo de servicio
-        IList<LlaveDescripcion> ObtenerListadoFormaPagoCliente();
-        IList<LlaveDescripcion> ObtenerListadoFormaPagoEmpresa();
         // Métodos para administrar los parámetros de banco adquiriente
         void AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
         void ActualizarBancoAdquiriente(BancoAdquiriente bancoAdquiriente);
         void EliminarBancoAdquiriente(int intIdBanco);
         BancoAdquiriente ObtenerBancoAdquiriente(int intIdBanco);
         IList<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion);
-        IList<LlaveDescripcion> ObtenerListadoTipoMoneda();
         // Métodos para administrar los ajustes de inventario
         string AgregarAjusteInventario(AjusteInventario ajusteInventario);
         void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario, string strMotivoAnulacion);
@@ -415,6 +406,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         private Empresa ObtenerEmpresaPorUsuario(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
         {
             Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+            empresa.ListadoTipoIdentificacion = ObtenerListadoTipoIdentificacion();
+            empresa.ListadoFormaPagoCliente = ObtenerListadoFormaPagoCliente();
+            empresa.ListadoFormaPagoEmpresa = ObtenerListadoFormaPagoEmpresa();
+            empresa.ListadoTipoProducto = ObtenerListadoTipoProducto(strUsuario);
+            empresa.ListadoTipoImpuesto = ObtenerListadoTipoImpuesto();
+            empresa.ListadoTipoMoneda = ObtenerListadoTipoMoneda();
+            empresa.ListadoCondicionVenta = ObtenerListadoCondicionVenta();
+            empresa.ListadoTipoExoneracion = ObtenerListadoTipoExoneracion();
+
             Usuario usuario = null;
             if (strUsuario.ToUpper() == "ADMIN" || strUsuario.ToUpper() == "CONTADOR")
             {
@@ -1414,18 +1414,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoTipoProducto(string strUsuario)
+        IList<LlaveDescripcion> ObtenerListadoTipoProducto(string strUsuario)
         {
             var tiposProducto = strUsuario.ToUpper() == "ADMIN" ? new int[] { 1, 2, 3, 4, 5 } : new int[] { 1, 2, 3 };
             return TipoDeProducto.ObtenerListado().Where(x => tiposProducto.Contains(x.Id)).ToList();
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoTipoExoneracion()
+        IList<LlaveDescripcion> ObtenerListadoTipoExoneracion()
         {
             return TipoDeExoneracion.ObtenerListado();
         }
 
-        public IList<LlaveDescripcionValor> ObtenerListadoTipoImpuesto()
+        IList<LlaveDescripcionValor> ObtenerListadoTipoImpuesto()
         {
             return TipoDeImpuesto.ObtenerListado();
         }
@@ -1764,17 +1764,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoCondicionVenta()
+        IList<LlaveDescripcion> ObtenerListadoCondicionVenta()
         {
             return CondicionDeVenta.ObtenerListado();
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoFormaPagoCliente()
+        IList<LlaveDescripcion> ObtenerListadoFormaPagoCliente()
         {
             return FormaDePago.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.Id)).ToList();
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoFormaPagoEmpresa()
+        IList<LlaveDescripcion> ObtenerListadoFormaPagoEmpresa()
         {
             return FormaDePago.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.Id)).ToList();
         }
@@ -1887,7 +1887,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoTipoMoneda()
+        IList<LlaveDescripcion> ObtenerListadoTipoMoneda()
         {
             return TipoDeMoneda.ObtenerListado();
         }

@@ -47,5 +47,13 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public List<ReportePorEmpresa> ReportePorEmpresa { get; set; }
         public List<RolePorEmpresa> RolePorEmpresa { get; set; }
         public List<SucursalPorEmpresa> SucursalPorEmpresa { get; set; }
+        public IList<LlaveDescripcion> ListadoTipoIdentificacion { get; set; }
+        public IList<LlaveDescripcion> ListadoFormaPagoCliente { get; set; }
+        public IList<LlaveDescripcion> ListadoFormaPagoEmpresa { get; set; }
+        public IList<LlaveDescripcion> ListadoTipoProducto { get; set; }
+        public IList<LlaveDescripcionValor> ListadoTipoImpuesto { get; set; }
+        public IList<LlaveDescripcion> ListadoTipoMoneda { get; set; }
+        public IList<LlaveDescripcion> ListadoCondicionVenta { get; set; }
+        public IList<LlaveDescripcion> ListadoTipoExoneracion { get; set; }
     }
 }

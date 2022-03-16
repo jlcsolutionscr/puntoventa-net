@@ -647,15 +647,18 @@ Public Class FrmPrincipal
         empresaGlobal = empresa
         equipoGlobal = empresa.EquipoRegistrado
         decTipoCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(usuarioGlobal.Token)
-        listaTipoIdentificacion = Await Puntoventa.ObtenerListadoTipoIdentificacion(usuarioGlobal.Token)
-        listaFormaPagoCliente = Await Puntoventa.ObtenerListadoFormaPagoCliente(usuarioGlobal.Token)
-        listaFormaPagoEmpresa = Await Puntoventa.ObtenerListadoFormaPagoEmpresa(usuarioGlobal.Token)
-        listaTipoProducto = Await Puntoventa.ObtenerListadoTipoProducto(usuarioGlobal.CodigoUsuario, usuarioGlobal.Token)
-        listaTipoImpuesto = Await Puntoventa.ObtenerListadoTipoImpuesto(usuarioGlobal.Token)
-        listaTipoMoneda = Await Puntoventa.ObtenerListadoTipoMoneda(usuarioGlobal.Token)
-        listaCondicionVenta = Await Puntoventa.ObtenerListadoCondicionVenta(usuarioGlobal.Token)
-        listaTipoExoneracion = Await Puntoventa.ObtenerListadoTipoExoneracion(usuarioGlobal.Token)
-        listaSucursales = Await Puntoventa.ObtenerListadoSucursales(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
+        listaTipoIdentificacion = empresa.ListadoTipoIdentificacion
+        listaFormaPagoCliente = empresa.ListadoFormaPagoCliente
+        listaFormaPagoEmpresa = empresa.ListadoFormaPagoEmpresa
+        listaTipoProducto = empresa.ListadoTipoProducto
+        listaTipoImpuesto = empresa.ListadoTipoImpuesto
+        listaTipoMoneda = empresa.ListadoTipoMoneda
+        listaCondicionVenta = empresa.ListadoCondicionVenta
+        listaTipoExoneracion = empresa.ListadoTipoExoneracion
+        listaSucursales = New List(Of LlaveDescripcion)
+        For Each sucursal As SucursalPorEmpresa In empresa.SucursalPorEmpresa
+            listaSucursales.Add(New LlaveDescripcion(sucursal.IdSucursal, sucursal.NombreSucursal))
+        Next
         If empresaGlobal.AutoCompletaProducto Then
             Dim intTotalRegistros As Integer = Await Puntoventa.ObtenerTotalListaProductos(empresa.IdEmpresa, equipoGlobal.IdSucursal, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
             listaProductos = Await Puntoventa.ObtenerListadoProductos(empresa.IdEmpresa, equipoGlobal.IdSucursal, 1, intTotalRegistros, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
