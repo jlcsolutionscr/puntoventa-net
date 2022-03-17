@@ -33,8 +33,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
             configuracionGeneral = new ConfiguracionGeneral
             (
-                configuration.GetSection("appSettings").GetSection("strConsultaIEURL").Value,
-                configuration.GetSection("appSettings").GetSection("strSoapOperation").Value,
+                configuration.GetSection("appSettings").GetSection("strConsultaTipoCambioDolarURL").Value,
+                configuration.GetSection("appSettings").GetSection("strConsultaContribuyenteURL").Value,
                 configuration.GetSection("appSettings").GetSection("strServicioComprobantesURL").Value,
                 configuration.GetSection("appSettings").GetSection("strClientId").Value,
                 configuration.GetSection("appSettings").GetSection("strServicioTokenURL").Value,

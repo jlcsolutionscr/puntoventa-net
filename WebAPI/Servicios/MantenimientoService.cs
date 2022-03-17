@@ -4,6 +4,7 @@ using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.Common.Seguridad;
 using LeandroSoftware.ServicioWeb.Contexto;
 using System.Globalization;
+using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore;
 using LeandroSoftware.ServicioWeb.Parametros;
 using LeandroSoftware.ServicioWeb.Utilitario;
@@ -120,7 +121,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion);
         void ValidarRegistroAutenticacion(string strToken, int intRole);
         void EliminarRegistroAutenticacionInvalidos();
-        decimal ObtenerTipoCambioVenta(string strServicioURL, string strSoapOperation, DateTime fechaConsulta);
+        decimal ObtenerTipoCambioVenta(string strServicioURL, DateTime fechaConsulta);
+        List<LlaveDescripcion> ObtenerListadoActividadEconomica(string strServicioURL, string strIdentificacion);
     }
 
     public class MantenimientoService : IMantenimientoService
@@ -403,7 +405,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         private Empresa ObtenerEmpresaPorUsuario(string strUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
         {
-            Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+            Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
             empresa.ListadoTipoIdentificacion = ObtenerListadoTipoIdentificacion();
             empresa.ListadoFormaPagoCliente = ObtenerListadoFormaPagoCliente();
             empresa.ListadoFormaPagoEmpresa = ObtenerListadoFormaPagoEmpresa();
@@ -647,11 +649,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     throw new BusinessException(ex.Message);
                 }
-                Empresa noTracking = dbContext.EmpresaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+                Empresa noTracking = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
                 empresa.Barrio = null;
                 if (noTracking != null && noTracking.Logotipo != null) empresa.Logotipo = noTracking.Logotipo;
                 if (empresa.Logotipo == null) empresa.Logotipo = new byte[0];
+                List<ActividadEconomicaEmpresa> listadoDetalle = empresa.ActividadEconomicaEmpresa.ToList();
+                empresa.ActividadEconomicaEmpresa = null;
+                foreach (ActividadEconomicaEmpresa detalle in noTracking.ActividadEconomicaEmpresa)
+                    dbContext.NotificarEliminacion(detalle);
                 dbContext.NotificarModificacion(empresa);
+                foreach (ActividadEconomicaEmpresa detalle in listadoDetalle)
+                    dbContext.ActividadEconomicaEmpresaRepository.Add(detalle);
                 dbContext.Commit();
             }
             catch (BusinessException ex)
@@ -2408,7 +2416,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public decimal ObtenerTipoCambioVenta(string strServicioURL, string strSoapOperation, DateTime fechaConsulta)
+        public decimal ObtenerTipoCambioVenta(string strServicioURL, DateTime fechaConsulta)
         {
             try
             {
@@ -2417,7 +2425,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
                 if (tipoDeCambio == null)
                 {
-                    decimal decTipoDeCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(strServicioURL, strSoapOperation, fechaConsulta);
+                    decimal decTipoDeCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(strServicioURL, fechaConsulta);
                     tipoDeCambio = new TipoDeCambioDolar
                     {
                         FechaTipoCambio = fechaConsulta.ToString("dd/MM/yyyy"),
@@ -2435,7 +2443,29 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 _logger.LogError("Error al obtener el tipo de cambio de venta: ", ex);
-                throw ex;
+                throw new Exception("Se produjo un error consultando el tipo de cambio de venta del dolar para la fecha actual. Por favor consulte con su proveedor.");
+            }
+        }
+
+        public List<LlaveDescripcion> ObtenerListadoActividadEconomica(string strServicioURL, string strIdentificacion)
+        {
+            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
+            try
+            {
+                string strInformacionContribuyente = ComprobanteElectronicoService.ObtenerInformacionContribuyente(strServicioURL, strIdentificacion);
+                JObject datosJO = JObject.Parse(strInformacionContribuyente);
+                if (datosJO.Property("actividades") == null) throw new Exception("La respuesta del servicio de consulta de informacion del contribuyente no posee una entrada para 'actividades'");
+                JArray actividades = JArray.Parse(datosJO.Property("actividades").Value.ToString());
+                foreach (JObject item in actividades)
+                {
+                    listado.Add(new LlaveDescripcion(int.Parse(item.Property("codigo").Value.ToString()), item.Property("descripcion").Value.ToString()));
+                }
+                return listado;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error al consultar el listado de actividades económicas del contribuyente: ", ex);
+                throw new Exception("Se produjo un error consultando el listado de actividades económicas del contribuyente. Por favor consulte con su proveedor.");
             }
         }
     }

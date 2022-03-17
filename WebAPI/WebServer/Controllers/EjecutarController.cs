@@ -84,15 +84,15 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
             configuracionGeneral = new ConfiguracionGeneral
             (
-                configuration.GetSection("appSettings").GetSection("strConsultaIEURL").Value,
-                configuration.GetSection("appSettings").GetSection("strSoapOperation").Value,
+                configuration.GetSection("appSettings").GetSection("strConsultaTipoCambioDolarURL").Value,
+                configuration.GetSection("appSettings").GetSection("strConsultaContribuyenteURL").Value,
                 configuration.GetSection("appSettings").GetSection("strServicioComprobantesURL").Value,
                 configuration.GetSection("appSettings").GetSection("strClientId").Value,
                 configuration.GetSection("appSettings").GetSection("strServicioTokenURL").Value,
                 configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
                 configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
             );
-            if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaIndicadoresEconomicosURL, configuracionGeneral.OperacionSoap, DateTime.Now);
+            if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaTipoDeCambioDolarURL, DateTime.Now);
         }
 
 

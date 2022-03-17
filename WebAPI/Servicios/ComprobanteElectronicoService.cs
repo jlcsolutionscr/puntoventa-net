@@ -105,39 +105,44 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return objToken;
         }
 
-        public static decimal ObtenerTipoCambioVenta(string strServicioURL, string strSoapOperation, DateTime fechaConsulta)
+        public static decimal ObtenerTipoCambioVenta(string strServicioURL, DateTime fechaConsulta)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("Indicador", "318"),
-                new KeyValuePair<string, string>("FechaInicio", fechaConsulta.ToString("dd/MM/yyyy")),
-                new KeyValuePair<string, string>("FechaFinal", fechaConsulta.ToString("dd/MM/yyyy")),
-                new KeyValuePair<string, string>("Nombre", "System"),
-                new KeyValuePair<string, string>("SubNiveles", "N"),
-                new KeyValuePair<string, string>("CorreoElectronico", "jason.lopez.cordoba@hotmail.com"),
-                new KeyValuePair<string, string>("Token", "42OJOAIBO0")
-            });
-            HttpResponseMessage httpResponse = httpClient.PostAsync(strServicioURL + "/ObtenerIndicadoresEconomicos", formContent).Result;
+            HttpResponseMessage httpResponse = httpClient.GetAsync(strServicioURL).Result;
             if (httpResponse.StatusCode == HttpStatusCode.OK)
             {
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(httpResponse.Content.ReadAsStreamAsync().Result);
-                string strTipoCambioDolar = xmlDoc.GetElementsByTagName("INGC011_CAT_INDICADORECONOMIC").Item(0).ChildNodes.Item(2).InnerText;
-                if (strTipoCambioDolar == "")
-                    throw new Exception("El tipo de cambio no puede ser un valor nulo");
-                else
+                string strRespuesta = httpResponse.Content.ReadAsStringAsync().Result;
+                if (strRespuesta == "") throw new Exception("No fue posible obtener la respuesta del servicio de consulta del tipo de cambio del dolar");
+                JObject datosJO = JObject.Parse(strRespuesta);
+                if (datosJO.Property("venta") == null) throw new Exception("La respuesta del servicio de consulta del tipo de cambio del dolar no posee una entrada para el valor de 'Venta'");
+                JObject venta = JObject.Parse(datosJO.Property("venta").Value.ToString());
+                if (venta.Property("valor") == null) throw new Exception("La respuesta del servicio de consulta del tipo de cambio del dolar no posee una entrada para el campo 'Valor de venta'");
+                try
                 {
-                    try
-                    {
-                        return Math.Round(decimal.Parse(strTipoCambioDolar, CultureInfo.InvariantCulture), 2, MidpointRounding.AwayFromZero);
-                    }
-                    catch (Exception ex)
-                    {
-                        string errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                        throw new Exception("Error parseando el tipo de cambio: " + strTipoCambioDolar + ": " + errorMessage);
-                    }
+                    return Math.Round(decimal.Parse(venta.Property("valor").Value.ToString(), CultureInfo.InvariantCulture), 2, MidpointRounding.AwayFromZero);
                 }
+                catch (Exception ex)
+                {
+                    string errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                    throw new Exception("Error parseando el tipo de cambio: " + venta.Property("valor").Value.ToString() + ": " + errorMessage);
+                }
+            }
+            else
+            {
+                string responseContent = httpResponse.Content.ReadAsStringAsync().Result;
+                throw new Exception(responseContent);
+            }
+        }
+
+        public static string ObtenerInformacionContribuyente(string strServicioURL, string strIdentificacion)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            HttpResponseMessage httpResponse = httpClient.GetAsync(strServicioURL + "?identificacion=" + strIdentificacion).Result;
+            if (httpResponse.StatusCode == HttpStatusCode.OK)
+            {
+                string strRespuesta = httpResponse.Content.ReadAsStringAsync().Result;
+                if (strRespuesta == "") throw new Exception("No fue posible obtener la respuesta del servicio de consulta para la información del contribuyente");
+                return strRespuesta;
             }
             else
             {
@@ -149,11 +154,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public static DocumentoElectronico GenerarFacturaCompraElectronica(FacturaCompra facturaCompra, Empresa empresa, ILeandroContext dbContext, decimal decTipoCambioDolar)
         {
             string strCorreoNotificacion = empresa.CorreoNotificacion;
-            if (empresa.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (facturaCompra.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
             FacturaElectronicaCompra facturaElectronica = new FacturaElectronicaCompra
             {
                 Clave = "",
-                CodigoActividad = empresa.CodigoActividad,
+                CodigoActividad = facturaCompra.CodigoActividad.ToString(),
                 NumeroConsecutivo = "",
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica()
             };
@@ -409,11 +414,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (empresa.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
             FacturaElectronica facturaElectronica = new FacturaElectronica
             {
                 Clave = "",
-                CodigoActividad = empresa.CodigoActividad,
+                CodigoActividad = factura.CodigoActividad.ToString(),
                 NumeroConsecutivo = "",
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica()
             };
@@ -713,11 +718,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (empresa.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
             TiqueteElectronico tiqueteElectronico = new TiqueteElectronico
             {
                 Clave = "",
-                CodigoActividad = empresa.CodigoActividad,
+                CodigoActividad = factura.CodigoActividad.ToString(),
                 NumeroConsecutivo = "",
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica()
             };
@@ -967,11 +972,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (empresa.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
             NotaCreditoElectronica notaCreditoElectronica = new NotaCreditoElectronica
             {
                 Clave = "",
-                CodigoActividad = empresa.CodigoActividad,
+                CodigoActividad = factura.CodigoActividad.ToString(),
                 NumeroConsecutivo = "",
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica()
             };
@@ -1283,11 +1288,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (empresa.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
             NotaCreditoElectronica notaCreditoElectronica = new NotaCreditoElectronica
             {
                 Clave = "",
-                CodigoActividad = empresa.CodigoActividad,
+                CodigoActividad = factura.CodigoActividad.ToString(),
                 NumeroConsecutivo = "",
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica()
             };
@@ -1561,11 +1566,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (empresa.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
             NotaDebitoElectronica NotaDebitoElectronica = new NotaDebitoElectronica
             {
                 Clave = "",
-                CodigoActividad = empresa.CodigoActividad,
+                CodigoActividad = factura.CodigoActividad.ToString(),
                 NumeroConsecutivo = "",
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica()
             };

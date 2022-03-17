@@ -2,10 +2,10 @@
 {
     public class ConfiguracionGeneral
     {
-        public ConfiguracionGeneral(string strConsultaIndicadoresEconomicosURL, string strOperacionSoap, string strComprobantesElectronicosURL, string strClientId, string strServicioTokenURL, string strComprobantesCallbackURL, string strCorreoNotificacionErrores)
+        public ConfiguracionGeneral(string strConsultaTipoDeCambioDolarURL, string strConsultaInformacionContribuyenteURL, string strComprobantesElectronicosURL, string strClientId, string strServicioTokenURL, string strComprobantesCallbackURL, string strCorreoNotificacionErrores)
         {
-            ConsultaIndicadoresEconomicosURL = strConsultaIndicadoresEconomicosURL;
-            OperacionSoap = strOperacionSoap;
+            ConsultaTipoDeCambioDolarURL = strConsultaTipoDeCambioDolarURL;
+            ConsultaInformacionContribuyenteURL = strConsultaInformacionContribuyenteURL;
             ComprobantesElectronicosURL = strComprobantesElectronicosURL;
             ClientId = strClientId;
             ServicioTokenURL = strServicioTokenURL;
@@ -13,8 +13,8 @@
             CorreoNotificacionErrores = strCorreoNotificacionErrores;
         }
 
-        public string ConsultaIndicadoresEconomicosURL { get; set; }
-        public string OperacionSoap { get; set; }
+        public string ConsultaTipoDeCambioDolarURL { get; set; }
+        public string ConsultaInformacionContribuyenteURL { get; set; }
         public string ComprobantesElectronicosURL { get; set; }
         public string ClientId { get; set; }
         public string ServicioTokenURL { get; set; }

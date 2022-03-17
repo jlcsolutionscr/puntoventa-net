@@ -34,9 +34,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _servicioFacturacion = servicioFacturacion;
             _servicioCorreo = servicioCorreo;
             _strCorreoNotificacionErrores = configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value;
-            string strConsultaIndicadoresEconomicosURL = configuration.GetSection("appSettings").GetSection("strConsultaIEURL").Value;
-            string strOperacionSoap = configuration.GetSection("appSettings").GetSection("strSoapOperation").Value;
-            if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(strConsultaIndicadoresEconomicosURL, strOperacionSoap, DateTime.Now);
+            string strConsultaTipoDeCambioDolarURL = configuration.GetSection("appSettings").GetSection("strConsultaTipoCambioDolarURL").Value;
+            if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(strConsultaTipoDeCambioDolarURL, DateTime.Now);
         }
 
         [HttpGet("enviarhistoricoerrores")]

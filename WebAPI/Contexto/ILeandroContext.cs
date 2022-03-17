@@ -6,6 +6,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
 {
     public interface ILeandroContext : IDisposable
     {
+        DbSet<ActividadEconomicaEmpresa> ActividadEconomicaEmpresaRepository { get; set; }
         DbSet<Asiento> AsientoRepository { get; set; }
         DbSet<AjusteInventario> AjusteInventarioRepository { get; set; }
         DbSet<Apartado> ApartadoRepository { get; set; }

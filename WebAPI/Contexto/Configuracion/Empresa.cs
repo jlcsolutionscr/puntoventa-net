@@ -26,6 +26,7 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
             builder.HasMany(p => p.ReportePorEmpresa).WithOne().HasForeignKey(p => p.IdEmpresa);
             builder.HasMany(p => p.RolePorEmpresa).WithOne().HasForeignKey(p => p.IdEmpresa);
             builder.HasMany(p => p.SucursalPorEmpresa).WithOne().HasForeignKey(p => p.IdEmpresa);
+            builder.HasMany(p => p.ActividadEconomicaEmpresa).WithOne().HasForeignKey(p => p.IdEmpresa);
         }
     }
 }

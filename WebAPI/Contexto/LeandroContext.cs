@@ -18,6 +18,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
             Database.SetCommandTimeout(180);
         }
 
+        public DbSet<ActividadEconomicaEmpresa> ActividadEconomicaEmpresaRepository { get; set; }
         public DbSet<Asiento> AsientoRepository { get; set; }
         public DbSet<AjusteInventario> AjusteInventarioRepository { get; set; }
         public DbSet<Apartado> ApartadoRepository { get; set; }

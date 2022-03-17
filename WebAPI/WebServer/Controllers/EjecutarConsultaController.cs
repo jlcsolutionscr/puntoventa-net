@@ -110,15 +110,15 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
             configuracionGeneral = new ConfiguracionGeneral
             (
-                configuration.GetSection("appSettings").GetSection("strConsultaIEURL").Value,
-                configuration.GetSection("appSettings").GetSection("strSoapOperation").Value,
+                configuration.GetSection("appSettings").GetSection("strConsultaTipoCambioDolarURL").Value,
+                configuration.GetSection("appSettings").GetSection("strConsultaContribuyenteURL").Value,
                 configuration.GetSection("appSettings").GetSection("strServicioComprobantesURL").Value,
                 configuration.GetSection("appSettings").GetSection("strClientId").Value,
                 configuration.GetSection("appSettings").GetSection("strServicioTokenURL").Value,
                 configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
                 configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
             );
-            if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaIndicadoresEconomicosURL, configuracionGeneral.OperacionSoap, DateTime.Now);
+            if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaTipoDeCambioDolarURL, DateTime.Now);
         }
 
         [HttpPost("ejecutarconsulta")]
@@ -147,6 +147,12 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "ObtenerTipoCambioDolar":
                     strRespuesta = decTipoCambioDolar.ToString();
+                    break;
+                case "ObtenerListadoActividadEconomica":
+                    strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
+                    IList<LlaveDescripcion> listadoActividades = _servicioMantenimiento.ObtenerListadoActividadEconomica(configuracionGeneral.ConsultaInformacionContribuyenteURL, strIdentificacion);
+                    if (listadoActividades.Count > 0)
+                        strRespuesta = JsonConvert.SerializeObject(listadoActividades);
                     break;
                 case "ObtenerListadoRolesPorEmpresa":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

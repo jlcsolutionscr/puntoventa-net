@@ -11,7 +11,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string NombreComercial { get; set; }
         public int IdTipoIdentificacion { get; set; }
         public string Identificacion { get; set; }
-        public string CodigoActividad { get; set; }
         public int IdProvincia { get; set; }
         public int IdCanton { get; set; }
         public int IdDistrito { get; set; }
@@ -46,6 +45,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public PlanFacturacion PlanFacturacion { get; set; }
         public List<ReportePorEmpresa> ReportePorEmpresa { get; set; }
         public List<RolePorEmpresa> RolePorEmpresa { get; set; }
+        public List<ActividadEconomicaEmpresa> ActividadEconomicaEmpresa { get; set; }
         public List<SucursalPorEmpresa> SucursalPorEmpresa { get; set; }
         public IList<LlaveDescripcion> ListadoTipoIdentificacion { get; set; }
         public IList<LlaveDescripcion> ListadoFormaPagoCliente { get; set; }
