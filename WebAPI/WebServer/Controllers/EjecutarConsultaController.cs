@@ -148,11 +148,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "ObtenerTipoCambioDolar":
                     strRespuesta = decTipoCambioDolar.ToString();
                     break;
-                case "ObtenerListadoTipodePrecio":
-                    IList<LlaveDescripcion> listadoTipodePrecio = _servicioMantenimiento.ObtenerListadoTipodePrecio();
-                    if (listadoTipodePrecio.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoTipodePrecio);
-                    break;
                 case "ObtenerListadoRolesPorEmpresa":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     IList<LlaveDescripcion> listadoRoles = _servicioMantenimiento.ObtenerListadoRolePorEmpresa(intIdEmpresa, false);

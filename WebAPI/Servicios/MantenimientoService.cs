@@ -110,7 +110,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia);
         IList<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton);
         IList<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito);
-        IList<LlaveDescripcion> ObtenerListadoTipodePrecio();
         int ObtenerTotalListaClasificacionProducto(string strDescripcion);
         IList<ClasificacionProducto> ObtenerListadoClasificacionProducto(int numPagina, int cantRec, string strDescripcion);
         ClasificacionProducto ObtenerClasificacionProducto(string strCodigo);
@@ -413,6 +412,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             empresa.ListadoTipoMoneda = ObtenerListadoTipoMoneda();
             empresa.ListadoCondicionVenta = ObtenerListadoCondicionVenta();
             empresa.ListadoTipoExoneracion = ObtenerListadoTipoExoneracion();
+            empresa.ListadoTipoPrecio = ObtenerListadoTipodePrecio();
 
             Usuario usuario = null;
             if (strUsuario.ToUpper() == "ADMIN" || strUsuario.ToUpper() == "CONTADOR")
@@ -2172,7 +2172,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoTipodePrecio()
+        private IList<LlaveDescripcion> ObtenerListadoTipodePrecio()
         {
             try
             {

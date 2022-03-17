@@ -55,5 +55,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public IList<LlaveDescripcion> ListadoTipoMoneda { get; set; }
         public IList<LlaveDescripcion> ListadoCondicionVenta { get; set; }
         public IList<LlaveDescripcion> ListadoTipoExoneracion { get; set; }
+        public IList<LlaveDescripcion> ListadoTipoPrecio { get; set; }
     }
 }
