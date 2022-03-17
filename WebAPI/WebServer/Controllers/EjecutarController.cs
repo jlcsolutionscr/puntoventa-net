@@ -57,6 +57,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static string strFechaInicial;
         private static string strFechaFinal;
         private static byte[] bytLogo;
+        private static decimal decTipoCambioDolar = 0;
 
         public EjecutarController(
             IConfiguration configuration,
@@ -91,6 +92,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
                 configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
             );
+            if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaIndicadoresEconomicosURL, configuracionGeneral.OperacionSoap, DateTime.Now);
         }
 
 
@@ -108,7 +110,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
             else
             {
-                throw new Exception("El mensaje no contiene la informaci�n suficiente para ser procesado.");
+                throw new Exception("El mensaje no contiene la información suficiente para ser procesado.");
             }
             if (datosJO.Property("Entidad") != null)
             {
@@ -120,7 +122,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
             else
             {
-                throw new Exception("El mensaje no contiene la informaci�n suficiente para ser procesado.");
+                throw new Exception("El mensaje no contiene la información suficiente para ser procesado.");
             }
             switch (strNombreMetodo)
             {
@@ -501,21 +503,21 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                         case "Detalle de egresos":
                             _servicioReportes.EnviarReporteDetalleEgresos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
-                        case "Documentos electr�nicos emitidos":
+                        case "Documentos electrónicos emitidos":
                             _servicioReportes.EnviarReporteDocumentosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
-                        case "Documentos electr�nicos recibidos":
+                        case "Documentos electrónicos recibidos":
                             _servicioReportes.EnviarReporteDocumentosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
-                        case "Resumen de comprobantes electr�nicos":
+                        case "Resumen de comprobantes electrónicos":
                             _servicioReportes.EnviarReporteResumenMovimientosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, strFormatoReporte);
                             break;
                         default:
-                            throw new Exception("El m�todo solicitado: '" + strNombreReporte + "' no ha sido implementado, contacte con su proveedor");
+                            throw new Exception("El mótodo solicitado: '" + strNombreReporte + "' no ha sido implementado, contacte con su proveedor");
                     }
                     break;
                 default:
-                    throw new Exception("El m�todo solicitado no ha sido implementado: " + strNombreMetodo);
+                    throw new Exception("El mótodo solicitado no ha sido implementado: " + strNombreMetodo);
             }
         }
     }

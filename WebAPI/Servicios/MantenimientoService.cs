@@ -121,7 +121,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion);
         void ValidarRegistroAutenticacion(string strToken, int intRole);
         void EliminarRegistroAutenticacionInvalidos();
-
         decimal ObtenerTipoCambioVenta(string strServicioURL, string strSoapOperation, DateTime fechaConsulta);
     }
 

@@ -118,6 +118,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
                 configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
             );
+            if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaIndicadoresEconomicosURL, configuracionGeneral.OperacionSoap, DateTime.Now);
         }
 
         [HttpPost("ejecutarconsulta")]
@@ -131,7 +132,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             if (datosJO.Property("NombreMetodo") != null)
                 strNombreMetodo = datosJO.Property("NombreMetodo").Value.ToString();
             else
-                throw new Exception("El mensaje no contiene la informaci�n suficiente para ser procesado.");
+                throw new Exception("El mensaje no contiene la información suficiente para ser procesado.");
             if (datosJO.Property("Entidad") != null)
                 strEntidad = datosJO.Property("Entidad").Value.ToString();
             else if (datosJO.Property("Parametros") != null)
@@ -145,8 +146,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     strRespuesta = JsonConvert.SerializeObject(strIdCierre);
                     break;
                 case "ObtenerTipoCambioDolar":
-                    if (decTipoCambioDolar == 0)
-                        decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaIndicadoresEconomicosURL, configuracionGeneral.OperacionSoap, DateTime.Now);
                     strRespuesta = decTipoCambioDolar.ToString();
                     break;
                 case "ObtenerListadoTipodePrecio":
@@ -1409,17 +1408,17 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                             if (listado5.Count > 0)
                                 strRespuesta = JsonConvert.SerializeObject(listado5);
                             break;
-                        case "Documentos electr�nicos emitidos":
+                        case "Documentos electrónicos emitidos":
                             List<ReporteDocumentoElectronico> listado6 = _servicioReportes.ObtenerReporteDocumentosElectronicosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                             if (listado6.Count > 0)
                                 strRespuesta = JsonConvert.SerializeObject(listado6);
                             break;
-                        case "Documentos electr�nicos recibidos":
+                        case "Documentos electrónicos recibidos":
                             List<ReporteDocumentoElectronico> listado7 = _servicioReportes.ObtenerReporteDocumentosElectronicosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                             if (listado7.Count > 0)
                                 strRespuesta = JsonConvert.SerializeObject(listado7);
                             break;
-                        case "Resumen de comprobantes electr�nicos":
+                        case "Resumen de comprobantes electrónicos":
                             List<ReporteResumenMovimiento> listado8 = _servicioReportes.ObtenerReporteResumenDocumentosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                             if (listado8.Count > 0)
                                 strRespuesta = JsonConvert.SerializeObject(listado8);
@@ -1429,7 +1428,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     }
                     break;
                 default:
-                    throw new Exception("El m�todo solicitado no ha sido implementado: " + strNombreMetodo);
+                    throw new Exception("El mótodo solicitado no ha sido implementado: " + strNombreMetodo);
             }
             return strRespuesta;
         }

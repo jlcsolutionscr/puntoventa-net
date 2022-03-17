@@ -19,6 +19,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static Empresa? empresa;
         private static int intIdEmpresa;
         private static int intIdSucursal;
+        private static decimal decTipoCambioDolar = 0;
 
         public PuntoventaController(
             IConfiguration configuration,
@@ -33,6 +34,9 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _servicioFacturacion = servicioFacturacion;
             _servicioCorreo = servicioCorreo;
             _strCorreoNotificacionErrores = configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value;
+            string strConsultaIndicadoresEconomicosURL = configuration.GetSection("appSettings").GetSection("strConsultaIEURL").Value;
+            string strOperacionSoap = configuration.GetSection("appSettings").GetSection("strSoapOperation").Value;
+            if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(strConsultaIndicadoresEconomicosURL, strOperacionSoap, DateTime.Now);
         }
 
         [HttpGet("enviarhistoricoerrores")]
