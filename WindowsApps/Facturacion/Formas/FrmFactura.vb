@@ -509,6 +509,9 @@ Public Class FrmFactura
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
         cboTipoMoneda.DataSource = FrmPrincipal.ObtenerListadoTipoMoneda()
+        cboActividadEconomica.ValueMember = "Id"
+        cboActividadEconomica.DisplayMember = "Descripcion"
+        cboActividadEconomica.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
     End Sub
 
     Private Async Function CargarListaBancoAdquiriente() As Task
@@ -724,13 +727,11 @@ Public Class FrmFactura
         txtReferencia.Text = ""
         txtObservaciones.Text = ""
         cboTipoMoneda.Enabled = True
+        cboActividadEconomica.SelectedIndex = 0
         cboCondicionVenta.Enabled = False
         cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
         txtPlazoCredito.Text = ""
-        txtTipoExoneracion.Text = ""
-        txtNumDocExoneracion.Text = ""
-        txtFechaExoneracion.Text = ""
-        txtPorcentajeExoneracion.Text = ""
+        txtPorcentajeExoneracion.Text = "0"
         dtbDetalleFactura.Rows.Clear()
         grdDetalleFactura.Refresh()
         consecDetalle = 0
@@ -859,14 +860,10 @@ Public Class FrmFactura
                     apartado = Await Puntoventa.ObtenerApartado(factura.IdApartado, FrmPrincipal.usuarioGlobal.Token)
                     txtReferencia.Text = "Apartado nro. " & apartado.ConsecApartado
                 End If
+                cboActividadEconomica.SelectedValue = factura.CodigoActividad
                 cboCondicionVenta.SelectedValue = factura.IdCondicionVenta
                 txtPlazoCredito.Text = factura.PlazoCredito
-                If factura.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = FrmPrincipal.ObtenerDescripcionTipoExoneracion(factura.IdTipoExoneracion)
-                    txtNumDocExoneracion.Text = factura.NumDocExoneracion
-                    txtFechaExoneracion.Text = factura.FechaEmisionDoc
-                    txtPorcentajeExoneracion.Text = factura.PorcentajeExoneracion
-                End If
+                txtPorcentajeExoneracion.Text = factura.PorcentajeExoneracion
                 vendedor = factura.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 decMontoAdelanto = factura.MontoAdelanto
@@ -920,15 +917,11 @@ Public Class FrmFactura
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtTelefono.Text = ordenServicio.Telefono
                 txtObservaciones.Text = ordenServicio.OtrosDetalles
+                cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
-                cboCondicionVenta.Enabled = cliente.IdCliente > 1
+                cboCondicionVenta.Enabled = cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
-                If cliente.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = FrmPrincipal.ObtenerDescripcionTipoExoneracion(cliente.IdTipoExoneracion)
-                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
-                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
-                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
-                End If
+                txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
                     vendedor = ordenServicio.Vendedor
                     txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
@@ -989,15 +982,11 @@ Public Class FrmFactura
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtTelefono.Text = apartado.Telefono
                 txtObservaciones.Text = apartado.TextoAdicional
+                cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
-                cboCondicionVenta.Enabled = cliente.IdCliente > 1
+                cboCondicionVenta.Enabled = cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
-                If cliente.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = FrmPrincipal.ObtenerDescripcionTipoExoneracion(cliente.IdTipoExoneracion)
-                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
-                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
-                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
-                End If
+                txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
                     vendedor = apartado.Vendedor
                     txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
@@ -1058,15 +1047,11 @@ Public Class FrmFactura
                 txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
                 txtTelefono.Text = proforma.Telefono
                 txtObservaciones.Text = proforma.TextoAdicional
+                cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
-                cboCondicionVenta.Enabled = cliente.IdCliente > 1
+                cboCondicionVenta.Enabled = cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
-                If cliente.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = FrmPrincipal.ObtenerDescripcionTipoExoneracion(cliente.IdTipoExoneracion)
-                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
-                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
-                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
-                End If
+                txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
                     vendedor = proforma.Vendedor
                     txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
@@ -1136,22 +1121,12 @@ Public Class FrmFactura
                 txtNombreCliente.ReadOnly = True
                 txtTelefono.Text = cliente.Telefono
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
-                If cliente.PermiteCredito Then cboCondicionVenta.Enabled = True
+                cboCondicionVenta.Enabled = cliente.PermiteCredito
                 If cliente.Vendedor IsNot Nothing Then
                     vendedor = cliente.Vendedor
                     txtVendedor.Text = vendedor.Nombre
                 End If
-                If cliente.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = FrmPrincipal.ObtenerDescripcionTipoExoneracion(cliente.IdTipoExoneracion)
-                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
-                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
-                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
-                Else
-                    txtTipoExoneracion.Text = ""
-                    txtNumDocExoneracion.Text = ""
-                    txtFechaExoneracion.Text = ""
-                    txtPorcentajeExoneracion.Text = ""
-                End If
+                txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 CargarTotales()
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -1229,6 +1204,7 @@ Public Class FrmFactura
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
+                .CodigoActividad = cboActividadEconomica.SelectedValue,
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
                 .Fecha = Now(),

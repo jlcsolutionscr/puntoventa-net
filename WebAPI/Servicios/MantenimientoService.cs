@@ -621,7 +621,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                Empresa empresa = dbContext.EmpresaRepository.Include("ActividadEconomicaEmpresa").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 return empresa;
             }

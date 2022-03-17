@@ -54,11 +54,7 @@ Partial Class FrmProforma
         Me.txtFecha = New System.Windows.Forms.TextBox()
         Me.Label15 = New System.Windows.Forms.Label()
         Me.txtPorcentajeExoneracion = New System.Windows.Forms.TextBox()
-        Me.txtNombreInstExoneracion = New System.Windows.Forms.TextBox()
-        Me.txtNumDocExoneracion = New System.Windows.Forms.TextBox()
-        Me.txtTipoExoneracion = New System.Windows.Forms.TextBox()
         Me.Label8 = New System.Windows.Forms.Label()
-        Me.txtFechaExoneracion = New System.Windows.Forms.TextBox()
         Me.txtPorcDesc = New System.Windows.Forms.TextBox()
         Me.Label13 = New System.Windows.Forms.Label()
         Me.txtCodigo = New System.Windows.Forms.TextBox()
@@ -388,9 +384,8 @@ Partial Class FrmProforma
         Me.txtPorcentajeExoneracion.AcceptsReturn = True
         Me.txtPorcentajeExoneracion.BackColor = System.Drawing.SystemColors.Window
         Me.txtPorcentajeExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtPorcentajeExoneracion.Enabled = False
         Me.txtPorcentajeExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(748, 124)
+        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(733, 117)
         Me.txtPorcentajeExoneracion.MaxLength = 0
         Me.txtPorcentajeExoneracion.Name = "txtPorcentajeExoneracion"
         Me.txtPorcentajeExoneracion.ReadOnly = True
@@ -399,81 +394,18 @@ Partial Class FrmProforma
         Me.txtPorcentajeExoneracion.TabIndex = 159
         Me.txtPorcentajeExoneracion.TabStop = False
         '
-        'txtNombreInstExoneracion
-        '
-        Me.txtNombreInstExoneracion.AcceptsReturn = True
-        Me.txtNombreInstExoneracion.BackColor = System.Drawing.SystemColors.Window
-        Me.txtNombreInstExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtNombreInstExoneracion.Enabled = False
-        Me.txtNombreInstExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNombreInstExoneracion.Location = New System.Drawing.Point(482, 124)
-        Me.txtNombreInstExoneracion.MaxLength = 0
-        Me.txtNombreInstExoneracion.Name = "txtNombreInstExoneracion"
-        Me.txtNombreInstExoneracion.ReadOnly = True
-        Me.txtNombreInstExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNombreInstExoneracion.Size = New System.Drawing.Size(181, 20)
-        Me.txtNombreInstExoneracion.TabIndex = 157
-        '
-        'txtNumDocExoneracion
-        '
-        Me.txtNumDocExoneracion.AcceptsReturn = True
-        Me.txtNumDocExoneracion.BackColor = System.Drawing.SystemColors.Window
-        Me.txtNumDocExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtNumDocExoneracion.Enabled = False
-        Me.txtNumDocExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNumDocExoneracion.Location = New System.Drawing.Point(374, 124)
-        Me.txtNumDocExoneracion.MaxLength = 0
-        Me.txtNumDocExoneracion.Name = "txtNumDocExoneracion"
-        Me.txtNumDocExoneracion.ReadOnly = True
-        Me.txtNumDocExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNumDocExoneracion.Size = New System.Drawing.Size(103, 20)
-        Me.txtNumDocExoneracion.TabIndex = 156
-        Me.txtNumDocExoneracion.TabStop = False
-        '
-        'txtTipoExoneracion
-        '
-        Me.txtTipoExoneracion.AcceptsReturn = True
-        Me.txtTipoExoneracion.BackColor = System.Drawing.SystemColors.Window
-        Me.txtTipoExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtTipoExoneracion.Enabled = False
-        Me.txtTipoExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTipoExoneracion.Location = New System.Drawing.Point(180, 124)
-        Me.txtTipoExoneracion.MaxLength = 0
-        Me.txtTipoExoneracion.Name = "txtTipoExoneracion"
-        Me.txtTipoExoneracion.ReadOnly = True
-        Me.txtTipoExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTipoExoneracion.Size = New System.Drawing.Size(188, 20)
-        Me.txtTipoExoneracion.TabIndex = 160
-        Me.txtTipoExoneracion.TabStop = False
-        '
         'Label8
         '
         Me.Label8.BackColor = System.Drawing.Color.Transparent
         Me.Label8.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label8.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label8.Location = New System.Drawing.Point(72, 124)
+        Me.Label8.Location = New System.Drawing.Point(605, 117)
         Me.Label8.Name = "Label8"
         Me.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label8.Size = New System.Drawing.Size(102, 19)
+        Me.Label8.Size = New System.Drawing.Size(122, 19)
         Me.Label8.TabIndex = 161
-        Me.Label8.Text = "Datos exoneración:"
+        Me.Label8.Text = "Porcentaje exoneración:"
         Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'txtFechaExoneracion
-        '
-        Me.txtFechaExoneracion.AcceptsReturn = True
-        Me.txtFechaExoneracion.BackColor = System.Drawing.SystemColors.Window
-        Me.txtFechaExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtFechaExoneracion.Enabled = False
-        Me.txtFechaExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtFechaExoneracion.Location = New System.Drawing.Point(669, 124)
-        Me.txtFechaExoneracion.MaxLength = 0
-        Me.txtFechaExoneracion.Name = "txtFechaExoneracion"
-        Me.txtFechaExoneracion.ReadOnly = True
-        Me.txtFechaExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFechaExoneracion.Size = New System.Drawing.Size(73, 20)
-        Me.txtFechaExoneracion.TabIndex = 162
-        Me.txtFechaExoneracion.TabStop = False
         '
         'txtPorcDesc
         '
@@ -953,12 +885,8 @@ Partial Class FrmProforma
         Me.Controls.Add(Me._lblLabels_7)
         Me.Controls.Add(Me._lblLabels_6)
         Me.Controls.Add(Me._lblLabels_1)
-        Me.Controls.Add(Me.txtFechaExoneracion)
         Me.Controls.Add(Me.Label8)
-        Me.Controls.Add(Me.txtTipoExoneracion)
         Me.Controls.Add(Me.txtPorcentajeExoneracion)
-        Me.Controls.Add(Me.txtNombreInstExoneracion)
-        Me.Controls.Add(Me.txtNumDocExoneracion)
         Me.Controls.Add(Me.txtFecha)
         Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.txtVendedor)
@@ -1005,11 +933,7 @@ Partial Class FrmProforma
     Public WithEvents txtFecha As TextBox
     Public WithEvents Label15 As Label
     Public WithEvents txtPorcentajeExoneracion As TextBox
-    Public WithEvents txtNombreInstExoneracion As TextBox
-    Public WithEvents txtNumDocExoneracion As TextBox
-    Public WithEvents txtTipoExoneracion As TextBox
     Public WithEvents Label8 As Label
-    Public WithEvents txtFechaExoneracion As TextBox
     Public WithEvents txtPorcDesc As TextBox
     Public WithEvents Label13 As Label
     Friend WithEvents txtCodigo As TextBox

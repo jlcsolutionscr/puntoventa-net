@@ -47,6 +47,7 @@ Public Class FrmPrincipal
     Private listaTipoExoneracion As List(Of LlaveDescripcion)
     Private listaSucursales As List(Of LlaveDescripcion)
     Private listaTipoPrecio As List(Of LlaveDescripcion)
+    Private listaActividadEconomica As List(Of LlaveDescripcion)
 #End Region
 
 #Region "Métodos"
@@ -92,6 +93,10 @@ Public Class FrmPrincipal
 
     Public Function ObtenerListadoTipoPrecio() As List(Of LlaveDescripcion)
         Return New List(Of LlaveDescripcion)(listaTipoPrecio)
+    End Function
+
+    Public Function ObtenerListadoActividadEconomica() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaActividadEconomica)
     End Function
 
     Public Function ObtenerDescripcionTipoExoneracion(intIdTipo As Integer) As String
@@ -664,6 +669,10 @@ Public Class FrmPrincipal
         listaSucursales = New List(Of LlaveDescripcion)
         For Each sucursal As SucursalPorEmpresa In empresa.SucursalPorEmpresa
             listaSucursales.Add(New LlaveDescripcion(sucursal.IdSucursal, sucursal.NombreSucursal))
+        Next
+        listaActividadEconomica = New List(Of LlaveDescripcion)
+        For Each actividad As ActividadEconomicaEmpresa In empresa.ActividadEconomicaEmpresa
+            listaActividadEconomica.Add(New LlaveDescripcion(actividad.CodigoActividad, actividad.Descripcion))
         Next
         If empresaGlobal.AutoCompletaProducto Then
             Dim intTotalRegistros As Integer = Await Puntoventa.ObtenerTotalListaProductos(empresa.IdEmpresa, equipoGlobal.IdSucursal, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
