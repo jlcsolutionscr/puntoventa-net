@@ -46,6 +46,7 @@ Public Class FrmPrincipal
     Private listaCondicionVenta As List(Of LlaveDescripcion)
     Private listaTipoExoneracion As List(Of LlaveDescripcion)
     Private listaSucursales As List(Of LlaveDescripcion)
+    Private listaTipoPrecio As List(Of LlaveDescripcion)
 #End Region
 
 #Region "Métodos"
@@ -87,6 +88,10 @@ Public Class FrmPrincipal
 
     Public Function ObtenerListadoSucursales() As List(Of LlaveDescripcion)
         Return New List(Of LlaveDescripcion)(listaSucursales)
+    End Function
+
+    Public Function ObtenerListadoTipoPrecio() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaTipoPrecio)
     End Function
 
     Public Function ObtenerDescripcionTipoExoneracion(intIdTipo As Integer) As String
@@ -655,6 +660,7 @@ Public Class FrmPrincipal
         listaTipoMoneda = empresa.ListadoTipoMoneda
         listaCondicionVenta = empresa.ListadoCondicionVenta
         listaTipoExoneracion = empresa.ListadoTipoExoneracion
+        listaTipoPrecio = empresa.ListadoTipoPrecio
         listaSucursales = New List(Of LlaveDescripcion)
         For Each sucursal As SucursalPorEmpresa In empresa.SucursalPorEmpresa
             listaSucursales.Add(New LlaveDescripcion(sucursal.IdSucursal, sucursal.NombreSucursal))

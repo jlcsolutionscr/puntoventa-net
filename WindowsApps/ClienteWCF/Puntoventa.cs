@@ -495,16 +495,6 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipodePrecio(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoTipodePrecio'}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
         public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoMoneda(string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoTipoMoneda'}";

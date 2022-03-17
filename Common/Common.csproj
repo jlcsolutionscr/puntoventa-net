@@ -5,6 +5,7 @@
     <RootNamespace>LeandroSoftware.Common</RootNamespace>
 	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 	<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+	<Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

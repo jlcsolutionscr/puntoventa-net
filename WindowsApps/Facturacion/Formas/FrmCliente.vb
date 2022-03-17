@@ -17,18 +17,18 @@ Public Class FrmCliente
         cboTipoIdentificacion.ValueMember = "Id"
         cboTipoIdentificacion.DisplayMember = "Descripcion"
         cboTipoIdentificacion.DataSource = FrmPrincipal.ObtenerListadoTipoIdentificacion()
-        cboVendedor.ValueMember = "Id"
-        cboVendedor.DisplayMember = "Descripcion"
-        cboVendedor.DataSource = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
         cboIdTipoPrecio.ValueMember = "Id"
         cboIdTipoPrecio.DisplayMember = "Descripcion"
-        cboIdTipoPrecio.DataSource = Await Puntoventa.ObtenerListadoTipodePrecio(FrmPrincipal.usuarioGlobal.Token)
+        cboIdTipoPrecio.DataSource = FrmPrincipal.ObtenerListadoTipoPrecio()
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
         cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
         cboTipoExoneracion.ValueMember = "Id"
         cboTipoExoneracion.DisplayMember = "Descripcion"
         cboTipoExoneracion.DataSource = FrmPrincipal.ObtenerListadoTipoExoneracion()
+        cboVendedor.ValueMember = "Id"
+        cboVendedor.DisplayMember = "Descripcion"
+        cboVendedor.DataSource = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
     End Function
 #End Region
 
