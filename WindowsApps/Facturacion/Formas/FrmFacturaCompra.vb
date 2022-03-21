@@ -183,6 +183,9 @@ Public Class FrmFacturaCompra
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
         cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
+        cboActividadEconomica.ValueMember = "Id"
+        cboActividadEconomica.DisplayMember = "Descripcion"
+        cboActividadEconomica.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
         cboProvincia.ValueMember = "Id"
         cboProvincia.DisplayMember = "Descripcion"
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
@@ -268,6 +271,7 @@ Public Class FrmFacturaCompra
         txtNombreComercial.Text = ""
         txtTelefono.Text = ""
         txtCorreoElectronico.Text = ""
+        cboActividadEconomica.SelectedIndex = 0
         cboTipoIdentificacion.SelectedIndex = 0
         Await CargarListadoBarrios(1, 1, 1)
         cboTipoExoneracion.SelectedIndex = 0
@@ -355,6 +359,7 @@ Public Class FrmFacturaCompra
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdTipoMoneda = 1,
                 .Fecha = Now(),
+                .CodigoActividad = cboActividadEconomica.SelectedValue,
                 .IdCondicionVenta = 1,
                 .PlazoCredito = 0,
                 .NombreEmisor = txtNombre.Text,

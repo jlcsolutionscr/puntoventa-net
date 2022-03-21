@@ -430,11 +430,7 @@ Public Class FrmProforma
         txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
         txtTextoAdicional.Text = ""
         txtTelefono.Text = ""
-        txtTipoExoneracion.Text = ""
-        txtNumDocExoneracion.Text = ""
-        txtNombreInstExoneracion.Text = ""
-        txtFechaExoneracion.Text = ""
-        txtPorcentajeExoneracion.Text = ""
+        txtPorcentajeExoneracion.Text = "0"
         dtbDetalleProforma.Rows.Clear()
         grdDetalleProforma.Refresh()
         consecDetalle = 0
@@ -523,13 +519,7 @@ Public Class FrmProforma
                 cboTipoMoneda.SelectedValue = proforma.IdTipoMoneda
                 txtTextoAdicional.Text = proforma.TextoAdicional
                 txtTelefono.Text = proforma.Telefono
-                If cliente.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = FrmPrincipal.ObtenerDescripcionTipoExoneracion(cliente.IdTipoExoneracion)
-                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
-                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
-                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
-                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
-                End If
+                txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 vendedor = proforma.Vendedor
                 txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 CargarDetalleProforma(proforma)
@@ -582,19 +572,7 @@ Public Class FrmProforma
                     vendedor = cliente.Vendedor
                     txtVendedor.Text = vendedor.Nombre
                 End If
-                If cliente.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = FrmPrincipal.ObtenerDescripcionTipoExoneracion(cliente.IdTipoExoneracion)
-                    txtNumDocExoneracion.Text = cliente.NumDocExoneracion
-                    txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
-                    txtFechaExoneracion.Text = cliente.FechaEmisionDoc
-                    txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
-                Else
-                    txtTipoExoneracion.Text = ""
-                    txtNumDocExoneracion.Text = ""
-                    txtNombreInstExoneracion.Text = ""
-                    txtFechaExoneracion.Text = ""
-                    txtPorcentajeExoneracion.Text = ""
-                End If
+                txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 CargarTotales()
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)

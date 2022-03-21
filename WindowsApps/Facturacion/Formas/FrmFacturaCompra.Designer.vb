@@ -87,6 +87,8 @@ Partial Class FrmFacturaCompra
         Me.grdDetalleProforma = New System.Windows.Forms.DataGridView()
         Me.btnEliminar = New System.Windows.Forms.Button()
         Me.btnInsertar = New System.Windows.Forms.Button()
+        Me.cboActividadEconomica = New System.Windows.Forms.ComboBox()
+        Me.Label18 = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         CType(Me.grdDetalleProforma, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -97,7 +99,7 @@ Partial Class FrmFacturaCompra
         Me.txtTextoAdicional.BackColor = System.Drawing.SystemColors.Window
         Me.txtTextoAdicional.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTextoAdicional.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTextoAdicional.Location = New System.Drawing.Point(113, 602)
+        Me.txtTextoAdicional.Location = New System.Drawing.Point(113, 629)
         Me.txtTextoAdicional.MaxLength = 500
         Me.txtTextoAdicional.Multiline = True
         Me.txtTextoAdicional.Name = "txtTextoAdicional"
@@ -154,7 +156,7 @@ Partial Class FrmFacturaCompra
         Me._lblLabels_11.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_11.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_11.Location = New System.Drawing.Point(7, 602)
+        Me._lblLabels_11.Location = New System.Drawing.Point(7, 629)
         Me._lblLabels_11.Name = "_lblLabels_11"
         Me._lblLabels_11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_11.Size = New System.Drawing.Size(100, 19)
@@ -507,7 +509,7 @@ Partial Class FrmFacturaCompra
         'txtFechaExoneracion
         '
         Me.txtFechaExoneracion.Format = System.Windows.Forms.DateTimePickerFormat.Custom
-        Me.txtFechaExoneracion.Location = New System.Drawing.Point(724, 224)
+        Me.txtFechaExoneracion.Location = New System.Drawing.Point(724, 251)
         Me.txtFechaExoneracion.Name = "txtFechaExoneracion"
         Me.txtFechaExoneracion.Size = New System.Drawing.Size(84, 20)
         Me.txtFechaExoneracion.TabIndex = 15
@@ -519,7 +521,7 @@ Partial Class FrmFacturaCompra
         Me.Label16.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label16.ForeColor = System.Drawing.SystemColors.ControlText
         Me.Label16.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.Label16.Location = New System.Drawing.Point(-23, 224)
+        Me.Label16.Location = New System.Drawing.Point(-23, 251)
         Me.Label16.Name = "Label16"
         Me.Label16.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label16.Size = New System.Drawing.Size(121, 19)
@@ -537,7 +539,7 @@ Partial Class FrmFacturaCompra
         Me.cboTipoExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboTipoExoneracion.IntegralHeight = False
         Me.cboTipoExoneracion.ItemHeight = 13
-        Me.cboTipoExoneracion.Location = New System.Drawing.Point(104, 224)
+        Me.cboTipoExoneracion.Location = New System.Drawing.Point(104, 251)
         Me.cboTipoExoneracion.Name = "cboTipoExoneracion"
         Me.cboTipoExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboTipoExoneracion.Size = New System.Drawing.Size(247, 21)
@@ -549,7 +551,7 @@ Partial Class FrmFacturaCompra
         Me.txtPorcentajeExoneracion.BackColor = System.Drawing.SystemColors.Window
         Me.txtPorcentajeExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPorcentajeExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(510, 250)
+        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(510, 277)
         Me.txtPorcentajeExoneracion.MaxLength = 3
         Me.txtPorcentajeExoneracion.Name = "txtPorcentajeExoneracion"
         Me.txtPorcentajeExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -562,7 +564,7 @@ Partial Class FrmFacturaCompra
         Me.Label14.BackColor = System.Drawing.Color.Transparent
         Me.Label14.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label14.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label14.Location = New System.Drawing.Point(379, 250)
+        Me.Label14.Location = New System.Drawing.Point(379, 277)
         Me.Label14.Name = "Label14"
         Me.Label14.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label14.Size = New System.Drawing.Size(125, 19)
@@ -575,7 +577,7 @@ Partial Class FrmFacturaCompra
         Me.Label8.BackColor = System.Drawing.Color.Transparent
         Me.Label8.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label8.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label8.Location = New System.Drawing.Point(636, 224)
+        Me.Label8.Location = New System.Drawing.Point(636, 251)
         Me.Label8.Name = "Label8"
         Me.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label8.Size = New System.Drawing.Size(82, 19)
@@ -589,7 +591,7 @@ Partial Class FrmFacturaCompra
         Me.txtNombreInstExoneracion.BackColor = System.Drawing.SystemColors.Window
         Me.txtNombreInstExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtNombreInstExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNombreInstExoneracion.Location = New System.Drawing.Point(104, 251)
+        Me.txtNombreInstExoneracion.Location = New System.Drawing.Point(104, 278)
         Me.txtNombreInstExoneracion.MaxLength = 160
         Me.txtNombreInstExoneracion.Name = "txtNombreInstExoneracion"
         Me.txtNombreInstExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -601,7 +603,7 @@ Partial Class FrmFacturaCompra
         Me.Label10.BackColor = System.Drawing.Color.Transparent
         Me.Label10.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label10.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label10.Location = New System.Drawing.Point(2, 251)
+        Me.Label10.Location = New System.Drawing.Point(2, 278)
         Me.Label10.Name = "Label10"
         Me.Label10.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label10.Size = New System.Drawing.Size(96, 19)
@@ -615,7 +617,7 @@ Partial Class FrmFacturaCompra
         Me.txtNumDocExoneracion.BackColor = System.Drawing.SystemColors.Window
         Me.txtNumDocExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtNumDocExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNumDocExoneracion.Location = New System.Drawing.Point(510, 224)
+        Me.txtNumDocExoneracion.Location = New System.Drawing.Point(510, 251)
         Me.txtNumDocExoneracion.MaxLength = 40
         Me.txtNumDocExoneracion.Name = "txtNumDocExoneracion"
         Me.txtNumDocExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -627,7 +629,7 @@ Partial Class FrmFacturaCompra
         Me._lblLabels_3.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_3.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_3.Location = New System.Drawing.Point(384, 224)
+        Me._lblLabels_3.Location = New System.Drawing.Point(384, 251)
         Me._lblLabels_3.Name = "_lblLabels_3"
         Me._lblLabels_3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_3.Size = New System.Drawing.Size(120, 19)
@@ -659,7 +661,7 @@ Partial Class FrmFacturaCompra
         Me.GroupBox1.Controls.Add(Me.grdDetalleProforma)
         Me.GroupBox1.Controls.Add(Me.btnEliminar)
         Me.GroupBox1.Controls.Add(Me.btnInsertar)
-        Me.GroupBox1.Location = New System.Drawing.Point(7, 274)
+        Me.GroupBox1.Location = New System.Drawing.Point(7, 301)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(821, 322)
         Me.GroupBox1.TabIndex = 214
@@ -967,6 +969,36 @@ Partial Class FrmFacturaCompra
         Me.btnInsertar.Text = "Insertar"
         Me.btnInsertar.UseVisualStyleBackColor = False
         '
+        'cboActividadEconomica
+        '
+        Me.cboActividadEconomica.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboActividadEconomica.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboActividadEconomica.BackColor = System.Drawing.SystemColors.Window
+        Me.cboActividadEconomica.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboActividadEconomica.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboActividadEconomica.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboActividadEconomica.IntegralHeight = False
+        Me.cboActividadEconomica.ItemHeight = 13
+        Me.cboActividadEconomica.Location = New System.Drawing.Point(104, 224)
+        Me.cboActividadEconomica.Name = "cboActividadEconomica"
+        Me.cboActividadEconomica.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboActividadEconomica.Size = New System.Drawing.Size(290, 21)
+        Me.cboActividadEconomica.TabIndex = 215
+        Me.cboActividadEconomica.TabStop = False
+        '
+        'Label18
+        '
+        Me.Label18.BackColor = System.Drawing.Color.Transparent
+        Me.Label18.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label18.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label18.Location = New System.Drawing.Point(11, 224)
+        Me.Label18.Name = "Label18"
+        Me.Label18.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label18.Size = New System.Drawing.Size(87, 19)
+        Me.Label18.TabIndex = 216
+        Me.Label18.Text = "Actividad Econ:"
+        Me.Label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmFacturaCompra
         '
         Me.AcceptButton = Me.btnInsertar
@@ -974,7 +1006,9 @@ Partial Class FrmFacturaCompra
         Me.AutoScroll = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(839, 660)
+        Me.ClientSize = New System.Drawing.Size(839, 686)
+        Me.Controls.Add(Me.cboActividadEconomica)
+        Me.Controls.Add(Me.Label18)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.txtFechaExoneracion)
         Me.Controls.Add(Me.Label16)
@@ -1021,7 +1055,9 @@ Partial Class FrmFacturaCompra
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(855, 725)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(855, 725)
         Me.Name = "FrmFacturaCompra"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -1090,4 +1126,6 @@ Partial Class FrmFacturaCompra
     Public WithEvents btnEliminar As Button
     Public WithEvents btnInsertar As Button
     Friend WithEvents btnBuscarClasificacion As Button
+    Public WithEvents cboActividadEconomica As ComboBox
+    Public WithEvents Label18 As Label
 End Class
