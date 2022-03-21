@@ -2585,13 +2585,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         byte[] bytRespuestaXML = Convert.FromBase64String(mensaje.RespuestaXml);
                         documentoElectronico.Respuesta = bytRespuestaXML;
                         dbContext.NotificarModificacion(documentoElectronico);
-                        RegistroRespuestaHacienda registro = new RegistroRespuestaHacienda
-                        {
-                            ClaveNumerica = documentoElectronico.ClaveNumerica,
-                            Fecha = DateTime.Now,
-                            Respuesta = bytRespuestaXML
-                        };
-                        dbContext.RegistroRespuestaHaciendaRepository.Add(registro);
                         dbContext.Commit();
                         if (documentoElectronico.IdTipoDocumento != (int)TipoDocumento.TiqueteElectronico && documentoElectronico.CorreoNotificacion != "") GenerarNotificacionDocumentoElectronico(dbContext, documentoElectronico, empresa, documentoElectronico.CorreoNotificacion, strCorreoNotificacionErrores, bytLogo);
                     }

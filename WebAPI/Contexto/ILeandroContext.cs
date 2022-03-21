@@ -77,7 +77,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         DbSet<Provincia> ProvinciaRepository { get; set; }
         DbSet<PuntoDeServicio> PuntoDeServicioRepository { get; set; }
         DbSet<RegistroAutenticacion> RegistroAutenticacionRepository { get; set; }
-        DbSet<RegistroRespuestaHacienda> RegistroRespuestaHaciendaRepository { get; set; }
         DbSet<ReportePorEmpresa> ReportePorEmpresaRepository { get; set; }
         DbSet<Role> RoleRepository { get; set; }
         DbSet<RolePorEmpresa> RolePorEmpresaRepository { get; set; }
