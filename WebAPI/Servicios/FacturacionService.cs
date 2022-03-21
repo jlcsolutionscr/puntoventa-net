@@ -2129,6 +2129,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                                     dbContext.Commit();
                                                 }
                                             }
+                                            else
+                                            {
+                                                stringBuilder.AppendLine("Error al obtener el estado del documento electrónico en Hacienda");
+                                            }
                                         }
                                     }
                                     else
@@ -2140,7 +2144,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 {
                                     stringBuilder.AppendLine("Error al procesar el documento electrónico: No se encontro la empresa con id: " + documento.IdEmpresa);
                                 }
-
                             }
                         }
                     }

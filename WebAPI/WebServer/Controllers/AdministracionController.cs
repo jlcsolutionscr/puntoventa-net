@@ -559,7 +559,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpGet("procesarpendientes")]
-        public void ProcesarDocumentosElectronicosPendientes()
+        public void ProcesarPendientes()
         {
             Task.Run(() =>
             {
