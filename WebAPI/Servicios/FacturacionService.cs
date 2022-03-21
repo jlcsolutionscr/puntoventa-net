@@ -2590,7 +2590,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         };
                         dbContext.RegistroRespuestaHaciendaRepository.Add(registro);
                         dbContext.Commit();
-                        if (documentoElectronico.IdTipoDocumento != (int)TipoDocumento.TiqueteElectronico && documentoElectronico.CorreoNotificacion != "") GenerarNotificacionDocumentoElectronico(documentoElectronico, empresa, documentoElectronico.CorreoNotificacion, strCorreoNotificacionErrores, bytLogo);
+                        if (documentoElectronico.IdTipoDocumento != (int)TipoDocumento.TiqueteElectronico && documentoElectronico.CorreoNotificacion != "") GenerarNotificacionDocumentoElectronico(dbContext, documentoElectronico, empresa, documentoElectronico.CorreoNotificacion, strCorreoNotificacionErrores, bytLogo);
                     }
                 }
             }
@@ -2619,7 +2619,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
                     {
-                        GenerarNotificacionDocumentoElectronico(documento, empresa, strCorreoReceptor, strCorreoNotificacionErrores, bytLogo);
+                        GenerarNotificacionDocumentoElectronico(dbContext, documento, empresa, strCorreoReceptor, strCorreoNotificacionErrores, bytLogo);
                     }
                 }
             }
@@ -3035,7 +3035,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        private void GenerarNotificacionDocumentoElectronico(DocumentoElectronico documentoElectronico, Empresa empresa, string strCorreoReceptor, string strCorreoNotificacionErrores, byte[] bytLogo)
+        private void GenerarNotificacionDocumentoElectronico(ILeandroContext dbContext, DocumentoElectronico documentoElectronico, Empresa empresa, string strCorreoReceptor, string strCorreoNotificacionErrores, byte[] bytLogo)
         {
             try
             {
@@ -3064,7 +3064,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             strTitle = "Nota de débito electrónica de emisor " + empresa.NombreComercial;
                         }
-                        EstructuraPDF datos = GenerarEstructuraDocumentoPDF(empresa, documentoElectronico, bytLogo);
+                        EstructuraPDF datos = GenerarEstructuraDocumentoPDF(dbContext, empresa, documentoElectronico, bytLogo);
                         byte[] pdfAttactment = Generador.GenerarPDF(datos);
                         JObject jobDatosAdjuntos1 = new JObject
                         {
@@ -3125,7 +3125,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private EstructuraPDF GenerarEstructuraDocumentoPDF(Empresa empresa, DocumentoElectronico documentoElectronico, byte[] bytLogo)
+        private EstructuraPDF GenerarEstructuraDocumentoPDF(ILeandroContext dbContext, Empresa empresa, DocumentoElectronico documentoElectronico, byte[] bytLogo)
         {
             EstructuraPDF datos = new EstructuraPDF();
             datos.PoweredByLogotipo = bytLogo;
