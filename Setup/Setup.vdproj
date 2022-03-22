@@ -385,7 +385,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:v4.0                                                                                "
+                "FrameworkVersion" = "8:v4.0                                                                                 "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -606,6 +606,11 @@
             "AssemblyAsmDisplayName" = "8:ClienteWCF, Version=5.0.0.0, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
+                    "_6BF13CCADD8BA6B82383EFB1BB68DC65"
+                    {
+                    "Name" = "8:ClienteWCF.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ClienteWCF.dll"
             "TargetName" = "8:"
@@ -838,6 +843,11 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_D85C9A76FE1A0C5FD3657515425C6DDE"
+                    {
+                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
@@ -926,6 +936,11 @@
             "AssemblyAsmDisplayName" = "8:Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_F19BE8A8D139EA63D30BF123207930DA"
+                    {
+                    "Name" = "8:Common.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Common.dll"
             "TargetName" = "8:"
@@ -1032,15 +1047,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PuntoventaJLC"
-        "ProductCode" = "8:{A5DAF3D6-BFA9-4577-9C4F-5A998548D89B}"
-        "PackageCode" = "8:{F3C26FD6-8B95-43AF-A17D-66C815A87E24}"
+        "ProductCode" = "8:{54A42326-89A1-45D2-9DE0-BA807C27F127}"
+        "PackageCode" = "8:{D0791DFC-4F8B-4869-A496-4CF2B0BC4641}"
         "UpgradeCode" = "8:{9F4F56C6-17E9-4C36-9940-81BDB1283F7F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:5.0.2"
+        "ProductVersion" = "8:5.0.3"
         "Manufacturer" = "8:JLC Solutions"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

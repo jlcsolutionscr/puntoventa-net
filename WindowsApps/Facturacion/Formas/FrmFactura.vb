@@ -1364,7 +1364,7 @@ Public Class FrmFactura
         If txtIdFactura.Text <> "" Then
             If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And factura IsNot Nothing Then
                 Try
-                    Dim pdfBytes As Byte() = Await Puntoventa.ObtenerFacturaPDF(txtIdFactura.Text, FrmPrincipal.usuarioGlobal.Token)
+                    Dim pdfBytes As Byte() = Await Puntoventa.ObtenerFacturaPDF(factura.IdFactura, FrmPrincipal.usuarioGlobal.Token)
                     Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + factura.ConsecFactura.ToString() + ".pdf"
                     File.WriteAllBytes(pdfFilePath, pdfBytes)
                     Process.Start(pdfFilePath)
