@@ -1301,7 +1301,7 @@ Public Class FrmFactura
 
     Private Async Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdFactura.Text <> "" Then
-            If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And factura.IdDocElectronico Is Nothing Then
+            If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
                 Try
                     factura = Await Puntoventa.ObtenerFactura(factura.IdFactura, FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
@@ -1362,10 +1362,10 @@ Public Class FrmFactura
 
     Private Async Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
         If txtIdFactura.Text <> "" Then
-            If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And factura.IdDocElectronico Is Nothing Then
+            If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And factura IsNot Nothing Then
                 Try
-                    Dim pdfBytes As Byte() = Await Puntoventa.ObtenerFacturaPDF(factura.IdFactura, FrmPrincipal.usuarioGlobal.Token)
-                    Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + factura.IdDocElectronico + ".pdf"
+                    Dim pdfBytes As Byte() = Await Puntoventa.ObtenerFacturaPDF(txtIdFactura.Text, FrmPrincipal.usuarioGlobal.Token)
+                    Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + factura.ConsecFactura.ToString() + ".pdf"
                     File.WriteAllBytes(pdfFilePath, pdfBytes)
                     Process.Start(pdfFilePath)
                 Catch ex As Exception

@@ -127,7 +127,9 @@ Public Class FrmPrincipal
     End Function
 
     Public Function ObtenerTarifaImpuesto(intIdTipo As Integer) As Decimal
+
         Dim tipo As LlaveDescripcionValor = listaTipoImpuesto.FirstOrDefault(Function(x) x.Id = intIdTipo)
+        If tipo Is Nothing Then Return 0
         If tipo.Valor <> Nothing Then
             Return tipo.Valor
         Else

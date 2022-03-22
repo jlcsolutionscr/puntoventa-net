@@ -747,7 +747,7 @@ Public Class FrmProforma
         If txtIdProforma.Text <> "" Then
             Try
                 Dim pdfBytes As Byte() = Await Puntoventa.ObtenerProformaPDF(proforma.IdProforma, FrmPrincipal.usuarioGlobal.Token)
-                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\PROFORMA-" + proforma.IdProforma.ToString() + ".pdf"
+                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\PROFORMA-" + proforma.ConsecProforma.ToString() + ".pdf"
                 File.WriteAllBytes(pdfFilePath, pdfBytes)
                 Process.Start(pdfFilePath)
             Catch ex As Exception

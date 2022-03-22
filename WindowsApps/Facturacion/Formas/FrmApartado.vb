@@ -928,14 +928,6 @@ Public Class FrmApartado
 
     Private Async Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdApartado.Text <> "" Then
-            If apartado.ConsecApartado = 0 Then
-                Try
-                    apartado = Await Puntoventa.ObtenerApartado(txtIdApartado.Text, FrmPrincipal.usuarioGlobal.Token)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            End If
             Try
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                     .usuario = FrmPrincipal.usuarioGlobal,
@@ -986,7 +978,7 @@ Public Class FrmApartado
         If txtIdApartado.Text <> "" Then
             Try
                 Dim pdfBytes As Byte() = Await Puntoventa.ObtenerApartadoPDF(apartado.IdApartado, FrmPrincipal.usuarioGlobal.Token)
-                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\APARTADO-" + apartado.IdApartado.ToString() + ".pdf"
+                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\APARTADO-" + apartado.ConsecApartado.ToString() + ".pdf"
                 File.WriteAllBytes(pdfFilePath, pdfBytes)
                 Process.Start(pdfFilePath)
             Catch ex As Exception

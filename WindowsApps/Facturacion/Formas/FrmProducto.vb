@@ -179,6 +179,7 @@ Public Class FrmProducto
                 txtIndExistencia.Text = FormatoPrecio(0, 2)
                 txtPorcDescuento.Text = FormatoPrecio(0, 2)
                 cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
+                datos.IdImpuesto = StaticValoresPorDefecto.TasaImpuesto
                 chkActivo.Checked = True
             End If
             decTasaImpuesto = FrmPrincipal.ObtenerTarifaImpuesto(datos.IdImpuesto)

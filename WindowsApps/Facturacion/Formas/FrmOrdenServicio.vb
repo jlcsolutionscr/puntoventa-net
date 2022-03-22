@@ -1036,7 +1036,7 @@ Public Class FrmOrdenServicio
         If txtIdOrdenServicio.Text <> "" Then
             Try
                 Dim pdfBytes As Byte() = Await Puntoventa.ObtenerOrdenServicioPDF(ordenServicio.IdOrden, FrmPrincipal.usuarioGlobal.Token)
-                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\ORDEN-" + ordenServicio.IdOrden.ToString() + ".pdf"
+                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\ORDEN-" + ordenServicio.ConsecOrdenServicio.ToString() + ".pdf"
                 File.WriteAllBytes(pdfFilePath, pdfBytes)
                 Process.Start(pdfFilePath)
             Catch ex As Exception
