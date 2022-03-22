@@ -107,7 +107,6 @@ Public Class FrmCierreDeCaja
             cierreCaja.RetiroEfectivo = CDbl(txtRetiroEfectivo.Text)
             cierreCaja.FondoCierre = CDbl(txtCierreEfectivoProx.Text)
             cierreCaja.Observaciones = txtObservaciones.Text
-            cierreCaja.DetalleEfectivoCierreCaja.Clear()
             cierreCaja.DetalleEfectivoCierreCaja = New List(Of DetalleEfectivoCierreCaja)
             For Each c As Control In grbDetalleEfectivo.Controls
                 If c.Name.Contains("txtCantidad") Then
