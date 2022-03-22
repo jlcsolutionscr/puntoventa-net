@@ -1,8 +1,9 @@
 Imports System.Threading.Tasks
 Imports System.Globalization
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
 Imports System.Text.RegularExpressions
+Imports LeandroSoftware.Common.Constantes
 
 Public Class FrmCliente
 #Region "Variables"
@@ -15,19 +16,19 @@ Public Class FrmCliente
     Private Async Function CargarCombos() As Task
         cboTipoIdentificacion.ValueMember = "Id"
         cboTipoIdentificacion.DisplayMember = "Descripcion"
-        cboTipoIdentificacion.DataSource = Await Puntoventa.ObtenerListadoTipoIdentificacion(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoIdentificacion.DataSource = FrmPrincipal.ObtenerListadoTipoIdentificacion()
+        cboIdTipoPrecio.ValueMember = "Id"
+        cboIdTipoPrecio.DisplayMember = "Descripcion"
+        cboIdTipoPrecio.DataSource = FrmPrincipal.ObtenerListadoTipoPrecio()
+        cboTipoImpuesto.ValueMember = "Id"
+        cboTipoImpuesto.DisplayMember = "Descripcion"
+        cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
+        cboTipoExoneracion.ValueMember = "Id"
+        cboTipoExoneracion.DisplayMember = "Descripcion"
+        cboTipoExoneracion.DataSource = FrmPrincipal.ObtenerListadoTipoExoneracion()
         cboVendedor.ValueMember = "Id"
         cboVendedor.DisplayMember = "Descripcion"
         cboVendedor.DataSource = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
-        cboIdTipoPrecio.ValueMember = "Id"
-        cboIdTipoPrecio.DisplayMember = "Descripcion"
-        cboIdTipoPrecio.DataSource = Await Puntoventa.ObtenerListadoTipodePrecio(FrmPrincipal.usuarioGlobal.Token)
-        cboTipoImpuesto.ValueMember = "Id"
-        cboTipoImpuesto.DisplayMember = "Descripcion"
-        cboTipoImpuesto.DataSource = Await Puntoventa.ObtenerListadoTipoImpuesto(FrmPrincipal.usuarioGlobal.Token)
-        cboTipoExoneracion.ValueMember = "Id"
-        cboTipoExoneracion.DisplayMember = "Descripcion"
-        cboTipoExoneracion.DataSource = Await Puntoventa.ObtenerListadoTipoExoneracion(FrmPrincipal.usuarioGlobal.Token)
     End Function
 #End Region
 
@@ -71,7 +72,7 @@ Public Class FrmCliente
                 txtFax.Text = datos.Fax
                 txtCorreoElectronico.Text = datos.CorreoElectronico
                 chkPermiteCredito.Checked = datos.PermiteCredito
-                If datos.IdVendedor IsNot Nothing Then cboVendedor.SelectedValue = datos.IdVendedor
+                cboVendedor.SelectedValue = datos.IdVendedor
                 cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
                 chkExonerado.Checked = datos.AplicaTasaDiferenciada
                 cboTipoImpuesto.SelectedValue = datos.IdImpuesto
@@ -82,8 +83,8 @@ Public Class FrmCliente
                 txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
             Else
                 datos = New Cliente
-                cboTipoImpuesto.SelectedValue = 8
-                cboTipoExoneracion.SelectedValue = 1
+                cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
+                cboTipoExoneracion.SelectedValue = StaticValoresPorDefecto.TipoExoneracion
                 txtPorcentajeExoneracion.Text = "0"
                 txtFechaExoneracion.Value = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
             End If
@@ -161,7 +162,7 @@ Public Class FrmCliente
                         txtCelular.Text = datos.Celular
                         txtFax.Text = datos.Fax
                         txtCorreoElectronico.Text = datos.CorreoElectronico
-                        If datos.IdVendedor IsNot Nothing Then cboVendedor.SelectedValue = datos.IdVendedor
+                        cboVendedor.SelectedValue = datos.IdVendedor
                         cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
                         chkExonerado.Checked = datos.AplicaTasaDiferenciada
                         cboTipoImpuesto.SelectedValue = datos.IdImpuesto
@@ -193,7 +194,7 @@ Public Class FrmCliente
             cboTipoImpuesto.Enabled = True
         Else
             cboTipoImpuesto.Enabled = False
-            cboTipoImpuesto.SelectedValue = 8
+            cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
         End If
     End Sub
 

@@ -1,5 +1,7 @@
+Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmAplicaTrasladoListado
 #Region "Variables"
@@ -8,7 +10,7 @@ Public Class FrmAplicaTrasladoListado
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
-    Private intId As Integer = 0
+    Private bolCargado As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -41,7 +43,11 @@ Public Class FrmAplicaTrasladoListado
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoTrasladosPorAplicar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token)
+            Dim listado = New List(Of TrasladoDetalle)
+            If intCantidadDePaginas > 0 Then
+                listado = Await Puntoventa.ObtenerListadoTrasladosPorAplicar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token)
+            End If
+            dgvListado.DataSource = listado
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -72,10 +78,10 @@ Public Class FrmAplicaTrasladoListado
         End If
     End Function
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
         dtListaEstado.Clear()
@@ -93,7 +99,7 @@ Public Class FrmAplicaTrasladoListado
         cboEstado.DisplayMember = "Descripcion"
         cboEstado.DataSource = dtListaEstado
         cboEstado.SelectedValue = 0
-    End Function
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -147,10 +153,11 @@ Public Class FrmAplicaTrasladoListado
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            Await CargarCombos()
+            CargarCombos()
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
+            bolCargado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -167,22 +174,17 @@ Public Class FrmAplicaTrasladoListado
     End Sub
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        If txtId.Text <> "" Then
-            intId = CInt(txtId.Text)
-        Else
-            intId = 0
-        End If
         Await ValidarCantidadRegistros()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
     Private Sub cboEstado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboEstado.SelectedIndexChanged
-        btnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        btnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 
     Private Async Sub btnDetalle_Click(sender As Object, e As EventArgs)

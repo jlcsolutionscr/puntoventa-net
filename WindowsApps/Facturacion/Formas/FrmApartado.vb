@@ -1,11 +1,11 @@
-Imports System.Collections.Generic
 Imports System.Globalization
 Imports System.IO
-Imports LeandroSoftware.Core.Dominio.Entidades
-Imports System.Threading.Tasks
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Utilitario
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Constantes
+Imports System.Collections.Generic
+Imports System.Threading.Tasks
 
 Public Class FrmApartado
 #Region "Variables"
@@ -255,7 +255,7 @@ Public Class FrmApartado
         For Each detalle As DesglosePagoApartado In apartado.DesglosePagoApartado
             dtrRowDesglosePago = dtbDesglosePago.NewRow
             dtrRowDesglosePago.Item(0) = detalle.IdFormaPago
-            dtrRowDesglosePago.Item(1) = detalle.FormaPago.Descripcion
+            dtrRowDesglosePago.Item(1) = FrmPrincipal.ObtenerDescripcionFormaPagoCliente(detalle.IdFormaPago)
             dtrRowDesglosePago.Item(2) = detalle.IdCuentaBanco
             dtrRowDesglosePago.Item(3) = detalle.DescripcionCuenta
             dtrRowDesglosePago.Item(4) = detalle.TipoTarjeta
@@ -269,8 +269,10 @@ Public Class FrmApartado
     End Sub
 
     Private Sub CargarLineaDetalleApartado(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
-        Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
-        If cliente.AplicaTasaDiferenciada Then decTasaImpuesto = cliente.ParametroImpuesto.TasaImpuesto
+        Dim decTasaImpuesto As Decimal = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
+        If cliente.AplicaTasaDiferenciada Then
+            decTasaImpuesto = FrmPrincipal.ObtenerTarifaImpuesto(cliente.IdImpuesto)
+        End If
         Dim decPrecioGravado As Decimal = decPrecio
         If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 5)
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleApartado, producto.IdProducto)
@@ -396,14 +398,14 @@ Public Class FrmApartado
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
     End Sub
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        cboFormaPago.DataSource = Await Puntoventa.ObtenerListadoFormaPagoCliente(FrmPrincipal.usuarioGlobal.Token)
+        cboFormaPago.DataSource = FrmPrincipal.ObtenerListadoFormaPagoCliente()
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
-        cboTipoMoneda.DataSource = Await Puntoventa.ObtenerListadoTipoMoneda(FrmPrincipal.usuarioGlobal.Token)
-    End Function
+        cboTipoMoneda.DataSource = FrmPrincipal.ObtenerListadoTipoMoneda()
+    End Sub
 
     Private Async Function CargarListaBancoAdquiriente() As Task
         Dim lista As IList = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
@@ -447,8 +449,10 @@ Public Class FrmApartado
             decPrecioVenta = producto.PrecioVenta1
         End If
         If cliente.AplicaTasaDiferenciada Then
-            decPrecioVenta = Math.Round(decPrecioVenta / (1 + (producto.ParametroImpuesto.TasaImpuesto / 100)), 3)
-            decPrecioVenta = Math.Round(decPrecioVenta * (1 + (cliente.ParametroImpuesto.TasaImpuesto / 100)), 2)
+            Dim decTasaImpuestoCliente = FrmPrincipal.ObtenerTarifaImpuesto(cliente.IdImpuesto)
+            Dim decTasaImpuestoProducto = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
+            decPrecioVenta = Math.Round(decPrecioVenta / (1 + (decTasaImpuestoProducto / 100)), 5)
+            decPrecioVenta = Math.Round(decPrecioVenta * (1 + (decTasaImpuestoCliente / 100)), 2)
         End If
         Return decPrecioVenta
     End Function
@@ -463,7 +467,6 @@ Public Class FrmApartado
             txtCodigo.Focus()
             Exit Sub
         Else
-            Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
             txtCodigo.Text = producto.Codigo
             If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtDescripcion.Text = producto.Descripcion
@@ -565,7 +568,7 @@ Public Class FrmApartado
             If FrmPrincipal.bolModificaDescripcion Then txtDescripcion.ReadOnly = False
             If FrmPrincipal.bolModificaCliente Then txtPorcDesc.ReadOnly = False
             txtCodigo.Focus()
-            Await CargarCombos()
+            CargarCombos()
             Await CargarListaBancoAdquiriente()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
@@ -620,6 +623,7 @@ Public Class FrmApartado
         btnAnular.Enabled = False
         btnGuardar.Enabled = True
         btnImprimir.Enabled = False
+        btnGenerarPDF.Enabled = False
         btnBuscaVendedor.Enabled = True
         btnBuscarCliente.Enabled = True
         cliente = New Cliente With {
@@ -693,7 +697,7 @@ Public Class FrmApartado
                 txtTelefono.Text = apartado.Telefono
                 txtDocumento.Text = apartado.TextoAdicional
                 If cliente.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
+                    txtTipoExoneracion.Text = FrmPrincipal.ObtenerDescripcionTipoExoneracion(cliente.IdTipoExoneracion)
                     txtNumDocExoneracion.Text = cliente.NumDocExoneracion
                     txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
                     txtFechaExoneracion.Text = cliente.FechaEmisionDoc
@@ -714,6 +718,7 @@ Public Class FrmApartado
                 btnInsertarPago.Enabled = False
                 btnEliminarPago.Enabled = False
                 btnImprimir.Enabled = True
+                btnGenerarPDF.Enabled = True
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
                 btnAnular.Enabled = apartado.Aplicado = False And FrmPrincipal.bolAnularTransacciones
@@ -759,7 +764,7 @@ Public Class FrmApartado
                     txtVendedor.Text = vendedor.Nombre
                 End If
                 If cliente.PorcentajeExoneracion > 0 Then
-                    txtTipoExoneracion.Text = cliente.ParametroExoneracion.Descripcion
+                    txtTipoExoneracion.Text = FrmPrincipal.ObtenerDescripcionTipoExoneracion(cliente.IdTipoExoneracion)
                     txtNumDocExoneracion.Text = cliente.NumDocExoneracion
                     txtNombreInstExoneracion.Text = cliente.NombreInstExoneracion
                     txtFechaExoneracion.Text = cliente.FechaEmisionDoc
@@ -856,6 +861,7 @@ Public Class FrmApartado
                 .MontoPagado = decPagoCliente,
                 .Nulo = False
             }
+            apartado.DetalleApartado = New List(Of DetalleApartado)
             For I As Short = 0 To dtbDetalleApartado.Rows.Count - 1
                 detalleApartado = New DetalleApartado With {
                     .IdProducto = dtbDetalleApartado.Rows(I).Item(0),
@@ -868,6 +874,7 @@ Public Class FrmApartado
                 }
                 apartado.DetalleApartado.Add(detalleApartado)
             Next
+            apartado.DesglosePagoApartado = New List(Of DesglosePagoApartado)
             For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoApartado With {
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
@@ -904,6 +911,7 @@ Public Class FrmApartado
             End If
         End If
         btnImprimir.Enabled = True
+        btnGenerarPDF.Enabled = True
         btnImprimir.Focus()
         btnGuardar.Enabled = False
         btnAgregar.Enabled = True
@@ -974,87 +982,11 @@ Public Class FrmApartado
         End If
     End Sub
 
-    Private Async Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs)
+    Private Async Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
         If txtIdApartado.Text <> "" Then
-            If apartado.ConsecApartado = 0 Then
-                Try
-                    apartado = Await Puntoventa.ObtenerApartado(txtIdApartado.Text, FrmPrincipal.usuarioGlobal.Token)
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-            End If
-            Dim datos As EstructuraPDF = New EstructuraPDF()
             Try
-                Dim poweredByImage As Image = My.Resources.logo
-                datos.PoweredByLogotipo = poweredByImage
-            Catch ex As Exception
-                datos.PoweredByLogotipo = Nothing
-            End Try
-            Try
-                Dim logotipo As Byte() = Await Puntoventa.ObtenerLogotipoEmpresa(apartado.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                Dim logoImage As Image
-                Using ms As New MemoryStream(logotipo)
-                    logoImage = Image.FromStream(ms)
-                End Using
-                datos.Logotipo = logoImage
-            Catch ex As Exception
-                datos.Logotipo = Nothing
-            End Try
-            datos.TituloDocumento = "APARTADO"
-            datos.NombreEmpresa = FrmPrincipal.empresaGlobal.NombreEmpresa
-            datos.NombreComercial = FrmPrincipal.empresaGlobal.NombreComercial
-            datos.ConsecInterno = apartado.ConsecApartado
-            datos.Consecutivo = Nothing
-            datos.Clave = Nothing
-            datos.CondicionVenta = "Efectivo"
-            datos.PlazoCredito = ""
-            datos.Fecha = apartado.Fecha.ToString("dd/MM/yyyy hh:mm:ss")
-            datos.MedioPago = ""
-            datos.NombreEmisor = FrmPrincipal.empresaGlobal.NombreEmpresa
-            datos.NombreComercialEmisor = FrmPrincipal.empresaGlobal.NombreComercial
-            datos.IdentificacionEmisor = FrmPrincipal.empresaGlobal.Identificacion
-            datos.CorreoElectronicoEmisor = FrmPrincipal.empresaGlobal.CorreoNotificacion
-            datos.TelefonoEmisor = FrmPrincipal.empresaGlobal.Telefono1 + IIf(FrmPrincipal.empresaGlobal.Telefono2.Length > 0, " - " + FrmPrincipal.empresaGlobal.Telefono2, "")
-            datos.FaxEmisor = ""
-            datos.ProvinciaEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Provincia.Descripcion
-            datos.CantonEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Canton.Descripcion
-            datos.DistritoEmisor = FrmPrincipal.empresaGlobal.Barrio.Distrito.Descripcion
-            datos.BarrioEmisor = FrmPrincipal.empresaGlobal.Barrio.Descripcion
-            datos.DireccionEmisor = FrmPrincipal.empresaGlobal.Direccion
-            If apartado.IdCliente > 1 Then
-                datos.PoseeReceptor = True
-                datos.NombreReceptor = cliente.Nombre
-                datos.NombreComercialReceptor = cliente.NombreComercial
-                datos.IdentificacionReceptor = cliente.Identificacion
-                datos.CorreoElectronicoReceptor = cliente.CorreoElectronico
-                datos.TelefonoReceptor = cliente.Telefono
-                datos.FaxReceptor = cliente.Fax
-            End If
-            For I As Short = 0 To dtbDetalleApartado.Rows.Count - 1
-                Dim decPrecioVenta As Decimal = dtbDetalleApartado.Rows(I).Item(4)
-                Dim decTotalLinea As Decimal = dtbDetalleApartado.Rows(I).Item(3) * decPrecioVenta
-                Dim detalle As EstructuraPDFDetalleServicio = New EstructuraPDFDetalleServicio With {
-                    .Cantidad = dtbDetalleApartado.Rows(I).Item(3),
-                    .Codigo = dtbDetalleApartado.Rows(I).Item(1),
-                    .detalle = dtbDetalleApartado.Rows(I).Item(2),
-                    .PrecioUnitario = decPrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
-                    .TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
-                }
-                datos.DetalleServicio.Add(detalle)
-            Next
-            If (apartado.TextoAdicional IsNot Nothing) Then datos.OtrosTextos = apartado.TextoAdicional
-            datos.TotalGravado = decGravado.ToString("N2", CultureInfo.InvariantCulture)
-            datos.TotalExonerado = decExonerado.ToString("N2", CultureInfo.InvariantCulture)
-            datos.TotalExento = decExcento.ToString("N2", CultureInfo.InvariantCulture)
-            datos.Descuento = "0.00"
-            datos.Impuesto = decImpuesto.ToString("N2", CultureInfo.InvariantCulture)
-            datos.TotalGeneral = decTotal.ToString("N2", CultureInfo.InvariantCulture)
-            datos.CodigoMoneda = IIf(apartado.IdTipoMoneda = 1, "CRC", "USD")
-            datos.TipoDeCambio = 1
-            Try
-                Dim pdfBytes As Byte() = UtilitarioPDF.GenerarPDF(datos)
-                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\PROFORMA-" + txtIdApartado.Text + ".pdf"
+                Dim pdfBytes As Byte() = Await Puntoventa.ObtenerApartadoPDF(apartado.IdApartado, FrmPrincipal.usuarioGlobal.Token)
+                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\APARTADO-" + apartado.IdApartado.ToString() + ".pdf"
                 File.WriteAllBytes(pdfFilePath, pdfBytes)
                 Process.Start(pdfFilePath)
             Catch ex As Exception
@@ -1227,7 +1159,7 @@ Public Class FrmApartado
             Dim decTasaImpuesto As Decimal = grdDetalleApartado.Rows(e.RowIndex).Cells(9).Value
             Dim decPrecioConDescuento As Decimal = decPrecioTotal - (decPrecioTotal * decPorcDesc / 100)
             If decPorcDesc > 0 And Not bolPrecioAutorizado And FrmPrincipal.empresaGlobal.MontoRedondeoDescuento > 0 Then
-                decPrecioConDescuento = Utilitario.ObtenerPrecioRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoDescuento, decPrecioConDescuento)
+                decPrecioConDescuento = Puntoventa.ObtenerPrecioRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoDescuento, decPrecioConDescuento)
                 decPorcDesc = (decPrecioTotal - decPrecioConDescuento) / decPrecioTotal * 100
             End If
             Dim decMontoDesc = decPrecioTotal - decPrecioConDescuento
@@ -1273,7 +1205,7 @@ Public Class FrmApartado
                 If decPorcDesc > 0 Then
                     Dim decPrecioConDescuento As Decimal = decPrecioVenta - (decPrecioVenta * decPorcDesc / 100)
                     If Not bolPrecioAutorizado And FrmPrincipal.empresaGlobal.MontoRedondeoDescuento > 0 Then
-                        decPrecioConDescuento = Utilitario.ObtenerPrecioRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoDescuento, decPrecioConDescuento)
+                        decPrecioConDescuento = Puntoventa.ObtenerPrecioRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoDescuento, decPrecioConDescuento)
                         decPorcDesc = (decPrecioVenta - decPrecioConDescuento) / decPrecioVenta * 100
                         txtPorcDesc.Text = decPorcDesc
                     End If
@@ -1348,7 +1280,7 @@ Public Class FrmApartado
         If txtCantidad.Text = "" Then txtCantidad.Text = "1"
     End Sub
 
-    Private Sub SelectionAll_MouseDown(sender As Object, e As MouseEventArgs) Handles txtCantidad.MouseDown, txtCodigo.MouseDown, txtDescripcion.MouseDown, txtPrecio.MouseDown
+    Private Sub SelectionAll_MouseDown(sender As Object, e As MouseEventArgs) Handles txtPrecio.MouseDown, txtDescripcion.MouseDown, txtCodigo.MouseDown, txtCantidad.MouseDown
         sender.SelectAll()
     End Sub
 
@@ -1378,7 +1310,7 @@ Public Class FrmApartado
         FrmPrincipal.ValidaNumero(e, sender, False, 0)
     End Sub
 
-    Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtCantidad.KeyPress, txtPorcDesc.KeyPress, txtPrecio.KeyPress, txtMontoPago.KeyPress
+    Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtPrecio.KeyPress, txtPorcDesc.KeyPress, txtMontoPago.KeyPress, txtCantidad.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region

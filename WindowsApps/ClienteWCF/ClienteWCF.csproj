@@ -34,9 +34,15 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Management.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
@@ -51,14 +57,13 @@
     <Compile Include="Puntoventa.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Core\Core.csproj">
-      <Project>{fa3c5bce-3db6-486e-b16b-8b7f76eef63f}</Project>
-      <Name>Core</Name>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{53a26de3-c25b-430e-8147-990ac6131be1}</Project>
+      <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Dominio\Dominio.csproj">
-      <Project>{74e3681e-1245-4268-adb9-d76da18b2fe0}</Project>
-      <Name>Dominio</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

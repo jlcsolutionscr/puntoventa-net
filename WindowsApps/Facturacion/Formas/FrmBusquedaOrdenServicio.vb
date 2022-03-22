@@ -1,5 +1,7 @@
+Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmBusquedaOrdenServicio
 #Region "Variables"
@@ -9,7 +11,7 @@ Public Class FrmBusquedaOrdenServicio
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
-    Private bolReady As Boolean = False
+    Private bolCargado As Boolean = False
     Public bolIncluyeEstado As Boolean = False
 #End Region
 
@@ -60,7 +62,11 @@ Public Class FrmBusquedaOrdenServicio
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            Dim listado = New List(Of FacturaDetalle)
+            If intCantidadDePaginas > 0 Then
+                listado = Await Puntoventa.ObtenerListadoOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            End If
+            dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -92,10 +98,10 @@ Public Class FrmBusquedaOrdenServicio
         End If
     End Function
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
         dtListaEstado.Clear()
@@ -113,7 +119,7 @@ Public Class FrmBusquedaOrdenServicio
         cboEstado.DisplayMember = "Descripcion"
         cboEstado.DataSource = dtListaEstado
         cboEstado.SelectedValue = 0
-    End Function
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -169,11 +175,11 @@ Public Class FrmBusquedaOrdenServicio
             cboEstado.Visible = bolIncluyeEstado
             lblEstado.Visible = bolIncluyeEstado
             EstablecerPropiedadesDataGridView()
-            Await CargarCombos()
+            CargarCombos()
             Await ValidarCantidadProformas()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
-            bolReady = True
+            bolCargado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -200,11 +206,11 @@ Public Class FrmBusquedaOrdenServicio
     End Sub
 
     Private Sub cboEstado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboEstado.SelectedIndexChanged
-        If bolReady Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If bolReady Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 #End Region
 End Class

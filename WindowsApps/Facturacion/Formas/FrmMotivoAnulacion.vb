@@ -25,7 +25,7 @@ Public Class FrmMotivoAnulacion
     End Sub
 
     Private Sub CmdAceptar_Click(sender As Object, e As EventArgs) Handles CmdAceptar.Click
-        If TxtMotivo.Text <> "" Then strMotivo = TxtMotivo.Text
+        strMotivo = TxtMotivo.Text
         bolConfirmacion = True
         Close()
     End Sub

@@ -30,7 +30,6 @@ Partial Class FrmReportViewer
         Me.repReportViewer.Font = New System.Drawing.Font("Tahoma", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.repReportViewer.Location = New System.Drawing.Point(13, 13)
         Me.repReportViewer.Name = "repReportViewer"
-        Me.repReportViewer.ServerReport.BearerToken = Nothing
         Me.repReportViewer.Size = New System.Drawing.Size(849, 529)
         Me.repReportViewer.TabIndex = 0
         '

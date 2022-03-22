@@ -9,7 +9,7 @@ Public Class FrmBusquedaProforma
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
-    Private bolReady As Boolean = False
+    Private bolCargado As Boolean = False
     Public bolIncluyeEstado As Boolean = False
 #End Region
 
@@ -81,10 +81,10 @@ Public Class FrmBusquedaProforma
         End If
     End Function
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
         dtListaEstado.Clear()
@@ -102,7 +102,7 @@ Public Class FrmBusquedaProforma
         cboEstado.DisplayMember = "Descripcion"
         cboEstado.DataSource = dtListaEstado
         cboEstado.SelectedValue = 0
-    End Function
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -158,11 +158,11 @@ Public Class FrmBusquedaProforma
             cboEstado.Visible = bolIncluyeEstado
             lblEstado.Visible = bolIncluyeEstado
             EstablecerPropiedadesDataGridView()
-            Await CargarCombos()
+            CargarCombos()
             Await ValidarCantidadProformas()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
-            bolReady = True
+            bolCargado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -189,11 +189,11 @@ Public Class FrmBusquedaProforma
     End Sub
 
     Private Sub cboEstado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboEstado.SelectedIndexChanged
-        If bolReady Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If bolReady Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
+        If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 #End Region
 End Class

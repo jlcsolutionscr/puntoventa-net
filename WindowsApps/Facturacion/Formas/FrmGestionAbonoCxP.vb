@@ -1,7 +1,8 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Collections.Generic
 
 Public Class FrmGestionAbonoCxP
 #Region "Variables"
@@ -171,7 +172,7 @@ Public Class FrmGestionAbonoCxP
                 reciboComprobante.arrDesgloseMov = arrDesgloseMov
                 arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)()
                 For Each desglosePago As DesglosePagoMovimientoCuentaPorPagar In movimiento.DesglosePagoMovimientoCuentaPorPagar
-                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(desglosePago.FormaPago.Descripcion, FormatNumber(desglosePago.MontoLocal, 2))
+                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(FrmPrincipal.ObtenerDescripcionFormaPagoEmpresa(desglosePago.IdFormaPago), FormatNumber(desglosePago.MontoLocal, 2))
                     arrDesglosePago.Add(desglosePagoImpresion)
                 Next
                 reciboComprobante.arrDesglosePago = arrDesglosePago

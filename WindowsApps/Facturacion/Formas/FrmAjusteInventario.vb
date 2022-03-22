@@ -1,7 +1,8 @@
-Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
-Imports LeandroSoftware.Core.Dominio.Entidades
-Imports LeandroSoftware.Core.TiposComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Constantes
+Imports System.Collections.Generic
 
 Public Class FrmAjusteInventario
 #Region "Variables"
@@ -120,7 +121,6 @@ Public Class FrmAjusteInventario
             txtCodigo.Focus()
             Exit Sub
         Else
-            Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
             txtCodigo.Text = producto.Codigo
             If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtDescripcion.Text = producto.Descripcion
@@ -139,13 +139,13 @@ Public Class FrmAjusteInventario
         txtCodigo.AutoCompleteSource = AutoCompleteSource.CustomSource
     End Sub
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
-    End Function
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -182,7 +182,7 @@ Public Class FrmAjusteInventario
         e.Handled = False
     End Sub
 
-    Private Async Sub FrmAjusteInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmAjusteInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             IniciaDetalleAjusteInventario()
             EstablecerPropiedadesDataGridView()
@@ -190,7 +190,7 @@ Public Class FrmAjusteInventario
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             btnBusProd.Enabled = True
             grdDetalleAjusteInventario.DataSource = dtbDetalleAjusteInventario
-            Await CargarCombos()
+            CargarCombos()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -267,6 +267,7 @@ Public Class FrmAjusteInventario
                 .Fecha = Now(),
                 .Descripcion = txtDescAjuste.Text
             }
+            ajusteInventario.DetalleAjusteInventario = New List(Of DetalleAjusteInventario)
             For I As Integer = 0 To dtbDetalleAjusteInventario.Rows.Count - 1
                 detalleAjusteInventario = New DetalleAjusteInventario With {
                     .IdProducto = dtbDetalleAjusteInventario.Rows(I).Item(0),

@@ -17,10 +17,10 @@ Public Class FrmAceptarDocumentoElectronico
         Next
     End Sub
 
-    Private Async Sub FrmAceptarDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmAceptarDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Sub

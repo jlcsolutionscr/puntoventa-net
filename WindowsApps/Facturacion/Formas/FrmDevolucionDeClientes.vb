@@ -1,7 +1,7 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Collections.Generic
 
 Public Class FrmDevolucionDeClientes
 #Region "Variables"
@@ -140,7 +140,7 @@ Public Class FrmDevolucionDeClientes
         dtbDetalleDevolucion.Rows.Clear()
         Dim tipoProducto As New List(Of Integer)(New Integer() {StaticTipoProducto.Producto, StaticTipoProducto.Transitorio})
         For Each detalle As DetalleFactura In factura.DetalleFactura
-            If tipoProducto.Contains(detalle.Producto.TipoProducto.IdTipoProducto) Then
+            If tipoProducto.Contains(detalle.Producto.Tipo) Then
                 dtrRowDetDevolucion = dtbDetalleDevolucion.NewRow
                 dtrRowDetDevolucion.Item(0) = detalle.IdProducto
                 dtrRowDetDevolucion.Item(1) = detalle.Producto.Codigo
@@ -352,17 +352,18 @@ Public Class FrmDevolucionDeClientes
         btnGuardar.Enabled = False
         If txtIdDevolucion.Text = "" Then
             devolucion = New DevolucionCliente With {
-            .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
-            .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-            .IdCliente = factura.IdCliente,
-            .IdFactura = factura.IdFactura,
-            .Detalle = txtDetalle.Text,
-            .ConsecFactura = factura.ConsecFactura,
-            .Fecha = Now(),
-            .Excento = dblExcento,
-            .Gravado = decGravado,
-            .Impuesto = CDbl(txtImpuesto.Text)
-        }
+                .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
+                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .IdCliente = factura.IdCliente,
+                .IdFactura = factura.IdFactura,
+                .Detalle = txtDetalle.Text,
+                .ConsecFactura = factura.ConsecFactura,
+                .Fecha = Now(),
+                .Excento = dblExcento,
+                .Gravado = decGravado,
+                .Impuesto = CDbl(txtImpuesto.Text)
+            }
+            devolucion.DetalleDevolucionCliente = New List(Of DetalleDevolucionCliente)
             For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
                 If dtbDetalleDevolucion.Rows(I).Item(8) > 0 Then
                     detalleDevolucion = New DetalleDevolucionCliente With {

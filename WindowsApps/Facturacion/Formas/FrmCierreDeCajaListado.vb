@@ -1,5 +1,7 @@
+Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmCierreDeCajaListado
 #Region "Variables"
@@ -7,6 +9,7 @@ Public Class FrmCierreDeCajaListado
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
+    Private bolCargado As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -27,7 +30,11 @@ Public Class FrmCierreDeCajaListado
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCierreCaja(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token)
+            Dim listado = New List(Of LlaveDescripcion)()
+            If intCantidadDePaginas > 0 Then
+                listado = Await Puntoventa.ObtenerListadoCierreCaja(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token)
+            End If
+            dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -59,13 +66,13 @@ Public Class FrmCierreDeCajaListado
         End If
     End Function
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
-    End Function
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -115,10 +122,11 @@ Public Class FrmCierreDeCajaListado
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             EstablecerPropiedadesDataGridView()
-            Await CargarCombos()
+            CargarCombos()
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
+            bolCargado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -127,9 +135,11 @@ Public Class FrmCierreDeCajaListado
     End Sub
 
     Private Async Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        Await ValidarCantidadRegistros()
-        intIndiceDePagina = 1
-        Await ActualizarDatos(intIndiceDePagina)
+        If bolCargado Then
+            Await ValidarCantidadRegistros()
+            intIndiceDePagina = 1
+            Await ActualizarDatos(intIndiceDePagina)
+        End If
     End Sub
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick

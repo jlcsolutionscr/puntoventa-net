@@ -1,6 +1,5 @@
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
-Imports System.Threading.Tasks
 
 Public Class FrmLinea
 #Region "Variables"
@@ -70,12 +69,13 @@ Public Class FrmLinea
         End If
     End Sub
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
-    End Function
+        cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -102,7 +102,7 @@ Public Class FrmLinea
         Try
             IniciaDetalleSucursal()
             EstablecerPropiedadesDataGridView()
-            Await CargarCombos()
+            CargarCombos()
             If intIdLinea > 0 Then
                 datos = Await Puntoventa.ObtenerLinea(intIdLinea, FrmPrincipal.usuarioGlobal.Token)
                 If datos Is Nothing Then
@@ -139,7 +139,11 @@ Public Class FrmLinea
             datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Descripcion = txtDescripcion.Text
-        datos.LineaPorSucursal.Clear()
+        If datos.LineaPorSucursal IsNot Nothing Then
+            datos.LineaPorSucursal.Clear()
+        Else
+            datos.LineaPorSucursal = New Generic.List(Of LineaPorSucursal)
+        End If
         For I As Short = 0 To dtbLineaPorSucursal.Rows.Count - 1
             lineaPorSucursal = New LineaPorSucursal With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,

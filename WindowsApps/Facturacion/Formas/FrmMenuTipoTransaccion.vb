@@ -1,4 +1,4 @@
-Imports LeandroSoftware.Core.TiposComunes
+Imports LeandroSoftware.Common.DatosComunes
 Imports System.Collections.Generic
 
 Public Class FrmMenuTipoTransaccion

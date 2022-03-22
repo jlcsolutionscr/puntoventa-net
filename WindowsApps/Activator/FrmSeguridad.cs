@@ -1,5 +1,5 @@
 ﻿using LeandroSoftware.ClienteWCF;
-using LeandroSoftware.Core.Dominio.Entidades;
+using LeandroSoftware.Common.Dominio.Entidades;
 using System;
 using System.Windows.Forms;
 

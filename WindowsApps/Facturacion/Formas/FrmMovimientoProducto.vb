@@ -1,5 +1,6 @@
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
+Imports System.Collections.Generic
 
 Public Class FrmMovimientoProducto
 #Region "Variables"
@@ -52,7 +53,11 @@ Public Class FrmMovimientoProducto
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Threading.Tasks.Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerMovimientosPorProducto(intIdProducto, intIdSucursal, intNumeroPagina, intFilasPorPagina, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), FrmPrincipal.usuarioGlobal.Token)
+            Dim listado = New List(Of MovimientoProducto)()
+            If intCantidadDePaginas > 0 Then
+                listado = Await Puntoventa.ObtenerMovimientosPorProducto(intIdProducto, intIdSucursal, intNumeroPagina, intFilasPorPagina, FechaInicio.Value.ToString("dd/MM/yyyy"), FechaFinal.Value.ToString("dd/MM/yyyy"), FrmPrincipal.usuarioGlobal.Token)
+            End If
+            dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)

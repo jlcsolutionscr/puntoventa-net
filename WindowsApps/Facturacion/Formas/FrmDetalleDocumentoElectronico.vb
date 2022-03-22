@@ -1,10 +1,12 @@
 ﻿Imports System.IO
 Imports System.Xml
-Imports LeandroSoftware.Core.Dominio.Entidades
 Imports System.Text
-Imports System.Threading.Tasks
-Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Threading.Tasks
+Imports System.Collections.Generic
 
 Public Class FrmDetalleDocumentoElectronico
 #Region "Variables"
@@ -14,7 +16,7 @@ Public Class FrmDetalleDocumentoElectronico
     Private intFilasPorPagina As Integer = 17
     Private intCantidadDePaginas As Integer
     Private bolRespuestaVisible = False
-    Private bolReady As Boolean = False
+    Private bolCargado As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -57,7 +59,10 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listadoDocumentosProcesados = Await Puntoventa.ObtenerListadoDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            listadoDocumentosProcesados = New List(Of DocumentoDetalle)()
+            If intCantidadDePaginas > 0 Then
+                listadoDocumentosProcesados = Await Puntoventa.ObtenerListadoDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            End If
             dgvDatos.DataSource = listadoDocumentosProcesados
             If listadoDocumentosProcesados.Count() > 0 Then
                 btnMostrarRespuesta.Enabled = True
@@ -95,13 +100,13 @@ Public Class FrmDetalleDocumentoElectronico
         End If
     End Function
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
-    End Function
+    End Sub
 
     Private Async Function ActualizarDatos() As Task
         Await ObtenerCantidadDocumentosProcesados()
@@ -156,11 +161,11 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Sub FrmDetalleDocumentoElectronico_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            Await CargarCombos()
+            CargarCombos()
             rtxDetalleRespuesta.Visible = False
             EstablecerPropiedadesDataGridView()
             Await ActualizarDatos()
-            bolReady = True
+            bolCargado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -275,7 +280,7 @@ Public Class FrmDetalleDocumentoElectronico
     End Sub
 
     Private Async Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If bolReady Then
+        If bolCargado Then
             Await ObtenerCantidadDocumentosProcesados()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)

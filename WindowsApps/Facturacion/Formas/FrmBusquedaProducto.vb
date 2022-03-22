@@ -1,5 +1,7 @@
+Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmBusquedaProducto
 #Region "Variables"
@@ -10,6 +12,7 @@ Public Class FrmBusquedaProducto
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
+    Private bolCargado = False
 #End Region
 
 #Region "Métodos"
@@ -85,14 +88,18 @@ Public Class FrmBusquedaProducto
         cboLinea.SelectedValue = 0
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = intIdSucursal
         cboSucursal.Enabled = True
     End Function
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, True, False, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDesc.Text, FrmPrincipal.usuarioGlobal.Token)
+            Dim listado = New List(Of ProductoDetalle)()
+            If intCantidadDePaginas > 0 Then
+                listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, True, False, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDesc.Text, FrmPrincipal.usuarioGlobal.Token)
+            End If
+            dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -199,6 +206,7 @@ Public Class FrmBusquedaProducto
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
             txtDesc.Focus()
+            bolCargado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -207,11 +215,11 @@ Public Class FrmBusquedaProducto
     End Sub
 
     Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
-        CmdFiltro_Click(CmdFiltro, New EventArgs())
+        If bolCargado Then CmdFiltro_Click(CmdFiltro, New EventArgs())
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        CmdFiltro_Click(CmdFiltro, New EventArgs())
+        If bolCargado Then CmdFiltro_Click(CmdFiltro, New EventArgs())
     End Sub
 #End Region
 End Class

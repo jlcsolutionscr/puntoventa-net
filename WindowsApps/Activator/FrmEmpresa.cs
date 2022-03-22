@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Data;
 using System.Threading.Tasks;
-using LeandroSoftware.Core.TiposComunes;
-using LeandroSoftware.Core.Dominio.Entidades;
 using LeandroSoftware.ClienteWCF;
 using System.Globalization;
+using LeandroSoftware.Common.Dominio.Entidades;
+using LeandroSoftware.Common.DatosComunes;
+using LeandroSoftware.Common.Constantes;
 
 namespace LeandroSoftware.Activator
 {

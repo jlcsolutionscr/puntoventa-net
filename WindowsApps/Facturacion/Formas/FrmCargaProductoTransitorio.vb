@@ -1,21 +1,23 @@
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.Dominio.Entidades
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Constantes
 
 Public Class FrmCargaProductoTransitorio
 #Region "Variables"
     Private datos As Producto
-    Private parametroImpuesto As ParametroImpuesto
+    Private parametroImpuesto As LlaveDescripcionValor
     Private bolReady As Boolean = False
 #End Region
 
 #Region "Métodos"
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
-        cboTipoImpuesto.DataSource = Await Puntoventa.ObtenerListadoTipoImpuesto(FrmPrincipal.usuarioGlobal.Token)
-        cboTipoImpuesto.SelectedValue = 8
-    End Function
+        cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
+        cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
+    End Sub
 
     Private Function FormatoPrecio(strInput As String, intDecimales As Integer) As String
         Dim decPrecio As Decimal = Decimal.Round(Decimal.Parse(strInput), intDecimales)
@@ -24,7 +26,7 @@ Public Class FrmCargaProductoTransitorio
 
     Private Async Function CalcularPrecioSinImpuesto(intIdImpuesto As Integer) As Task
         parametroImpuesto = Await Puntoventa.ObtenerParametroImpuesto(intIdImpuesto, FrmPrincipal.usuarioGlobal.Token)
-        If txtPrecioImpuesto1.Text <> "" Then txtPrecioVenta1.Text = FormatoPrecio(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
+        If txtPrecioImpuesto1.Text <> "" Then txtPrecioVenta1.Text = FormatoPrecio(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.Valor / 100)), 2)
     End Function
 #End Region
 
@@ -50,7 +52,7 @@ Public Class FrmCargaProductoTransitorio
 
     Private Async Sub FrmProducto_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            Await CargarCombos()
+            CargarCombos()
             datos = FrmPrincipal.productoTranstorio
             parametroImpuesto = Await Puntoventa.ObtenerParametroImpuesto(8, FrmPrincipal.usuarioGlobal.Token)
             bolReady = True
@@ -72,7 +74,7 @@ Public Class FrmCargaProductoTransitorio
         End If
         datos.Descripcion = txtDescripcion.Text
         datos.PrecioVenta1 = txtPrecioImpuesto1.Text
-        datos.ParametroImpuesto = parametroImpuesto
+        datos.IdImpuesto = parametroImpuesto.Id
         datos.Existencias = txtCantidad.Text
         FrmPrincipal.productoTranstorio = datos
         Close()
@@ -81,13 +83,13 @@ Public Class FrmCargaProductoTransitorio
     Private Sub PrecioVenta1_Validated(sender As Object, e As EventArgs) Handles txtPrecioVenta1.Validated
         If txtPrecioVenta1.Text = "" Then txtPrecioVenta1.Text = "0"
         txtPrecioVenta1.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
-        txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioVenta1.Text * (1 + (parametroImpuesto.TasaImpuesto / 100)), 2)
+        txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioVenta1.Text * (1 + (parametroImpuesto.Valor / 100)), 2)
     End Sub
 
     Private Sub txtPrecioImpuesto1_Validated(sender As Object, e As EventArgs) Handles txtPrecioImpuesto1.Validated
         If txtPrecioImpuesto1.Text = "" Then txtPrecioImpuesto1.Text = "0"
         txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
-        txtPrecioVenta1.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.TasaImpuesto / 100)), 3), 2)
+        txtPrecioVenta1.Text = FormatoPrecio(Math.Round(txtPrecioImpuesto1.Text / (1 + (parametroImpuesto.Valor / 100)), 3), 2)
     End Sub
 
     Private Sub SelectionAll_MouseDown(sender As Object, e As MouseEventArgs) Handles txtPrecioVenta1.MouseDown, txtPrecioImpuesto1.MouseDown

@@ -1,11 +1,11 @@
-﻿Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
-Imports Microsoft.Reporting.WinForms
+﻿Imports Microsoft.Reporting.WinForms
 Imports System.Reflection
 Imports System.IO
-Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Collections.Generic
 
 Public Class FrmMenuReportes
 #Region "Variables"
@@ -13,17 +13,17 @@ Public Class FrmMenuReportes
     Private proveedor As Proveedor
     Private cliente As Cliente
     Private newFormReport As FrmReportViewer
-    Private assembly As Assembly = Assembly.LoadFrom("Core.dll")
+    Private assembly As Assembly = Assembly.LoadFrom("Common.dll")
 #End Region
 
 #Region "Métodos"
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
-    End Function
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -31,9 +31,9 @@ Public Class FrmMenuReportes
         LstReporte.DataSource = FrmPrincipal.lstListaReportes
     End Sub
 
-    Private Async Sub FrmMenuReportes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmMenuReportes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            Await CargarCombos()
+            CargarCombos()
             FechaInicio.Text = Date.Now.Day & "/" & Date.Now.Month & "/" & Date.Now.Year
             FechaFinal.Text = Date.Now.Day & "/" & Date.Now.Month & "/" & Date.Now.Year
         Catch ex As Exception
@@ -101,7 +101,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -125,7 +125,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -149,7 +149,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -173,7 +173,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -197,7 +197,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -221,7 +221,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -272,7 +272,7 @@ Public Class FrmMenuReportes
                                 newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                                 newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                                 newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                                Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                                Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc")
                                 newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                                 Dim parameters(5) As ReportParameter
                                 parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -299,7 +299,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -323,7 +323,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -347,7 +347,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -373,7 +373,7 @@ Public Class FrmMenuReportes
                             newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                             newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                             newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                            Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptVentasPorVendedor.rdlc")
+                            Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptVentasPorVendedor.rdlc")
                             newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                             Dim parameters(4) As ReportParameter
                             parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -400,7 +400,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptCostoInventario.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptCostoInventario.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(3) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
@@ -446,7 +446,7 @@ Public Class FrmMenuReportes
                                 newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                                 newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                                 newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                                Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                                Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc")
                                 newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                                 Dim parameters(5) As ReportParameter
                                 parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -471,7 +471,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -494,7 +494,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptCuentas.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptCuentas.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -517,7 +517,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptCuentas.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptCuentas.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -540,7 +540,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptCuentas.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptCuentas.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -563,7 +563,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptCuentas.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptCuentas.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -586,7 +586,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptGrupoDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptGrupoDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -609,7 +609,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptGrupoDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptGrupoDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -635,7 +635,7 @@ Public Class FrmMenuReportes
                                 newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                                 newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                                 newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                                Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptMovimientoBanco.rdlc")
+                                Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptMovimientoBanco.rdlc")
                                 newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                                 Dim parameters(4) As ReportParameter
                                 parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -660,7 +660,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptResumenMovimientos.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptResumenMovimientos.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(4) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -685,7 +685,7 @@ Public Class FrmMenuReportes
                             newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                             newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                             newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                            Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptGrupoDetalle.rdlc")
+                            Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptGrupoDetalle.rdlc")
                             newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                             Dim parameters(5) As ReportParameter
                             parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -711,7 +711,7 @@ Public Class FrmMenuReportes
                             newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                             newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                             newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                            Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptGrupoDetalle.rdlc")
+                            Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptGrupoDetalle.rdlc")
                             newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                             Dim parameters(5) As ReportParameter
                             parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -735,7 +735,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptResumenLineaDetalle.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptResumenLineaDetalle.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(4) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -759,7 +759,7 @@ Public Class FrmMenuReportes
                             newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                             newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                             newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                            Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptGrupoLineaDetalle.rdlc")
+                            Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptGrupoLineaDetalle.rdlc")
                             newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                             Dim parameters(4) As ReportParameter
                             parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -783,7 +783,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptComprobanteElectronico.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptComprobanteElectronico.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -807,7 +807,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptComprobanteElectronico.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptComprobanteElectronico.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(5) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
@@ -831,7 +831,7 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
                         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptResumenComprobanteElectronico.rdlc")
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptResumenComprobanteElectronico.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
                         Dim parameters(4) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)

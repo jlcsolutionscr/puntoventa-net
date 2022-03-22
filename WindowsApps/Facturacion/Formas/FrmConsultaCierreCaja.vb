@@ -1,7 +1,7 @@
 Imports System.Collections.Generic
 Imports System.Linq
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
 Imports Microsoft.Reporting.WinForms
 Imports System.IO
 Imports System.Reflection
@@ -16,7 +16,7 @@ Public Class FrmConsultaCierreCaja
     Private dtrRowDetEfectivo As DataRow
     Private cierreCaja As CierreCaja
     Private lstReporte As List(Of DescripcionValor)
-    Private ReadOnly assembly As Assembly = Assembly.LoadFrom("Core.dll")
+    Private ReadOnly assembly As Assembly = Assembly.LoadFrom("Common.dll")
     Private comprobanteImpresion As ModuloImpresion.ClsCierreCaja
 #End Region
 
@@ -174,7 +174,7 @@ Public Class FrmConsultaCierreCaja
         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDescripcionValor.rdlc")
+        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDescripcionValor.rdlc")
         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
         Dim parameters(4) As ReportParameter
         parameters(0) = New ReportParameter("pUsuario", strUsuario)

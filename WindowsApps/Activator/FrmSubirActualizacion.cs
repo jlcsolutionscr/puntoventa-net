@@ -77,11 +77,7 @@ namespace LeandroSoftware.Activator
                     if (ex.InnerException != null)
                         MessageBox.Show("Error: " + ex.InnerException.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     else
-                    {
-                        string response = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
-                        MessageBox.Show("Error: " + response, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                       
+                        MessageBox.Show("Error: " + ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Close();
                 }
             }

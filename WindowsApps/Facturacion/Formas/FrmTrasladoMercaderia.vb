@@ -1,8 +1,9 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.Dominio.Entidades
-Imports System.Threading.Tasks
-Imports LeandroSoftware.Core.TiposComunes
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Linq
 
 Public Class FrmTrasladoMercaderia
 #Region "Variables"
@@ -94,7 +95,7 @@ Public Class FrmTrasladoMercaderia
             dtrRowDetTraslado.Item(3) = detalle.Cantidad
             dtrRowDetTraslado.Item(4) = detalle.PrecioCosto
             dtrRowDetTraslado.Item(5) = dtrRowDetTraslado.Item(3) * dtrRowDetTraslado.Item(4)
-            dtrRowDetTraslado.Item(6) = detalle.Producto.ParametroImpuesto.TasaImpuesto
+            dtrRowDetTraslado.Item(6) = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
             dtbDetalleTraslado.Rows.Add(dtrRowDetTraslado)
         Next
         grdDetalleTraslado.Refresh()
@@ -108,7 +109,7 @@ Public Class FrmTrasladoMercaderia
             dtbDetalleTraslado.Rows(intIndice).Item(3) += txtCantidad.Text
             dtbDetalleTraslado.Rows(intIndice).Item(4) = producto.PrecioCosto
             dtbDetalleTraslado.Rows(intIndice).Item(5) = dtbDetalleTraslado.Rows(intIndice).Item(3) * dtbDetalleTraslado.Rows(intIndice).Item(4)
-            dtbDetalleTraslado.Rows(intIndice).Item(6) = producto.ParametroImpuesto.TasaImpuesto
+            dtbDetalleTraslado.Rows(intIndice).Item(6) = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
         Else
             dtrRowDetTraslado = dtbDetalleTraslado.NewRow
             dtrRowDetTraslado.Item(0) = producto.IdProducto
@@ -117,7 +118,7 @@ Public Class FrmTrasladoMercaderia
             dtrRowDetTraslado.Item(3) = txtCantidad.Text
             dtrRowDetTraslado.Item(4) = producto.PrecioCosto
             dtrRowDetTraslado.Item(5) = dtrRowDetTraslado.Item(3) * dtrRowDetTraslado.Item(4)
-            dtrRowDetTraslado.Item(6) = producto.ParametroImpuesto.TasaImpuesto
+            dtrRowDetTraslado.Item(6) = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
             dtbDetalleTraslado.Rows.Add(dtrRowDetTraslado)
         End If
         grdDetalleTraslado.Refresh()
@@ -144,11 +145,12 @@ Public Class FrmTrasladoMercaderia
         txtTotal.Text = FormatNumber(decTotal, 2)
     End Sub
 
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboIdSucursalDestino.ValueMember = "Id"
         cboIdSucursalDestino.DisplayMember = "Descripcion"
-        cboIdSucursalDestino.DataSource = Await Puntoventa.ObtenerListadoSucursalDestino(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
-    End Function
+        Dim listado As List(Of LlaveDescripcion) = New List(Of LlaveDescripcion)(FrmPrincipal.ObtenerListadoSucursales().Where(Function(x) x.Id <> FrmPrincipal.equipoGlobal.IdSucursal).ToList())
+        cboIdSucursalDestino.DataSource = listado
+    End Sub
 
     Private Sub CargarDatosProducto(producto As Producto)
         If producto Is Nothing Then
@@ -161,7 +163,6 @@ Public Class FrmTrasladoMercaderia
             txtCodigo.Focus()
             Exit Sub
         Else
-            Dim decTasaImpuesto As Decimal = producto.ParametroImpuesto.TasaImpuesto
             txtCodigo.Text = producto.Codigo
             txtDescripcion.Text = producto.Descripcion
             txtExistencias.Text = producto.Existencias
@@ -216,7 +217,7 @@ Public Class FrmTrasladoMercaderia
         e.Handled = False
     End Sub
 
-    Private Async Sub FrmTrasladoMercaderia_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmTrasladoMercaderia_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             IniciaDetalleTraslado()
             EstablecerPropiedadesDataGridView()
@@ -226,7 +227,7 @@ Public Class FrmTrasladoMercaderia
             grdDetalleTraslado.DataSource = dtbDetalleTraslado
             txtCantidad.Text = ""
             txtTotal.Text = FormatNumber(0, 2)
-            Await CargarCombos()
+            CargarCombos()
             If cboIdSucursalDestino.Items.Count = 0 Then
                 MessageBox.Show("La empresa no posee sucursales adicionales.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
@@ -353,6 +354,7 @@ Public Class FrmTrasladoMercaderia
                 .Referencia = txtReferencia.Text,
                 .Total = decTotal
             }
+            traslado.DetalleTraslado = New List(Of DetalleTraslado)
             For I As Short = 0 To dtbDetalleTraslado.Rows.Count - 1
                 detalleTraslado = New DetalleTraslado With {
                     .IdProducto = dtbDetalleTraslado.Rows(I).Item(0),

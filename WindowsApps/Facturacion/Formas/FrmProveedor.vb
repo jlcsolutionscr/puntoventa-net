@@ -1,5 +1,5 @@
 Imports LeandroSoftware.ClienteWCF
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.Dominio.Entidades
 
 Public Class FrmProveedor
 #Region "Variables"

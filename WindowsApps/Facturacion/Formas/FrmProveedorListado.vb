@@ -1,5 +1,7 @@
-﻿Imports System.Threading.Tasks
+﻿Imports System.Collections.Generic
+Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmProveedorListado
 #Region "Variables"
@@ -7,7 +9,6 @@ Public Class FrmProveedorListado
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
-    Private listado As IList
 #End Region
 
 #Region "Métodos"
@@ -28,7 +29,10 @@ Public Class FrmProveedorListado
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            listado = Await Puntoventa.ObtenerListadoProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            Dim listado = New List(Of LlaveDescripcion)()
+            If intCantidadDePaginas > 0 Then
+                listado = Await Puntoventa.ObtenerListadoProveedores(FrmPrincipal.empresaGlobal.IdEmpresa, intNumeroPagina, intFilasPorPagina, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            End If
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True

@@ -1,8 +1,8 @@
-Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
-Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
+Imports System.Threading.Tasks
+Imports System.Collections.Generic
 
 Public Class FrmAplicaAbonoCxP
 #Region "Variables"
@@ -154,7 +154,7 @@ Public Class FrmAplicaAbonoCxP
     Private Async Function CargarCombos() As Task
         cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        cboFormaPago.DataSource = Await Puntoventa.ObtenerListadoFormaPagoCliente(FrmPrincipal.usuarioGlobal.Token)
+        cboFormaPago.DataSource = FrmPrincipal.ObtenerListadoFormaPagoCliente()
         cboTipoBanco.ValueMember = "Id"
         cboTipoBanco.DisplayMember = "Descripcion"
         cboTipoBanco.DataSource = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
@@ -298,6 +298,7 @@ Public Class FrmAplicaAbonoCxP
             .SaldoActual = cuentaPorPagar.Saldo,
             .Fecha = Now()
         }
+        movimiento.DesglosePagoMovimientoCuentaPorPagar = New List(Of DesglosePagoMovimientoCuentaPorPagar)
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             desglosePagoMovimiento = New DesglosePagoMovimientoCuentaPorPagar With {
                 .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),

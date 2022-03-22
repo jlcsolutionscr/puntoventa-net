@@ -1,5 +1,5 @@
 Imports System.Threading.Tasks
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.Dominio.Entidades
 Imports System.IO
 Imports LeandroSoftware.ClienteWCF
 Imports System.Collections.Generic
@@ -17,9 +17,59 @@ Public Class FrmEmpresa
     Private bolLogoModificado As Boolean = False
     Private bolCredencialesModificados As Boolean = False
     Private bytCertificado As Byte() = Nothing
+    Private dtbActividadEconomica As DataTable
+    Private dtrActividadEconomica As DataRow
 #End Region
 
 #Region "Métodos"
+    Private Sub IniciaDetalleActividad()
+        dtbActividadEconomica = New DataTable()
+        dtbActividadEconomica.Columns.Add("CODIGO", GetType(String))
+        dtbActividadEconomica.Columns.Add("DESCRIPCION", GetType(String))
+        dtbActividadEconomica.PrimaryKey = {dtbActividadEconomica.Columns(0)}
+    End Sub
+
+    Private Sub EstablecerPropiedadesDataGridView()
+        dgvActividadEconomica.Columns.Clear()
+        dgvActividadEconomica.AutoGenerateColumns = False
+
+        Dim dvcIdRole As New DataGridViewTextBoxColumn
+        Dim dvcNombre As New DataGridViewTextBoxColumn
+
+        dvcIdRole.DataPropertyName = "CODIGO"
+        dvcIdRole.HeaderText = "Codigo"
+        dvcIdRole.Visible = False
+        dgvActividadEconomica.Columns.Add(dvcIdRole)
+
+        dvcNombre.DataPropertyName = "DESCRIPCION"
+        dvcNombre.HeaderText = "Actividad Económica"
+        dvcNombre.Width = 279
+        dgvActividadEconomica.Columns.Add(dvcNombre)
+    End Sub
+
+    Private Sub CargarDetalleActividad(ByVal empresa As Empresa)
+        For Each detalle As ActividadEconomicaEmpresa In empresa.ActividadEconomicaEmpresa
+            dtrActividadEconomica = dtbActividadEconomica.NewRow
+            dtrActividadEconomica.Item(0) = detalle.CodigoActividad
+            dtrActividadEconomica.Item(1) = detalle.Descripcion
+            dtbActividadEconomica.Rows.Add(dtrActividadEconomica)
+        Next
+        dgvActividadEconomica.DataSource = dtbActividadEconomica
+        dgvActividadEconomica.Refresh()
+    End Sub
+
+    Private Sub CargarLineaDetalleActividad(ByVal intCodigo As Integer, ByVal strDescripcion As String)
+        If dtbActividadEconomica.Rows.Contains(intCodigo) Then
+            MessageBox.Show("La actividad económica ya se encuentra en el listado. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        Else
+            dtrActividadEconomica = dtbActividadEconomica.NewRow
+            dtrActividadEconomica.Item(0) = intCodigo
+            dtrActividadEconomica.Item(1) = strDescripcion
+            dtbActividadEconomica.Rows.Add(dtrActividadEconomica)
+            dgvActividadEconomica.DataSource = dtbActividadEconomica
+            dgvActividadEconomica.Refresh()
+        End If
+    End Sub
     Private Async Function CargarListadoBarrios(IdProvincia As Integer, IdCanton As Integer, IdDistrito As Integer) As Task
         Try
             cboCanton.ValueMember = "Id"
@@ -36,14 +86,16 @@ Public Class FrmEmpresa
         End Try
     End Function
 
-    Private Async Function CargarCombos() As Task
+    Private Async Function CargarCombos(strIdentificacion) As Task
         cboTipoIdentificacion.ValueMember = "Id"
         cboTipoIdentificacion.DisplayMember = "Descripcion"
-        cboTipoIdentificacion.DataSource = Await Puntoventa.ObtenerListadoTipoIdentificacion(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoIdentificacion.DataSource = FrmPrincipal.ObtenerListadoTipoIdentificacion()
         cboProvincia.ValueMember = "Id"
         cboProvincia.DisplayMember = "Descripcion"
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
-
+        cboActividadEconomica.ValueMember = "Id"
+        cboActividadEconomica.DisplayMember = "Descripcion"
+        cboActividadEconomica.DataSource = Await Puntoventa.ObtenerListadoActividadEconomica(strIdentificacion, FrmPrincipal.usuarioGlobal.Token)
         Dim comboSource As New Dictionary(Of Integer, String)()
         comboSource.Add(80, "80MM THERMAL RECEIPT PRINTER")
         comboSource.Add(52, "58MM THERMAL RECEIPT PRINTER")
@@ -75,8 +127,10 @@ Public Class FrmEmpresa
 
     Private Async Sub FrmEmpresa_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            Await CargarCombos()
+            IniciaDetalleActividad()
+            EstablecerPropiedadesDataGridView()
             datos = Await Puntoventa.ObtenerEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+            Await CargarCombos(datos.Identificacion)
             Dim logotipo As Byte() = Await Puntoventa.ObtenerLogotipoEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
             credenciales = Await Puntoventa.ObtenerCredencialesHacienda(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
             datosSucursal = Await Puntoventa.ObtenerSucursalPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
@@ -92,7 +146,6 @@ Public Class FrmEmpresa
             txtNombreComercial.Text = datos.NombreComercial
             cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
             txtIdentificacion.Text = datos.Identificacion
-            txtCodigoActividad.Text = datos.CodigoActividad
             cboProvincia.SelectedValue = datos.IdProvincia
             cboCanton.SelectedValue = datos.IdCanton
             cboDistrito.SelectedValue = datos.IdDistrito
@@ -114,6 +167,7 @@ Public Class FrmEmpresa
                 txtUsuarioATV.Text = credenciales.UsuarioHacienda
                 txtClaveATV.Text = credenciales.ClaveHacienda
             End If
+            CargarDetalleActividad(datos)
             txtIdSucursal.Text = datosSucursal.IdSucursal
             txtNombreSucursal.Text = datosSucursal.NombreSucursal
             txtDireccionSucursal.Text = datosSucursal.Direccion
@@ -146,6 +200,20 @@ Public Class FrmEmpresa
         End Try
     End Sub
 
+    Private Sub BtnInsertar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnInsertar.Click
+        If cboActividadEconomica.SelectedValue IsNot Nothing Then
+            CargarLineaDetalleActividad(cboActividadEconomica.SelectedValue, cboActividadEconomica.Text)
+        Else
+            MessageBox.Show("Debe selecionar la actividad ", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End If
+    End Sub
+
+    Private Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
+        If dtbActividadEconomica.Rows.Count > 0 Then
+            dtbActividadEconomica.Rows.Remove(dtbActividadEconomica.Rows.Find(dgvActividadEconomica.CurrentRow.Cells(0).Value))
+        End If
+    End Sub
+
     Private Sub BtnCancelar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancelar.Click
         Close()
     End Sub
@@ -175,7 +243,6 @@ Public Class FrmEmpresa
         datos.NombreComercial = txtNombreComercial.Text
         datos.IdTipoIdentificacion = cboTipoIdentificacion.SelectedValue
         datos.Identificacion = txtIdentificacion.Text
-        datos.CodigoActividad = txtCodigoActividad.Text
         datos.IdProvincia = cboProvincia.SelectedValue
         datos.IdCanton = cboCanton.SelectedValue
         datos.IdDistrito = cboDistrito.SelectedValue
@@ -191,12 +258,21 @@ Public Class FrmEmpresa
         datos.PrecioVentaIncluyeIVA = chkPrecioVentaIncluyeIVA.Checked
         datos.MontoRedondeoDescuento = txtMontoRedondeoDescuento.Text
         datos.Barrio = Nothing
+        datos.ActividadEconomicaEmpresa.Clear()
+        For I As Short = 0 To dtbActividadEconomica.Rows.Count - 1
+            Dim actividadEconomicaEmpresa As ActividadEconomicaEmpresa = New ActividadEconomicaEmpresa With {
+                .IdEmpresa = datos.IdEmpresa,
+                .CodigoActividad = dtbActividadEconomica.Rows(I).Item(0),
+                .Descripcion = dtbActividadEconomica.Rows(I).Item(1)
+            }
+            datos.ActividadEconomicaEmpresa.Add(actividadEconomicaEmpresa)
+        Next
         If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
             If txtNombreCertificado.Text.Length = 0 Or
                 txtPinCertificado.Text.Length = 0 Or
                 txtUsuarioATV.Text.Length = 0 Or
                 txtClaveATV.Text.Length = 0 Or
-                txtCodigoActividad.Text.Length = 0 Then
+                dgvActividadEconomica.RowCount = 0 Then
                 MessageBox.Show("Los datos para generar los documentos electrónicos son requeridos. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
@@ -372,7 +448,7 @@ Public Class FrmEmpresa
 
     Private Sub btnLimpiarLogo_Click(sender As Object, e As EventArgs) Handles btnLimpiarLogo.Click
         Dim dialogResult As DialogResult = MessageBox.Show("Desea eliminar el logotipo de la empresa?", "Leandro Software", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-        If dialogResult = dialogResult.Yes Then
+        If dialogResult = DialogResult.Yes Then
             picLogo.Image = Nothing
             bolLogoModificado = True
         End If

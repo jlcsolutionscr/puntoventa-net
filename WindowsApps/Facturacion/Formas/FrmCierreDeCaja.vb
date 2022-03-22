@@ -1,7 +1,7 @@
 Imports System.Collections.Generic
 Imports System.Linq
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
 Imports Microsoft.Reporting.WinForms
 Imports System.IO
 Imports System.Reflection
@@ -13,7 +13,7 @@ Public Class FrmCierreDeCaja
     Private decTotalEnCaja As Decimal
     Private cierreCaja As CierreCaja
     Private lstReporte As List(Of DescripcionValor)
-    Private ReadOnly assembly As Assembly = Assembly.LoadFrom("Core.dll")
+    Private ReadOnly assembly As Assembly = Assembly.LoadFrom("Common.dll")
     Private comprobanteImpresion As ModuloImpresion.ClsCierreCaja
     Private initialized As Boolean = False
 #End Region
@@ -107,7 +107,7 @@ Public Class FrmCierreDeCaja
             cierreCaja.RetiroEfectivo = CDbl(txtRetiroEfectivo.Text)
             cierreCaja.FondoCierre = CDbl(txtCierreEfectivoProx.Text)
             cierreCaja.Observaciones = txtObservaciones.Text
-            cierreCaja.DetalleEfectivoCierreCaja.Clear()
+            cierreCaja.DetalleEfectivoCierreCaja = New List(Of DetalleEfectivoCierreCaja)
             For Each c As Control In grbDetalleEfectivo.Controls
                 If c.Name.Contains("txtCantidad") Then
                     Dim denominacion As String = c.Name.Substring(11)
@@ -145,7 +145,7 @@ Public Class FrmCierreDeCaja
         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptDescripcionValor.rdlc")
+        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDescripcionValor.rdlc")
         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
         Dim parameters(4) As ReportParameter
         parameters(0) = New ReportParameter("pUsuario", strUsuario)

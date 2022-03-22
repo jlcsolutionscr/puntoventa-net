@@ -1,6 +1,6 @@
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Constantes
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.Core.Dominio.Entidades
 
 Public Class FrmDevolucionAProveedores
 #Region "Variables"
@@ -125,7 +125,7 @@ Public Class FrmDevolucionAProveedores
     Private Sub CargarDetalleCompra(ByVal compra As Compra)
         dtbDetalleDevolucion.Rows.Clear()
         For Each detalle As DetalleCompra In compra.DetalleCompra
-            If detalle.Producto.TipoProducto.IdTipoProducto = StaticTipoProducto.Producto Then
+            If detalle.Producto.Tipo = StaticTipoProducto.Producto Then
                 dtrRowDetDevolucion = dtbDetalleDevolucion.NewRow
                 dtrRowDetDevolucion.Item(0) = detalle.IdProducto
                 dtrRowDetDevolucion.Item(1) = detalle.Producto.Codigo
@@ -329,6 +329,7 @@ Public Class FrmDevolucionAProveedores
                 .Gravado = decGravado,
                 .Impuesto = CDbl(txtImpuesto.Text)
             }
+            devolucion.DetalleDevolucionProveedor = New List(Of DetalleDevolucionProveedor)
             For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
                 detalleDevolucion = New DetalleDevolucionProveedor With {
                     .IdProducto = dtbDetalleDevolucion.Rows(I).Item(0),
@@ -373,10 +374,10 @@ Public Class FrmDevolucionAProveedores
                 .strImpuesto = txtImpuesto.Text,
                 .strTotal = txtTotal.Text
             }
-            arrDetalleDevolucion = New List(Of ModuloImpresion.clsDetalleComprobante)
+            arrDetalleDevolucion = New List(Of ModuloImpresion.ClsDetalleComprobante)
             For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
                 If dtbDetalleDevolucion.Rows(I).Item(7) > 0 Then
-                    detalleComprobante = New ModuloImpresion.clsDetalleComprobante With {
+                    detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                         .strDescripcion = dtbDetalleDevolucion.Rows(I).Item(1) + "-" + dtbDetalleDevolucion.Rows(I).Item(2),
                         .strCantidad = CDbl(dtbDetalleDevolucion.Rows(I).Item(7)),
                         .strPrecio = FormatNumber(dtbDetalleDevolucion.Rows(I).Item(4), 2),

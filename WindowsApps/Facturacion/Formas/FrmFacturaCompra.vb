@@ -1,7 +1,9 @@
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.Common.Dominio.Entidades
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports System.Text.RegularExpressions
+Imports LeandroSoftware.Common.Constantes
+Imports System.Collections.Generic
 
 Public Class FrmFacturaCompra
 #Region "Variables"
@@ -10,7 +12,7 @@ Public Class FrmFacturaCompra
     Private dtrRowDetProforma As DataRow
     Private facturaCompra As FacturaCompra
     Private detalleFacturaCompra As DetalleFacturaCompra
-    Private bolReady As Boolean = False
+    Private bolInicializado As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -152,6 +154,7 @@ Public Class FrmFacturaCompra
     End Sub
 
     Private Async Function CargarListadoBarrios(IdProvincia As Integer, IdCanton As Integer, IdDistrito As Integer) As Task
+        bolInicializado = False
         cboCanton.ValueMember = "Id"
         cboCanton.DisplayMember = "Descripcion"
         cboCanton.DataSource = Await Puntoventa.ObtenerListadoCantones(IdProvincia, FrmPrincipal.usuarioGlobal.Token)
@@ -161,12 +164,11 @@ Public Class FrmFacturaCompra
         cboBarrio.ValueMember = "Id"
         cboBarrio.DisplayMember = "Descripcion"
         cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(IdProvincia, IdCanton, IdDistrito, FrmPrincipal.usuarioGlobal.Token)
-        cboTipoImpuesto.ValueMember = "Id"
-        cboTipoImpuesto.DisplayMember = "Descripcion"
-        cboTipoImpuesto.DataSource = Await Puntoventa.ObtenerListadoTipoImpuesto(FrmPrincipal.usuarioGlobal.Token)
+        bolInicializado = True
     End Function
 
     Private Async Function CargarCombos() As Task
+        bolInicializado = False
         Dim columns() As String = {"Und", "Sp", "Spe", "St", "Os"}
         cboUnidadMedida.MaxDropDownItems = columns.Length
         For i As Integer = 0 To (columns.Length - 1)
@@ -174,13 +176,20 @@ Public Class FrmFacturaCompra
         Next
         cboTipoIdentificacion.ValueMember = "Id"
         cboTipoIdentificacion.DisplayMember = "Descripcion"
-        cboTipoIdentificacion.DataSource = Await Puntoventa.ObtenerListadoTipoIdentificacion(FrmPrincipal.usuarioGlobal.Token)
+        cboTipoIdentificacion.DataSource = FrmPrincipal.ObtenerListadoTipoIdentificacion()
+        cboTipoExoneracion.ValueMember = "Id"
+        cboTipoExoneracion.DisplayMember = "Descripcion"
+        cboTipoExoneracion.DataSource = FrmPrincipal.ObtenerListadoTipoExoneracion()
+        cboTipoImpuesto.ValueMember = "Id"
+        cboTipoImpuesto.DisplayMember = "Descripcion"
+        cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
+        cboActividadEconomica.ValueMember = "Id"
+        cboActividadEconomica.DisplayMember = "Descripcion"
+        cboActividadEconomica.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
         cboProvincia.ValueMember = "Id"
         cboProvincia.DisplayMember = "Descripcion"
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
-        cboTipoExoneracion.ValueMember = "Id"
-        cboTipoExoneracion.DisplayMember = "Descripcion"
-        cboTipoExoneracion.DataSource = Await Puntoventa.ObtenerListadoTipoExoneracion(FrmPrincipal.usuarioGlobal.Token)
+        bolInicializado = True
     End Function
 #End Region
 
@@ -215,9 +224,9 @@ Public Class FrmFacturaCompra
             grdDetalleProforma.DataSource = dtbDetalleProforma
             txtFechaExoneracion.Text = "01/01/2019"
             txtPorcentajeExoneracion.Text = "0"
-            bolReady = True
+            bolInicializado = True
             txtCantidad.Text = "1"
-            cboTipoImpuesto.SelectedValue = 8
+            cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
             cboUnidadMedida.SelectedIndex = 0
             txtPrecio.Text = "0.00"
             txtSubTotal.Text = FormatNumber(0, 2)
@@ -231,24 +240,24 @@ Public Class FrmFacturaCompra
     End Sub
 
     Private Async Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
-        If bolReady Then
-            bolReady = False
+        If bolInicializado Then
+            bolInicializado = False
             Await CargarListadoBarrios(cboProvincia.SelectedValue, 1, 1)
-            bolReady = True
+            bolInicializado = True
         End If
     End Sub
 
     Private Async Sub CboCanton_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCanton.SelectedIndexChanged
-        If bolReady Then
-            bolReady = False
+        If bolInicializado Then
+            bolInicializado = False
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
-            bolReady = True
+            bolInicializado = True
         End If
     End Sub
 
     Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
-        If bolReady Then
+        If bolInicializado Then
             cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
         End If
     End Sub
@@ -262,6 +271,7 @@ Public Class FrmFacturaCompra
         txtNombreComercial.Text = ""
         txtTelefono.Text = ""
         txtCorreoElectronico.Text = ""
+        cboActividadEconomica.SelectedIndex = 0
         cboTipoIdentificacion.SelectedIndex = 0
         Await CargarListadoBarrios(1, 1, 1)
         cboTipoExoneracion.SelectedIndex = 0
@@ -276,7 +286,7 @@ Public Class FrmFacturaCompra
         txtTotal.Text = FormatNumber(0, 2)
         txtCantidad.Text = "1"
         txtCodigo.Text = ""
-        cboTipoImpuesto.SelectedValue = 8
+        cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
         txtDescripcion.Text = ""
         cboUnidadMedida.SelectedIndex = 0
         txtPrecio.Text = "0.00"
@@ -349,6 +359,7 @@ Public Class FrmFacturaCompra
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdTipoMoneda = 1,
                 .Fecha = Now(),
+                .CodigoActividad = cboActividadEconomica.SelectedValue,
                 .IdCondicionVenta = 1,
                 .PlazoCredito = 0,
                 .NombreEmisor = txtNombre.Text,
@@ -374,6 +385,7 @@ Public Class FrmFacturaCompra
                 .Descuento = 0,
                 .Impuesto = decImpuesto
             }
+            facturaCompra.DetalleFacturaCompra = New List(Of DetalleFacturaCompra)
             For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
                 detalleFacturaCompra = New DetalleFacturaCompra With {
                     .Linea = I + 1,
@@ -400,14 +412,13 @@ Public Class FrmFacturaCompra
         MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
-    Private Async Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
+    Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
         If txtCantidad.Text <> "" And txtCodigo.Text <> "" And txtDescripcion.Text <> "" And txtPrecio.Text <> "" Then
             If txtCantidad.Text = "0" Then
                 MessageBox.Show("La cantidad no puede ser 0. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
-            Dim parametroImpuesto As ParametroImpuesto = Await Puntoventa.ObtenerParametroImpuesto(cboTipoImpuesto.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-            CargarLineaDetalleFacturaCompra(txtCantidad.Text, txtCodigo.Text, txtDescripcion.Text, cboTipoImpuesto.SelectedValue, parametroImpuesto.TasaImpuesto, cboUnidadMedida.Text, txtPrecio.Text)
-            cboTipoImpuesto.SelectedValue = 8
+            CargarLineaDetalleFacturaCompra(txtCantidad.Text, txtCodigo.Text, txtDescripcion.Text, cboTipoImpuesto.SelectedValue, FrmPrincipal.ObtenerTarifaImpuesto(cboTipoImpuesto.SelectedValue), cboUnidadMedida.Text, txtPrecio.Text)
+            cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
             txtCantidad.Text = ""
             txtCodigo.Text = ""
             txtDescripcion.Text = ""

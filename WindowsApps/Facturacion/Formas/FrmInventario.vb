@@ -1,9 +1,9 @@
 Imports System.Collections.Generic
-Imports LeandroSoftware.Core.TiposComunes
 Imports Microsoft.Reporting.WinForms
 Imports System.Reflection
 Imports System.IO
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmInventario
 #Region "Variables"
@@ -12,9 +12,9 @@ Public Class FrmInventario
     Private intFilasPorPagina As Integer = 16
     Private intCantidadDePaginas As Integer
     Private intIdSucursal As Integer = FrmPrincipal.equipoGlobal.IdSucursal
-    Private bolReady As Boolean = False
+    Private bolCargado As Boolean = False
     Private newFormReport As FrmReportViewer
-    Private assembly As Assembly = Assembly.LoadFrom("Core.dll")
+    Private assembly As Assembly = Assembly.LoadFrom("Common.dll")
     Private strEmpresa As String = IIf(FrmPrincipal.empresaGlobal.NombreComercial = "", FrmPrincipal.empresaGlobal.NombreEmpresa, FrmPrincipal.empresaGlobal.NombreComercial)
 #End Region
 
@@ -90,13 +90,17 @@ Public Class FrmInventario
         cboLinea.SelectedValue = 0
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
-        cboSucursal.DataSource = Await Puntoventa.ObtenerListadoSucursales(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+        cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
     End Function
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Threading.Tasks.Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, chkIncluyeServicios.Checked, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            Dim listado = New List(Of ProductoDetalle)()
+            If intCantidadDePaginas > 0 Then
+                listado = Await Puntoventa.ObtenerListadoProductos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, chkIncluyeServicios.Checked, chkFiltrarActivos.Checked, chkFiltrarExistencias.Checked, False, cboLinea.SelectedValue, txtCodigo.Text, txtCodigoProveedor.Text, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            End If
+            dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -173,21 +177,26 @@ Public Class FrmInventario
     End Sub
 
     Private Async Sub CmdFiltrar_Click(sender As Object, e As EventArgs) Handles CmdFiltrar.Click
-        If CmdFiltrar.Enabled Then
-            CmdFiltrar.Enabled = False
-            btnFirst.Enabled = False
-            btnPrevious.Enabled = False
-            btnNext.Enabled = False
-            btnLast.Enabled = False
-            Await ValidarCantidadRegistros()
-            intIndiceDePagina = 1
-            Await ActualizarDatos(intIndiceDePagina)
-            CmdFiltrar.Enabled = True
-            btnFirst.Enabled = True
-            btnPrevious.Enabled = True
-            btnNext.Enabled = True
-            btnLast.Enabled = True
-        End If
+        Try
+            If CmdFiltrar.Enabled Then
+                CmdFiltrar.Enabled = False
+                btnFirst.Enabled = False
+                btnPrevious.Enabled = False
+                btnNext.Enabled = False
+                btnLast.Enabled = False
+                Await ValidarCantidadRegistros()
+                intIndiceDePagina = 1
+                Await ActualizarDatos(intIndiceDePagina)
+                CmdFiltrar.Enabled = True
+                btnFirst.Enabled = True
+                btnPrevious.Enabled = True
+                btnNext.Enabled = True
+                btnLast.Enabled = True
+            End If
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Close()
+        End Try
     End Sub
 
     Private Async Sub FrmInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
@@ -197,7 +206,7 @@ Public Class FrmInventario
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
-            bolReady = True
+            bolCargado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -221,7 +230,7 @@ Public Class FrmInventario
         newFormReport.repReportViewer.LocalReport.DataSources.Clear()
         newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Core.PlantillaReportes.rptInventario.rdlc")
+        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptInventario.rdlc")
         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
         Dim parameters(3) As ReportParameter
         parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
@@ -250,32 +259,32 @@ Public Class FrmInventario
     End Sub
 
     Private Sub chkFiltrarActivos_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarActivos.CheckedChanged
-        If bolReady And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolCargado And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If bolReady And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolCargado And Not cboSucursal.SelectedValue Is Nothing Then
             intIdSucursal = cboSucursal.SelectedValue
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
-        If bolReady And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolCargado And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Sub chkFiltrarExistencias_CheckedChanged(sender As Object, e As EventArgs) Handles chkFiltrarExistencias.CheckedChanged
-        If bolReady And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolCargado And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Sub chkIncluyeServicios_CheckedChanged(sender As Object, e As EventArgs) Handles chkIncluyeServicios.CheckedChanged
-        If bolReady And Not cboSucursal.SelectedValue Is Nothing Then
+        If bolCargado And Not cboSucursal.SelectedValue Is Nothing Then
             CmdFiltrar_Click(CmdFiltrar, New EventArgs())
         End If
     End Sub

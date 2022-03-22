@@ -1,11 +1,11 @@
 Imports System.Threading
 Imports System.Configuration
-Imports LeandroSoftware.Core.Dominio.Entidades
+Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Seguridad
 Imports System.Collections.Generic
 Imports System.Linq
-Imports LeandroSoftware.Core.Utilitario
-Imports LeandroSoftware.Core.TiposComunes
-Imports LeandroSoftware.ClienteWCF
 
 Public Class FrmPrincipal
 #Region "Variables"
@@ -20,7 +20,7 @@ Public Class FrmPrincipal
     Public dgvDecimal As DataGridViewCellStyle
     Public dgvInteger As DataGridViewCellStyle
     Public lstListaReportes As New List(Of String)
-    Public listaEmpresa As New List(Of LlaveDescripcion)
+    Public listaEmpresas As New List(Of LlaveDescripcion)
     Public listaProductos As New List(Of ProductoDetalle)
     Public decTipoCambioDolar As Decimal
     Public strCodigoUsuario As String
@@ -36,9 +36,105 @@ Public Class FrmPrincipal
     Public productoImpuestoServicio As Producto
     Public bolDescargaFinalizada As Boolean = False
     Public decDescAutorizado As Decimal
+    'Parametros generales
+    Private listaTipoIdentificacion As List(Of LlaveDescripcion)
+    Private listaFormaPagoCliente As List(Of LlaveDescripcion)
+    Private listaFormaPagoEmpresa As List(Of LlaveDescripcion)
+    Private listaTipoProducto As List(Of LlaveDescripcion)
+    Private listaTipoImpuesto As List(Of LlaveDescripcionValor)
+    Private listaTipoMoneda As List(Of LlaveDescripcion)
+    Private listaCondicionVenta As List(Of LlaveDescripcion)
+    Private listaTipoExoneracion As List(Of LlaveDescripcion)
+    Private listaSucursales As List(Of LlaveDescripcion)
+    Private listaTipoPrecio As List(Of LlaveDescripcion)
+    Private listaActividadEconomica As List(Of LlaveDescripcion)
 #End Region
 
 #Region "Métodos"
+    Public Function ObtenerListadoFormaPagoEmpresa() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaFormaPagoEmpresa)
+    End Function
+
+    Public Function ObtenerListadoFormaPagoCliente() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaFormaPagoCliente)
+    End Function
+
+    Public Function ObtenerListadoCondicionVenta() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaCondicionVenta)
+    End Function
+
+    Public Function ObtenerListadoTipoMoneda() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaTipoMoneda)
+    End Function
+
+    Public Function ObtenerListadoTipoImpuesto() As List(Of LlaveDescripcionValor)
+        Return New List(Of LlaveDescripcionValor)(listaTipoImpuesto)
+    End Function
+
+    Public Function ObtenerListadoTipoIdentificacion() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaTipoIdentificacion)
+    End Function
+
+    Public Function ObtenerListadoTipoExoneracion() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaTipoExoneracion)
+    End Function
+
+    Public Function ObtenerListadoTipoProducto() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaTipoProducto)
+    End Function
+
+    Public Function ObtenerListadoEmpresas() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaEmpresas)
+    End Function
+
+    Public Function ObtenerListadoSucursales() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaSucursales)
+    End Function
+
+    Public Function ObtenerListadoTipoPrecio() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaTipoPrecio)
+    End Function
+
+    Public Function ObtenerListadoActividadEconomica() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaActividadEconomica)
+    End Function
+
+    Public Function ObtenerDescripcionTipoExoneracion(intIdTipo As Integer) As String
+        Dim tipo As LlaveDescripcion = listaTipoExoneracion.FirstOrDefault(Function(x) x.Id = intIdTipo)
+        If tipo.Descripcion <> Nothing Then
+            Return tipo.Descripcion
+        Else
+            Return ""
+        End If
+    End Function
+
+    Public Function ObtenerDescripcionFormaPagoEmpresa(intIdTipo As Integer) As String
+        Dim tipo As LlaveDescripcion = listaFormaPagoEmpresa.FirstOrDefault(Function(x) x.Id = intIdTipo)
+        If tipo.Descripcion <> Nothing Then
+            Return tipo.Descripcion
+        Else
+            Return ""
+        End If
+    End Function
+
+    Public Function ObtenerDescripcionFormaPagoCliente(intIdTipo) As String
+        Dim tipo As LlaveDescripcion = listaFormaPagoCliente.FirstOrDefault(Function(x) x.Id = intIdTipo)
+        If tipo.Descripcion <> Nothing Then
+            Return tipo.Descripcion
+        Else
+            Return ""
+        End If
+    End Function
+
+    Public Function ObtenerTarifaImpuesto(intIdTipo As Integer) As Decimal
+        Dim tipo As LlaveDescripcionValor = listaTipoImpuesto.FirstOrDefault(Function(x) x.Id = intIdTipo)
+        If tipo.Valor <> Nothing Then
+            Return tipo.Valor
+        Else
+            Return 0
+        End If
+    End Function
+
     Public Function ObtenerFechaFormateada(fecha As Date) As Date
         Return FormatDateTime(fecha, DateFormat.ShortDate)
     End Function
@@ -505,19 +601,19 @@ Public Class FrmPrincipal
             formDescarga.ShowDialog()
             If bolDescargaFinalizada Then Application.Exit()
         End If
-        Dim strIdentificadoEquipoLocal = Utilitario.ObtenerIdentificadorEquipo()
+        Dim strIdentificadoEquipoLocal = Puntoventa.ObtenerIdentificadorEquipo()
         If bolEsAdministrador Then
-            listaEmpresa = Await Puntoventa.ObtenerListadoEmpresasAdministrador()
+            listaEmpresas = Await Puntoventa.ObtenerListadoEmpresasAdministrador()
         Else
             Do
                 Try
-                    listaEmpresa = Await Puntoventa.ObtenerListadoEmpresasPorTerminal(strIdentificadoEquipoLocal)
+                    listaEmpresas = Await Puntoventa.ObtenerListadoEmpresasPorTerminal(strIdentificadoEquipoLocal)
                 Catch ex As Exception
                     MessageBox.Show("No fue posible acceder al servicio web. Consulte con su proveedor del servicio.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Close()
                     Exit Sub
                 End Try
-                If listaEmpresa.Count = 0 Then
+                If listaEmpresas.Count = 0 Then
                     If MessageBox.Show("El equipo no se encuentra registrado. Desea proceder con el registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                         Dim formRegistro As New FrmRegistro()
                         formRegistro.ShowDialog()
@@ -530,7 +626,7 @@ Public Class FrmPrincipal
                         Exit Sub
                     End If
                 End If
-            Loop While listaEmpresa.Count = 0
+            Loop While listaEmpresas.Count = 0
         End If
         picLoader.Visible = False
         Dim formSeguridad As New FrmSeguridad()
@@ -549,7 +645,7 @@ Public Class FrmPrincipal
             Else
                 picLoader.Visible = True
                 Try
-                    Dim strEncryptedPassword As String = Utilitario.EncriptarDatos(strContrasena)
+                    Dim strEncryptedPassword As String = Encriptador.EncriptarDatos(strContrasena)
                     empresa = Await Puntoventa.ValidarCredenciales(strCodigoUsuario, strEncryptedPassword, strIdEmpresa, strIdentificadoEquipoLocal)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -561,6 +657,23 @@ Public Class FrmPrincipal
         empresaGlobal = empresa
         equipoGlobal = empresa.EquipoRegistrado
         decTipoCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(usuarioGlobal.Token)
+        listaTipoIdentificacion = empresa.ListadoTipoIdentificacion
+        listaFormaPagoCliente = empresa.ListadoFormaPagoCliente
+        listaFormaPagoEmpresa = empresa.ListadoFormaPagoEmpresa
+        listaTipoProducto = empresa.ListadoTipoProducto
+        listaTipoImpuesto = empresa.ListadoTipoImpuesto
+        listaTipoMoneda = empresa.ListadoTipoMoneda
+        listaCondicionVenta = empresa.ListadoCondicionVenta
+        listaTipoExoneracion = empresa.ListadoTipoExoneracion
+        listaTipoPrecio = empresa.ListadoTipoPrecio
+        listaSucursales = New List(Of LlaveDescripcion)
+        For Each sucursal As SucursalPorEmpresa In empresa.SucursalPorEmpresa
+            listaSucursales.Add(New LlaveDescripcion(sucursal.IdSucursal, sucursal.NombreSucursal))
+        Next
+        listaActividadEconomica = New List(Of LlaveDescripcion)
+        For Each actividad As ActividadEconomicaEmpresa In empresa.ActividadEconomicaEmpresa
+            listaActividadEconomica.Add(New LlaveDescripcion(actividad.CodigoActividad, actividad.Descripcion))
+        Next
         If empresaGlobal.AutoCompletaProducto Then
             Dim intTotalRegistros As Integer = Await Puntoventa.ObtenerTotalListaProductos(empresa.IdEmpresa, equipoGlobal.IdSucursal, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
             listaProductos = Await Puntoventa.ObtenerListadoProductos(empresa.IdEmpresa, equipoGlobal.IdSucursal, 1, intTotalRegistros, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
@@ -624,7 +737,7 @@ Public Class FrmPrincipal
         Try
             productoTranstorio = Await Puntoventa.ObtenerProductoTransitorio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
         Catch
-            productoImpuestoServicio = Nothing
+            productoTranstorio = Nothing
         End Try
         Try
             productoImpuestoServicio = Await Puntoventa.ObtenerProductoImpuestoServicio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
