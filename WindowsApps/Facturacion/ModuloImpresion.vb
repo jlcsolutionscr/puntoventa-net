@@ -311,13 +311,15 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strPagoCon, 54, 46, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Cambio:", 0, 54, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(2, objImpresion.strCambio, 54, 46, 10, StringAlignment.Far, False))
-            If objImpresion.empresa.LeyendaFactura.Length > 0 Then
-                Dim leyenda As String = objImpresion.empresa.LeyendaFactura
-                While leyenda.Length > 32
-                    lineas.Add(New ClsLineaImpresion(1, leyenda.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
-                    leyenda = leyenda.Substring(32)
-                End While
-                lineas.Add(New ClsLineaImpresion(2, leyenda, 0, 100, 10, StringAlignment.Near, False))
+            If objImpresion.empresa.LeyendaFactura IsNot Nothing Then
+                If objImpresion.empresa.LeyendaFactura.Length > 0 Then
+                    Dim leyenda As String = objImpresion.empresa.LeyendaFactura
+                    While leyenda.Length > 32
+                        lineas.Add(New ClsLineaImpresion(1, leyenda.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                        leyenda = leyenda.Substring(32)
+                    End While
+                    lineas.Add(New ClsLineaImpresion(2, leyenda, 0, 100, 10, StringAlignment.Near, False))
+                End If
             End If
             If objImpresion.arrDesglosePago.Count = 0 Then lineas.Add(New ClsLineaImpresion(2, "Firma: _________________________", 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "AUTORIZADO MEDIANTE RESOLUCION", 0, 100, 10, StringAlignment.Center, False))
@@ -359,13 +361,15 @@ Public Class ModuloImpresion
             ImprimirDetalle(objImpresion.arrDetalleComprobante)
             ImprimirTotales(objImpresion)
             lineas.Add(New ClsLineaImpresion(2, " ", 54, 46, 10, StringAlignment.Far, False))
-            If objImpresion.empresa.LeyendaProforma.Length > 0 Then
-                Dim leyenda As String = objImpresion.empresa.LeyendaProforma
-                While leyenda.Length > 32
-                    lineas.Add(New ClsLineaImpresion(1, leyenda.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
-                    leyenda = leyenda.Substring(32)
-                End While
-                lineas.Add(New ClsLineaImpresion(2, leyenda, 0, 100, 10, StringAlignment.Near, False))
+            If objImpresion.empresa.LeyendaProforma IsNot Nothing Then
+                If objImpresion.empresa.LeyendaProforma.Length > 0 Then
+                    Dim leyenda As String = objImpresion.empresa.LeyendaProforma
+                    While leyenda.Length > 32
+                        lineas.Add(New ClsLineaImpresion(1, leyenda.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                        leyenda = leyenda.Substring(32)
+                    End While
+                    lineas.Add(New ClsLineaImpresion(2, leyenda, 0, 100, 10, StringAlignment.Near, False))
+                End If
             End If
             lineas.Add(New ClsLineaImpresion(3, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
         Catch ex As Exception
@@ -412,13 +416,15 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strAdelanto, 54, 46, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Saldo por pagar:", 0, 54, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(2, objImpresion.strSaldo, 54, 46, 10, StringAlignment.Far, True))
-            If objImpresion.empresa.LeyendaApartado.Length > 0 Then
-                Dim leyenda As String = objImpresion.empresa.LeyendaApartado
-                While leyenda.Length > 32
-                    lineas.Add(New ClsLineaImpresion(1, leyenda.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
-                    leyenda = leyenda.Substring(32)
-                End While
-                lineas.Add(New ClsLineaImpresion(2, leyenda, 0, 100, 10, StringAlignment.Near, False))
+            If objImpresion.empresa.LeyendaApartado IsNot Nothing Then
+                If objImpresion.empresa.LeyendaApartado.Length > 0 Then
+                    Dim leyenda As String = objImpresion.empresa.LeyendaApartado
+                    While leyenda.Length > 32
+                        lineas.Add(New ClsLineaImpresion(1, leyenda.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                        leyenda = leyenda.Substring(32)
+                    End While
+                    lineas.Add(New ClsLineaImpresion(2, leyenda, 0, 100, 10, StringAlignment.Near, False))
+                End If
             End If
             lineas.Add(New ClsLineaImpresion(3, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
         Catch ex As Exception
@@ -483,13 +489,15 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strAdelanto, 54, 46, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(0, "Saldo por pagar:", 0, 54, 10, StringAlignment.Far, True))
             lineas.Add(New ClsLineaImpresion(2, objImpresion.strSaldo, 54, 46, 10, StringAlignment.Far, True))
-            If objImpresion.empresa.LeyendaOrdenServicio.Length > 0 Then
-                Dim leyenda As String = objImpresion.empresa.LeyendaOrdenServicio
-                While leyenda.Length > 32
-                    lineas.Add(New ClsLineaImpresion(1, leyenda.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
-                    leyenda = leyenda.Substring(32)
-                End While
-                lineas.Add(New ClsLineaImpresion(2, leyenda, 0, 100, 10, StringAlignment.Near, False))
+            If objImpresion.empresa.LeyendaOrdenServicio IsNot Nothing Then
+                If objImpresion.empresa.LeyendaOrdenServicio.Length > 0 Then
+                    Dim leyenda As String = objImpresion.empresa.LeyendaOrdenServicio
+                    While leyenda.Length > 32
+                        lineas.Add(New ClsLineaImpresion(1, leyenda.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                        leyenda = leyenda.Substring(32)
+                    End While
+                    lineas.Add(New ClsLineaImpresion(2, leyenda, 0, 100, 10, StringAlignment.Near, False))
+                End If
             End If
             lineas.Add(New ClsLineaImpresion(2, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
         Catch ex As Exception

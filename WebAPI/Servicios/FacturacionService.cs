@@ -2752,11 +2752,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             EstructuraPDF datos = new EstructuraPDF();
             datos.PoweredByLogotipo = bytLogo;
-            try
+            if (empresa.Logotipo.Length > 0)
             {
-                datos.Logotipo = empresa.Logotipo;
+                try
+                {
+                    datos.Logotipo = empresa.Logotipo;
+                }
+                catch (Exception)
+                {
+                    datos.Logotipo = null;
+                }
             }
-            catch (Exception)
+            else
             {
                 datos.Logotipo = null;
             }
@@ -2826,11 +2833,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             EstructuraPDF datos = new EstructuraPDF();
             datos.PoweredByLogotipo = bytLogo;
-            try
+            if (empresa.Logotipo.Length > 0)
             {
-                datos.Logotipo = empresa.Logotipo;
+                try
+                {
+                    datos.Logotipo = empresa.Logotipo;
+                }
+                catch (Exception)
+                {
+                    datos.Logotipo = null;
+                }
             }
-            catch (Exception)
+            else
             {
                 datos.Logotipo = null;
             }
@@ -2896,11 +2910,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             EstructuraPDF datos = new EstructuraPDF();
             datos.PoweredByLogotipo = bytLogo;
-            try
+            if (empresa.Logotipo.Length > 0)
             {
-                datos.Logotipo = empresa.Logotipo;
+                try
+                {
+                    datos.Logotipo = empresa.Logotipo;
+                }
+                catch (Exception)
+                {
+                    datos.Logotipo = null;
+                }
             }
-            catch (Exception)
+            else
             {
                 datos.Logotipo = null;
             }
@@ -2965,11 +2986,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             EstructuraPDF datos = new EstructuraPDF();
             datos.PoweredByLogotipo = bytLogo;
-            try
+            if (empresa.Logotipo.Length > 0)
             {
-                datos.Logotipo = empresa.Logotipo;
+                try
+                {
+                    datos.Logotipo = empresa.Logotipo;
+                }
+                catch (Exception)
+                {
+                    datos.Logotipo = null;
+                }
             }
-            catch (Exception)
+            else
             {
                 datos.Logotipo = null;
             }
@@ -3125,11 +3153,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             EstructuraPDF datos = new EstructuraPDF();
             datos.PoweredByLogotipo = bytLogo;
-            try
+            if (empresa.Logotipo.Length > 0)
             {
-                datos.Logotipo = empresa.Logotipo;
+                try
+                {
+                    datos.Logotipo = empresa.Logotipo;
+                }
+                catch (Exception)
+                {
+                    datos.Logotipo = null;
+                }
             }
-            catch (Exception)
+            else
             {
                 datos.Logotipo = null;
             }

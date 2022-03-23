@@ -50,7 +50,7 @@ Public Class FrmPrincipal
     Private listaActividadEconomica As List(Of LlaveDescripcion)
 #End Region
 
-#Region "Métodos"
+#Region "Mï¿½todos"
     Public Function ObtenerListadoFormaPagoEmpresa() As List(Of LlaveDescripcion)
         Return New List(Of LlaveDescripcion)(listaFormaPagoEmpresa)
     End Function
@@ -127,7 +127,9 @@ Public Class FrmPrincipal
     End Function
 
     Public Function ObtenerTarifaImpuesto(intIdTipo As Integer) As Decimal
+
         Dim tipo As LlaveDescripcionValor = listaTipoImpuesto.FirstOrDefault(Function(x) x.Id = intIdTipo)
+        If tipo Is Nothing Then Return 0
         If tipo.Valor <> Nothing Then
             Return tipo.Valor
         Else
@@ -574,7 +576,7 @@ Public Class FrmPrincipal
         Try
             appSettings = ConfigurationManager.AppSettings
         Catch ex As Exception
-            MessageBox.Show("Error al cargar el archivo de configuración del sistema. Por favor contacte con su proveedor del servicio. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al cargar el archivo de configuraciï¿½n del sistema. Por favor contacte con su proveedor del servicio. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -631,7 +633,7 @@ Public Class FrmPrincipal
         picLoader.Visible = False
         Dim formSeguridad As New FrmSeguridad()
         Thread.CurrentThread.CurrentCulture = New Globalization.CultureInfo("es-CR")
-        Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencySymbol = "¢"
+        Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencySymbol = "ï¿½"
         Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator = "."
         Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator = "."
         Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator = ","
@@ -702,7 +704,7 @@ Public Class FrmPrincipal
             Dim credenciales As CredencialesHacienda = Await Puntoventa.ObtenerCredencialesHacienda(empresa.IdEmpresa, usuarioGlobal.Token)
             If Not ValidarEmpresa(empresa, credenciales) Then
                 If usuarioGlobal.RolePorUsuario.Where(Function(s) s.IdRole = 61).Count > 0 Then
-                    MessageBox.Show("La información de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show("La informaciï¿½n de la empresa requiere ser actualizada. Por favor ingrese al mantenimiento de Empresa para completar la informaciï¿½n.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Try
                         objMenu = mnuMenuPrincipal.Items("MnuParam")
                         objMenu.Visible = True
@@ -710,7 +712,7 @@ Public Class FrmPrincipal
                     Catch ex As Exception
                     End Try
                 Else
-                    MessageBox.Show("La información de la empresa requiere ser actualizada por un usuario administrador.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show("La informaciï¿½n de la empresa requiere ser actualizada por un usuario administrador.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Close()
                     Exit Sub
                 End If

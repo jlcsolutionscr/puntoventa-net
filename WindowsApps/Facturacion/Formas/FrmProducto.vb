@@ -13,25 +13,25 @@ Public Class FrmProducto
     Private decTasaImpuesto As Decimal
 #End Region
 
-#Region "Métodos"
+#Region "Mï¿½todos"
     Private Function ValidarCampos(ByRef pCampo As String) As Boolean
         If cboTipoProducto.Text = "" Then
             pCampo = "Tipo de producto"
             Return False
         ElseIf cboLinea.Text = "" Then
-            pCampo = "Línea del Producto"
+            pCampo = "Lï¿½nea del Producto"
             Return False
         ElseIf txtCodigo.Text = "" Then
-            pCampo = "Código"
+            pCampo = "Cï¿½digo"
             Return False
         ElseIf txtCodigoClasificacion.Text = "" Then
-            pCampo = "Código Cabys"
+            pCampo = "Cï¿½digo Cabys"
             Return False
         ElseIf txtProveedor.Text = "" Then
             pCampo = "Proveedor"
             Return False
         ElseIf txtDescripcion.Text = "" Then
-            pCampo = "Descripción"
+            pCampo = "Descripciï¿½n"
             Return False
         ElseIf txtPrecioCosto.Text = "" Then
             pCampo = "Precio de costo"
@@ -179,6 +179,7 @@ Public Class FrmProducto
                 txtIndExistencia.Text = FormatoPrecio(0, 2)
                 txtPorcDescuento.Text = FormatoPrecio(0, 2)
                 cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
+                datos.IdImpuesto = StaticValoresPorDefecto.TasaImpuesto
                 chkActivo.Checked = True
             End If
             decTasaImpuesto = FrmPrincipal.ObtenerTarifaImpuesto(datos.IdImpuesto)
@@ -277,7 +278,7 @@ Public Class FrmProducto
             Try
                 ptbImagen.Image = Image.FromFile(ofdAbrirImagen.FileName)
             Catch ex As Exception
-                MessageBox.Show("No se logró cargar el archivo seleccionado. Por favor intente de nuevo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("No se logrï¿½ cargar el archivo seleccionado. Por favor intente de nuevo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
@@ -443,7 +444,7 @@ Public Class FrmProducto
 
     Private Sub TxtCodigoClasificacion_Validated(sender As Object, e As EventArgs) Handles txtCodigoClasificacion.Validated
         If txtCodigoClasificacion.TextLength < 13 Then
-            MessageBox.Show("El valor del campo 'Código CABYS' debe tener una longitud no menor a 13 caracteres. Por favor verifique la información suministrada", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El valor del campo 'Cï¿½digo CABYS' debe tener una longitud no menor a 13 caracteres. Por favor verifique la informaciï¿½n suministrada", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             txtCodigoClasificacion.Text = ""
         End If
     End Sub
