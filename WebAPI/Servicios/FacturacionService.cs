@@ -2301,12 +2301,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             string strError = "";
             string strIdentificacion = "";
             if (correo.Attachments.Count == 0) throw new BusinessException("El correo no contiene ningún archivo adjunto para poder procesar el mensaje de recepción");
+            XmlDocument documentoXml = new XmlDocument();
             foreach (Attachment archivo in correo.Attachments)
             {
                 if (strDatos == "" && archivo.FileName.ToUpper().EndsWith(".XML"))
                 {
                     string strXml = "";
-                    XmlDocument documentoXml = new XmlDocument();
                     try
                     {
                         strXml = Encoding.UTF8.GetString(archivo.Content);

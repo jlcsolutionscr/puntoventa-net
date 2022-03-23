@@ -88,7 +88,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     catch (Exception)
                     { }
-                    if (counter > 50) break;
+                    if (counter > 30) break;
                 }
                 return Emails;
             }
@@ -98,7 +98,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             using (Pop3Client pop3Client = new Pop3Client())
             {
-                pop3Client.Connect(smtpHost, smtpPort, false);
+                pop3Client.Connect(smtpHost, pop3Port, false);
                 pop3Client.Authenticate(strMailUserAddress, strMailUserPassword);
                 pop3Client.DeleteMessage(intIdMensaje);
             }
