@@ -30,7 +30,7 @@ Public Class FrmApartado
     Private arrDesglosePago As List(Of ModuloImpresion.ClsDesgloseFormaPago)
 #End Region
 
-#Region "M�todos"
+#Region "Métodos"
     Private Sub IniciaTablasDeDetalle()
         dtbDetalleApartado = New DataTable()
         dtbDetalleApartado.Columns.Add("IDPRODUCTO", GetType(Integer))
@@ -83,14 +83,14 @@ Public Class FrmApartado
         grdDetalleApartado.Columns.Add(dvcIdProducto)
 
         dvcCodigo.DataPropertyName = "CODIGO"
-        dvcCodigo.HeaderText = "C�digo"
+        dvcCodigo.HeaderText = "Código"
         dvcCodigo.Width = 110
         dvcCodigo.ReadOnly = True
         dvcCodigo.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleApartado.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
-        dvcDescripcion.HeaderText = "Descripci�n"
+        dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.Width = 300
         dvcDescripcion.ReadOnly = True
         dvcDescripcion.SortMode = DataGridViewColumnSortMode.NotSortable
@@ -668,7 +668,7 @@ Public Class FrmApartado
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacci�n procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -717,11 +717,11 @@ Public Class FrmApartado
                 btnBusProd.Enabled = False
                 btnInsertarPago.Enabled = False
                 btnEliminarPago.Enabled = False
-                btnImprimir.Enabled = True
-                btnGenerarPDF.Enabled = True
+                btnImprimir.Enabled = Not apartado.Nulo
+                btnGenerarPDF.Enabled = Not apartado.Nulo
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
-                btnAnular.Enabled = apartado.Aplicado = False And FrmPrincipal.bolAnularTransacciones
+                btnAnular.Enabled = Not apartado.Nulo And Not apartado.Aplicado And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
                 bolReady = True
             Else
@@ -800,7 +800,7 @@ Public Class FrmApartado
             Try
                 producto = Await Puntoventa.ObtenerProducto(intIdProducto, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show("Error al obtener la informaci�n del producto seleccionado. Intente mas tarde.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             CargarDatosProducto(producto)
@@ -814,7 +814,7 @@ Public Class FrmApartado
             BtnBuscaVendedor_Click(btnBuscaVendedor, New EventArgs())
             Exit Sub
         ElseIf decTotal = 0 Then
-            MessageBox.Show("Debe agregar l�neas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         ElseIf decSaldoPorPagar = 0 Then
             MessageBox.Show("El apartado no puede ser cancelado en su totalidad.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -907,7 +907,7 @@ Public Class FrmApartado
                 formPagoFactura.decPagoCliente = decPagoCliente
                 formPagoFactura.ShowDialog()
             Else
-                MessageBox.Show("Transacci�n efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
         End If
         btnImprimir.Enabled = True
@@ -991,7 +991,7 @@ Public Class FrmApartado
     Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
         If producto IsNot Nothing Then
             Dim strError As String = ""
-            If txtDescripcion.Text = "" Then strError = "La descripci�n no puede estar en blanco"
+            If txtDescripcion.Text = "" Then strError = "La descripción no puede estar en blanco"
             If decPrecioVenta <= 0 Then strError = "El precio del producto no puede ser igual o menor a 0"
             If strError <> "" Then
                 MessageBox.Show(strError, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -1036,7 +1036,7 @@ Public Class FrmApartado
                 cboTipoBanco.Width = 325
                 lblBanco.Width = 325
                 lblBanco.Text = "Banco Adquiriente"
-                lblAutorizacion.Text = "Autorizaci�n"
+                lblAutorizacion.Text = "Autorización"
                 txtTipoTarjeta.Visible = True
                 lblTipoTarjeta.Visible = True
                 If cboFormaPago.SelectedValue = StaticFormaPago.Tarjeta Then
@@ -1130,7 +1130,7 @@ Public Class FrmApartado
                 decPorcDesc = grdDetalleApartado.Rows(e.RowIndex).Cells(4).Value
             End If
             If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
-                If MessageBox.Show("El porcentaje ingresado es mayor al par�metro establecido para el usuario actual. Desea ingresar una autorizaci�n?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+                If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para el usuario actual. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                     Dim formAutorizacion As New FrmAutorizacionEspecial
                     formAutorizacion.decPorcentaje = decPorcDesc
                     formAutorizacion.decPrecioVenta = decPrecioTotal
@@ -1139,7 +1139,7 @@ Public Class FrmApartado
                         bolPrecioAutorizado = True
                         decPorcDesc = FrmPrincipal.decDescAutorizado
                     Else
-                        MessageBox.Show("No se logr� obtener la autorizaci�n solicitada.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        MessageBox.Show("No se logró obtener la autorización solicitada.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                         decPorcDesc = 0
                     End If
                 Else
@@ -1176,7 +1176,7 @@ Public Class FrmApartado
             If producto IsNot Nothing Then
                 decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
                 If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
-                    If MessageBox.Show("El porcentaje ingresado es mayor al par�metro establecido para el usuario actual. Desea ingresar una autorizaci�n?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
+                    If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para el usuario actual. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                         Dim formAutorizacion As New FrmAutorizacionEspecial
                         formAutorizacion.decPorcentaje = decPorcDesc
                         formAutorizacion.decPrecioVenta = decPrecioVenta
@@ -1185,7 +1185,7 @@ Public Class FrmApartado
                             bolPrecioAutorizado = True
                             decPorcDesc = FrmPrincipal.decDescAutorizado
                         Else
-                            MessageBox.Show("No se logr� obtener la autorizaci�n solicitada.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            MessageBox.Show("No se logró obtener la autorización solicitada.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                             txtPorcDesc.Text = 0
                         End If
                     Else
@@ -1228,7 +1228,7 @@ Public Class FrmApartado
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
                         Else
-                            MessageBox.Show("El c�digo ingresado no pertenece a un producto o se encuentra inactivo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBox.Show("El código ingresado no pertenece a un producto o se encuentra inactivo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             txtCodigo.Text = ""
                             txtDescripcion.Text = ""
                             txtExistencias.Text = ""

@@ -322,7 +322,7 @@ namespace LeandroSoftware.Common.DatosComunes
     {
         public FacturaDetalle() { }
 
-        public FacturaDetalle(int id, int consecutivo, string nombreCliente, string identificacion, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total, decimal saldo, string estado, string descripcion)
+        public FacturaDetalle(int id, int consecutivo, string nombreCliente, string identificacion, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total, decimal saldo, string estado, string descripcion, bool nulo)
         {
             IdFactura = id;
             Consecutivo = consecutivo;
@@ -337,6 +337,7 @@ namespace LeandroSoftware.Common.DatosComunes
             Saldo = saldo;
             Estado = estado;
             Descripcion = descripcion;
+            Nulo = nulo;
         }
         public int IdFactura { get; set; }
         public int Consecutivo { get; set; }
@@ -351,45 +352,50 @@ namespace LeandroSoftware.Common.DatosComunes
         public decimal Saldo { get; set; }
         public string Estado { get; set; }
         public string Descripcion { get; set; }
+        public bool Nulo { get; set; }
     }
 
     public class TrasladoDetalle
     {
         public TrasladoDetalle() { }
 
-        public TrasladoDetalle(int id, string fecha, string nombreSucursal, decimal total)
+        public TrasladoDetalle(int id, string fecha, string nombreSucursal, decimal total, bool nulo)
         {
             IdTraslado = id;
             Fecha = fecha;
             NombreSucursal = nombreSucursal;
             Total = total;
+            Nulo = nulo;
         }
         public int IdTraslado { get; set; }
         public string Fecha { get; set; }
         public string NombreSucursal { get; set; }
         public decimal Total { get; set; }
+        public bool Nulo { get; set; }
     }
 
     public class AjusteInventarioDetalle
     {
         public AjusteInventarioDetalle() { }
 
-        public AjusteInventarioDetalle(int id, string fecha, string descripcion)
+        public AjusteInventarioDetalle(int id, string fecha, string descripcion, bool nulo)
         {
             IdAjuste = id;
             Fecha = fecha;
             Descripcion = descripcion;
+            Nulo = nulo;
         }
         public int IdAjuste { get; set; }
         public string Fecha { get; set; }
         public string Descripcion { get; set; }
+        public bool Nulo { get; set; }
     }
 
     public class CompraDetalle
     {
         public CompraDetalle() { }
 
-        public CompraDetalle(int id, string referencia, string nombreProveedor, string fecha, decimal gravado, decimal excento, decimal impuesto, decimal total)
+        public CompraDetalle(int id, string referencia, string nombreProveedor, string fecha, decimal gravado, decimal excento, decimal impuesto, decimal total, bool nulo)
         {
             IdCompra = id;
             RefFactura = referencia;
@@ -399,6 +405,7 @@ namespace LeandroSoftware.Common.DatosComunes
             Excento = excento;
             Impuesto = impuesto;
             Total = total;
+            Nulo = nulo;
         }
         public int IdCompra { get; set; }
         public string RefFactura { get; set; }
@@ -408,6 +415,7 @@ namespace LeandroSoftware.Common.DatosComunes
         public decimal Excento { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Total { get; set; }
+        public bool Nulo { get; set; }
     }
 
     public class DocumentoDetalle

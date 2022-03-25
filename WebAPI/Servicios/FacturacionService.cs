@@ -789,8 +789,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             try
             {
                 Factura factura = dbContext.FacturaRepository.Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
-                if (factura.Nulo == true) throw new BusinessException("La factura ya ha sido anulada.");
-                if (factura.Procesado == true) throw new BusinessException("La factura ya fue procesada en un cierre diario y no puede ser anulada.");
+                if (factura.Nulo) throw new BusinessException("La factura ya ha sido anulada.");
+                if (factura.Procesado) throw new BusinessException("La factura ya fue procesada en un cierre diario y no puede ser anulada.");
                 Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -954,18 +954,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaFactura = new List<FacturaDetalle>();
             try
             {
-                var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                 if (intIdFactura > 0)
-                    listado = listado.Where(x => !x.Nulo && x.ConsecFactura == intIdFactura);
+                    listado = listado.Where(x => x.ConsecFactura == intIdFactura);
                 if (!strNombre.Equals(string.Empty))
-                    listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.NombreCliente.Contains(strNombre));
+                    listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
                 if (!strIdentificacion.Equals(string.Empty))
-                    listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Cliente.Identificacion.Contains(strIdentificacion));
+                    listado = listado.Where(x => x.Cliente.Identificacion.Contains(strIdentificacion));
                 listado = listado.OrderByDescending(x => x.IdFactura).Skip((numPagina - 1) * cantRec).Take(cantRec);
                 foreach (var factura in listado)
                 {
                     string strEstado = factura.IdDocElectronicoRev != null ? "Anulando" : "Activa";
-                    FacturaDetalle item = new FacturaDetalle(factura.IdFactura, factura.ConsecFactura, factura.NombreCliente, factura.Cliente.Identificacion, factura.Fecha.ToString("dd/MM/yyyy"), factura.Gravado, factura.Exonerado, factura.Excento, factura.Impuesto, factura.Total, 0, strEstado, "");
+                    FacturaDetalle item = new FacturaDetalle(factura.IdFactura, factura.ConsecFactura, factura.NombreCliente, factura.Cliente.Identificacion, factura.Fecha.ToString("dd/MM/yyyy"), factura.Gravado, factura.Exonerado, factura.Excento, factura.Impuesto, factura.Total, 0, strEstado, "", factura.Nulo);
                     listaFactura.Add(item);
                 }
                 return listaFactura;
@@ -1022,7 +1022,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Empresa empresa = dbContext.EmpresaRepository.Find(proforma.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 Proforma ordenNoTracking = dbContext.ProformaRepository.AsNoTracking().Where(x => x.IdProforma == proforma.IdProforma).FirstOrDefault();
-                if (ordenNoTracking != null && ordenNoTracking.Aplicado == true) throw new BusinessException("La proforma no puede ser modificada porque ya fue facturada.");
+                if (ordenNoTracking != null && ordenNoTracking.Aplicado) throw new BusinessException("La proforma no puede ser modificada porque ya fue facturada.");
                 proforma.Vendedor = null;
                 List<DetalleProforma> listadoDetalleAnterior = dbContext.DetalleProformaRepository.Where(x => x.IdProforma == proforma.IdProforma).ToList();
                 List<DetalleProforma> listadoDetalle = proforma.DetalleProforma.ToList();
@@ -1052,8 +1052,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 Proforma proforma = dbContext.ProformaRepository.Find(intIdProforma);
                 if (proforma == null) throw new Exception("La proforma por anular no existe.");
-                if (proforma.Nulo == true) throw new BusinessException("La proforma ya ha sido anulada.");
-                if (proforma.Aplicado == true) throw new BusinessException("La proforma no puede ser anulada porque ya fue facturada.");
+                if (proforma.Nulo) throw new BusinessException("La proforma ya ha sido anulada.");
+                if (proforma.Aplicado) throw new BusinessException("La proforma no puede ser anulada porque ya fue facturada.");
                 Empresa empresa = dbContext.EmpresaRepository.Find(proforma.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 proforma.Nulo = true;
@@ -1117,19 +1117,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaProforma = new List<FacturaDetalle>();
             try
             {
-                var listado = dbContext.ProformaRepository.Include("Cliente").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                var listado = dbContext.ProformaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
                 if (intIdProforma > 0)
-                    listado = listado.Where(x => !x.Nulo && x.ConsecProforma == intIdProforma);
+                    listado = listado.Where(x => x.ConsecProforma == intIdProforma);
                 else
                 {
                     if (!strNombre.Equals(string.Empty))
-                        listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.NombreCliente.Contains(strNombre));
+                        listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
                 }
                 var proformas = listado.OrderByDescending(x => x.IdProforma).Skip((numPagina - 1) * cantRec).Take(cantRec);
                 foreach (var proforma in proformas)
                 {
                     string strEstado = "Activa";
-                    FacturaDetalle item = new FacturaDetalle(proforma.IdProforma, proforma.ConsecProforma, proforma.NombreCliente, proforma.Cliente.Identificacion, proforma.Fecha.ToString("dd/MM/yyyy"), proforma.Gravado, proforma.Exonerado, proforma.Excento, proforma.Impuesto, proforma.Total, 0, strEstado, "");
+                    FacturaDetalle item = new FacturaDetalle(proforma.IdProforma, proforma.ConsecProforma, proforma.NombreCliente, proforma.Cliente.Identificacion, proforma.Fecha.ToString("dd/MM/yyyy"), proforma.Gravado, proforma.Exonerado, proforma.Excento, proforma.Impuesto, proforma.Total, 0, strEstado, "", proforma.Nulo);
                     listaProforma.Add(item);
                 }
                 return listaProforma;
@@ -1176,8 +1176,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 Apartado apartado = dbContext.ApartadoRepository.Find(intIdApartado);
                 if (apartado == null) throw new Exception("El apartado por anular no existe.");
-                if (apartado.Nulo == true) throw new BusinessException("El apartado ya ha sido anulado.");
-                if (apartado.Aplicado == true) throw new BusinessException("El apartado no puede ser anulado porque ya fue facturada.");
+                if (apartado.Nulo) throw new BusinessException("El apartado ya ha sido anulado.");
+                if (apartado.Aplicado) throw new BusinessException("El apartado no puede ser anulado porque ya fue facturada.");
                 Empresa empresa = dbContext.EmpresaRepository.Find(apartado.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == apartado.IdEmpresa && x.IdSucursal == apartado.IdSucursal);
@@ -1260,19 +1260,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaApartado = new List<FacturaDetalle>();
             try
             {
-                var listado = dbContext.ApartadoRepository.Include("Cliente").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                var listado = dbContext.ApartadoRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
                 if (intIdApartado > 0)
-                    listado = listado.Where(x => !x.Nulo && x.ConsecApartado == intIdApartado);
-                else
-                {
-                    if (!strNombre.Equals(string.Empty))
-                        listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.NombreCliente.Contains(strNombre));
-                }
+                    listado = listado.Where(x => x.ConsecApartado == intIdApartado);
+                if (!strNombre.Equals(string.Empty))
+                    listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
                 listado = listado.OrderByDescending(x => x.IdApartado).Skip((numPagina - 1) * cantRec).Take(cantRec);
                 foreach (var apartado in listado)
                 {
                     string strEstado = "Activa";
-                    FacturaDetalle item = new FacturaDetalle(apartado.IdApartado, apartado.ConsecApartado, apartado.NombreCliente, apartado.Cliente.Identificacion, apartado.Fecha.ToString("dd/MM/yyyy"), apartado.Gravado, apartado.Exonerado, apartado.Excento, apartado.Impuesto, apartado.Total, apartado.Total - apartado.MontoAdelanto, strEstado, "");
+                    FacturaDetalle item = new FacturaDetalle(apartado.IdApartado, apartado.ConsecApartado, apartado.NombreCliente, apartado.Cliente.Identificacion, apartado.Fecha.ToString("dd/MM/yyyy"), apartado.Gravado, apartado.Exonerado, apartado.Excento, apartado.Impuesto, apartado.Total, apartado.Total - apartado.MontoAdelanto, strEstado, "", apartado.Nulo);
                     listaApartado.Add(item);
                 }
                 return listaApartado;
@@ -1324,7 +1321,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Empresa empresa = dbContext.EmpresaRepository.Find(ordenServicio.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 OrdenServicio ordenNoTracking = dbContext.OrdenServicioRepository.AsNoTracking().Where(x => x.IdOrden == ordenServicio.IdOrden).FirstOrDefault();
-                if (ordenNoTracking != null && ordenNoTracking.Aplicado == true) throw new BusinessException("La orden de servicio no puede ser modificada porque ya fue facturada.");
+                if (ordenNoTracking != null && ordenNoTracking.Aplicado) throw new BusinessException("La orden de servicio no puede ser modificada porque ya fue facturada.");
                 ordenServicio.Vendedor = null;
                 if (ordenServicio.MontoAdelanto != ordenNoTracking.MontoAdelanto) ordenServicio.MontoAdelanto = ordenNoTracking.MontoAdelanto;
                 List<DetalleOrdenServicio> listadoDetalleAnterior = dbContext.DetalleOrdenServicioRepository.Where(x => x.IdOrden == ordenServicio.IdOrden).ToList();
@@ -1448,8 +1445,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(intIdOrdenServicio);
                 if (ordenServicio == null) throw new Exception("La orden de servicio por anular no existe.");
-                if (ordenServicio.Nulo == true) throw new BusinessException("La orden de servicio ya ha sido anulada.");
-                if (ordenServicio.Aplicado == true) throw new BusinessException("La orden de servicio no puede ser anulada porque ya fue facturada.");
+                if (ordenServicio.Nulo) throw new BusinessException("La orden de servicio ya ha sido anulada.");
+                if (ordenServicio.Aplicado) throw new BusinessException("La orden de servicio no puede ser anulada porque ya fue facturada.");
                 Empresa empresa = dbContext.EmpresaRepository.Find(ordenServicio.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
@@ -1532,7 +1529,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaOrdenServicio = new List<FacturaDetalle>();
             try
             {
-                var listado = dbContext.OrdenServicioRepository.Include("Cliente").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                var listado = dbContext.OrdenServicioRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
                 if (intIdOrdenServicio > 0)
                     listado = listado.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                 if (!strNombre.Equals(string.Empty))
@@ -1541,7 +1538,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 foreach (var ordenServicio in listado)
                 {
                     string strEstado = "Activa";
-                    FacturaDetalle item = new FacturaDetalle(ordenServicio.IdOrden, ordenServicio.ConsecOrdenServicio, ordenServicio.NombreCliente, ordenServicio.Cliente.Identificacion, ordenServicio.Fecha.ToString("dd/MM/yyyy"), ordenServicio.Gravado, 0, ordenServicio.Excento, ordenServicio.Impuesto, ordenServicio.Total, ordenServicio.Total - ordenServicio.MontoAdelanto, strEstado, ordenServicio.Descripcion);
+                    FacturaDetalle item = new FacturaDetalle(ordenServicio.IdOrden, ordenServicio.ConsecOrdenServicio, ordenServicio.NombreCliente, ordenServicio.Cliente.Identificacion, ordenServicio.Fecha.ToString("dd/MM/yyyy"), ordenServicio.Gravado, 0, ordenServicio.Excento, ordenServicio.Impuesto, ordenServicio.Total, ordenServicio.Total - ordenServicio.MontoAdelanto, strEstado, ordenServicio.Descripcion, ordenServicio.Nulo);
                     listaOrdenServicio.Add(item);
                 }
                 return listaOrdenServicio;
@@ -1916,7 +1913,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaDevoluciones = new List<FacturaDetalle>();
             try
             {
-                var listado = dbContext.DevolucionClienteRepository.Include("Cliente").Include("Factura").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listado = dbContext.DevolucionClienteRepository.Include("Cliente").Include("Factura").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                 if (intIdDevolucion > 0)
                     listado = listado.Where(x => x.IdDevolucion == intIdDevolucion);
                 else if (!strNombre.Equals(string.Empty))
@@ -1925,7 +1922,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 foreach (var devolucion in listado)
                 {
                     string strEstado = "Activa";
-                    FacturaDetalle item = new FacturaDetalle(devolucion.IdDevolucion, devolucion.IdDevolucion, devolucion.NombreCliente, devolucion.Cliente.Identificacion, devolucion.Fecha.ToString("dd/MM/yyyy"), devolucion.Gravado, 0, devolucion.Excento, devolucion.Impuesto, devolucion.Total, 0, strEstado, "");
+                    FacturaDetalle item = new FacturaDetalle(devolucion.IdDevolucion, devolucion.IdDevolucion, devolucion.NombreCliente, devolucion.Cliente.Identificacion, devolucion.Fecha.ToString("dd/MM/yyyy"), devolucion.Gravado, 0, devolucion.Excento, devolucion.Impuesto, devolucion.Total, 0, strEstado, "", devolucion.Nulo);
                     listaDevoluciones.Add(item);
                 }
                 return listaDevoluciones;
@@ -3144,7 +3141,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 JArray emptyJArray = new JArray();
-                string strBody = "El documento con clave " + documentoElectronico.ClaveNumerica + " registrado en la empresa " + empresa.NombreEmpresa + " genero un error en el envío del PDF al remitente: " + strCorreoReceptor + " Error: " + ex.Message;
+                string strBody = "El documento con clave " + documentoElectronico.ClaveNumerica + " registrado en la empresa " + empresa.NombreEmpresa + " generó un error en el envío del PDF al remitente: " + strCorreoReceptor + " Error: " + ex.Message;
                 servicioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false, emptyJArray);
             }
         }

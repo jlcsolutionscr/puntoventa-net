@@ -13,25 +13,25 @@ Public Class FrmProducto
     Private decTasaImpuesto As Decimal
 #End Region
 
-#Region "M�todos"
+#Region "Métodos"
     Private Function ValidarCampos(ByRef pCampo As String) As Boolean
         If cboTipoProducto.Text = "" Then
             pCampo = "Tipo de producto"
             Return False
         ElseIf cboLinea.Text = "" Then
-            pCampo = "L�nea del Producto"
+            pCampo = "Línea del Producto"
             Return False
         ElseIf txtCodigo.Text = "" Then
-            pCampo = "C�digo"
+            pCampo = "Código"
             Return False
         ElseIf txtCodigoClasificacion.Text = "" Then
-            pCampo = "C�digo Cabys"
+            pCampo = "Código Cabys"
             Return False
         ElseIf txtProveedor.Text = "" Then
             pCampo = "Proveedor"
             Return False
         ElseIf txtDescripcion.Text = "" Then
-            pCampo = "Descripci�n"
+            pCampo = "Descripción"
             Return False
         ElseIf txtPrecioCosto.Text = "" Then
             pCampo = "Precio de costo"
@@ -278,7 +278,7 @@ Public Class FrmProducto
             Try
                 ptbImagen.Image = Image.FromFile(ofdAbrirImagen.FileName)
             Catch ex As Exception
-                MessageBox.Show("No se logr� cargar el archivo seleccionado. Por favor intente de nuevo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("No se logró cargar el archivo seleccionado. Por favor intente de nuevo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
@@ -444,7 +444,7 @@ Public Class FrmProducto
 
     Private Sub TxtCodigoClasificacion_Validated(sender As Object, e As EventArgs) Handles txtCodigoClasificacion.Validated
         If txtCodigoClasificacion.TextLength < 13 Then
-            MessageBox.Show("El valor del campo 'C�digo CABYS' debe tener una longitud no menor a 13 caracteres. Por favor verifique la informaci�n suministrada", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El valor del campo 'Código CABYS' debe tener una longitud no menor a 13 caracteres. Por favor verifique la información suministrada", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             txtCodigoClasificacion.Text = ""
         End If
     End Sub

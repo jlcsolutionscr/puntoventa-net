@@ -95,7 +95,7 @@ Public Class FrmTrasladoMercaderia
             dtrRowDetTraslado.Item(3) = detalle.Cantidad
             dtrRowDetTraslado.Item(4) = detalle.PrecioCosto
             dtrRowDetTraslado.Item(5) = dtrRowDetTraslado.Item(3) * dtrRowDetTraslado.Item(4)
-            dtrRowDetTraslado.Item(6) = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
+            dtrRowDetTraslado.Item(6) = FrmPrincipal.ObtenerTarifaImpuesto(detalle.Producto.IdImpuesto)
             dtbDetalleTraslado.Rows.Add(dtrRowDetTraslado)
         Next
         grdDetalleTraslado.Refresh()
@@ -306,8 +306,8 @@ Public Class FrmTrasladoMercaderia
                 btnInsertar.Enabled = False
                 btnEliminar.Enabled = False
                 btnBusProd.Enabled = False
-                btnImprimir.Enabled = True
-                btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
+                btnImprimir.Enabled = Not traslado.Nulo
+                btnAnular.Enabled = Not traslado.Nulo And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
             End If
         End If

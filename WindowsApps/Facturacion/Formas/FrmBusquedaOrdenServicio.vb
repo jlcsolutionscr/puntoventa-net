@@ -26,6 +26,7 @@ Public Class FrmBusquedaOrdenServicio
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
         Dim dvcTotal As New DataGridViewTextBoxColumn
         Dim dvcSaldo As New DataGridViewTextBoxColumn
+        Dim dvcNulo As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.DataPropertyName = "IdFactura"
@@ -58,6 +59,10 @@ Public Class FrmBusquedaOrdenServicio
         dvcSaldo.Width = 100
         dvcSaldo.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dgvListado.Columns.Add(dvcSaldo)
+        dvcNulo.DataPropertyName = "Nulo"
+        dvcNulo.Width = 0
+        dvcNulo.Visible = False
+        dgvListado.Columns.Add(dvcNulo)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
@@ -140,6 +145,14 @@ Public Class FrmBusquedaOrdenServicio
     Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
         Dim textbox As TextBox = DirectCast(sender, TextBox)
         textbox.BackColor = Color.White
+    End Sub
+
+    Private Sub DgvListado_CellFormatting(ByVal sender As Object, ByVal e As DataGridViewCellFormattingEventArgs) Handles dgvListado.CellFormatting
+        For i As Integer = 0 To dgvListado.Rows.Count - 1
+            If dgvListado.Rows(i).Cells(7).Value Then
+                dgvListado.Rows(i).DefaultCellStyle.ForeColor = Color.IndianRed
+            End If
+        Next
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtId.KeyPress

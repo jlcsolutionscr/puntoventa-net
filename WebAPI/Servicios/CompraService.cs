@@ -674,7 +674,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaCompras = new List<CompraDetalle>();
             try
             {
-                var listado = dbContext.CompraRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listado = dbContext.CompraRepository.Include("Proveedor").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                 if (intIdCompra > 0)
                     listado = listado.Where(x => x.IdCompra == intIdCompra);
                 if (!strRefFactura.Equals(string.Empty))
@@ -684,7 +684,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 listado = listado.OrderByDescending(x => x.IdCompra).Skip((numPagina - 1) * cantRec).Take(cantRec);
                 foreach (var compra in listado)
                 {
-                    CompraDetalle item = new CompraDetalle(compra.IdCompra, compra.NoDocumento, compra.Proveedor.Nombre, compra.Fecha.ToString("dd/MM/yyyy"), compra.Gravado, compra.Excento, compra.Impuesto, compra.Total);
+                    CompraDetalle item = new CompraDetalle(compra.IdCompra, compra.NoDocumento, compra.Proveedor.Nombre, compra.Fecha.ToString("dd/MM/yyyy"), compra.Gravado, compra.Excento, compra.Impuesto, compra.Total, compra.Nulo);
                     listaCompras.Add(item);
                 }
                 return listaCompras;

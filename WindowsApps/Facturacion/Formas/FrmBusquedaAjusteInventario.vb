@@ -17,7 +17,7 @@ Public Class FrmBusquedaAjusteInventario
         Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcFecha As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
-
+        Dim dvcNulo As New DataGridViewTextBoxColumn
         dgvListado.Columns.Clear()
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "Id"
@@ -32,6 +32,10 @@ Public Class FrmBusquedaAjusteInventario
         dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.Width = 500
         dgvListado.Columns.Add(dvcDescripcion)
+        dvcNulo.DataPropertyName = "Nulo"
+        dvcNulo.Width = 0
+        dvcNulo.Visible = False
+        dgvListado.Columns.Add(dvcNulo)
     End Sub
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
@@ -99,6 +103,14 @@ Public Class FrmBusquedaAjusteInventario
     Private Sub LeaveTexboxHandler(sender As Object, e As EventArgs)
         Dim textbox As TextBox = DirectCast(sender, TextBox)
         textbox.BackColor = Color.White
+    End Sub
+
+    Private Sub DgvListado_CellFormatting(ByVal sender As Object, ByVal e As DataGridViewCellFormattingEventArgs) Handles dgvListado.CellFormatting
+        For i As Integer = 0 To dgvListado.Rows.Count - 1
+            If dgvListado.Rows(i).Cells(3).Value Then
+                dgvListado.Rows(i).DefaultCellStyle.ForeColor = Color.IndianRed
+            End If
+        Next
     End Sub
 
     Private Sub ValidaDigitos(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtId.KeyPress

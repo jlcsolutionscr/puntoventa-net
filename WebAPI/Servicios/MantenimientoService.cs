@@ -1967,8 +1967,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             try
             {
                 AjusteInventario ajusteInventario = dbContext.AjusteInventarioRepository.Include("DetalleAjusteInventario").FirstOrDefault(x => x.IdAjuste == intIdAjusteInventario);
-                if (ajusteInventario == null) throw new Exception("El registro de ajuste de inventario por anular no existe.");
-                if (ajusteInventario.Nulo == true) throw new BusinessException("El registro de ajuste de inventario ya ha sido anulado.");
+                if (ajusteInventario == null) throw new BusinessException("El registro de ajuste de inventario por anular no existe.");
+                if (ajusteInventario.Nulo) throw new BusinessException("El registro de ajuste de inventario ya ha sido anulado.");
                 Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
@@ -2055,15 +2055,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaAjustes = new List<AjusteInventarioDetalle>();
             try
             {
-                var listado = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listado = dbContext.AjusteInventarioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                 if (intIdAjusteInventario > 0)
-                    listado = listado.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
+                    listado = listado.Where(x => x.IdAjuste == intIdAjusteInventario);
                 else if (!strDescripcion.Equals(string.Empty))
-                    listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
+                    listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                 listado = listado.OrderByDescending(x => x.IdAjuste).Skip((numPagina - 1) * cantRec).Take(cantRec);
-                foreach (var value in listado)
+                foreach (var ajuste in listado)
                 {
-                    AjusteInventarioDetalle item = new AjusteInventarioDetalle(value.IdAjuste, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion);
+                    AjusteInventarioDetalle item = new AjusteInventarioDetalle(ajuste.IdAjuste, ajuste.Fecha.ToString("dd/MM/yyyy"), ajuste.Descripcion, ajuste.Nulo);
                     listaAjustes.Add(item);
                 }
                 return listaAjustes;

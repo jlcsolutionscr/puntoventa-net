@@ -633,10 +633,10 @@ Public Class FrmCompra
                 btnInsertarPago.Enabled = False
                 btnEliminarPago.Enabled = False
                 btnBusProd.Enabled = False
-                btnImprimir.Enabled = True
-                btnGenerarPDF.Enabled = True
+                btnImprimir.Enabled = Not compra.Nulo
+                btnGenerarPDF.Enabled = Not compra.Nulo
                 btnBuscarProveedor.Enabled = False
-                btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
+                btnAnular.Enabled = Not compra.Nulo And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
             End If
         End If

@@ -248,7 +248,7 @@ Public Class FrmAjusteInventario
                 txtFecha.Text = ajusteInventario.Fecha
                 txtDescAjuste.Text = ajusteInventario.Descripcion
                 CargarDetalleAjusteInventario(ajusteInventario)
-                btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
+                btnAnular.Enabled = Not ajusteInventario.Nulo And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
             End If
         End If

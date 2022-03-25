@@ -90,7 +90,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Traslado traslado = dbContext.TrasladoRepository.Include("DetalleTraslado").Where(x => x.IdTraslado == intIdTraslado).FirstOrDefault();
-                    if (traslado == null) throw new Exception("El registro de traslado por aplicar no existe.");
+                    if (traslado == null) throw new BusinessException("El registro de traslado por aplicar no existe.");
+                    if (traslado.Nulo) throw new BusinessException("El registro de traslado se encuentra anulado.");
+                    if (traslado.Aplicado) throw new BusinessException("El registro de traslado ya ha sido aplicado.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalDestino);
@@ -361,7 +363,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaTraslado = new List<TrasladoDetalle>();
             try
             {
-                var listado = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalOrigen == intIdSucursalOrigen && x.Aplicado == bolAplicado);
+                var listado = dbContext.TrasladoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursalOrigen == intIdSucursalOrigen && x.Aplicado == bolAplicado);
                 if (intIdTraslado > 0)
                     listado = listado.Where(x => x.IdTraslado == intIdTraslado);
                 listado = listado.OrderByDescending(x => x.IdTraslado).Skip((numPagina - 1) * cantRec).Take(cantRec);
@@ -372,7 +374,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == traslado.IdSucursalDestino).FirstOrDefault();
                     if (sucursalDestino != null)
                         strNombreSucursal = sucursalDestino.NombreSucursal;
-                    TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total);
+                    TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total, traslado.Nulo);
                     listaTraslado.Add(item);
                 }
                 return listaTraslado;
@@ -412,7 +414,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
                     if (sucursalDestino != null)
                         strNombreSucursal = sucursalDestino.NombreSucursal;
-                    TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total);
+                    TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total, false);
                     listaTraslado.Add(item);
                 }
                 return listaTraslado;

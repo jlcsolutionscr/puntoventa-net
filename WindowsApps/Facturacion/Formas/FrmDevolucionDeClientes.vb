@@ -326,8 +326,8 @@ Public Class FrmDevolucionDeClientes
                 CargarDetalleDevolucion(devolucion)
                 CargarTotales()
                 grdDetalleDevolucion.ReadOnly = True
-                btnImprimir.Enabled = True
-                btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
+                btnImprimir.Enabled = Not devolucion.Nulo
+                btnAnular.Enabled = Not devolucion.Nulo And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
                 btnBuscarFactura.Enabled = False
             End If
