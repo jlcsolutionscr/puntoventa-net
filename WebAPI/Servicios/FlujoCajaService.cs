@@ -307,7 +307,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaIngresos = dbContext.IngresoRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listaIngresos = dbContext.IngresoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
                 if (intIdIngreso > 0)
                     listaIngresos = listaIngresos.Where(x => x.IdIngreso == intIdIngreso);
                 else
@@ -331,7 +331,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listadoIngreso = new List<EfectivoDetalle>();
             try
             {
-                var listado = dbContext.IngresoRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listado = dbContext.IngresoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
                 if (intIdIngreso > 0)
                     listado = listado.Where(x => x.IdIngreso == intIdIngreso);
                 else
@@ -600,7 +600,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaEgresos = dbContext.EgresoRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listaEgresos = dbContext.EgresoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
                 if (intIdEgreso > 0)
                     listaEgresos = listaEgresos.Where(x => x.IdEgreso == intIdEgreso);
                 else
@@ -624,7 +624,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listadoEgreso = new List<EfectivoDetalle>();
             try
             {
-                var listado = dbContext.EgresoRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listado = dbContext.EgresoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
                 if (intIdEgreso > 0)
                     listado = listado.Where(x => x.IdEgreso == intIdEgreso);
                 else

@@ -933,13 +933,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaFacturas = dbContext.FacturaRepository.Include("Cliente").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listaFacturas = dbContext.FacturaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                 if (intIdFactura > 0)
-                    listaFacturas = listaFacturas.Where(x => !x.Nulo && x.ConsecFactura == intIdFactura);
+                    listaFacturas = listaFacturas.Where(x => x.ConsecFactura == intIdFactura);
                 if (!strNombre.Equals(string.Empty))
-                    listaFacturas = listaFacturas.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.NombreCliente.Contains(strNombre));
+                    listaFacturas = listaFacturas.Where(x => x.NombreCliente.Contains(strNombre));
                 if (!strIdentificacion.Equals(string.Empty))
-                    listaFacturas = listaFacturas.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Cliente.Identificacion.Contains(strIdentificacion));
+                    listaFacturas = listaFacturas.Where(x => x.Cliente.Identificacion.Contains(strIdentificacion));
                 return listaFacturas.Count();
             }
             catch (Exception ex)
@@ -1095,14 +1095,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaProformas = dbContext.ProformaRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                var listaProformas = dbContext.ProformaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
                 if (intIdProforma > 0)
-                    listaProformas = listaProformas.Where(x => !x.Nulo && x.ConsecProforma == intIdProforma);
-                else
-                {
-                    if (!strNombre.Equals(string.Empty))
-                        listaProformas = listaProformas.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.NombreCliente.Contains(strNombre));
-                }
+                    listaProformas = listaProformas.Where(x => x.ConsecProforma == intIdProforma);
+                if (!strNombre.Equals(string.Empty))
+                    listaProformas = listaProformas.Where(x => x.NombreCliente.Contains(strNombre));
                 return listaProformas.Count();
             }
             catch (Exception ex)
@@ -1238,14 +1235,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaApartados = dbContext.ApartadoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                var listaApartados = dbContext.ApartadoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
                 if (intIdApartado > 0)
-                    listaApartados = listaApartados.Where(x => !x.Nulo && x.ConsecApartado == intIdApartado);
-                else
-                {
-                    if (!strNombre.Equals(string.Empty))
-                        listaApartados = listaApartados.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.NombreCliente.Contains(strNombre));
-                }
+                    listaApartados = listaApartados.Where(x => x.ConsecApartado == intIdApartado);
+                if (!strNombre.Equals(string.Empty))
+                    listaApartados = listaApartados.Where(x => x.NombreCliente.Contains(strNombre));
                 return listaApartados.Count();
             }
             catch (Exception ex)
@@ -1510,7 +1504,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaOrdenesServicio = dbContext.OrdenServicioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                var listaOrdenesServicio = dbContext.OrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
                 if (intIdOrdenServicio > 0)
                     listaOrdenesServicio = listaOrdenesServicio.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                 if (!strNombre.Equals(string.Empty))
@@ -1894,7 +1888,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaDevoluciones = dbContext.DevolucionClienteRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listaDevoluciones = dbContext.DevolucionClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                 if (intIdDevolucion > 0)
                     listaDevoluciones = listaDevoluciones.Where(x => x.IdDevolucion == intIdDevolucion);
                 else if (!strNombre.Equals(string.Empty))

@@ -784,7 +784,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaOrdenesCompra = dbContext.OrdenRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
+                var listaOrdenesCompra = dbContext.OrdenRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                 if (!bolIncluyeTodo)
                     listaOrdenesCompra = listaOrdenesCompra.Where(x => !x.Aplicado);
                 if (intIdOrdenCompra > 0)
@@ -804,7 +804,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaOrdenesCompra = dbContext.OrdenRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
+                var listaOrdenesCompra = dbContext.OrdenRepository.Include("Proveedor").Where(x => x.IdEmpresa == intIdEmpresa);
                 if (!bolIncluyeTodo)
                     listaOrdenesCompra = listaOrdenesCompra.Where(x => !x.Aplicado);
                 if (intIdOrdenCompra > 0)
@@ -824,7 +824,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                return dbContext.CompraRepository.Where(x => !x.Nulo & x.IdProveedor == intIdProveedor).ToList();
+                return dbContext.CompraRepository.Where(x => x.IdProveedor == intIdProveedor && !x.Nulo).ToList();
             }
             catch (Exception ex)
             {
@@ -978,7 +978,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaDevoluciones = dbContext.DevolucionProveedorRepository.Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
+                var listaDevoluciones = dbContext.DevolucionProveedorRepository.Where(x => x.IdEmpresa == intIdEmpresa && !x.Nulo);
                 if (intIdDevolucion > 0)
                     listaDevoluciones = listaDevoluciones.Where(x => x.IdDevolucion == intIdDevolucion);
                 else if (!strNombre.Equals(string.Empty))
@@ -996,7 +996,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaDevoluciones = dbContext.DevolucionProveedorRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa);
+                var listaDevoluciones = dbContext.DevolucionProveedorRepository.Include("Proveedor").Where(x => x.IdEmpresa == intIdEmpresa && !x.Nulo);
                 if (intIdDevolucion > 0)
                     listaDevoluciones = listaDevoluciones.Where(x => x.IdDevolucion == intIdDevolucion);
                 else if (!strNombre.Equals(string.Empty))
