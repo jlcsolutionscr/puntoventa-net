@@ -653,7 +653,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaCompras = dbContext.CompraRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listaCompras = dbContext.CompraRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
                 if (intIdCompra > 0)
                     listaCompras = listaCompras.Where(x => x.IdCompra == intIdCompra);
                 if (!strRefFactura.Equals(string.Empty))
@@ -674,7 +674,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaCompras = new List<CompraDetalle>();
             try
             {
-                var listado = dbContext.CompraRepository.Include("Proveedor").Where(x => !x.Nulo & x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listado = dbContext.CompraRepository.Include("Proveedor").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
                 if (intIdCompra > 0)
                     listado = listado.Where(x => x.IdCompra == intIdCompra);
                 if (!strRefFactura.Equals(string.Empty))

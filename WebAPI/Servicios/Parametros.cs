@@ -7,12 +7,7 @@ namespace LeandroSoftware.ServicioWeb.Parametros
         private static readonly List<LlaveDescripcion> listado = new List<LlaveDescripcion>()
         {
             new LlaveDescripcion(1, "Contado"),
-            new LlaveDescripcion(2, "Crédito"),
-            new LlaveDescripcion(3, "Consignación"),
-            new LlaveDescripcion(4, "Apartado"),
-            new LlaveDescripcion(5, "Arrendamiento con opción de compra"),
-            new LlaveDescripcion(6, "Arrendamiento en función financiera"),
-            new LlaveDescripcion(7, "Otros")
+            new LlaveDescripcion(2, "Crédito")
         };
 
         public static IList<LlaveDescripcion> ObtenerListado()
