@@ -315,7 +315,6 @@ namespace LeandroSoftware.Activator
                         txtNombreComercial.Text = empresa.NombreComercial;
                         cboTipoIdentificacion.SelectedValue = empresa.IdTipoIdentificacion;
                         txtIdentificacion.Text = empresa.Identificacion;
-                        txtCodigoActividad.Text = empresa.CodigoActividad;
                         await CargarCantones(empresa.IdProvincia);
                         await CargarDistritos(empresa.IdProvincia, empresa.IdCanton);
                         await CargarBarrios(empresa.IdProvincia, empresa.IdCanton, empresa.IdDistrito);
@@ -408,7 +407,6 @@ namespace LeandroSoftware.Activator
                 empresa.NombreEmpresa = txtNombreEmpresa.Text;
                 empresa.NombreComercial = txtNombreComercial.Text;
                 empresa.IdTipoIdentificacion = (int)cboTipoIdentificacion.SelectedValue;
-                empresa.CodigoActividad = txtCodigoActividad.Text;
                 empresa.Identificacion = txtIdentificacion.Text;
                 empresa.IdProvincia = (int)cboProvincia.SelectedValue;
                 empresa.IdCanton = (int)cboCanton.SelectedValue;
