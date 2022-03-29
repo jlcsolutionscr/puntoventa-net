@@ -22,6 +22,7 @@ Partial Class FrmDetalleDocumentoElectronico
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmDetalleDocumentoElectronico))
         Me.btnMostrarRespuesta = New System.Windows.Forms.Button()
         Me.lblPagina = New System.Windows.Forms.Label()
         Me.btnLast = New System.Windows.Forms.Button()
@@ -37,6 +38,7 @@ Partial Class FrmDetalleDocumentoElectronico
         Me.btnGenerar = New System.Windows.Forms.Button()
         Me.lblDescripcion = New System.Windows.Forms.Label()
         Me.txtNombre = New System.Windows.Forms.TextBox()
+        Me.btnFiltrar = New System.Windows.Forms.Button()
         CType(Me.dgvDatos, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -203,15 +205,27 @@ Partial Class FrmDetalleDocumentoElectronico
         '
         Me.txtNombre.Location = New System.Drawing.Point(72, 39)
         Me.txtNombre.Name = "txtNombre"
-        Me.txtNombre.Size = New System.Drawing.Size(708, 20)
+        Me.txtNombre.Size = New System.Drawing.Size(682, 20)
         Me.txtNombre.TabIndex = 2
         Me.txtNombre.TabStop = False
+        '
+        'btnFiltrar
+        '
+        Me.btnFiltrar.Enabled = False
+        Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
+        Me.btnFiltrar.Location = New System.Drawing.Point(760, 37)
+        Me.btnFiltrar.Name = "btnFiltrar"
+        Me.btnFiltrar.Size = New System.Drawing.Size(22, 22)
+        Me.btnFiltrar.TabIndex = 156
+        Me.btnFiltrar.TabStop = False
+        Me.btnFiltrar.UseVisualStyleBackColor = True
         '
         'FrmDetalleDocumentoElectronico
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(794, 505)
+        Me.Controls.Add(Me.btnFiltrar)
         Me.Controls.Add(Me.lblDescripcion)
         Me.Controls.Add(Me.txtNombre)
         Me.Controls.Add(Me.btnGenerar)
@@ -250,4 +264,5 @@ Partial Class FrmDetalleDocumentoElectronico
     Friend WithEvents btnGenerar As Button
     Friend WithEvents lblDescripcion As Label
     Friend WithEvents txtNombre As TextBox
+    Friend WithEvents btnFiltrar As Button
 End Class

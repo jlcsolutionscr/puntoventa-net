@@ -66,26 +66,27 @@ Public Class FrmLineaListado
         Try
             EstablecerPropiedadesDataGridView()
             Await ActualizarDatos()
+            btnFiltrar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
         End Try
     End Sub
 
-    Private Async Sub BtnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
+    Private Sub BtnAgregar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnAgregar.Click
         Dim formMant As New FrmLinea With {
             .intIdLinea = 0
         }
         formMant.ShowDialog()
-        Await ActualizarDatos()
+        BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 
-    Private Async Sub BtnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
+    Private Sub BtnEditar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEditar.Click
         Dim formMant As New FrmLinea With {
             .intIdLinea = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
-        Await ActualizarDatos()
+        BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 
     Private Async Sub BtnEliminar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnEliminar.Click
@@ -96,20 +97,22 @@ Public Class FrmLineaListado
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            Await ActualizarDatos()
+            BtnFiltrar_Click(btnFiltrar, New EventArgs())
         End If
     End Sub
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        btnFiltrar.Enabled = False
         Await ActualizarDatos()
+        btnFiltrar.Enabled = True
     End Sub
 
-    Private Async Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
+    Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         Dim formMant As New FrmLinea With {
             .intIdLinea = dgvListado.CurrentRow.Cells(0).Value
         }
         formMant.ShowDialog()
-        Await ActualizarDatos()
+        BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 #End Region
 End Class

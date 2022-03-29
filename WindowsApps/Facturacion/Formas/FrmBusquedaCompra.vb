@@ -156,6 +156,7 @@ Public Class FrmBusquedaCompra
             Await ValidarCantidadCompras()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
+            btnFiltrar.Enabled = True
             bolCargado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -172,6 +173,7 @@ Public Class FrmBusquedaCompra
     End Sub
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        btnFiltrar.Enabled = False
         If txtId.Text = "" Then
             intId = 0
         Else
@@ -180,6 +182,7 @@ Public Class FrmBusquedaCompra
         Await ValidarCantidadCompras()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
+        btnFiltrar.Enabled = True
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged

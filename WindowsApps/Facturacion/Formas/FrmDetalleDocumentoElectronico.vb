@@ -164,8 +164,11 @@ Public Class FrmDetalleDocumentoElectronico
             CargarCombos()
             rtxDetalleRespuesta.Visible = False
             EstablecerPropiedadesDataGridView()
+            Await ObtenerCantidadDocumentosProcesados()
+            intIndiceDePagina = 1
             Await ActualizarDatos()
             bolCargado = True
+            btnFiltrar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -175,6 +178,7 @@ Public Class FrmDetalleDocumentoElectronico
     Private Async Sub BtnMostrarRespuesta_Click(sender As Object, e As EventArgs) Handles btnMostrarRespuesta.Click
         Try
             If Not bolRespuestaVisible Then
+                btnMostrarRespuesta.Enabled = False
                 Dim intIndex As Integer = dgvDatos.CurrentRow.Index
                 Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
                 If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado Or documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado Then
@@ -198,6 +202,7 @@ Public Class FrmDetalleDocumentoElectronico
                     bolRespuestaVisible = True
                     btnMostrarXML.Enabled = False
                 End If
+                btnMostrarRespuesta.Enabled = True
             Else
                 rtxDetalleRespuesta.Visible = False
                 bolRespuestaVisible = False
@@ -238,6 +243,7 @@ Public Class FrmDetalleDocumentoElectronico
     Private Async Sub btnMostrarXML_Click(sender As Object, e As EventArgs) Handles btnMostrarXML.Click
         Try
             If Not bolRespuestaVisible Then
+                btnMostrarXML.Enabled = False
                 Dim intIndex As Integer = dgvDatos.CurrentRow.Index
                 Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
                 If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado Or documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado Then
@@ -267,6 +273,7 @@ Public Class FrmDetalleDocumentoElectronico
                     bolRespuestaVisible = True
                     btnMostrarRespuesta.Enabled = False
                 End If
+                btnMostrarXML.Enabled = True
             Else
                 rtxDetalleRespuesta.Visible = False
                 bolRespuestaVisible = False
@@ -279,11 +286,9 @@ Public Class FrmDetalleDocumentoElectronico
         End Try
     End Sub
 
-    Private Async Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
+    Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
         If bolCargado Then
-            Await ObtenerCantidadDocumentosProcesados()
-            intIndiceDePagina = 1
-            Await ActualizarDatos(intIndiceDePagina)
+            btnFiltrar_Click(btnFiltrar, New EventArgs())
         End If
     End Sub
 
@@ -316,10 +321,18 @@ Public Class FrmDetalleDocumentoElectronico
         End If
     End Sub
 
-    Private Async Sub TxtNombre_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtNombre.PreviewKeyDown
+    Private Sub TxtNombre_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtNombre.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
-            Await ActualizarDatos()
+            btnFiltrar_Click(btnFiltrar, New EventArgs())
         End If
+    End Sub
+
+    Private Async Sub btnFiltrar_Click(sender As Object, e As EventArgs) Handles btnFiltrar.Click
+        btnFiltrar.Enabled = False
+        Await ObtenerCantidadDocumentosProcesados()
+        intIndiceDePagina = 1
+        Await ActualizarDatos()
+        btnFiltrar.Enabled = True
     End Sub
 #End Region
 End Class

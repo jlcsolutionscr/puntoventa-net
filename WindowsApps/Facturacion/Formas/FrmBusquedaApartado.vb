@@ -13,6 +13,7 @@ Public Class FrmBusquedaApartado
     Private intId As Integer = 0
     Private bolCargado As Boolean = False
     Public bolIncluyeEstado As Boolean = False
+    Public bolIncluyeNulos As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -64,7 +65,7 @@ Public Class FrmBusquedaApartado
         Try
             Dim listado = New List(Of FacturaDetalle)
             If intCantidadDePaginas > 0 Then
-                listado = Await Puntoventa.ObtenerListadoApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+                listado = Await Puntoventa.ObtenerListadoApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
             End If
             dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
@@ -78,7 +79,7 @@ Public Class FrmBusquedaApartado
 
     Private Async Function ValidarCantidadApartados() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, intId, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -187,6 +188,7 @@ Public Class FrmBusquedaApartado
             Await ValidarCantidadApartados()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
+            btnFiltrar.Enabled = True
             bolCargado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -203,6 +205,7 @@ Public Class FrmBusquedaApartado
     End Sub
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        btnFiltrar.Enabled = False
         If txtId.Text = "" Then
             intId = 0
         Else
@@ -211,6 +214,7 @@ Public Class FrmBusquedaApartado
         Await ValidarCantidadApartados()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
+        btnFiltrar.Enabled = True
     End Sub
 
     Private Sub cboEstado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboEstado.SelectedIndexChanged

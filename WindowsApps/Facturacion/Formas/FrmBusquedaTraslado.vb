@@ -143,6 +143,7 @@ Public Class FrmBusquedaTraslado
             Await ValidarCantidadRegistros(txtId.Text)
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina, txtId.Text)
+            btnFiltrar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -157,9 +158,11 @@ Public Class FrmBusquedaTraslado
     End Sub
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        btnFiltrar.Enabled = False
         Await ValidarCantidadRegistros(txtId.Text)
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina, txtId.Text)
+        btnFiltrar.Enabled = True
     End Sub
 #End Region
 End Class

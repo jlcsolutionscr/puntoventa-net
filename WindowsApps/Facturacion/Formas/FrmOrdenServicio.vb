@@ -714,6 +714,7 @@ Public Class FrmOrdenServicio
     Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaOrdenServicio()
         formBusqueda.bolIncluyeEstado = True
+        formBusqueda.bolIncluyeNulos = True
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then

@@ -66,6 +66,7 @@ Public Class FrmBancoAdquirienteListado
         Try
             EstablecerPropiedadesDataGridView()
             Await ActualizarDatos()
+            btnFiltrar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -101,7 +102,9 @@ Public Class FrmBancoAdquirienteListado
     End Sub
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        btnFiltrar.Enabled = False
         Await ActualizarDatos()
+        btnFiltrar.Enabled = True
     End Sub
 
     Private Async Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick

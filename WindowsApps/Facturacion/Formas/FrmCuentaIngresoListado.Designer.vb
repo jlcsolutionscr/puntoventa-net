@@ -96,6 +96,7 @@ Partial Class FrmCuentaIngresoListado
         '
         'btnFiltrar
         '
+        Me.btnFiltrar.Enabled = False
         Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
         Me.btnFiltrar.Location = New System.Drawing.Point(403, 22)
         Me.btnFiltrar.Name = "btnFiltrar"

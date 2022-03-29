@@ -174,6 +174,7 @@ Public Class FrmBusquedaFactura
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
             bolCargado = True
+            btnFiltrar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -190,24 +191,16 @@ Public Class FrmBusquedaFactura
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         If bolCargado Then
+            btnFiltrar.Enabled = False
             Await ValidarCantidadRegistros()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
+            btnFiltrar.Enabled = True
         End If
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
         If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
-    End Sub
-
-    Private Async Sub fields_TextChanged(sender As Object, e As PreviewKeyDownEventArgs) Handles txtId.PreviewKeyDown, txtNombre.PreviewKeyDown, txtIdentificacion.PreviewKeyDown
-        If bolCargado Then
-            If e.KeyCode = Keys.Enter Then
-                Await ValidarCantidadRegistros()
-                intIndiceDePagina = 1
-                Await ActualizarDatos(intIndiceDePagina)
-            End If
-        End If
     End Sub
 #End Region
 End Class

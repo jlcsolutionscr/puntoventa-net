@@ -13,7 +13,7 @@ Partial Class FrmBusquedaProducto
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
-    Public WithEvents CmdFiltro As System.Windows.Forms.Button
+    Public WithEvents btnFiltrar As System.Windows.Forms.Button
     Public WithEvents txtDesc As System.Windows.Forms.TextBox
     Public WithEvents txtCodigo As System.Windows.Forms.TextBox
     Public WithEvents Id2Label As System.Windows.Forms.Label
@@ -22,7 +22,7 @@ Partial Class FrmBusquedaProducto
     'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.CmdFiltro = New System.Windows.Forms.Button()
+        Me.btnFiltrar = New System.Windows.Forms.Button()
         Me.txtDesc = New System.Windows.Forms.TextBox()
         Me.txtCodigo = New System.Windows.Forms.TextBox()
         Me.Id2Label = New System.Windows.Forms.Label()
@@ -43,19 +43,20 @@ Partial Class FrmBusquedaProducto
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'CmdFiltro
+        'btnFiltrar
         '
-        Me.CmdFiltro.BackColor = System.Drawing.SystemColors.ControlLightLight
-        Me.CmdFiltro.Cursor = System.Windows.Forms.Cursors.Default
-        Me.CmdFiltro.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdFiltro.Location = New System.Drawing.Point(951, 83)
-        Me.CmdFiltro.Name = "CmdFiltro"
-        Me.CmdFiltro.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.CmdFiltro.Size = New System.Drawing.Size(81, 21)
-        Me.CmdFiltro.TabIndex = 6
-        Me.CmdFiltro.TabStop = False
-        Me.CmdFiltro.Text = "Filtrar"
-        Me.CmdFiltro.UseVisualStyleBackColor = False
+        Me.btnFiltrar.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.btnFiltrar.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnFiltrar.Enabled = False
+        Me.btnFiltrar.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnFiltrar.Location = New System.Drawing.Point(951, 83)
+        Me.btnFiltrar.Name = "btnFiltrar"
+        Me.btnFiltrar.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnFiltrar.Size = New System.Drawing.Size(81, 21)
+        Me.btnFiltrar.TabIndex = 6
+        Me.btnFiltrar.TabStop = False
+        Me.btnFiltrar.Text = "Filtrar"
+        Me.btnFiltrar.UseVisualStyleBackColor = False
         '
         'txtDesc
         '
@@ -270,7 +271,7 @@ Partial Class FrmBusquedaProducto
         '
         'FrmBusquedaProducto
         '
-        Me.AcceptButton = Me.CmdFiltro
+        Me.AcceptButton = Me.btnFiltrar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
@@ -288,7 +289,7 @@ Partial Class FrmBusquedaProducto
         Me.Controls.Add(Me.btnFirst)
         Me.Controls.Add(Me.chkExacta)
         Me.Controls.Add(Me.dgvListado)
-        Me.Controls.Add(Me.CmdFiltro)
+        Me.Controls.Add(Me.btnFiltrar)
         Me.Controls.Add(Me.txtDesc)
         Me.Controls.Add(Me.txtCodigo)
         Me.Controls.Add(Me.Id2Label)

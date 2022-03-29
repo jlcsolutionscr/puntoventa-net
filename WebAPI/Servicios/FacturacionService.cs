@@ -37,19 +37,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarProforma(Proforma proforma);
         void AnularProforma(int intIdProforma, int intIdUsuario, string strMotivoAnulacion);
         Proforma ObtenerProforma(int intIdProforma);
-        int ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int intIdProforma, string strNombre);
-        IList<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int numPagina, int cantRec, int intIdProforma, string strNombre);
+        int ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdProforma, string strNombre);
+        IList<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdProforma, string strNombre);
         string AgregarApartado(Apartado apartado);
         void AnularApartado(int intIdApartado, int intIdUsuario, string strMotivoAnulacion);
         Apartado ObtenerApartado(int intIdApartado);
-        int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int intIdApartado, string strNombre);
-        IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int numPagina, int cantRec, int intIdApartado, string strNombre);
+        int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdApartado, string strNombre);
+        IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdApartado, string strNombre);
         string AgregarOrdenServicio(OrdenServicio ordenServicio);
         void ActualizarOrdenServicio(OrdenServicio ordenServicio);
         void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivoAnulacion);
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
-        int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int intIdOrdenServicio, string strNombre);
-        IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre);
+        int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdOrdenServicio, string strNombre);
+        IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre);
         IList<ClsTiquete> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc);
         void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado);
         string AgregarDevolucionCliente(DevolucionCliente devolucion, ConfiguracionGeneral datos);
@@ -1091,16 +1091,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int intIdProforma, string strNombre)
+        public int ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdProforma, string strNombre)
         {
             try
             {
-                var listaProformas = dbContext.ProformaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                var listado = dbContext.ProformaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                if (!bolIncluyeNulos)
+                    listado = listado.Where(x => !x.Nulo);
                 if (intIdProforma > 0)
-                    listaProformas = listaProformas.Where(x => x.ConsecProforma == intIdProforma);
+                    listado = listado.Where(x => x.ConsecProforma == intIdProforma);
                 if (!strNombre.Equals(string.Empty))
-                    listaProformas = listaProformas.Where(x => x.NombreCliente.Contains(strNombre));
-                return listaProformas.Count();
+                    listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
+                return listado.Count();
             }
             catch (Exception ex)
             {
@@ -1109,19 +1111,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int numPagina, int cantRec, int intIdProforma, string strNombre)
+        public IList<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdProforma, string strNombre)
         {
             var listaProforma = new List<FacturaDetalle>();
             try
             {
                 var listado = dbContext.ProformaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                if (!bolIncluyeNulos)
+                    listado = listado.Where(x => !x.Nulo);
                 if (intIdProforma > 0)
                     listado = listado.Where(x => x.ConsecProforma == intIdProforma);
-                else
-                {
-                    if (!strNombre.Equals(string.Empty))
-                        listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
-                }
+                if (!strNombre.Equals(string.Empty))
+                    listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
                 var proformas = listado.OrderByDescending(x => x.IdProforma).Skip((numPagina - 1) * cantRec).Take(cantRec);
                 foreach (var proforma in proformas)
                 {
@@ -1231,11 +1232,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int intIdApartado, string strNombre)
+        public int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdApartado, string strNombre)
         {
             try
             {
                 var listaApartados = dbContext.ApartadoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                if (!bolIncluyeNulos)
+                    listaApartados = listaApartados.Where(x => !x.Nulo);
                 if (intIdApartado > 0)
                     listaApartados = listaApartados.Where(x => x.ConsecApartado == intIdApartado);
                 if (!strNombre.Equals(string.Empty))
@@ -1249,12 +1252,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
         
-        public IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int numPagina, int cantRec, int intIdApartado, string strNombre)
+        public IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdApartado, string strNombre)
         {
             var listaApartado = new List<FacturaDetalle>();
             try
             {
                 var listado = dbContext.ApartadoRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                if (!bolIncluyeNulos)
+                    listado = listado.Where(x => !x.Nulo);
                 if (intIdApartado > 0)
                     listado = listado.Where(x => x.ConsecApartado == intIdApartado);
                 if (!strNombre.Equals(string.Empty))
@@ -1500,16 +1505,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int intIdOrdenServicio, string strNombre)
+        public int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdOrdenServicio, string strNombre)
         {
             try
             {
-                var listaOrdenesServicio = dbContext.OrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                var listado = dbContext.OrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                if (!bolIncluyeNulos)
+                    listado = listado.Where(x => !x.Nulo);
                 if (intIdOrdenServicio > 0)
-                    listaOrdenesServicio = listaOrdenesServicio.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
+                    listado = listado.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                 if (!strNombre.Equals(string.Empty))
-                    listaOrdenesServicio = listaOrdenesServicio.Where(x => x.NombreCliente.Contains(strNombre));
-                return listaOrdenesServicio.Count();
+                    listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
+                return listado.Count();
             }
             catch (Exception ex)
             {
@@ -1518,12 +1525,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre)
+        public IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre)
         {
             var listaOrdenServicio = new List<FacturaDetalle>();
             try
             {
                 var listado = dbContext.OrdenServicioRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                if (!bolIncluyeNulos)
+                    listado = listado.Where(x => !x.Nulo);
                 if (intIdOrdenServicio > 0)
                     listado = listado.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                 if (!strNombre.Equals(string.Empty))
@@ -1888,11 +1897,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             try
             {
-                var listaDevoluciones = dbContext.DevolucionClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listaDevoluciones = dbContext.DevolucionClienteRepository.Include("Factura").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                 if (intIdDevolucion > 0)
                     listaDevoluciones = listaDevoluciones.Where(x => x.IdDevolucion == intIdDevolucion);
                 else if (!strNombre.Equals(string.Empty))
-                    listaDevoluciones = listaDevoluciones.Where(x => x.NombreCliente.Contains(strNombre));
+                    listaDevoluciones = listaDevoluciones.Where(x => x.Factura.NombreCliente.Contains(strNombre));
                 return listaDevoluciones.Count();
             }
             catch (Exception ex)
@@ -1911,7 +1920,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (intIdDevolucion > 0)
                     listado = listado.Where(x => x.IdDevolucion == intIdDevolucion);
                 else if (!strNombre.Equals(string.Empty))
-                    listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
+                    listado = listado.Where(x => x.Factura.NombreCliente.Contains(strNombre));
                 listado = listado.OrderByDescending(x => x.IdDevolucion).Skip((numPagina - 1) * cantRec).Take(cantRec);
                 foreach (var devolucion in listado)
                 {

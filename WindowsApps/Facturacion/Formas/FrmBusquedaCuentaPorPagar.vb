@@ -157,6 +157,7 @@ Public Class FrmBusquedaCuentaPorPagar
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
             bolCargado = True
+            btnFiltrar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -172,9 +173,11 @@ Public Class FrmBusquedaCuentaPorPagar
     End Sub
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        btnFiltrar.Enabled = False
         Await ValidarCantidadCxP()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
+        btnFiltrar.Enabled = True
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged

@@ -24,7 +24,7 @@ Public Class FrmVendedorListado
 
     Private Async Function ActualizarDatos() As Task
         Try
-            listado = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, "", txtNombre.Text)
+            listado = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
             dgvListado.DataSource = listado
             If listado.Count() > 0 Then
                 btnEditar.Enabled = True
@@ -66,6 +66,7 @@ Public Class FrmVendedorListado
         Try
             EstablecerPropiedadesDataGridView()
             Await ActualizarDatos()
+            btnFiltrar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -101,7 +102,9 @@ Public Class FrmVendedorListado
     End Sub
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        btnFiltrar.Enabled = False
         Await ActualizarDatos()
+        btnFiltrar.Enabled = True
     End Sub
 
     Private Async Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick

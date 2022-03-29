@@ -116,6 +116,7 @@ Public Class FrmBusquedaMovimientoBanco
             ValidarCantidadRegistros()
             intIndiceDePagina = 1
             ActualizarDatos(intIndiceDePagina)
+            btnFiltrar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -131,9 +132,11 @@ Public Class FrmBusquedaMovimientoBanco
     End Sub
 
     Private Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        btnFiltrar.Enabled = False
         ValidarCantidadRegistros()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
+        btnFiltrar.Enabled = True
     End Sub
 #End Region
 End Class

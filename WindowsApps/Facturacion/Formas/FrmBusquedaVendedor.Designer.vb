@@ -43,6 +43,7 @@ Partial Class FrmBusquedaVendedor
         '
         'btnFiltrar
         '
+        Me.btnFiltrar.Enabled = False
         Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
         Me.btnFiltrar.Location = New System.Drawing.Point(610, 10)
         Me.btnFiltrar.Name = "btnFiltrar"

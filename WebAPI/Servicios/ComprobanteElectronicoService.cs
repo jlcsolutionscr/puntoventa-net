@@ -1847,7 +1847,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (documentoXml.DocumentElement.Name != "FacturaElectronica" && documentoXml.DocumentElement.Name != "NotaCreditoElectronica" && documentoXml.DocumentElement.Name != "NotaDebitoElectronica")
                 throw new BusinessException("El documento por aceptar no corresponde a una factura electrónica, nota de débito electrónica o nota de crédito electrónica. Por favor verifique. . .");
             string strClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
-            DocumentoElectronico documentoExistente = dbContext.DocumentoElectronicoRepository.AsNoTracking().FirstOrDefault(x => x.ClaveNumerica == strClaveNumerica);
+            DocumentoElectronico documentoExistente = dbContext.DocumentoElectronicoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.ClaveNumerica == strClaveNumerica);
             if (documentoExistente != null) throw new BusinessException("El documento electrónico con clave " + strClaveNumerica + " ya se encuentra registrado en el sistema. . .");
             decimal decTotalComprobante = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
             MensajeReceptor mensajeReceptor = new MensajeReceptor

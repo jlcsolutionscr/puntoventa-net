@@ -178,6 +178,7 @@ Public Class FrmProductoListado
             Await ActualizarDatos(intIndiceDePagina)
             Await CargarComboBox()
             bolReady = True
+            btnFiltrar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -217,21 +218,11 @@ Public Class FrmProductoListado
     End Sub
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
-        If btnFiltrar.Enabled Then
-            btnFiltrar.Enabled = False
-            btnFirst.Enabled = False
-            btnPrevious.Enabled = False
-            btnNext.Enabled = False
-            btnLast.Enabled = False
-            Await ValidarCantidadRegistros()
-            intIndiceDePagina = 1
-            Await ActualizarDatos(intIndiceDePagina)
-            btnFiltrar.Enabled = True
-            btnFirst.Enabled = True
-            btnPrevious.Enabled = True
-            btnNext.Enabled = True
-            btnLast.Enabled = True
-        End If
+        btnFiltrar.Enabled = False
+        Await ValidarCantidadRegistros()
+        intIndiceDePagina = 1
+        Await ActualizarDatos(intIndiceDePagina)
+        btnFiltrar.Enabled = True
     End Sub
 
     Private Async Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick

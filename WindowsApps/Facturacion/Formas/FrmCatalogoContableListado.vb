@@ -76,6 +76,7 @@
         Try
             EstablecerPropiedadesDataGridView()
             ActualizarDatos()
+            btnFiltrar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -113,7 +114,9 @@
     End Sub
 
     Private Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        btnFiltrar.Enabled = False
         ActualizarDatos()
+        btnFiltrar.Enabled = True
     End Sub
 #End Region
 End Class

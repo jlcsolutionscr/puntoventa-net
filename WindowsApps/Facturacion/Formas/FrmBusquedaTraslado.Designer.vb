@@ -20,8 +20,6 @@ Partial Class FrmBusquedaTraslado
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmBusquedaTraslado))
         Me.dgvListado = New System.Windows.Forms.DataGridView()
         Me.btnFiltrar = New System.Windows.Forms.Button()
-        Me.lblDescripcion = New System.Windows.Forms.Label()
-        Me.txtNombre = New System.Windows.Forms.TextBox()
         Me.lblPagina = New System.Windows.Forms.Label()
         Me.btnLast = New System.Windows.Forms.Button()
         Me.btnNext = New System.Windows.Forms.Button()
@@ -50,6 +48,7 @@ Partial Class FrmBusquedaTraslado
         '
         'btnFiltrar
         '
+        Me.btnFiltrar.Enabled = False
         Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
         Me.btnFiltrar.Location = New System.Drawing.Point(610, 10)
         Me.btnFiltrar.Name = "btnFiltrar"
@@ -57,22 +56,6 @@ Partial Class FrmBusquedaTraslado
         Me.btnFiltrar.TabIndex = 2
         Me.btnFiltrar.TabStop = False
         Me.btnFiltrar.UseVisualStyleBackColor = True
-        '
-        'lblDescripcion
-        '
-        Me.lblDescripcion.AutoSize = True
-        Me.lblDescripcion.Location = New System.Drawing.Point(141, 15)
-        Me.lblDescripcion.Name = "lblDescripcion"
-        Me.lblDescripcion.Size = New System.Drawing.Size(43, 13)
-        Me.lblDescripcion.TabIndex = 8
-        Me.lblDescripcion.Text = "Detalle:"
-        '
-        'txtNombre
-        '
-        Me.txtNombre.Location = New System.Drawing.Point(190, 12)
-        Me.txtNombre.Name = "txtNombre"
-        Me.txtNombre.Size = New System.Drawing.Size(414, 20)
-        Me.txtNombre.TabIndex = 1
         '
         'lblPagina
         '
@@ -166,8 +149,6 @@ Partial Class FrmBusquedaTraslado
         Me.Controls.Add(Me.btnPrevious)
         Me.Controls.Add(Me.btnFirst)
         Me.Controls.Add(Me.btnFiltrar)
-        Me.Controls.Add(Me.lblDescripcion)
-        Me.Controls.Add(Me.txtNombre)
         Me.Controls.Add(Me.dgvListado)
         Me.Cursor = System.Windows.Forms.Cursors.Default
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
@@ -185,8 +166,6 @@ Partial Class FrmBusquedaTraslado
     End Sub
     Friend WithEvents dgvListado As System.Windows.Forms.DataGridView
     Friend WithEvents btnFiltrar As System.Windows.Forms.Button
-    Friend WithEvents lblDescripcion As System.Windows.Forms.Label
-    Friend WithEvents txtNombre As System.Windows.Forms.TextBox
     Friend WithEvents lblPagina As System.Windows.Forms.Label
     Private WithEvents btnLast As System.Windows.Forms.Button
     Private WithEvents btnNext As System.Windows.Forms.Button

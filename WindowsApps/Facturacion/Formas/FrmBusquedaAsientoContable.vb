@@ -119,6 +119,7 @@ Public Class FrmBusquedaAsientoContable
             ValidarCantidadRegistros()
             intIndiceDePagina = 1
             ActualizarDatos(intIndiceDePagina)
+            btnFiltrar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -134,6 +135,7 @@ Public Class FrmBusquedaAsientoContable
     End Sub
 
     Private Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
+        btnFiltrar.Enabled = False
         If txtId.Text = "" Then
             intId = 0
         Else
@@ -142,6 +144,7 @@ Public Class FrmBusquedaAsientoContable
         ValidarCantidadRegistros()
         intIndiceDePagina = 1
         ActualizarDatos(intIndiceDePagina)
+        btnFiltrar.Enabled = True
     End Sub
 #End Region
 End Class

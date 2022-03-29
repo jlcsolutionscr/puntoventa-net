@@ -185,10 +185,12 @@ Public Class FrmBusquedaProducto
         Await ActualizarDatos(intIndiceDePagina)
     End Sub
 
-    Private Async Sub CmdFiltro_Click(sender As Object, e As EventArgs) Handles CmdFiltro.Click
+    Private Async Sub BtnFiltrar_Click(sender As Object, e As EventArgs) Handles btnFiltrar.Click
+        btnFiltrar.Enabled = False
         Await ValidarCantidadRegistros()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
+        btnFiltrar.Enabled = True
     End Sub
 
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
@@ -207,6 +209,7 @@ Public Class FrmBusquedaProducto
             Await ActualizarDatos(intIndiceDePagina)
             txtDesc.Focus()
             bolCargado = True
+            btnFiltrar.Enabled = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -215,11 +218,11 @@ Public Class FrmBusquedaProducto
     End Sub
 
     Private Sub cboLinea_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboLinea.SelectedIndexChanged
-        If bolCargado Then CmdFiltro_Click(CmdFiltro, New EventArgs())
+        If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 
     Private Sub cboSucursal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSucursal.SelectedIndexChanged
-        If bolCargado Then CmdFiltro_Click(CmdFiltro, New EventArgs())
+        If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 #End Region
 End Class
