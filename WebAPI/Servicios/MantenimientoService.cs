@@ -1459,6 +1459,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (impuestoServ) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
                 }
                 if (producto.Imagen == null) producto.Imagen = new byte[0];
+                if (producto.CodigoClasificacion.Length < 13) throw new BusinessException("El código CABYS debe tener una longitud mínima de 13 caracteres.");
                 dbContext.ProductoRepository.Add(producto);
                 dbContext.Commit();
             }
@@ -1492,6 +1493,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
                 }
                 if (producto.Imagen == null) producto.Imagen = new byte[0];
+                if (producto.CodigoClasificacion.Length < 13) throw new BusinessException("El código CABYS debe tener una longitud mínima de 13 caracteres.");
                 dbContext.NotificarModificacion(producto);
                 dbContext.Commit();
             }
