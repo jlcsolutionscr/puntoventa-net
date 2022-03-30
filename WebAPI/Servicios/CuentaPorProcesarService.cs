@@ -136,7 +136,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaMovimientos = new List<EfectivoDetalle>();
             try
             {
-                var listado = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCxC == intIdCuenta).OrderByDescending(x => x.IdMovCxC);
+                var listado = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCxC == intIdCuenta && !x.Nulo).OrderByDescending(x => x.IdMovCxC);
                 foreach (var value in listado)
                 {
                     EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxC, value.Fecha.ToString("dd/MM/yyyy"), "Abono sobre cuenta por cobrar nro " + value.CuentaPorCobrar.Referencia, value.Monto);
@@ -465,7 +465,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaCuentas = new List<CuentaPorProcesar>();
             try
             {
-                var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false);
+                var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && !x.Nulo);
                 if (bolPendientes)
                     listado = listado.Where(x => x.Saldo > 0);
                 if (strReferencia != "")
@@ -502,7 +502,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaMovimientos = new List<EfectivoDetalle>();
             try
             {
-                var listado = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCxP == intIdCuenta).OrderByDescending(x => x.IdMovCxP);
+                var listado = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCxP == intIdCuenta && !x.Nulo).OrderByDescending(x => x.IdMovCxP);
                 foreach (var value in listado)
                 {
                     EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxP, value.Fecha.ToString("dd/MM/yyyy"), "Abono con recibo " + value.Recibo + " sobre cuenta por pagar nro " + value.CuentaPorPagar.Referencia, value.Monto);
@@ -750,7 +750,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaCuentas = new List<LlaveDescripcion>();
             try
             {
-                var listado = dbContext.ApartadoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Nulo == false && x.Aplicado == false && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.Descuento - x.MontoAdelanto > 0).OrderByDescending(x => x.Fecha);
+                var listado = dbContext.ApartadoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Aplicado == false && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0 && !x.Nulo).OrderByDescending(x => x.Fecha);
                 foreach (var value in listado)
                 {
                     LlaveDescripcion item = new LlaveDescripcion(value.IdApartado, "Apartado " + value.IdApartado + " de " + value.NombreCliente);
@@ -770,7 +770,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaMovimientos = new List<EfectivoDetalle>();
             try
             {
-                var listado = dbContext.MovimientoApartadoRepository.Include("Apartado").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdApartado == intIdApartado).OrderByDescending(x => x.IdMovApartado);
+                var listado = dbContext.MovimientoApartadoRepository.Include("Apartado").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdApartado == intIdApartado && !x.Nulo).OrderByDescending(x => x.IdMovApartado);
                 foreach (var value in listado)
                 {
                     EfectivoDetalle item = new EfectivoDetalle(value.IdMovApartado, value.Fecha.ToString("dd/MM/yyyy"), "Abono sobre apartado nro " + +value.Apartado.ConsecApartado, value.Monto);
@@ -911,7 +911,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaCuentas = new List<LlaveDescripcion>();
             try
             {
-                var listado = dbContext.OrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Nulo == false && x.Aplicado == false && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.Descuento - x.MontoAdelanto > 0).OrderByDescending(x => x.Fecha);
+                var listado = dbContext.OrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Aplicado == false && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0 && !x.Nulo).OrderByDescending(x => x.Fecha);
                 foreach (var value in listado)
                 {
                     LlaveDescripcion item = new LlaveDescripcion(value.IdOrden, "Orden servicio " + value.IdOrden + " de " + value.NombreCliente);
@@ -931,7 +931,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             var listaMovimientos = new List<EfectivoDetalle>();
             try
             {
-                var listado = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdOrden == intIdOrden).OrderByDescending(x => x.IdMovOrden);
+                var listado = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdOrden == intIdOrden && !x.Nulo).OrderByDescending(x => x.IdMovOrden);
                 foreach (var value in listado)
                 {
                     EfectivoDetalle item = new EfectivoDetalle(value.IdMovOrden, value.Fecha.ToString("dd/MM/yyyy"), "Abono sobre orden de servicio nro " + +value.OrdenServicio.ConsecOrdenServicio, value.Monto);

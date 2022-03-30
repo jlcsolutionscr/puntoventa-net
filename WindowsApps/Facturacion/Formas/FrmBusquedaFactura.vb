@@ -11,6 +11,7 @@ Public Class FrmBusquedaFactura
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
     Private bolCargado As Boolean = False
+    Public bolIncluyeNulos As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -66,7 +67,7 @@ Public Class FrmBusquedaFactura
         Try
             Dim listado = New List(Of FacturaDetalle)
             If intCantidadDePaginas > 0 Then
-                listado = Await Puntoventa.ObtenerListadoFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
+                listado = Await Puntoventa.ObtenerListadoFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolIncluyeNulos, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
             End If
             dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
@@ -80,7 +81,7 @@ Public Class FrmBusquedaFactura
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intId, txtNombre.Text, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolIncluyeNulos, intId, txtNombre.Text, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

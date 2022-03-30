@@ -830,6 +830,7 @@ Public Class FrmFactura
     Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaFactura()
         FrmPrincipal.intBusqueda = 0
+        formBusqueda.bolIncluyeNulos = True
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try

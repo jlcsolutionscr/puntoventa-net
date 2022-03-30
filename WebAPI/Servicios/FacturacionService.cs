@@ -31,8 +31,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarFacturaCompra(FacturaCompra facturaCompra, ConfiguracionGeneral datos);
         void AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion, ConfiguracionGeneral datos);
         Factura ObtenerFactura(int intIdFactura);
-        int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, int intIdFactura, string strNombre, string strIdentificacion);
-        IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion);
+        int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intIdFactura, string strNombre, string strIdentificacion);
+        IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion);
         string AgregarProforma(Proforma proforma);
         void ActualizarProforma(Proforma proforma);
         void AnularProforma(int intIdProforma, int intIdUsuario, string strMotivoAnulacion);
@@ -929,18 +929,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, int intIdFactura, string strNombre, string strIdentificacion)
+        public int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intIdFactura, string strNombre, string strIdentificacion)
         {
             try
             {
-                var listaFacturas = dbContext.FacturaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                if (!bolIncluyeNulos)
+                    listado = listado.Where(x => !x.Nulo);
                 if (intIdFactura > 0)
-                    listaFacturas = listaFacturas.Where(x => x.ConsecFactura == intIdFactura);
+                    listado = listado.Where(x => x.ConsecFactura == intIdFactura);
                 if (!strNombre.Equals(string.Empty))
-                    listaFacturas = listaFacturas.Where(x => x.NombreCliente.Contains(strNombre));
+                    listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
                 if (!strIdentificacion.Equals(string.Empty))
-                    listaFacturas = listaFacturas.Where(x => x.Cliente.Identificacion.Contains(strIdentificacion));
-                return listaFacturas.Count();
+                    listado = listado.Where(x => x.Cliente.Identificacion.Contains(strIdentificacion));
+                return listado.Count();
             }
             catch (Exception ex)
             {
@@ -949,12 +951,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion)
+        public IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion)
         {
             var listaFactura = new List<FacturaDetalle>();
             try
             {
                 var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                if (!bolIncluyeNulos)
+                    listado = listado.Where(x => !x.Nulo);
                 if (intIdFactura > 0)
                     listado = listado.Where(x => x.ConsecFactura == intIdFactura);
                 if (!strNombre.Equals(string.Empty))

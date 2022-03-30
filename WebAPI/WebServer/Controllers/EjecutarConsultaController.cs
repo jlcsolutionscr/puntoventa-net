@@ -875,21 +875,23 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "ObtenerTotalListaFacturas":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                    bolIncluyeNulos = parametrosJO.Property("IncluyeNulos") != null ? bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString()) : false;
                     intIdLlave1 = parametrosJO.Property("IdFactura") != null ? int.Parse(parametrosJO.Property("IdFactura").Value.ToString()) : 0;
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
                     strIdentificacion = parametrosJO.Property("Identificacion") != null ? parametrosJO.Property("Identificacion").Value.ToString() : "";
-                    intTotalLista = _servicioFacturacion.ObtenerTotalListaFacturas(intIdEmpresa, intIdSucursal, intIdLlave1, strNombre, strIdentificacion);
+                    intTotalLista = _servicioFacturacion.ObtenerTotalListaFacturas(intIdEmpresa, intIdSucursal, bolIncluyeNulos, intIdLlave1, strNombre, strIdentificacion);
                     strRespuesta = JsonConvert.SerializeObject(intTotalLista);
                     break;
                 case "ObtenerListadoFacturas":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                    bolIncluyeNulos = parametrosJO.Property("IncluyeNulos") != null ? bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString()) : false;
                     intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
                     intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                     intIdLlave1 = parametrosJO.Property("IdFactura") != null ? int.Parse(parametrosJO.Property("IdFactura").Value.ToString()) : 0;
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
                     strIdentificacion = parametrosJO.Property("Identificacion") != null ? parametrosJO.Property("Identificacion").Value.ToString() : "";
-                    IList<FacturaDetalle> listadoFacturas = _servicioFacturacion.ObtenerListadoFacturas(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, intIdLlave1, strNombre, strIdentificacion);
+                    IList<FacturaDetalle> listadoFacturas = _servicioFacturacion.ObtenerListadoFacturas(intIdEmpresa, intIdSucursal, bolIncluyeNulos, intNumeroPagina, intFilasPorPagina, intIdLlave1, strNombre, strIdentificacion);
                     if (listadoFacturas.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoFacturas);
                     break;
@@ -975,7 +977,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     bolAplicado = bool.Parse(parametrosJO.Property("Aplicado").Value.ToString());
-                    bolIncluyeNulos = bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString());
+                    bolIncluyeNulos = parametrosJO.Property("IncluyeNulos") != null ? bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString()) : false;
                     intIdLlave1 = parametrosJO.Property("IdProforma") != null ? int.Parse(parametrosJO.Property("IdProforma").Value.ToString()) : 0;
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
                     intTotalLista = _servicioFacturacion.ObtenerTotalListaProformas(intIdEmpresa, intIdSucursal, bolAplicado, bolIncluyeNulos, intIdLlave1, strNombre);
@@ -985,7 +987,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     bolAplicado = bool.Parse(parametrosJO.Property("Aplicado").Value.ToString());
-                    bolIncluyeNulos = bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString());
+                    bolIncluyeNulos = parametrosJO.Property("IncluyeNulos") != null ? bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString()) : false;
                     intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
                     intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                     intIdLlave1 = parametrosJO.Property("IdProforma") != null ? int.Parse(parametrosJO.Property("IdProforma").Value.ToString()) : 0;
@@ -1009,7 +1011,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     bolAplicado = bool.Parse(parametrosJO.Property("Aplicado").Value.ToString());
-                    bolIncluyeNulos = bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString());
+                    bolIncluyeNulos = parametrosJO.Property("IncluyeNulos") != null ? bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString()) : false;
                     intIdLlave1 = parametrosJO.Property("IdOrdenServicio") != null ? int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString()) : 0;
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
                     intTotalLista = _servicioFacturacion.ObtenerTotalListaOrdenServicio(intIdEmpresa, intIdSucursal, bolAplicado, bolIncluyeNulos, intIdLlave1, strNombre);
@@ -1019,7 +1021,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     bolAplicado = bool.Parse(parametrosJO.Property("Aplicado").Value.ToString());
-                    bolIncluyeNulos = bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString());
+                    bolIncluyeNulos = parametrosJO.Property("IncluyeNulos") != null ? bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString()) : false;
                     intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
                     intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                     intIdLlave1 = parametrosJO.Property("IdOrdenServicio") != null ? int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString()) : 0;
@@ -1043,7 +1045,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     bolAplicado = bool.Parse(parametrosJO.Property("Aplicado").Value.ToString());
-                    bolIncluyeNulos = bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString());
+                    bolIncluyeNulos = parametrosJO.Property("IncluyeNulos") != null ? bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString()) : false;
                     intIdLlave1 = parametrosJO.Property("IdApartado") != null ? int.Parse(parametrosJO.Property("IdApartado").Value.ToString()) : 0;
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
                     intTotalLista = _servicioFacturacion.ObtenerTotalListaApartados(intIdEmpresa, intIdSucursal, bolAplicado, bolIncluyeNulos, intIdLlave1, strNombre);
@@ -1053,7 +1055,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     bolAplicado = bool.Parse(parametrosJO.Property("Aplicado").Value.ToString());
-                    bolIncluyeNulos = bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString());
+                    bolIncluyeNulos = parametrosJO.Property("IncluyeNulos") != null ? bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString()) : false;
                     intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
                     intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                     intIdLlave1 = parametrosJO.Property("IdApartado") != null ? int.Parse(parametrosJO.Property("IdApartado").Value.ToString()) : 0;

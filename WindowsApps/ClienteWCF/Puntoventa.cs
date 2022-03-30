@@ -1548,9 +1548,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, int intIdFactura, string strNombre, string strIdentificacion, string strToken)
+        public static async Task<int> ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "', Identificacion: '" + strIdentificacion + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IncluyeNulos: '" + bolIncluyeNulos + "', IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "', Identificacion: '" + strIdentificacion + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1558,9 +1558,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<FacturaDetalle>> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdFactura, string strNombre, string strIdentificacion, string strToken)
+        public static async Task<List<FacturaDetalle>> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intNumeroPagina, int intFilasPorPagina, int intIdFactura, string strNombre, string strIdentificacion, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "', Identificacion: '" + strIdentificacion + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IncluyeNulos: '" + bolIncluyeNulos + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "', Identificacion: '" + strIdentificacion + "'}}";
         string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<FacturaDetalle> listado = new List<FacturaDetalle>();
             if (respuesta != "")
