@@ -12,7 +12,7 @@ builder.Services.AddCors(options => options.AddPolicy("CorsPolicy", builder => b
 string strConnection = builder.Configuration.GetSection("connectionString").Value;
 
 builder.Services.AddDbContext<LeandroContext>(x => x.UseMySQL(strConnection), ServiceLifetime.Transient);
-builder.Services.AddScoped<ILeandroContext, LeandroContext>();
+builder.Services.AddTransient<ILeandroContext, LeandroContext>();
 builder.Services.AddScoped<ICorreoService, CorreoService>();
 builder.Services.AddScoped<IMantenimientoService, MantenimientoService>();
 builder.Services.AddScoped<IFacturacionService, FacturacionService>();
