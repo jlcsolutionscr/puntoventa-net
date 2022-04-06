@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace LeandroSoftware.ServicioWeb.Contexto
 {
-    public partial class LeandroContext : DbContext, ILeandroContext
+    public partial class LeandroContext : DbContext
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

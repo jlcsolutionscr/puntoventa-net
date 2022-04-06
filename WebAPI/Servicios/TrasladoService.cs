@@ -4,6 +4,7 @@ using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -22,14 +23,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class TrasladoService : ITrasladoService
     {
         private readonly ILoggerManager _logger;
-        private static ILeandroContext dbContext;
+        private static IServiceScopeFactory serviceScopeFactory;
 
-        public TrasladoService(ILoggerManager logger, ILeandroContext pContext)
+        public TrasladoService(ILoggerManager logger, IServiceScopeFactory pServiceScopeFactory)
         {
             try
             {
                 _logger = logger;
-                dbContext = pContext;
+                serviceScopeFactory = pServiceScopeFactory;
             }
             catch (Exception ex)
             {
@@ -40,37 +41,40 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public string AgregarTraslado(Traslado traslado)
         {
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
-                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
-                if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                traslado.IdAsiento = 0;
-                foreach (var detalle in traslado.DetalleTraslado)
+                try
                 {
-                    var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen && x.IdProducto == detalle.IdProducto).FirstOrDefault();
-                    if (existencias == null)
-                        throw new BusinessException("El producto " + detalle.IdProducto + " no posee registro de existencias en la sucursal origen del traslado.");
-                    if (detalle.Cantidad > existencias.Cantidad)
-                        throw new BusinessException("La cantidad indicada para el produco " + detalle.IdProducto + " supera las existencias en la sucursal origen del traslado.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    traslado.IdAsiento = 0;
+                    foreach (var detalle in traslado.DetalleTraslado)
+                    {
+                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen && x.IdProducto == detalle.IdProducto).FirstOrDefault();
+                        if (existencias == null)
+                            throw new BusinessException("El producto " + detalle.IdProducto + " no posee registro de existencias en la sucursal origen del traslado.");
+                        if (detalle.Cantidad > existencias.Cantidad)
+                            throw new BusinessException("La cantidad indicada para el produco " + detalle.IdProducto + " supera las existencias en la sucursal origen del traslado.");
+                    }
+                    dbContext.TrasladoRepository.Add(traslado);
+                    dbContext.Commit();
                 }
-                dbContext.TrasladoRepository.Add(traslado);
-                dbContext.Commit();
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    _logger.LogError("Error al agregar el registro de devolución: ", ex);
+                    throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
+                }
+                return traslado.IdTraslado.ToString();
             }
-            catch (BusinessException ex)
-            {
-                dbContext.RollBack();
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                dbContext.RollBack();
-                _logger.LogError("Error al agregar el registro de devolución: ", ex);
-                throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
-            }
-            return traslado.IdTraslado.ToString();
         }
 
         public void AplicarTraslado(int intIdTraslado, int intIdUsuario)
@@ -85,7 +89,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             dtbInventarios.Columns.Add("Total", typeof(decimal));
             dtbInventarios.PrimaryKey = new DataColumn[] { dtbInventarios.Columns[0] };
             Asiento asiento = null;
-            
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -261,8 +265,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalDebito += detalleAsiento.Debito;
                         }
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, dbContext);
-                        servicioContabilidad.AgregarAsiento(asiento);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        servicioContabilidad.AgregarAsiento(asiento, dbContext);
                     }
                     dbContext.Commit();
                     if (asiento != null)
@@ -290,139 +294,157 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AnularTraslado(int intIdTraslado, int intIdUsuario, string strMotivoAnulacion)
         {
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                Traslado traslado = dbContext.TrasladoRepository.Include("DetalleTraslado").FirstOrDefault(x => x.IdTraslado == intIdTraslado);
-                if (traslado == null) throw new Exception("El registro de traslado por anular no existe.");
-                if (traslado.Nulo) throw new Exception("El registro de traslado ya ha sido anulado.");
-                Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
-                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
-                if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                traslado.Nulo = true;
-                traslado.IdAnuladoPor = intIdUsuario;
-                traslado.MotivoAnulacion = strMotivoAnulacion;
-                dbContext.NotificarModificacion(traslado);
-                if (traslado.IdAsiento > 0)
+                try
                 {
-                    IContabilidadService servicioContabilidad = new ContabilidadService(_logger, dbContext);
-                    servicioContabilidad.ReversarAsientoContable(traslado.IdAsiento);
+                    Traslado traslado = dbContext.TrasladoRepository.Include("DetalleTraslado").FirstOrDefault(x => x.IdTraslado == intIdTraslado);
+                    if (traslado == null) throw new Exception("El registro de traslado por anular no existe.");
+                    if (traslado.Nulo) throw new Exception("El registro de traslado ya ha sido anulado.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    traslado.Nulo = true;
+                    traslado.IdAnuladoPor = intIdUsuario;
+                    traslado.MotivoAnulacion = strMotivoAnulacion;
+                    dbContext.NotificarModificacion(traslado);
+                    if (traslado.IdAsiento > 0)
+                    {
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        servicioContabilidad.ReversarAsientoContable(traslado.IdAsiento, dbContext);
+                    }
+                    dbContext.Commit();
                 }
-                dbContext.Commit();
-            }
-            catch (BusinessException ex)
-            {
-                dbContext.RollBack();
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                dbContext.RollBack();
-                _logger.LogError("Error al anular el registro de traslado: ", ex);
-                throw new Exception("Se produjo un error anulando el traslado. Por favor consulte con su proveedor.");
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    _logger.LogError("Error al anular el registro de traslado: ", ex);
+                    throw new Exception("Se produjo un error anulando el traslado. Por favor consulte con su proveedor.");
+                }
             }
         }
 
         public Traslado ObtenerTraslado(int intIdTraslado)
         {
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                Traslado traslado = dbContext.TrasladoRepository.Include("DetalleTraslado.Producto").FirstOrDefault(x => x.IdTraslado == intIdTraslado);
-                SucursalPorEmpresa sucursalOrigen = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
-                traslado.NombreSucursalOrigen = sucursalOrigen.NombreSucursal;
-                SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalDestino);
-                traslado.NombreSucursalDestino = sucursalDestino.NombreSucursal;
-                return traslado;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error al obtener el registro de traslado: ", ex);
-                throw new Exception("Se produjo un error consultado la información del traslado. Por favor consulte con su proveedor.");
+                try
+                {
+                    Traslado traslado = dbContext.TrasladoRepository.Include("DetalleTraslado.Producto").FirstOrDefault(x => x.IdTraslado == intIdTraslado);
+                    SucursalPorEmpresa sucursalOrigen = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
+                    traslado.NombreSucursalOrigen = sucursalOrigen.NombreSucursal;
+                    SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalDestino);
+                    traslado.NombreSucursalDestino = sucursalDestino.NombreSucursal;
+                    return traslado;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al obtener el registro de traslado: ", ex);
+                    throw new Exception("Se produjo un error consultado la información del traslado. Por favor consulte con su proveedor.");
+                }
             }
         }
 
         public int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int intIdTraslado)
         {
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listaTraslados = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalOrigen == intIdSucursalOrigen && x.Aplicado == bolAplicado);
-                if (intIdTraslado > 0)
-                    listaTraslados = listaTraslados.Where(x => x.IdTraslado == intIdTraslado);
-                return listaTraslados.Count();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error al obtener el total del listado de registros de traslado: ", ex);
-                throw new Exception("Se produjo un error consultando el total del listado de traslados. Por favor consulte con su proveedor.");
+                try
+                {
+                    var listaTraslados = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalOrigen == intIdSucursalOrigen && x.Aplicado == bolAplicado);
+                    if (intIdTraslado > 0)
+                        listaTraslados = listaTraslados.Where(x => x.IdTraslado == intIdTraslado);
+                    return listaTraslados.Count();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al obtener el total del listado de registros de traslado: ", ex);
+                    throw new Exception("Se produjo un error consultando el total del listado de traslados. Por favor consulte con su proveedor.");
+                }
             }
         }
 
         public IList<TrasladoDetalle> ObtenerListadoTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int numPagina, int cantRec, int intIdTraslado)
         {
-            var listaTraslado = new List<TrasladoDetalle>();
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listado = dbContext.TrasladoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursalOrigen == intIdSucursalOrigen && x.Aplicado == bolAplicado);
-                if (intIdTraslado > 0)
-                    listado = listado.Where(x => x.IdTraslado == intIdTraslado);
-                listado = listado.OrderByDescending(x => x.IdTraslado).Skip((numPagina - 1) * cantRec).Take(cantRec);
-                var lineas = listado.ToList();
-                foreach (var traslado in lineas)
+                var listaTraslado = new List<TrasladoDetalle>();
+                try
                 {
-                    string strNombreSucursal = "NOMBRE DE SUCURSAL NO DISPONIBLE";
-                    SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == traslado.IdSucursalDestino).FirstOrDefault();
-                    if (sucursalDestino != null)
-                        strNombreSucursal = sucursalDestino.NombreSucursal;
-                    TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total, traslado.Nulo);
-                    listaTraslado.Add(item);
+                    var listado = dbContext.TrasladoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursalOrigen == intIdSucursalOrigen && x.Aplicado == bolAplicado);
+                    if (intIdTraslado > 0)
+                        listado = listado.Where(x => x.IdTraslado == intIdTraslado);
+                    listado = listado.OrderByDescending(x => x.IdTraslado).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    var lineas = listado.ToList();
+                    foreach (var traslado in lineas)
+                    {
+                        string strNombreSucursal = "NOMBRE DE SUCURSAL NO DISPONIBLE";
+                        SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == traslado.IdSucursalDestino).FirstOrDefault();
+                        if (sucursalDestino != null)
+                            strNombreSucursal = sucursalDestino.NombreSucursal;
+                        TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total, traslado.Nulo);
+                        listaTraslado.Add(item);
+                    }
+                    return listaTraslado;
                 }
-                return listaTraslado;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error al obtener el listado de registros de traslado: ", ex);
-                throw new Exception("Se produjo un error consultando el listado de traslados. Por favor consulte con su proveedor.");
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al obtener el listado de registros de traslado: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de traslados. Por favor consulte con su proveedor.");
+                }
             }
         }
 
         public int ObtenerTotalListaTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, bool bolAplicado)
         {
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listaTraslados = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalDestino == intIdSucursalDestino && x.Aplicado == bolAplicado);
-                return listaTraslados.Count();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error al obtener el total del listado de registros de traslados por aplicar: ", ex);
-                throw new Exception("Se produjo un error consultando el total del listado de traslados por aplicar. Por favor consulte con su proveedor.");
+                try
+                {
+                    var listaTraslados = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalDestino == intIdSucursalDestino && x.Aplicado == bolAplicado);
+                    return listaTraslados.Count();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al obtener el total del listado de registros de traslados por aplicar: ", ex);
+                    throw new Exception("Se produjo un error consultando el total del listado de traslados por aplicar. Por favor consulte con su proveedor.");
+                }
             }
         }
 
         public IList<TrasladoDetalle> ObtenerListadoTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, bool bolAplicado, int numPagina, int cantRec)
         {
-            var listaTraslado = new List<TrasladoDetalle>();
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listado = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalDestino == intIdSucursalDestino && x.Aplicado == bolAplicado);
-                listado = listado.OrderByDescending(x => x.IdTraslado).Skip((numPagina - 1) * cantRec).Take(cantRec);
-                var lineas = listado.ToList();
-                foreach (var traslado in lineas)
+                var listaTraslado = new List<TrasladoDetalle>();
+                try
                 {
-                    string strNombreSucursal = "NOMBRE DE SUCURSAL NO DISPONIBLE";
-                    SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
-                    if (sucursalDestino != null)
-                        strNombreSucursal = sucursalDestino.NombreSucursal;
-                    TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total, false);
-                    listaTraslado.Add(item);
+                    var listado = dbContext.TrasladoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursalDestino == intIdSucursalDestino && x.Aplicado == bolAplicado);
+                    listado = listado.OrderByDescending(x => x.IdTraslado).Skip((numPagina - 1) * cantRec).Take(cantRec);
+                    var lineas = listado.ToList();
+                    foreach (var traslado in lineas)
+                    {
+                        string strNombreSucursal = "NOMBRE DE SUCURSAL NO DISPONIBLE";
+                        SucursalPorEmpresa sucursalDestino = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
+                        if (sucursalDestino != null)
+                            strNombreSucursal = sucursalDestino.NombreSucursal;
+                        TrasladoDetalle item = new TrasladoDetalle(traslado.IdTraslado, traslado.Fecha.ToString("dd/MM/yyyy"), strNombreSucursal, traslado.Total, false);
+                        listaTraslado.Add(item);
+                    }
+                    return listaTraslado;
                 }
-                return listaTraslado;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error al obtener el listado de registros de traslados por aplicar: ", ex);
-                throw new Exception("Se produjo un error consultando el listado de traslados por aplicar. Por favor consulte con su proveedor.");
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al obtener el listado de registros de traslados por aplicar: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de traslados por aplicar. Por favor consulte con su proveedor.");
+                }
             }
         }
     }

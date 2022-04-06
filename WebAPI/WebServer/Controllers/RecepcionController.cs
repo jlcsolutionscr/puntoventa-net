@@ -11,7 +11,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
     [Route("recepcion")]
     public class RecepcionController : ControllerBase
     {
-        private static ILeandroContext dbContext;
         private static IFacturacionService _servicioFacturacion;
         private static string _strLogoPath;
         private static string _strCorreoNotificacionErrores;
@@ -19,11 +18,9 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         public RecepcionController(
             IConfiguration configuration,
             IHostEnvironment environment,
-            ILeandroContext pContext,
             IFacturacionService servicioFacturacion)
         {
             _strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
-            dbContext = pContext;
             _servicioFacturacion = servicioFacturacion;
             _strCorreoNotificacionErrores = configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value;
         }
@@ -35,7 +32,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             string bodyStr = reader.ReadToEndAsync().Result;
             RespuestaHaciendaDTO mensaje = JsonConvert.DeserializeObject<RespuestaHaciendaDTO>(bodyStr);
             byte[] bytLogo = System.IO.File.ReadAllBytes(_strLogoPath);
-            _servicioFacturacion.ProcesarRespuestaHacienda(dbContext, mensaje, _strCorreoNotificacionErrores, bytLogo);
+            _servicioFacturacion.ProcesarRespuestaHacienda(mensaje, _strCorreoNotificacionErrores, bytLogo);
         }
     }
 }

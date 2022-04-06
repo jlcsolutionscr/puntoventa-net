@@ -3,6 +3,7 @@ using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -15,8 +16,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "");
         IList<LlaveDescripcion> ObtenerListadoTipoMovimientoBanco();
         string AgregarMovimientoBanco(MovimientoBanco movimiento);
+        string AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext);
         void ActualizarMovimientoBanco(MovimientoBanco movimiento);
         void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
+        void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion, LeandroContext dbContext);
         MovimientoBanco ObtenerMovimientoBanco(int intIdMovimiento);
         int ObtenerTotalListaMovimientos(int intIdEmpresa, int intIdSucursal, string strDescripcion = "");
         IList<EfectivoDetalle> ObtenerListadoMovimientos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strDescripcion = "");
@@ -25,14 +28,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class BancaService : IBancaService
     {
         private readonly ILoggerManager _logger;
-        private static ILeandroContext dbContext;
+        private static IServiceScopeFactory serviceScopeFactory;
 
-        public BancaService(ILoggerManager logger, ILeandroContext pContext)
+        public BancaService(ILoggerManager logger)
         {
             try
             {
                 _logger = logger;
-                dbContext = pContext;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error al inicializar el servicio: ", ex);
+                throw new Exception("Se produjo un error al inicializar el servicio del auxiliar bancario. Por favor consulte con su proveedor..");
+            }
+        }
+
+        public BancaService(ILoggerManager logger, IServiceScopeFactory pServiceScopeFactory)
+        {
+            try
+            {
+                _logger = logger;
+                serviceScopeFactory = pServiceScopeFactory;
             }
             catch (Exception ex)
             {
@@ -43,145 +59,176 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AgregarCuentaBanco(CuentaBanco cuentaBanco)
         {
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
-                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                dbContext.CuentaBancoRepository.Add(cuentaBanco);
-                dbContext.Commit();
-            }
-            catch (BusinessException ex)
-            {
-                dbContext.RollBack();
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                dbContext.RollBack();
-                _logger.LogError("Error al agregar la cuenta bancaría: ", ex);
-                throw new Exception("Se produjo un error agregando la cuenta bancaria. Por favor consulte con su proveedor..");
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    dbContext.CuentaBancoRepository.Add(cuentaBanco);
+                    dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    _logger.LogError("Error al agregar la cuenta bancaría: ", ex);
+                    throw new Exception("Se produjo un error agregando la cuenta bancaria. Por favor consulte con su proveedor..");
+                }
             }
         }
 
         public void ActualizarCuentaBanco(CuentaBanco cuentaBanco)
         {
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
-                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                dbContext.NotificarModificacion(cuentaBanco);
-                dbContext.Commit();
-            }
-            catch (BusinessException ex)
-            {
-                dbContext.RollBack();
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                dbContext.RollBack();
-                _logger.LogError("Error al actualizar la cuenta bancaría: ", ex);
-                throw new Exception("Se produjo un error actualizando la cuenta bancaria. Por favor consulte con su proveedor..");
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    dbContext.NotificarModificacion(cuentaBanco);
+                    dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    _logger.LogError("Error al actualizar la cuenta bancaría: ", ex);
+                    throw new Exception("Se produjo un error actualizando la cuenta bancaria. Por favor consulte con su proveedor..");
+                }
             }
         }
 
         public void EliminarCuentaBanco(int intIdCuenta)
         {
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(intIdCuenta);
-                if (cuentaBanco == null) throw new Exception("La cuenta bancaria por eliminar no existe.");
-                Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
-                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                dbContext.CuentaBancoRepository.Remove(cuentaBanco);
-                dbContext.Commit();
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError("Validación al agregar el parámetro contable: ", ex);
-                throw new BusinessException("No es posible eliminar el banco adquiriente seleccionado. Posee registros relacionados en el sistema.");
-            }
-            catch (BusinessException ex)
-            {
-                dbContext.RollBack();
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                dbContext.RollBack();
-                _logger.LogError("Error al eliminar la cuenta bancaría: ", ex);
-                throw new Exception("Se produjo un error eliminando la cuenta bancaria. Por favor consulte con su proveedor..");
+                try
+                {
+                    CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(intIdCuenta);
+                    if (cuentaBanco == null) throw new Exception("La cuenta bancaria por eliminar no existe.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    dbContext.CuentaBancoRepository.Remove(cuentaBanco);
+                    dbContext.Commit();
+                }
+                catch (DbUpdateException ex)
+                {
+                    _logger.LogError("Validación al agregar el parámetro contable: ", ex);
+                    throw new BusinessException("No es posible eliminar el banco adquiriente seleccionado. Posee registros relacionados en el sistema.");
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    _logger.LogError("Error al eliminar la cuenta bancaría: ", ex);
+                    throw new Exception("Se produjo un error eliminando la cuenta bancaria. Por favor consulte con su proveedor..");
+                }
             }
         }
 
         public CuentaBanco ObtenerCuentaBanco(int intIdCuenta)
         {
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                return dbContext.CuentaBancoRepository.Find(intIdCuenta);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error al obtener la cuenta bancaría: ", ex);
-                throw new Exception("Se produjo un error consultando la cuenta bancaria. Por favor consulte con su proveedor..");
+                try
+                {
+                    return dbContext.CuentaBancoRepository.Find(intIdCuenta);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al obtener la cuenta bancaría: ", ex);
+                    throw new Exception("Se produjo un error consultando la cuenta bancaria. Por favor consulte con su proveedor..");
+                }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "")
         {
-            var listaCuentaBanco = new List<LlaveDescripcion>();
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listado = dbContext.CuentaBancoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
-                if (!strDescripcion.Equals(string.Empty))
-                    listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
-                listado = listado.OrderBy(x => x.IdCuenta);
-                foreach (var value in listado)
+                var listaCuentaBanco = new List<LlaveDescripcion>();
+                try
                 {
-                    LlaveDescripcion item = new LlaveDescripcion(value.IdCuenta, value.Descripcion);
-                    listaCuentaBanco.Add(item);
+                    var listado = dbContext.CuentaBancoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    if (!strDescripcion.Equals(string.Empty))
+                        listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    listado = listado.OrderBy(x => x.IdCuenta);
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdCuenta, value.Descripcion);
+                        listaCuentaBanco.Add(item);
+                    }
+                    return listaCuentaBanco;
                 }
-                return listaCuentaBanco;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error al obtener el listado de cuentas bancaría: ", ex);
-                throw new Exception("Se produjo un error obteniendo el listado de cuentas bancarias. Por favor consulte con su proveedor..");
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al obtener el listado de cuentas bancaría: ", ex);
+                    throw new Exception("Se produjo un error obteniendo el listado de cuentas bancarias. Por favor consulte con su proveedor..");
+                }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoTipoMovimientoBanco()
         {
-            var listaTipoMovimiento = new List<LlaveDescripcion>();
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listado = dbContext.TipoMovimientoBancoRepository;
-                foreach (var value in listado)
+                var listaTipoMovimiento = new List<LlaveDescripcion>();
+                try
                 {
-                    LlaveDescripcion item = new LlaveDescripcion(value.IdTipoMov, value.Descripcion);
-                    listaTipoMovimiento.Add(item);
-                }
-                return listaTipoMovimiento;
+                    var listado = dbContext.TipoMovimientoBancoRepository;
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdTipoMov, value.Descripcion);
+                        listaTipoMovimiento.Add(item);
+                    }
+                    return listaTipoMovimiento;
 
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error al obtener el tipo de movimiento: ", ex);
-                throw new Exception("Se produjo un error consultando el listado de tipos de movimientos bancarios. Por favor consulte con su proveedor..");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al obtener el tipo de movimiento: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de tipos de movimientos bancarios. Por favor consulte con su proveedor..");
+                }
             }
         }
 
         public string AgregarMovimientoBanco(MovimientoBanco movimiento)
         {
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                return AdicionarMovimientoBanco(movimiento, dbContext);
+            }
+        }
+
+        public string AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext)
+        {
+            return AdicionarMovimientoBanco(movimiento, dbContext);
+        }
+
+
+        private string AdicionarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext)
+        {
             try
             {
                 CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
+                if (cuenta == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe.");
                 Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 TipoMovimientoBanco tipo = dbContext.TipoMovimientoBancoRepository.Find(movimiento.IdTipo);
-                if (tipo == null)
-                    throw new Exception("El tipo de movimiento no existe.");
+                if (tipo == null) throw new BusinessException("El tipo de movimiento no existe.");
                 movimiento.SaldoAnterior = cuenta.Saldo;
                 if (tipo.DebeHaber == StaticTipoDebitoCredito.Debito)
                     cuenta.Saldo -= movimiento.Monto;
@@ -207,29 +254,45 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void ActualizarMovimientoBanco(MovimientoBanco movimiento)
         {
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
-                Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
-                if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                dbContext.NotificarModificacion(movimiento);
-                dbContext.Commit();
-            }
-            catch (BusinessException ex)
-            {
-                dbContext.RollBack();
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                dbContext.RollBack();
-                _logger.LogError("Error al actualizar el movimiento bancario: ", ex);
-                throw new Exception("Se produjo un error actualizando el movimiento bancario. Por favor consulte con su proveedor..");
+                try
+                {
+                    CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
+                    if (cuenta == null) throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
+                    Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    dbContext.NotificarModificacion(movimiento);
+                    dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    dbContext.RollBack();
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    _logger.LogError("Error al actualizar el movimiento bancario: ", ex);
+                    throw new Exception("Se produjo un error actualizando el movimiento bancario. Por favor consulte con su proveedor..");
+                }
             }
         }
 
         public void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
+        {
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                InvalidarMovimientoBanco(intIdMovimiento, intIdUsuario, strMotivoAnulacion, dbContext);
+            }
+        }
+
+        public void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion, LeandroContext dbContext)
+        {
+            InvalidarMovimientoBanco(intIdMovimiento, intIdUsuario, strMotivoAnulacion, dbContext);
+        }
+
+        private void InvalidarMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion, LeandroContext dbContext)
         {
             try
             {
@@ -262,56 +325,65 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public MovimientoBanco ObtenerMovimientoBanco(int intIdMovimiento)
         {
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                return dbContext.MovimientoBancoRepository.Find(intIdMovimiento);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error al obtener el movimiento bancario: ", ex);
-                throw new Exception("Se produjo un error consultando el movimiento bancario. Por favor consulte con su proveedor..");
+                try
+                {
+                    return dbContext.MovimientoBancoRepository.Find(intIdMovimiento);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al obtener el movimiento bancario: ", ex);
+                    throw new Exception("Se produjo un error consultando el movimiento bancario. Por favor consulte con su proveedor..");
+                }
             }
         }
 
         public int ObtenerTotalListaMovimientos(int intIdEmpresa, int intIdSucursal, string strDescripcion = "")
         {
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listaMovimientos = dbContext.MovimientoBancoRepository.Join(dbContext.CuentaBancoRepository, a => a.IdCuenta, b => b.IdCuenta, (a, b) => new { a, b })
-                        .Where(a => !a.a.Nulo & a.b.IdEmpresa == intIdEmpresa && a.a.IdSucursal == intIdSucursal);
-                if (!strDescripcion.Equals(string.Empty))
-                    listaMovimientos = listaMovimientos.Where(a => a.a.Descripcion.Contains(strDescripcion));
-                return listaMovimientos.Count();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error al obtener el total del listado de movimientos bancarios: ", ex);
-                throw new Exception("Se produjo un error consultando el total del listado de movimientos bancarios. Por favor consulte con su proveedor..");
+                try
+                {
+                    var listaMovimientos = dbContext.MovimientoBancoRepository.Join(dbContext.CuentaBancoRepository, a => a.IdCuenta, b => b.IdCuenta, (a, b) => new { a, b })
+                            .Where(a => !a.a.Nulo & a.b.IdEmpresa == intIdEmpresa && a.a.IdSucursal == intIdSucursal);
+                    if (!strDescripcion.Equals(string.Empty))
+                        listaMovimientos = listaMovimientos.Where(a => a.a.Descripcion.Contains(strDescripcion));
+                    return listaMovimientos.Count();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al obtener el total del listado de movimientos bancarios: ", ex);
+                    throw new Exception("Se produjo un error consultando el total del listado de movimientos bancarios. Por favor consulte con su proveedor..");
+                }
             }
         }
 
         public IList<EfectivoDetalle> ObtenerListadoMovimientos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strDescripcion = "")
         {
-            var listaTipoMovimiento = new List<EfectivoDetalle>();
-            try
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listaMovimientos = dbContext.MovimientoBancoRepository.Join(dbContext.CuentaBancoRepository, a => a.IdCuenta, b => b.IdCuenta, (a, b) => new { a, b })
-                    .Where(a => !a.a.Nulo & a.b.IdEmpresa == intIdEmpresa && a.a.IdSucursal == intIdSucursal);
-                if (!strDescripcion.Equals(string.Empty))
-                    listaMovimientos = listaMovimientos.Where(a => a.a.Descripcion.Contains(strDescripcion));
-                var lista = listaMovimientos.OrderByDescending(x => x.a.IdMov).Skip((numPagina - 1) * cantRec).Take(cantRec)
-                    .Select(z => new { z.a.IdMov, z.a.Fecha, z.a.Descripcion, z.a.Monto }).ToList();
-                foreach (var value in lista)
+                var listaTipoMovimiento = new List<EfectivoDetalle>();
+                try
                 {
-                    var item = new EfectivoDetalle(value.IdMov, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
-                    listaTipoMovimiento.Add(item);
+                    var listaMovimientos = dbContext.MovimientoBancoRepository.Join(dbContext.CuentaBancoRepository, a => a.IdCuenta, b => b.IdCuenta, (a, b) => new { a, b })
+                        .Where(a => !a.a.Nulo & a.b.IdEmpresa == intIdEmpresa && a.a.IdSucursal == intIdSucursal);
+                    if (!strDescripcion.Equals(string.Empty))
+                        listaMovimientos = listaMovimientos.Where(a => a.a.Descripcion.Contains(strDescripcion));
+                    var lista = listaMovimientos.OrderByDescending(x => x.a.IdMov).Skip((numPagina - 1) * cantRec).Take(cantRec)
+                        .Select(z => new { z.a.IdMov, z.a.Fecha, z.a.Descripcion, z.a.Monto }).ToList();
+                    foreach (var value in lista)
+                    {
+                        var item = new EfectivoDetalle(value.IdMov, value.Fecha.ToString("dd/MM/yyyy"), value.Descripcion, value.Monto);
+                        listaTipoMovimiento.Add(item);
+                    }
+                    return listaTipoMovimiento;
                 }
-                return listaTipoMovimiento;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error al obtener el listado de movimientos bancarios: ", ex);
-                throw new Exception("Se produjo un error consultando el listado de movimientos bancarios. Por favor consulte con su proveedor..");
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al obtener el listado de movimientos bancarios: ", ex);
+                    throw new Exception("Se produjo un error consultando el listado de movimientos bancarios. Por favor consulte con su proveedor..");
+                }
             }
         }
     }

@@ -12,18 +12,16 @@ builder.Services.AddCors(options => options.AddPolicy("CorsPolicy", builder => b
 string strConnection = builder.Configuration.GetSection("connectionString").Value;
 
 builder.Services.AddDbContext<LeandroContext>(x => x.UseMySQL(strConnection), ServiceLifetime.Transient);
-builder.Services.AddTransient<ILeandroContext, LeandroContext>();
-builder.Services.AddScoped<ICorreoService, CorreoService>();
-builder.Services.AddScoped<IMantenimientoService, MantenimientoService>();
-builder.Services.AddScoped<IFacturacionService, FacturacionService>();
-builder.Services.AddScoped<ICompraService, CompraService>();
-builder.Services.AddScoped<IFlujoCajaService, FlujoCajaService>();
-builder.Services.AddScoped<IBancaService, BancaService>();
-builder.Services.AddScoped<IReporteService, ReporteService>();
-builder.Services.AddScoped<IContabilidadService, ContabilidadService>();
-builder.Services.AddScoped<ITrasladoService, TrasladoService>();
-builder.Services.AddScoped<ICuentaPorProcesarService, CuentaPorProcesarService>();
-
+builder.Services.AddSingleton<IMantenimientoService, MantenimientoService>();
+builder.Services.AddSingleton<IFacturacionService, FacturacionService>();
+builder.Services.AddSingleton<ICompraService, CompraService>();
+builder.Services.AddSingleton<IFlujoCajaService, FlujoCajaService>();
+builder.Services.AddSingleton<IBancaService, BancaService>();
+builder.Services.AddSingleton<IReporteService, ReporteService>();
+builder.Services.AddSingleton<IContabilidadService, ContabilidadService>();
+builder.Services.AddSingleton<ITrasladoService, TrasladoService>();
+builder.Services.AddSingleton<ICuentaPorProcesarService, CuentaPorProcesarService>();
+builder.Services.AddSingleton<ICorreoService, CorreoService>();
 builder.Services.AddSingleton<ILoggerManager, LoggerManager>();
 
 builder.Services.AddControllers();

@@ -24,7 +24,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         private static HttpClient httpClient = new HttpClient();
 
-        public static void ValidarToken(ILeandroContext dbContext, CredencialesHacienda credenciales, string strServicioTokenURL, string strClientId)
+        public static void ValidarToken(LeandroContext dbContext, CredencialesHacienda credenciales, string strServicioTokenURL, string strClientId)
         {
             TokenType nuevoToken;
             if (credenciales.AccessToken != null)
@@ -152,7 +152,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static DocumentoElectronico GenerarFacturaCompraElectronica(FacturaCompra facturaCompra, Empresa empresa, ILeandroContext dbContext, decimal decTipoCambioDolar)
+        public static DocumentoElectronico GenerarFacturaCompraElectronica(FacturaCompra facturaCompra, Empresa empresa, LeandroContext dbContext, decimal decTipoCambioDolar)
         {
             string strCorreoNotificacion = empresa.CorreoNotificacion;
             if (facturaCompra.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
@@ -401,7 +401,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, facturaCompra.IdSucursal, facturaCompra.IdTerminal, TipoDocumento.FacturaElectronicaCompra, false, strCorreoNotificacion, empresa.NombreEmpresa);
         }
 
-        public static DocumentoElectronico GenerarFacturaElectronica(Factura factura, Empresa empresa, Cliente cliente, ILeandroContext dbContext, decimal decTipoCambioDolar)
+        public static DocumentoElectronico GenerarFacturaElectronica(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
         {
             string strCorreoNotificacion = "";
             if (cliente.IdCliente > 1)
@@ -705,7 +705,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.FacturaElectronica, false, strCorreoNotificacion, factura.NombreCliente);
         }
 
-        public static DocumentoElectronico GeneraTiqueteElectronico(Factura factura, Empresa empresa, Cliente cliente, ILeandroContext dbContext, decimal decTipoCambioDolar)
+        public static DocumentoElectronico GeneraTiqueteElectronico(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
         {
             string strCorreoNotificacion = "";
             if (cliente.IdCliente > 1)
@@ -959,7 +959,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.TiqueteElectronico, false, strCorreoNotificacion, factura.NombreCliente);
         }
 
-        public static DocumentoElectronico GenerarNotaDeCreditoElectronica(Factura factura, Empresa empresa, Cliente cliente, ILeandroContext dbContext, decimal decTipoCambioDolar)
+        public static DocumentoElectronico GenerarNotaDeCreditoElectronica(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
         {
             string strCorreoNotificacion = "";
             if (cliente.IdCliente > 1)
@@ -1275,7 +1275,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion, factura.NombreCliente);
         }
 
-        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, ILeandroContext dbContext, decimal decTipoCambioDolar, string referencia)
+        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar, string referencia)
         {
             string strCorreoNotificacion = "";
             if (cliente.IdCliente > 1)
@@ -1553,7 +1553,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion, factura.NombreCliente);
         }
 
-        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, ILeandroContext dbContext, decimal decTipoCambioDolar, string referencia)
+        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar, string referencia)
         {
             string strCorreoNotificacion = "";
             if (cliente.IdCliente > 1)
@@ -1831,7 +1831,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaDebitoElectronica, false, strCorreoNotificacion, factura.NombreCliente);
         }
 
-        public static DocumentoElectronico GeneraMensajeReceptor(string datosXml, Empresa empresa, ILeandroContext dbContext, int intSucursal, int intTerminal, int intMensaje, bool bolIvaAcreditable)
+        public static DocumentoElectronico GeneraMensajeReceptor(string datosXml, Empresa empresa, LeandroContext dbContext, int intSucursal, int intTerminal, int intMensaje, bool bolIvaAcreditable)
         {
             string strCorreoNotificacion = "";
             if (empresa.CorreoNotificacion == null || empresa.CorreoNotificacion.Length == 0)
@@ -1946,7 +1946,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return documento;
         }
 
-        public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, XmlDocument documentoOriXml, ILeandroContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, bool bolIvaAcreditable, string strCorreoNotificacion, string strNombreReceptor)
+        public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, XmlDocument documentoOriXml, LeandroContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, bool bolIvaAcreditable, string strCorreoNotificacion, string strNombreReceptor)
         {
             int intMesEnCurso = DateTime.Now.Month;
             int intAnnioEnCurso = DateTime.Now.Year;
@@ -2193,7 +2193,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static async Task<DocumentoElectronico> ConsultarDocumentoElectronico(CredencialesHacienda credenciales, DocumentoElectronico documento, ILeandroContext dbContext, ConfiguracionGeneral datos)
+        public static async Task<DocumentoElectronico> ConsultarDocumentoElectronico(CredencialesHacienda credenciales, DocumentoElectronico documento, LeandroContext dbContext, ConfiguracionGeneral datos)
         {
             if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)
             {
