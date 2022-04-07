@@ -1,3 +1,4 @@
+Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.Dominio.Entidades
@@ -170,7 +171,7 @@ Public Class FrmUsuario
         datos.Clave = strEncryptedPassword
         datos.PorcMaxDescuento = txtPorcMaxDescuento.Text
         datos.PermiteRegistrarDispositivo = chkRegistraDispositivo.Checked
-        datos.RolePorUsuario.Clear()
+        datos.RolePorUsuario = New List(Of RolePorUsuario)
         For I As Short = 0 To dtbRolePorUsuario.Rows.Count - 1
             rolePorUsuario = New RolePorUsuario With {
                 .IdRole = dtbRolePorUsuario.Rows(I).Item(0)
