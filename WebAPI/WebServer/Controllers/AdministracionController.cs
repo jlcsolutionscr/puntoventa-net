@@ -12,25 +12,29 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
     public class AdministracionController : ControllerBase
     {
         private static IHostEnvironment _environment;
+        private static ICorreoService _servicioCorreo;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
         private static ConfiguracionGeneral configuracionGeneral;
         private static ConfiguracionRecepcion configuracionRecepcion;
+        private static string _strCorreoNotificacionErrores;
         private string strLogoPath;
         private byte[] bytLogo;
 
         public AdministracionController(
             IConfiguration configuration,
             IHostEnvironment environment,
+            ICorreoService servicioCorreo,
             IMantenimientoService servicioMantenimiento,
-            IFacturacionService servicioFacturacion,
-            ICorreoService servicioCorreo
+            IFacturacionService servicioFacturacion
         )
         {
             _environment = environment;
+            _servicioCorreo = servicioCorreo;
             _servicioMantenimiento = servicioMantenimiento;
             _servicioFacturacion = servicioFacturacion;
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
+            _strCorreoNotificacionErrores = configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value;
             configuracionGeneral = new ConfiguracionGeneral
             (
                 configuration.GetSection("appSettings").GetSection("strConsultaTipoCambioDolarURL").Value,
@@ -572,7 +576,34 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("limpiarregistrosinvalidos")]
         public void LimpiarRegistrosInvalidos()
         {
-            Task.Run(() => _servicioMantenimiento.EliminarRegistroAutenticacionInvalidos());
+            Task.Run(() => {
+                try
+                {
+                    string[] directoryEntries = Directory.GetFileSystemEntries(_environment.ContentRootPath, "errorlog-??-??-????.txt");
+                    foreach (string str in directoryEntries)
+                    {
+                        byte[] bytes = System.IO.File.ReadAllBytes(str);
+                        if (bytes.Length > 0)
+                        {
+                            JArray jarrayObj = new JArray();
+                            JObject jobDatosAdjuntos1 = new JObject
+                            {
+                                ["nombre"] = str,
+                                ["contenido"] = Convert.ToBase64String(bytes)
+                            };
+                            jarrayObj.Add(jobDatosAdjuntos1);
+                            _servicioCorreo.SendEmail(new string[] { _strCorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
+                        }
+                        System.IO.File.Delete(str);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    JArray jarrayObj = new JArray();
+                    _servicioCorreo.SendEmail(new string[] { _strCorreoNotificacionErrores }, new string[] { }, "Error al enviar el historico de archivo con errores", "Se produjo el siguiente error: " + ex.Message, false, jarrayObj);
+                }
+                _servicioMantenimiento.EliminarRegistroAutenticacionInvalidos();
+            });
         }
 
         [HttpGet("obtenerultimaversionapp")]

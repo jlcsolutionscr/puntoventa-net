@@ -38,36 +38,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(strConsultaTipoDeCambioDolarURL, DateTime.Now);
         }
 
-        [HttpGet("enviarhistoricoerrores")]
-        public void EnviarHistoricoErrores()
-        {
-            try
-            {
-                string[] directoryEntries = Directory.GetFileSystemEntries(_environment.ContentRootPath, "errorlog-??-??-????.txt");
-                foreach (string str in directoryEntries)
-                {
-                    byte[] bytes = System.IO.File.ReadAllBytes(str);
-                    if (bytes.Length > 0)
-                    {
-                        JArray jarrayObj = new JArray();
-                        JObject jobDatosAdjuntos1 = new JObject
-                        {
-                            ["nombre"] = str,
-                            ["contenido"] = Convert.ToBase64String(bytes)
-                        };
-                        jarrayObj.Add(jobDatosAdjuntos1);
-                        _servicioCorreo.SendEmail(new string[] { _strCorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
-                    }
-                    System.IO.File.Delete(str);
-                }
-            }
-            catch (Exception ex)
-            {
-                JArray jarrayObj = new JArray();
-                _servicioCorreo.SendEmail(new string[] { _strCorreoNotificacionErrores }, new string[] { }, "Error al enviar el historico de archivo con errores", "Se produjo el siguiente error: " + ex.Message, false, jarrayObj);
-            }
-        }
-
         [HttpGet("obtenerultimaversionapp")]
         public string ObtenerUltimaVersionApp()
         {

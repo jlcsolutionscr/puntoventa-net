@@ -26,7 +26,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Assembly.GetEntryAssembly(),
                             typeof(log4net.Repository.Hierarchy.Hierarchy));
                     XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
-                    _logger.Info("Log System Initialized");
                 }
             }
             catch (Exception ex)
