@@ -36,7 +36,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
         public static DateTime ObtenerFechaHoraCostaRica()
         {
             DateTime timeUtc = DateTime.UtcNow;
-            TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+            TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Central America Standard Time");
             return TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
         }
 

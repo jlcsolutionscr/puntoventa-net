@@ -32,9 +32,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (credenciales.EmitedAt != null)
                 {
                     DateTime horaEmision = DateTime.Parse(credenciales.EmitedAt.ToString());
-                    if (horaEmision.AddSeconds((int)credenciales.ExpiresIn) < DateTime.Now)
+                    DateTime horaActual = Validador.ObtenerFechaHoraCostaRica();
+                    if (horaEmision.AddSeconds((int)credenciales.ExpiresIn) < horaActual)
                     {
-                        if (horaEmision.AddSeconds((int)credenciales.RefreshExpiresIn) < DateTime.Now)
+                        if (horaEmision.AddSeconds((int)credenciales.RefreshExpiresIn) < horaActual)
                         {
                             nuevoToken = ObtenerToken(strServicioTokenURL, strClientId, credenciales.UsuarioHacienda, credenciales.ClaveHacienda).Result;
                             credenciales.AccessToken = nuevoToken.access_token;
@@ -86,7 +87,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (httpResponse.StatusCode != HttpStatusCode.OK) throw new Exception(httpResponse.ReasonPhrase);
             string responseContent = await httpResponse.Content.ReadAsStringAsync();
             TokenType objToken = JsonConvert.DeserializeObject<TokenType>(responseContent);
-            objToken.emitedAt = DateTime.Now;
+            objToken.emitedAt = Validador.ObtenerFechaHoraCostaRica();
             return objToken;
         }
 
@@ -102,7 +103,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioTokenURL + "/token", formContent);
             string responseContent = await httpResponse.Content.ReadAsStringAsync();
             TokenType objToken = JsonConvert.DeserializeObject<TokenType>(responseContent);
-            objToken.emitedAt = DateTime.Now;
+            objToken.emitedAt = Validador.ObtenerFechaHoraCostaRica();
             return objToken;
         }
 
@@ -161,7 +162,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Clave = "",
                 CodigoActividad = facturaCompra.CodigoActividad.ToString(),
                 NumeroConsecutivo = "",
-                FechaEmision = Validador.ObtenerFechaHoraCostaRica()
+                FechaEmision = facturaCompra.Fecha
             };
 
             FacturaElectronicaCompraEmisorType emisor = new FacturaElectronicaCompraEmisorType();
@@ -421,7 +422,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Clave = "",
                 CodigoActividad = factura.CodigoActividad.ToString(),
                 NumeroConsecutivo = "",
-                FechaEmision = Validador.ObtenerFechaHoraCostaRica()
+                FechaEmision = factura.Fecha
             };
             FacturaElectronicaEmisorType emisor = new FacturaElectronicaEmisorType();
             FacturaElectronicaIdentificacionType identificacionEmisorType = new FacturaElectronicaIdentificacionType
@@ -725,7 +726,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Clave = "",
                 CodigoActividad = factura.CodigoActividad.ToString(),
                 NumeroConsecutivo = "",
-                FechaEmision = Validador.ObtenerFechaHoraCostaRica()
+                FechaEmision = factura.Fecha
             };
             TiqueteElectronicoEmisorType emisor = new TiqueteElectronicoEmisorType();
             TiqueteElectronicoIdentificacionType identificacionEmisorType = new TiqueteElectronicoIdentificacionType
@@ -1275,7 +1276,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion, factura.NombreCliente);
         }
 
-        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar, string referencia)
+        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
         {
             string strCorreoNotificacion = "";
             if (cliente.IdCliente > 1)
@@ -1295,7 +1296,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Clave = "",
                 CodigoActividad = factura.CodigoActividad.ToString(),
                 NumeroConsecutivo = "",
-                FechaEmision = Validador.ObtenerFechaHoraCostaRica()
+                FechaEmision = devolucion.Fecha
             };
             NotaCreditoElectronicaEmisorType emisor = new NotaCreditoElectronicaEmisorType();
             NotaCreditoElectronicaIdentificacionType identificacionEmisorType = new NotaCreditoElectronicaIdentificacionType
@@ -1530,8 +1531,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             NotaCreditoElectronicaInformacionReferencia informacionReferencia = new NotaCreditoElectronicaInformacionReferencia
             {
                 TipoDoc = NotaCreditoElectronicaInformacionReferenciaTipoDoc.Item01,
-                Numero = referencia,
-                FechaEmision = devolucion.Fecha,
+                Numero = factura.IdDocElectronico,
+                FechaEmision = factura.Fecha,
                 Codigo = NotaCreditoElectronicaInformacionReferenciaCodigo.Item03,
                 Razon = "Ajuste de monto de factura electrónica por devolución de mercancía."
             };
@@ -1553,7 +1554,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion, factura.NombreCliente);
         }
 
-        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar, string referencia)
+        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
         {
             string strCorreoNotificacion = "";
             if (cliente.IdCliente > 1)
@@ -1808,7 +1809,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             NotaDebitoElectronicaInformacionReferencia informacionReferencia = new NotaDebitoElectronicaInformacionReferencia
             {
                 TipoDoc = NotaDebitoElectronicaInformacionReferenciaTipoDoc.Item03,
-                Numero = referencia,
+                Numero = devolucion.IdDocElectronico,
                 FechaEmision = devolucion.Fecha,
                 Codigo = NotaDebitoElectronicaInformacionReferenciaCodigo.Item01,
                 Razon = "Anulación de devolucin de mercancía de factura electrónica con la respectiva clave númerica."
@@ -1948,8 +1949,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, XmlDocument documentoOriXml, LeandroContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, bool bolIvaAcreditable, string strCorreoNotificacion, string strNombreReceptor)
         {
-            int intMesEnCurso = DateTime.Now.Month;
-            int intAnnioEnCurso = DateTime.Now.Year;
+            DateTime horaActual = Validador.ObtenerFechaHoraCostaRica();
+            int intMesEnCurso = horaActual.Month;
+            int intAnnioEnCurso = horaActual.Year;
             var documentosRecepcion = new[] { TipoDocumento.MensajeReceptorAceptado, TipoDocumento.MensajeReceptorAceptadoParcial, TipoDocumento.MensajeReceptorRechazado };
             bool esMensajeReceptor = documentosRecepcion.Contains(tipoDocumento);
             CantFEMensualEmpresa cantiFacturasMensual = dbContext.CantFEMensualEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdMes == intMesEnCurso & x.IdAnio == intAnnioEnCurso).FirstOrDefault();
@@ -2074,7 +2076,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     PolicyUri = ""
                 },
                 SignatureMethod = SignatureMethod.RSAwithSHA256,
-                SigningDate = DateTime.Now,
+                SigningDate = horaActual,
                 SignaturePackaging = SignaturePackaging.ENVELOPED
             };
             CredencialesHacienda credenciales = dbContext.CredencialesHaciendaRepository.Find(empresa.IdEmpresa);
@@ -2088,7 +2090,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 throw new BusinessException("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información registrada");
             }
-            if (uidCert.NotAfter <= DateTime.Now) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
+            if (uidCert.NotAfter <= horaActual) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
             using (Signer signer2 = signatureParameters.Signer = new Signer(uidCert))
             using (MemoryStream smDatos = new MemoryStream(mensajeEncoded))
             {

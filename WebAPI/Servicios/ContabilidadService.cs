@@ -2,6 +2,7 @@
 using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
+using LeandroSoftware.ServicioWeb.Utilitario;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -579,7 +580,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     IdEmpresa = asiento.IdEmpresa,
                     Detalle = "Reversión de " + asiento.Detalle,
-                    Fecha = DateTime.Now,
+                    Fecha = Validador.ObtenerFechaHoraCostaRica(),
                     TotalDebito = asiento.TotalCredito,
                     TotalCredito = asiento.TotalDebito
                 };
@@ -776,6 +777,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decTotalIngresos = 0;
                 ParametroContable perdidaGananciaParam = null;
                 Empresa empresa = null;
+                DateTime horaActual = Validador.ObtenerFechaHoraCostaRica();
                 try
                 {
                     empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
@@ -794,8 +796,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         SaldoMensualContable saldoMensual = new SaldoMensualContable
                         {
                             IdCuenta = value.IdCuenta,
-                            Mes = DateTime.Now.Month,
-                            Annio = DateTime.Now.Year,
+                            Mes = horaActual.Month,
+                            Annio = horaActual.Year,
                             SaldoFinMes = value.SaldoActual,
                             TotalDebito = value.TotalDebito,
                             TotalCredito = value.TotalCredito
@@ -810,7 +812,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     asiento = new Asiento
                     {
                         IdEmpresa = intIdEmpresa,
-                        Fecha = DateTime.Now,
+                        Fecha = horaActual,
                         TotalCredito = 0,
                         TotalDebito = 0,
                         Detalle = "Empresa cierre perdidas y ganancías"

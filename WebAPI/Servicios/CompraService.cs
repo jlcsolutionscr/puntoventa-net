@@ -3,6 +3,7 @@ using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
+using LeandroSoftware.ServicioWeb.Utilitario;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -205,6 +206,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
+                compra.Fecha = Validador.ObtenerFechaHoraCostaRica();
                 decimal decTotalImpuesto = 0;
                 decimal decSubTotalCompra = 0;
                 decimal decTotalInventario = 0;
@@ -304,11 +306,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 producto.PrecioCosto = detalleCompra.PrecioCosto;
                             }
-                            MovimientoProducto movimiento = new MovimientoProducto
+                            MovimientoProducto movimientoProducto = new MovimientoProducto
                             {
                                 IdProducto = producto.IdProducto,
                                 IdSucursal = compra.IdSucursal,
-                                Fecha = DateTime.Now,
+                                Fecha = compra.Fecha,
                                 Tipo = StaticTipoMovimientoProducto.Entrada,
                                 Origen = "Registro de compra de mercancía de factura " + compra.NoDocumento,
                                 Cantidad = detalleCompra.Cantidad,
@@ -332,7 +334,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
                             }
                             producto.MovimientoProducto = new List<MovimientoProducto>();
-                            producto.MovimientoProducto.Add(movimiento);
+                            producto.MovimientoProducto.Add(movimientoProducto);
                             dbContext.NotificarModificacion(producto);
                         }
                         if (empresa.Contabiliza)
@@ -602,18 +604,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 decPrecioCostoPromedio = ((cantidadExistente * producto.PrecioCosto) - (detalleCompra.Cantidad * detalleCompra.PrecioCosto)) / (cantidadExistente);
                             existencias.Cantidad -= detalleCompra.Cantidad;
                             dbContext.NotificarModificacion(existencias);
-                            MovimientoProducto movimiento = new MovimientoProducto
+                            MovimientoProducto movimientoProducto = new MovimientoProducto
                             {
                                 IdProducto = producto.IdProducto,
                                 IdSucursal = compra.IdSucursal,
-                                Fecha = DateTime.Now,
+                                Fecha = Validador.ObtenerFechaHoraCostaRica(),
                                 Tipo = StaticTipoMovimientoProducto.Salida,
                                 Origen = "Anulación registro de compra de mercancía de factura " + compra.NoDocumento,
                                 Cantidad = detalleCompra.Cantidad,
                                 PrecioCosto = detalleCompra.PrecioCosto
                             };
                             producto.MovimientoProducto = new List<MovimientoProducto>();
-                            producto.MovimientoProducto.Add(movimiento);
+                            producto.MovimientoProducto.Add(movimientoProducto);
                             producto.PrecioCosto = decPrecioCostoPromedio;
                             dbContext.NotificarModificacion(producto);
                         }
@@ -739,6 +741,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
+                    ordenCompra.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenCompra.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.OrdenRepository.Add(ordenCompra);
@@ -897,6 +900,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
+                    devolucion.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     Compra compra = dbContext.CompraRepository.AsNoTracking().Where(x => x.IdCompra == devolucion.IdCompra).FirstOrDefault();
                     if (compra == null) throw new Exception("La compra asignada a la devolución no existe.");
                     if (compra.Nulo) throw new BusinessException("La compra asingada a la devolución está anulada.");
@@ -922,7 +926,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 IdProducto = producto.IdProducto,
                                 IdSucursal = compra.IdSucursal,
-                                Fecha = DateTime.Now,
+                                Fecha = devolucion.Fecha,
                                 Tipo = StaticTipoMovimientoProducto.Salida,
                                 Origen = "Registro de devolución de mercancía al proveedor de factura " + compra.NoDocumento,
                                 Cantidad = detalleDevolucion.CantDevolucion,
@@ -983,7 +987,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             IdProducto = producto.IdProducto,
                             IdSucursal = compra.IdSucursal,
-                            Fecha = DateTime.Now,
+                            Fecha = Validador.ObtenerFechaHoraCostaRica(),
                             Tipo = StaticTipoMovimientoProducto.Entrada,
                             Origen = "Anulación de registro de devolución de mercancía al proveedor de factura " + compra.NoDocumento,
                             Cantidad = detalleDevolucion.CantDevolucion,

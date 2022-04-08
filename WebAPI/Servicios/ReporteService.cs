@@ -9,6 +9,7 @@ using LeandroSoftware.ServicioWeb.Contexto;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using LeandroSoftware.ServicioWeb.Utilitario;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -1021,7 +1022,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteMovimientosContables> listaReporte = new List<ReporteMovimientosContables>();
-                    DateTime datFechaActual = DateTime.Now;
+                    DateTime datFechaActual = Validador.ObtenerFechaHoraCostaRica();
                     var listaCuentas = dbContext.CatalogoContableRepository.Where(x => x.IdEmpresa == intIdEmpresa)
                         .OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7)
                         .Join(dbContext.DetalleAsientoRepository, b => b.IdCuenta, b => b.IdCuenta, (a, b) => new { a, b })
@@ -1054,7 +1055,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     List<ReporteBalanceComprobacion> listaReporte = new List<ReporteBalanceComprobacion>();
-                    DateTime datFechaActual = DateTime.Now;
+                    DateTime datFechaActual = Validador.ObtenerFechaHoraCostaRica();
                     var listaCuentas = dbContext.CatalogoContableRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EsCuentaBalance == true)
                         .OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7).ToList();
                     foreach (CatalogoContable value in listaCuentas)
@@ -1097,7 +1098,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     List<ReportePerdidasyGanancias> listaReporte = new List<ReportePerdidasyGanancias>();
-                    DateTime datFechaActual = DateTime.Now;
+                    DateTime datFechaActual = Validador.ObtenerFechaHoraCostaRica();
                     var listaCuentas = dbContext.CatalogoContableRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EsCuentaBalance == true && x.SaldoActual != 0 && x.IdClaseCuenta == StaticClaseCuentaContable.Resultado)
                         .OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7).ToList();
                     foreach (CatalogoContable value in listaCuentas)

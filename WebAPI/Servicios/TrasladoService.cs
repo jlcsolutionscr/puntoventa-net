@@ -5,6 +5,7 @@ using LeandroSoftware.ServicioWeb.Contexto;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using LeandroSoftware.ServicioWeb.Utilitario;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -45,6 +46,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
+                    traslado.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == traslado.IdEmpresa && x.IdSucursal == traslado.IdSucursalOrigen);
@@ -140,7 +142,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             IdProducto = producto.IdProducto,
                             IdSucursal = traslado.IdSucursalOrigen,
-                            Fecha = DateTime.Now,
+                            Fecha = Validador.ObtenerFechaHoraCostaRica(),
                             PrecioCosto = detalleTraslado.PrecioCosto,
                             Origen = "Salida de mercancía por traslado entre sucursales",
                             Tipo = StaticTipoMovimientoProducto.Salida,
@@ -169,7 +171,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             IdProducto = producto.IdProducto,
                             IdSucursal = traslado.IdSucursalDestino,
-                            Fecha = DateTime.Now,
+                            Fecha = Validador.ObtenerFechaHoraCostaRica(),
                             PrecioCosto = detalleTraslado.PrecioCosto,
                             Origen = "Ingreso de mercancía por traslado entre sucursales",
                             Tipo = StaticTipoMovimientoProducto.Entrada,

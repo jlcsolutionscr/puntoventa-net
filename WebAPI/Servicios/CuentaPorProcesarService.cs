@@ -2,6 +2,7 @@
 using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
+using LeandroSoftware.ServicioWeb.Utilitario;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MySql.EntityFrameworkCore.Extensions;
@@ -168,6 +169,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
+                movimiento.Fecha = Validador.ObtenerFechaHoraCostaRica();
                 decimal decTotalIngresosTarjeta = 0;
                 decimal decTotalImpuestoRetenido = 0;
                 decimal decTotalGastoComisionTarjeta = 0;
@@ -426,7 +428,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorCobrarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false && EF.Functions.DateDiffDay(a.Fecha, DateTime.Now) > a.Plazo).Count();
+                    return dbContext.CuentaPorCobrarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false && EF.Functions.DateDiffDay(a.Fecha, Validador.ObtenerFechaHoraCostaRica()) > a.Plazo).Count();
                 }
                 catch (Exception ex)
                 {
@@ -560,6 +562,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
+                movimiento.Fecha = Validador.ObtenerFechaHoraCostaRica();
                 ParametroContable efectivoParam = null;
                 ParametroContable cuentaPorPagarProveedoresParam = null;
                 ParametroContable bancoParam = null;
@@ -773,7 +776,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorPagarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false && EF.Functions.DateDiffDay(a.Fecha, DateTime.Now) > a.Plazo).Count();
+                    return dbContext.CuentaPorPagarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false && EF.Functions.DateDiffDay(a.Fecha, Validador.ObtenerFechaHoraCostaRica()) > a.Plazo).Count();
                 }
                 catch (Exception ex)
                 {
@@ -852,6 +855,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 MovimientoBanco movimientoBanco = null;
                 try
                 {
+                    movimiento.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
@@ -1028,6 +1032,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 MovimientoBanco movimientoBanco = null;
                 try
                 {
+                    movimiento.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);

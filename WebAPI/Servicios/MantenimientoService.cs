@@ -523,7 +523,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 _logger.LogError("Error al validar la llave criptográfica: ", ex);
                 throw new Exception("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información suministrada");
             }
-            if (uidCert.NotAfter <= DateTime.Now) throw new Exception("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
+            if (uidCert.NotAfter <= Validador.ObtenerFechaHoraCostaRica()) throw new Exception("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
         }
 
         public decimal AutorizacionPorcentaje(string strUsuario, string strClave, int intIdEmpresa)
@@ -2122,6 +2122,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
+                    ajusteInventario.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
@@ -2156,7 +2157,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             IdProducto = producto.IdProducto,
                             IdSucursal = ajusteInventario.IdSucursal,
-                            Fecha = DateTime.Now,
+                            Fecha = ajusteInventario.Fecha,
                             Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Salida : StaticTipoMovimientoProducto.Entrada,
                             Origen = "Registro de ajuste de inventario",
                             Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
@@ -2216,7 +2217,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             IdProducto = producto.IdProducto,
                             IdSucursal = ajusteInventario.IdSucursal,
-                            Fecha = DateTime.Now,
+                            Fecha = Validador.ObtenerFechaHoraCostaRica(),
                             Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Entrada : StaticTipoMovimientoProducto.Salida,
                             Origen = "Registro de reversión de ajuste de inventario",
                             Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
