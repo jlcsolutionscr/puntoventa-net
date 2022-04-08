@@ -2505,7 +2505,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.AsNoTracking().FirstOrDefault(x => x.IdDocumento == intIdDocumento);
-                    Empresa empresa = dbContext.EmpresaRepository.Find(documento.IdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").FirstOrDefault(x => x.IdEmpresa == documento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (documento.Reprocesado) throw new BusinessException("El documento ya fue reprocesado y no puede procesarse nuevamente.");
                     if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado && documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
