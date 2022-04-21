@@ -250,13 +250,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     compra.IdCxP = 0;
                     compra.IdAsiento = 0;
                     compra.IdMovBanco = 0;
-                    if (compra.IdTipoMoneda == 2)
-                    {
-                        string criteria = compra.Fecha.ToString("dd/MM/yyyy");
-                        TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                        if (tipoDeCambio == null) throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
-                        decTipoDeCambio = tipoDeCambio.ValorTipoCambio;
-                    }
                     compra.TipoDeCambioDolar = decTipoDeCambio;
                     dbContext.CompraRepository.Add(compra);
                     if (compra.IdCondicionVenta == StaticCondicionVenta.Credito)

@@ -10,7 +10,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
     [Route("puntoventa")]
     public class EjecutarController : ControllerBase
     {
-        private static IHostEnvironment _environment;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
         private static ICompraService _servicioCompra;
@@ -72,7 +71,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             ICuentaPorProcesarService servicioCuentaPorProcesar
         )
         {
-            _environment = environment;
             _servicioMantenimiento = servicioMantenimiento;
             _servicioFacturacion = servicioFacturacion;
             _servicioCompra = servicioCompra;
@@ -92,7 +90,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
                 configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
             );
-            if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaTipoDeCambioDolarURL, DateTime.Now);
+            if (decTipoCambioDolar == 0) decTipoCambioDolar = 1;
         }
 
 

@@ -340,7 +340,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
@@ -383,9 +383,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (factura.IdTipoMoneda == 2)
                     {
                         string criteria = factura.Fecha.ToString("dd/MM/yyyy");
-                        TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                        if (tipoDeCambio == null) throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
-                        decTipoDeCambio = tipoDeCambio.ValorTipoCambio;
+                        try
+                        {
+                            decimal decTipoCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(datos.ConsultaTipoDeCambioDolarURL, factura.Fecha);
+                            decTipoDeCambio = decTipoCambio;
+                        }
+                        catch(Exception)
+                        {
+                            throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
+                        }
                     }
                     factura.TipoDeCambioDolar = decTipoDeCambio;
                     if (terminal.IdTipoDispositivo == StaticTipoDispisitivo.AppMovil)
@@ -769,7 +775,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.RegimenSimplificado) throw new BusinessException("La empresa se encuentra parametrizada dentro del regimen simplificado. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == facturaCompra.IdEmpresa && x.IdSucursal == facturaCompra.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
@@ -778,9 +784,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (facturaCompra.IdTipoMoneda == 2)
                     {
                         string criteria = facturaCompra.Fecha.ToString("dd/MM/yyyy");
-                        TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                        if (tipoDeCambio == null) throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
-                        decTipoDeCambio = tipoDeCambio.ValorTipoCambio;
+                        try
+                        {
+                            decimal decTipoCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(datos.ConsultaTipoDeCambioDolarURL, facturaCompra.Fecha);
+                            decTipoDeCambio = decTipoCambio;
+                        }
+                        catch (Exception)
+                        {
+                            throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
+                        }
                     }
                     facturaCompra.TipoDeCambioDolar = decTipoDeCambio;
                     foreach (var detalle in facturaCompra.DetalleFacturaCompra)
@@ -823,7 +835,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
@@ -898,12 +910,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                         {
-                            DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
+                            DateTime fechaDocumento = Validador.ObtenerFechaHoraCostaRica();
                             string criteria = fechaDocumento.ToString("dd/MM/yyyy");
-                            TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                            if (tipoDeCambio == null) throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
-                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, cliente, dbContext, tipoDeCambio.ValorTipoCambio);
-                            factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
+                            try
+                            {
+                                decimal decTipoCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(datos.ConsultaTipoDeCambioDolarURL, factura.Fecha);
+                                documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, cliente, dbContext, decTipoCambio);
+                                factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
+                            }
+                            catch (Exception)
+                            {
+                                throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
+                            }
+                            
                         }
                     }
                     dbContext.Commit();
@@ -1819,17 +1838,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
                     {
                         Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
-                        DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
+                        DateTime fechaDocumento = Validador.ObtenerFechaHoraCostaRica();
                         string criteria = fechaDocumento.ToString("dd/MM/yyyy");
-                        TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                        if (tipoDeCambio != null)
+                        try
                         {
-                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext, tipoDeCambio.ValorTipoCambio);
+                            decimal decTipoCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(datos.ConsultaTipoDeCambioDolarURL, factura.Fecha);
+                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext, decTipoCambio);
                             devolucion.IdDocElectronico = documentoNC.ClaveNumerica;
                         }
-                        else
+                        catch (Exception)
                         {
-                            throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
+                            throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
                         }
                     }
                     dbContext.DevolucionClienteRepository.Add(devolucion);
@@ -1957,17 +1976,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                         {
-                            DateTime fechaDocumento = DateTime.UtcNow.AddHours(-6);
+                            DateTime fechaDocumento = Validador.ObtenerFechaHoraCostaRica();
                             string criteria = fechaDocumento.ToString("dd/MM/yyyy");
-                            TipoDeCambioDolar tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                            if (tipoDeCambio != null)
+                            try
                             {
-                                documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, tipoDeCambio.ValorTipoCambio);
+                                decimal decTipoCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(datos.ConsultaTipoDeCambioDolarURL, factura.Fecha);
+                                documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, decTipoCambio);
                                 devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;
                             }
-                            else
+                            catch (Exception)
                             {
-                                throw new BusinessException("El tipo de cambio para la fecha " + criteria + " no ha sido actualizado. Por favor consulte con su proveedor.");
+                                throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
                             }
                         }
                     }
@@ -2126,7 +2145,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && (x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)).ToList();
                     foreach (var value in listado)
                     {
@@ -2306,7 +2325,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == intIdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, intSucursal, intTerminal, intEstado, bolIvaAplicable);
                     dbContext.DocumentoElectronicoRepository.Add(documentoMR);
                     dbContext.Commit();
@@ -2488,7 +2507,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
             if (empresa == null) throw new BusinessException("La identificación contenida en el archivo XML enviado: " + strIdentificacion + " no pertenece a ninguna empresa suscrita al servicio de facturación electrónica.");
             if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la solicitud no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-            if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación de la empresa que envía la solicitud ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+            if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación de la empresa que envía la solicitud ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
             DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, 1, 1, 0, bolIvaAplicable);
             dbContext.DocumentoElectronicoRepository.Add(documentoMR);
             dbContext.Commit();

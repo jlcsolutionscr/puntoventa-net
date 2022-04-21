@@ -14,8 +14,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static IHostEnvironment _environment;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
-        private static ICorreoService _servicioCorreo;
-        private static string _strCorreoNotificacionErrores;
         private static Empresa? empresa;
         private static int intIdEmpresa;
         private static int intIdSucursal;
@@ -32,10 +30,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _environment = environment;
             _servicioMantenimiento = servicioMantenimiento;
             _servicioFacturacion = servicioFacturacion;
-            _servicioCorreo = servicioCorreo;
-            _strCorreoNotificacionErrores = configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value;
-            string strConsultaTipoDeCambioDolarURL = configuration.GetSection("appSettings").GetSection("strConsultaTipoCambioDolarURL").Value;
-            if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(strConsultaTipoDeCambioDolarURL, DateTime.Now);
+            if (decTipoCambioDolar == 0) decTipoCambioDolar = 1;
         }
 
         [HttpGet("obtenerultimaversionapp")]
@@ -193,6 +188,19 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             {
                 string strClaveFormateada = clave.Replace(" ", "+");
                 _servicioMantenimiento.RegistrarTerminal(usuario, strClaveFormateada, id, sucursal, terminal, tipodispositivo, dispositivo);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet("enviarcorreorestablecerclaveusuario")]
+        public void EnviarCorreoRestablecerClaveUsuario(string id)
+        {
+            try
+            {
+                _servicioMantenimiento.EnviarCorreoRestablecerClaveUsuario(id);
             }
             catch (Exception ex)
             {

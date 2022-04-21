@@ -122,22 +122,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion);
         void ValidarRegistroAutenticacion(string strToken, int intRole);
         void EliminarRegistroAutenticacionInvalidos();
-        decimal ObtenerTipoCambioVenta(string strServicioURL, DateTime fechaConsulta);
         List<LlaveDescripcion> ObtenerListadoActividadEconomica(string strServicioURL, string strIdentificacion);
+        void EnviarCorreoRestablecerClaveUsuario(string strIdentificacion);
     }
 
     public class MantenimientoService : IMantenimientoService
     {
         private readonly ILoggerManager _logger;
         private static IServiceScopeFactory serviceScopeFactory;
+        private static ICorreoService servicioCorreo;
         private static CultureInfo provider = CultureInfo.InvariantCulture;
         private static string strFormat = "dd/MM/yyyy HH:mm:ss";
 
-        public MantenimientoService(ILoggerManager logger, IServiceScopeFactory pServiceScopeFactory)
+        public MantenimientoService(ILoggerManager logger, ICorreoService pServicioCorreo, IServiceScopeFactory pServiceScopeFactory)
         {
             try
             {
                 _logger = logger;
+                servicioCorreo = pServicioCorreo;
                 serviceScopeFactory = pServiceScopeFactory;
             }
             catch (Exception ex)
@@ -158,7 +160,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     Usuario usuario = null;
                     if (strUsuario.ToUpper() == "ADMIN")
                     {
@@ -326,7 +328,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     Usuario usuario = null;
                     if (strUsuario.ToUpper() == "ADMIN")
                     {
@@ -459,7 +461,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 else
                 {
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.FechaVence < DateTime.Today) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     usuario = dbContext.UsuarioRepository.AsNoTracking().Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strUsuario.ToUpper());
                 }
                 if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
@@ -2627,7 +2629,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 string strGuid = Guid.NewGuid().ToString();
-                DateTime fechaRegistro = DateTime.UtcNow;
+                DateTime fechaRegistro = Validador.ObtenerFechaHoraCostaRica();
                 RegistroAutenticacion registro = new RegistroAutenticacion
                 {
                     Id = strGuid,
@@ -2657,7 +2659,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     string strTokenDesencriptado = Encriptador.DesencriptarDatos(strToken);
                     RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
                     if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar su sesión.");
-                    if (registro.Fecha < DateTime.UtcNow.AddHours(-12))
+                    if (registro.Fecha < Validador.ObtenerFechaHoraCostaRica().AddHours(-12))
                     {
                         dbContext.NotificarEliminacion(registro);
                         dbContext.Commit();
@@ -2686,47 +2688,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    DateTime detFechaMaxima = DateTime.UtcNow.AddHours(-12);
+                    DateTime detFechaMaxima = Validador.ObtenerFechaHoraCostaRica().AddHours(-12);
                     dbContext.RegistroAutenticacionRepository.RemoveRange(dbContext.RegistroAutenticacionRepository.Where(x => x.Fecha < detFechaMaxima));
                     dbContext.Commit();
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError("Error al validar el registro de autenticación: ", ex);
-                }
-            }
-        }
-
-        public decimal ObtenerTipoCambioVenta(string strServicioURL, DateTime fechaConsulta)
-        {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    TipoDeCambioDolar tipoDeCambio = null;
-                    string criteria = fechaConsulta.ToString("dd/MM/yyyy");
-                    tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(criteria);
-                    if (tipoDeCambio == null)
-                    {
-                        decimal decTipoDeCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(strServicioURL, fechaConsulta);
-                        tipoDeCambio = new TipoDeCambioDolar
-                        {
-                            FechaTipoCambio = fechaConsulta.ToString("dd/MM/yyyy"),
-                            ValorTipoCambio = decTipoDeCambio
-                        };
-                        dbContext.TipoDeCambioDolarRepository.Add(tipoDeCambio);
-                        dbContext.Commit();
-                        return decTipoDeCambio;
-                    }
-                    else
-                    {
-                        return tipoDeCambio.ValorTipoCambio;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error al obtener el tipo de cambio de venta: ", ex);
-                    throw new Exception("Se produjo un error consultando el tipo de cambio de venta del dolar para la fecha actual. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -2752,6 +2720,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     _logger.LogError("Error al consultar el listado de actividades económicas del contribuyente: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de actividades económicas del contribuyente. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void EnviarCorreoRestablecerClaveUsuario(string strIdentificacion)
+        {
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    string strToken = GenerarRegistroAutenticacion(StaticRolePorUsuario.USUARIO_SISTEMA);
+                    JArray archivosJArray = new JArray();
+                    servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\nhttps://facturacion.jlcsolutionscr.com/reset?id=" + strToken + "\n\nEl acceso es válido por un único intento y expira en 12 horas.", false, archivosJArray);
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al tratar de enviar el correo para restablecer la clave del usuario: ", ex);
+                    throw new Exception("Se produjo un error enviando el correo para restablecer la clave del usuario. Por favor consulte con su proveedor.");
                 }
             }
         }

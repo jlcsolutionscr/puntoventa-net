@@ -119,7 +119,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
                 configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
             );
-            if (decTipoCambioDolar == 0) decTipoCambioDolar = _servicioMantenimiento.ObtenerTipoCambioVenta(configuracionGeneral.ConsultaTipoDeCambioDolarURL, DateTime.Now);
+            if (decTipoCambioDolar == 0) decTipoCambioDolar = 1;
         }
 
         [HttpPost("ejecutarconsulta")]
