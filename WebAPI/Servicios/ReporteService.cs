@@ -2082,14 +2082,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
                     IList<ReporteResumenMovimiento> dstDatos = ObtenerReporteResumenDocumentosElectronicos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                     ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
-                    ReportParameter[] parameters = new ReportParameter[4];
+                    ReportParameter[] parameters = new ReportParameter[5];
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
                     parameters[3] = new ReportParameter("pFechaHasta", strFechaFinal);
+                    parameters[4] = new ReportParameter("pSucursal", sucursal.NombreSucursal);
                     Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptResumenComprobanteElectronico.rdlc");
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                     if (bytes.Length > 0)
@@ -2114,19 +2116,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         byte[] GenerarContenidoReporte(string strFormatoReporte, Stream stmDefinicionReporte, ReportDataSource rds, ReportParameter[] parameters)
         {
-            try
-            {
-                LocalReport report = new LocalReport();
-                report.LoadReportDefinition(stmDefinicionReporte);
-                report.DataSources.Add(new ReportDataSource("source", rds));
-                report.SetParameters(parameters);
-                return report.Render(strFormatoReporte);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error al generar el reporte: ", ex);
-                throw new Exception("Se produjo un error al ejecutar el reporte resumen de documentos electrónicos. Por favor consulte con su proveedor.");
-            }
+            LocalReport report = new LocalReport();
+            report.LoadReportDefinition(stmDefinicionReporte);
+            report.DataSources.Add(rds);
+            report.SetParameters(parameters);
+            return report.Render(strFormatoReporte);
         }
     }
 }
