@@ -45,6 +45,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteDocumentoElectronico> ObtenerReporteDocumentosElectronicosEmitidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<ReporteDocumentoElectronico> ObtenerReporteDocumentosElectronicosRecibidos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<ReporteResumenMovimiento> ObtenerReporteResumenDocumentosElectronicos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
+        List<LlaveDescripcionValor> ObtenerReporteComparativoVentasPorPeriodo(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         void EnviarReporteVentasGenerales(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte);
         void EnviarReporteVentasAnuladas(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte);
         void EnviarReporteResumenMovimientos(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte);
@@ -1812,6 +1813,37 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
+        public List<LlaveDescripcionValor> ObtenerReporteComparativoVentasPorPeriodo(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
+        {
+            List<LlaveDescripcionValor> listado = new List<LlaveDescripcionValor>() { };
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                    var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == false)
+                        .GroupBy(x => new { Month = x.Fecha.Month, Year = x.Fecha.Year })
+                        .Select(x => new { Total = x.Sum(f => f.Excento + f.Gravado + f.Exonerado + f.Impuesto), Annio = x.Key.Year, Mes = x.Key.Month })
+                        .OrderBy(x => x.Annio).ThenBy(x => x.Mes).ToList();
+                    foreach (var value in detalleVentas)
+                    {
+                        LlaveDescripcionValor reporteLinea = new LlaveDescripcionValor();
+                        reporteLinea.Id = value.Annio;
+                        reporteLinea.Descripcion = ObtenerNombreDelMes(value.Mes);
+                        reporteLinea.Valor = value.Total;
+                        listado.Add(reporteLinea);
+                    }
+                    return listado;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al procesar el reporte comparativo de ventas por periodo: ", ex);
+                    throw new Exception("Se produjo un error al ejecutar el reporte comparativo de ventas por periodo. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
         public void EnviarReporteVentasGenerales(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strFormatoReporte)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1819,15 +1851,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
                     IList<ReporteDetalle> dstDatos = ObtenerReporteVentasPorCliente(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, 0, false, 0);
                     ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
-                    ReportParameter[] parameters = new ReportParameter[5];
+                    ReportParameter[] parameters = new ReportParameter[6];
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pNombreReporte", "Reporte de Ventas Generales");
                     parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
                     parameters[4] = new ReportParameter("pFechaHasta", strFechaFinal);
+                    parameters[5] = new ReportParameter("pSucursal", sucursal.NombreSucursal);
                     Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc");
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                     if (bytes.Length > 0)
@@ -1857,15 +1891,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
                     IList<ReporteDetalle> dstDatos = ObtenerReporteVentasPorCliente(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal, 0, true, 0);
                     ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
-                    ReportParameter[] parameters = new ReportParameter[5];
+                    ReportParameter[] parameters = new ReportParameter[6];
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pNombreReporte", "Reporte de Ventas Anuladas");
                     parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
                     parameters[4] = new ReportParameter("pFechaHasta", strFechaFinal);
+                    parameters[5] = new ReportParameter("pSucursal", sucursal.NombreSucursal);
                     Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalle.rdlc");
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                     if (bytes.Length > 0)
@@ -1895,14 +1931,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
                     IList<DescripcionValor> dstDatos = ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                     ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
-                    ReportParameter[] parameters = new ReportParameter[4];
+                    ReportParameter[] parameters = new ReportParameter[5];
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
                     parameters[3] = new ReportParameter("pFechaHasta", strFechaFinal);
+                    parameters[4] = new ReportParameter("pSucursal", sucursal.NombreSucursal);
                     Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptResumenMovimientos.rdlc");
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                     if (bytes.Length > 0)
@@ -1932,14 +1970,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
                     IList<ReporteGrupoDetalle> dstDatos = ObtenerReporteDetalleIngreso(intIdEmpresa, intIdSucursal, 0, strFechaInicial, strFechaFinal);
                     ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
-                    ReportParameter[] parameters = new ReportParameter[4];
+                    ReportParameter[] parameters = new ReportParameter[5];
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
                     parameters[3] = new ReportParameter("pFechaHasta", strFechaFinal);
+                    parameters[4] = new ReportParameter("pSucursal", sucursal.NombreSucursal);
                     Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalleIngresos.rdlc");
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                     if (bytes.Length > 0)
@@ -1969,14 +2009,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
                     IList<ReporteGrupoDetalle> dstDatos = ObtenerReporteDetalleEgreso(intIdEmpresa, intIdSucursal, 0, strFechaInicial, strFechaFinal);
                     ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
-                    ReportParameter[] parameters = new ReportParameter[4];
+                    ReportParameter[] parameters = new ReportParameter[5];
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pFechaDesde", strFechaInicial);
                     parameters[3] = new ReportParameter("pFechaHasta", strFechaFinal);
+                    parameters[4] = new ReportParameter("pSucursal", sucursal.NombreSucursal);
                     Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptDetalleEgresos.rdlc");
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                     if (bytes.Length > 0)
@@ -2006,15 +2048,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
                     IList<ReporteDocumentoElectronico> dstDatos = ObtenerReporteDocumentosElectronicosEmitidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                     ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
-                    ReportParameter[] parameters = new ReportParameter[5];
+                    ReportParameter[] parameters = new ReportParameter[6];
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Emitidas");
                     parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
                     parameters[4] = new ReportParameter("pFechaHasta", strFechaFinal);
+                    parameters[5] = new ReportParameter("pSucursal", sucursal.NombreSucursal);
                     Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptComprobanteElectronico.rdlc");
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                     if (bytes.Length > 0)
@@ -2044,15 +2088,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
                     IList<ReporteDocumentoElectronico> dstDatos = ObtenerReporteDocumentosElectronicosRecibidos(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                     ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
-                    ReportParameter[] parameters = new ReportParameter[5];
+                    ReportParameter[] parameters = new ReportParameter[6];
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
                     parameters[1] = new ReportParameter("pEmpresa", strNombreEmpresa);
                     parameters[2] = new ReportParameter("pNombreReporte", "Listado de Facturas Electrónicas Recibidas");
                     parameters[3] = new ReportParameter("pFechaDesde", strFechaInicial);
                     parameters[4] = new ReportParameter("pFechaHasta", strFechaFinal);
+                    parameters[5] = new ReportParameter("pSucursal", sucursal.NombreSucursal);
                     Stream stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptComprobanteElectronico.rdlc");
                     byte[] bytes = GenerarContenidoReporte(strFormatoReporte, stream, rds, parameters);
                     if (bytes.Length > 0)
@@ -2121,6 +2167,39 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             report.DataSources.Add(rds);
             report.SetParameters(parameters);
             return report.Render(strFormatoReporte);
+        }
+
+        private string ObtenerNombreDelMes(int intId)
+        {
+            switch (intId)
+            {
+                case 1:
+                    return "Enero";
+                case 2:
+                    return "Febrero";
+                case 3:
+                    return "Marzo";
+                case 4:
+                    return "Abril";
+                case 5:
+                    return "Mayo";
+                case 6:
+                    return "Junio";
+                case 7:
+                    return "Julio";
+                case 8:
+                    return "Agosto";
+                case 9:
+                    return "Setiembre";
+                case 10:
+                    return "Octubre";
+                case 11:
+                    return "Noviembre";
+                case 12:
+                    return "Diciembre";
+                default:
+                    return "No Válido";
+            }
         }
     }
 }

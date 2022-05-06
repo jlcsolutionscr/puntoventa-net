@@ -765,6 +765,16 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
+        public static async Task<List<LlaveDescripcionValor>> ObtenerReporteComparativoVentasPorPeriodo(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerReporteComparativoVentasPorPeriodo', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<LlaveDescripcionValor> listado = new List<LlaveDescripcionValor>();
+            if (respuesta != "")
+                listado = JsonConvert.DeserializeObject<List<LlaveDescripcionValor>>(respuesta);
+            return listado;
+        }
+
         public static async Task<List<ReporteInventario>> ObtenerReporteInventario(int intIdEmpresa, int intIdSucursal, bool bolFiltraActivos, bool bolFitraExistencias, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerReporteInventario', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FiltraActivos: '" + bolFiltraActivos + "', FiltraExistencias: '" + bolFitraExistencias + "', IdLinea: " + intIdLinea + ", Codigo: '" + strCodigo + "', CodigoProveedor: '" + strCodigoProveedor + "', Descripcion: '" + strDescripcion + "'}}";

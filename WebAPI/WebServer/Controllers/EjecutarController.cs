@@ -483,7 +483,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     string strNombreReporte = parametrosJO.Property("NombreReporte").Value.ToString();
                     strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                     strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                    string strFormatoReporte = parametrosJO.Property("FormatoReporte").Value.ToString();
+                    // TODO Use parameter for report type once PDF processing issue is fixed on NetCore 6
+                    string strFormatoReporte = "HTML5";
                     switch (strNombreReporte)
                     {
                         case "Ventas en general":

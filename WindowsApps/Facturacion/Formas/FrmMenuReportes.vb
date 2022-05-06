@@ -409,6 +409,30 @@ Public Class FrmMenuReportes
                         parameters(3) = New ReportParameter("pFecha", strFecha)
                         newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                         newFormReport.ShowDialog()
+                    Case "Comparativo de ventas por periodo"
+                        Dim datosReporte As List(Of LlaveDescripcionValor)
+                        Try
+                            datosReporte = Await Puntoventa.ObtenerReporteComparativoVentasPorPeriodo(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+                        Catch ex As Exception
+                            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            CmdVistaPrevia.Enabled = True
+                            Exit Sub
+                        End Try
+                        Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
+                        newFormReport.repReportViewer.LocalReport.DataSources.Clear()
+                        newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
+                        newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptComparativoVentas.rdlc")
+                        newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
+                        Dim parameters(5) As ReportParameter
+                        parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                        parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
+                        parameters(2) = New ReportParameter("pNombreReporte", "Reporte Comparativo de Ventas por Periodo")
+                        parameters(3) = New ReportParameter("pFechaDesde", FechaInicio.Text)
+                        parameters(4) = New ReportParameter("pFechaHasta", FechaFinal.Text)
+                        parameters(5) = New ReportParameter("pSucursal", cboSucursal.Text)
+                        newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
+                        newFormReport.ShowDialog()
                     Case "Compras en general"
                         Dim datosReporte As List(Of ReporteDetalle)
                         Dim formaMenuTipoTransaccion As New FrmMenuTipoTransaccion

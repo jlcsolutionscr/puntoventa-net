@@ -465,6 +465,15 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (listadoReporteResumenDocumentosElectronicos.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoReporteResumenDocumentosElectronicos);
                     break;
+                case "ObtenerReporteComparativoVentasPorPeriodo":
+                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                    intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                    strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                    strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                    IList<LlaveDescripcionValor> listadoReporteComparativoVentas = _servicioReportes.ObtenerReporteComparativoVentasPorPeriodo(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                    if (listadoReporteComparativoVentas.Count > 0)
+                        strRespuesta = JsonConvert.SerializeObject(listadoReporteComparativoVentas);
+                    break;
                 case "GenerarDatosCierreCaja":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
