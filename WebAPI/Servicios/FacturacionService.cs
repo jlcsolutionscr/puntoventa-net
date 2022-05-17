@@ -337,6 +337,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decTipoDeCambio = 1;
                 try
                 {
+                    if (factura.IdVendedor == 0) throw new BusinessException("Debe seleccionar el vendedor correspondiente a la factura. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -394,12 +395,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
                     factura.TipoDeCambioDolar = decTipoDeCambio;
-                    if (terminal.IdTipoDispositivo == StaticTipoDispisitivo.AppMovil)
-                    {
-                        Vendedor vendedor = dbContext.VendedorRepository.Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
-                        if (vendedor == null) throw new BusinessException("La empresa no posee registrado ningún vendedor");
-                        factura.IdVendedor = vendedor.IdVendedor;
-                    }
                     Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
                     if (cliente == null) throw new BusinessException("El cliente asignado a la factura no existe.");
                     if (cliente.IdCliente > 1)
