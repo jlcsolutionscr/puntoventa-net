@@ -1433,44 +1433,53 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     decMontoPorLinea = decMontoPorLinea * (100 - porcentaje) / 100;
                                 }
                                 string strTarifa = lineaDetalle["Impuesto"]["Tarifa"].InnerText;
+                                int intTarifa = -1;
+                                try
+                                {
+                                    intTarifa = int.Parse(strTarifa, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, new CultureInfo("en-US"));
+                                }
+                                catch (Exception)
+                                {
+                                    throw new Exception("No se logro convertir el string de la tarifa " + strTarifa + " en un numero entero");
+                                }
                                 if (lineaDetalle["UnidadMedida"].InnerText == "Os" || lineaDetalle["UnidadMedida"].InnerText == "Sp" || lineaDetalle["UnidadMedida"].InnerText == "Spe" || lineaDetalle["UnidadMedida"].InnerText == "St")
                                 {
-                                    switch (strTarifa)
+                                    switch (intTarifa)
                                     {
-                                        case "1":
+                                        case 1:
                                             decVentaServiciosTasa1 += decMontoPorLinea;
                                             break;
-                                        case "2":
+                                        case 2:
                                             decVentaServiciosTasa2 += decMontoPorLinea;
                                             break;
-                                        case "4":
+                                        case 4:
                                             decVentaServiciosTasa4 += decMontoPorLinea;
                                             break;
-                                        case "8":
+                                        case 8:
                                             decVentaServiciosTasa8 += decMontoPorLinea;
                                             break;
-                                        case "13":
+                                        case 13:
                                             decVentaServiciosTasa13 += decMontoPorLinea;
                                             break;
                                     }
                                 }
                                 else
                                 {
-                                    switch (strTarifa)
+                                    switch (intTarifa)
                                     {
-                                        case "1":
+                                        case 1:
                                             decVentaBienesTasa1 += decMontoPorLinea;
                                             break;
-                                        case "2":
+                                        case 2:
                                             decVentaBienesTasa2 += decMontoPorLinea;
                                             break;
-                                        case "4":
+                                        case 4:
                                             decVentaBienesTasa4 += decMontoPorLinea;
                                             break;
-                                        case "8":
+                                        case 8:
                                             decVentaBienesTasa8 += decMontoPorLinea;
                                             break;
-                                        case "13":
+                                        case 13:
                                             decVentaBienesTasa13 += decMontoPorLinea;
                                             break;
                                     }
