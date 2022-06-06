@@ -2164,9 +2164,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     string strClave = documento.ClaveNumerica;
                     if (new int[] { 5, 6, 7 }.Contains(documento.IdTipoDocumento)) strClave = documento.ClaveNumerica + "-" + documento.Consecutivo;
-                    if (httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value != null)
+                    if (httpResponse.Headers.Where(x => x.Key == "x-error-cause").FirstOrDefault().Value != null)
                     {
-                        IList<string> headers = httpResponse.Headers.Where(x => x.Key == "X-Error-Cause").FirstOrDefault().Value.ToList();
+                        IList<string> headers = httpResponse.Headers.Where(x => x.Key == "x-error-cause").FirstOrDefault().Value.ToList();
                         if (headers.Count > 0)
                         {
                             if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
