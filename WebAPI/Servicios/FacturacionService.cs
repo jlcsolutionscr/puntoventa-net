@@ -2459,7 +2459,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             string strDatos = "";
             string strError = "";
-            bool bolContieneArchivoXML = false;
             string strIdentificacion = "";
             if (correo.Attachments.Count == 0) throw new BusinessException("El correo no contiene ningún archivo adjunto para poder procesar el mensaje de recepción");
             XmlDocument documentoXml = new XmlDocument();
@@ -2467,12 +2466,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 if (strDatos == "" && archivo.FileName.ToUpper().EndsWith(".XML"))
                 {
-                    bolContieneArchivoXML = true;
                     string strXml = "";
                     try
                     {
                         strXml = Encoding.UTF8.GetString(archivo.Content);
                         documentoXml.LoadXml(strXml);
+                        strError = "";
                     }
                     catch
                     {
@@ -2481,34 +2480,39 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             strXml = Encoding.ASCII.GetString(archivo.Content);
                             strXml = strXml.Substring(strXml.IndexOf("<?xml"));
                             documentoXml.LoadXml(strXml);
+                            strError = "";
                         }
                         catch (Exception)
                         {
                             strError = "El archivo XML del documento electrónico no se posee el formato adecuado para ser procesado";
                         }
                     }
-                    if (documentoXml.DocumentElement.Name == "FacturaElectronica" || documentoXml.DocumentElement.Name == "NotaCreditoElectronica" || documentoXml.DocumentElement.Name == "NotaDebitoElectronica")
+                    if (strError == "")
                     {
-                        strError = "";
-                        if (strXml.Contains("v4.2/facturaElectronica"))
-                            throw new BusinessException("El documento electrónico no contiene el formato V4.3 requerido por el Ministerio de Hacienda. Consulte con el emisor de su factura de gastos");
-                        if (documentoXml.GetElementsByTagName("Otros").Count > 0)
+                        string strDocumentName = documentoXml?.DocumentElement?.Name ?? "";
+                        if (new string[] {"FacturaElectronica", "NotaCreditoElectronica", "NotaDebitoElectronica"}.Contains(strDocumentName))
                         {
-                            XmlNode otrosNode = documentoXml.GetElementsByTagName("Otros").Item(0);
-                            otrosNode.InnerText = "";
+                            if (strXml.Contains("v4.2/facturaElectronica"))
+                                throw new BusinessException("El documento electrónico no contiene el formato V4.3 requerido por el Ministerio de Hacienda. Consulte con el emisor de su factura de gastos");
+                            if (documentoXml.GetElementsByTagName("Otros").Count > 0)
+                            {
+                                XmlNode otrosNode = documentoXml.GetElementsByTagName("Otros").Item(0);
+                                otrosNode.InnerText = "";
+                            }
+                            if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
+                            {
+                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
+                                strIdentificacion = emisorNode["Identificacion"]["Numero"].InnerText;
+                            }
+                            strDatos = documentoXml.OuterXml.Replace("'", "");
+                        } else {
+                            strError = "El documento electrónico no corresponde a una factura o nota de crédito/débito electrónica. Consulte con el emisor de su factura de gastos";
                         }
-                        if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
-                        {
-                            XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
-                            strIdentificacion = emisorNode["Identificacion"]["Numero"].InnerText;
-                        }
-                        strDatos = documentoXml.OuterXml.Replace("'", "");
                     }
                 }
             }
             if (strDatos == "")
             {
-                if (bolContieneArchivoXML) strError = "El documento electrónico no corresponde a una factura o nota de crédito/débito electrónica. Consulte con el emisor de su factura de gastos";
                 if (strError == "") strError = "No se logró extraer la  información requerida para procesar el documento eletrónico adjunto. Por favor comuniquese con su proveedor.";
                 throw new BusinessException(strError);
             }
