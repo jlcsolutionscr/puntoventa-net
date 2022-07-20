@@ -870,7 +870,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         empresa.Logotipo = bytLogotipo;
                     }
                     else
-                        empresa.Logotipo = null;
+                        empresa.Logotipo = new byte[0];
                     dbContext.Commit();
                 }
                 catch (BusinessException ex)
