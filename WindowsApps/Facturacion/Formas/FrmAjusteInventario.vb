@@ -211,6 +211,9 @@ Public Class FrmAjusteInventario
         grdDetalleAjusteInventario.Refresh()
         btnAnular.Enabled = False
         btnGuardar.Enabled = True
+        btnInsertar.Enabled = True
+        btnEliminar.Enabled = True
+        btnBusProd.Enabled = True
         txtDescAjuste.Focus()
     End Sub
 
@@ -289,6 +292,9 @@ Public Class FrmAjusteInventario
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnAgregar.Focus()
         btnGuardar.Enabled = False
+        btnInsertar.Enabled = False
+        btnEliminar.Enabled = False
+        btnBusProd.Enabled = False
     End Sub
 
 

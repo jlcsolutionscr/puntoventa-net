@@ -235,7 +235,7 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(10) = (detalle.PrecioVenta * 100 / detalle.PrecioCosto) - 100
             dtrRowDetCompra.Item(11) = consecDetalle
             dtrRowDetCompra.Item(12) = detalle.PrecioVentaAnt
-            dtrRowDetCompra.Item(13) = detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100))
+            dtrRowDetCompra.Item(13) = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2)
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         Next
         grdDetalleCompra.Refresh()
@@ -260,7 +260,7 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(10) = (detalle.PrecioVenta * 100 / detalle.PrecioCosto) - 100
             dtrRowDetCompra.Item(11) = consecDetalle
             dtrRowDetCompra.Item(12) = detalle.PrecioVenta
-            dtrRowDetCompra.Item(13) = detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100))
+            dtrRowDetCompra.Item(13) = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2)
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         Next
         grdDetalleCompra.Refresh()
@@ -300,7 +300,7 @@ Public Class FrmCompra
             dtbDetalleCompra.Rows(intIndice).Item(9) = dblPrecioVenta
             dtbDetalleCompra.Rows(intIndice).Item(10) = decPorcUtilidad
             dtbDetalleCompra.Rows(intIndice).Item(12) = producto.PrecioVenta1
-            dtbDetalleCompra.Rows(intIndice).Item(13) = dblPrecioVenta * (1 + (decTasaImpuesto / 100))
+            dtbDetalleCompra.Rows(intIndice).Item(13) = Math.Round(dblPrecioVenta * (1 + (decTasaImpuesto / 100)), 2)
         Else
             consecDetalle += 1
             dtrRowDetCompra = dtbDetalleCompra.NewRow
@@ -317,7 +317,7 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(10) = decPorcUtilidad
             dtrRowDetCompra.Item(11) = consecDetalle
             dtrRowDetCompra.Item(12) = producto.PrecioVenta1
-            dtrRowDetCompra.Item(13) = dblPrecioVenta * (1 + (decTasaImpuesto / 100))
+            dtrRowDetCompra.Item(13) = Math.Round(dblPrecioVenta * (1 + (decTasaImpuesto / 100)), 2)
             dtbDetalleCompra.Rows.Add(dtrRowDetCompra)
         End If
         grdDetalleCompra.Refresh()

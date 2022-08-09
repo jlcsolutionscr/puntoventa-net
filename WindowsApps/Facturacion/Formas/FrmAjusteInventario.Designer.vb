@@ -194,7 +194,7 @@ Partial Class FrmAjusteInventario
         Me.lblLabel0.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblLabel0.Size = New System.Drawing.Size(69, 19)
         Me.lblLabel0.TabIndex = 10
-        Me.lblLabel0.Text = "Empresa No:"
+        Me.lblLabel0.Text = "Ajuste No:"
         Me.lblLabel0.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'grdDetalleAjusteInventario
