@@ -2397,6 +2397,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 servicioCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
                                 JArray archivosJArray = new JArray();
                                 servicioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, archivosJArray);
+                                JArray adjuntosJArray = new JArray();
+                                foreach (Attachment archivo in correo.Attachments)
+                                {
+                                    JObject jobDatosAdjuntos = new JObject
+                                    {
+                                        ["nombre"] = archivo.FileName,
+                                        ["contenido"] = Convert.ToBase64String(archivo.Content)
+                                    };
+                                    adjuntosJArray.Add(jobDatosAdjuntos);
+                                }
+                                servicioCorreo.SendEmail(new string[] { config.CorreoNotificacionErrores }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, adjuntosJArray);
                             }
                             catch (Exception ex)
                             {
@@ -2493,18 +2504,21 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (new string[] {"FacturaElectronica", "NotaCreditoElectronica", "NotaDebitoElectronica"}.Contains(strDocumentName))
                         {
                             if (strXml.Contains("v4.2/facturaElectronica"))
-                                throw new BusinessException("El documento electrónico no contiene el formato V4.3 requerido por el Ministerio de Hacienda. Consulte con el emisor de su factura de gastos");
-                            if (documentoXml.GetElementsByTagName("Otros").Count > 0)
+                                strError = "El documento electrónico no contiene el formato V4.3 requerido por el Ministerio de Hacienda. Consulte con el emisor de su factura de gastos";
+                            else
                             {
-                                XmlNode otrosNode = documentoXml.GetElementsByTagName("Otros").Item(0);
-                                otrosNode.InnerText = "";
+                                if (documentoXml.GetElementsByTagName("Otros").Count > 0)
+                                {
+                                    XmlNode otrosNode = documentoXml.GetElementsByTagName("Otros").Item(0);
+                                    otrosNode.InnerText = "";
+                                }
+                                if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
+                                {
+                                    XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
+                                    strIdentificacion = emisorNode["Identificacion"]["Numero"].InnerText;
+                                }
+                                strDatos = documentoXml.OuterXml.Replace("'", "");
                             }
-                            if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
-                            {
-                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
-                                strIdentificacion = emisorNode["Identificacion"]["Numero"].InnerText;
-                            }
-                            strDatos = documentoXml.OuterXml.Replace("'", "");
                         } else {
                             strError = "El documento electrónico no corresponde a una factura o nota de crédito/débito electrónica. Consulte con el emisor de su factura de gastos";
                         }
