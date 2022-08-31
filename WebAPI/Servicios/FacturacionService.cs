@@ -2396,18 +2396,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
                                 servicioCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
                                 JArray archivosJArray = new JArray();
-                                servicioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, archivosJArray);
-                                JArray adjuntosJArray = new JArray();
-                                foreach (Attachment archivo in correo.Attachments)
-                                {
-                                    JObject jobDatosAdjuntos = new JObject
-                                    {
-                                        ["nombre"] = archivo.FileName,
-                                        ["contenido"] = Convert.ToBase64String(archivo.Content)
-                                    };
-                                    adjuntosJArray.Add(jobDatosAdjuntos);
-                                }
-                                servicioCorreo.SendEmail(new string[] { config.CorreoNotificacionErrores }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, adjuntosJArray);
+                                servicioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message, false, archivosJArray);
                             }
                             catch (Exception ex)
                             {
