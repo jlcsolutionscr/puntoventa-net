@@ -731,41 +731,34 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                try
-                {
-                    CatalogoContable catalogoContable = dbContext.CatalogoContableRepository.Include("TipoCuentaContable").FirstOrDefault(x => x.IdCuenta == intIdCuenta);
-                    if (catalogoContable == null)
-                        throw new Exception("La cuenta contable por mayorizar no existe");
-                    if (strTipoMov.Equals(StaticTipoDebitoCredito.Debito))
-                        if (catalogoContable.TipoCuentaContable.TipoSaldo.Equals(StaticTipoDebitoCredito.Debito))
-                        {
-                            catalogoContable.SaldoActual += dblMonto;
-                            catalogoContable.TotalDebito += dblMonto;
-                        }
-                        else
-                        {
-                            catalogoContable.SaldoActual -= dblMonto;
-                            catalogoContable.TotalDebito += dblMonto;
-                        }
-                    else
-                        if (catalogoContable.TipoCuentaContable.TipoSaldo.Equals(StaticTipoDebitoCredito.Credito))
+                CatalogoContable catalogoContable = dbContext.CatalogoContableRepository.Include("TipoCuentaContable").FirstOrDefault(x => x.IdCuenta == intIdCuenta);
+                if (catalogoContable == null)
+                    throw new Exception("La cuenta contable por mayorizar no existe");
+                if (strTipoMov.Equals(StaticTipoDebitoCredito.Debito))
+                    if (catalogoContable.TipoCuentaContable.TipoSaldo.Equals(StaticTipoDebitoCredito.Debito))
                     {
                         catalogoContable.SaldoActual += dblMonto;
-                        catalogoContable.TotalCredito += dblMonto;
+                        catalogoContable.TotalDebito += dblMonto;
                     }
                     else
                     {
                         catalogoContable.SaldoActual -= dblMonto;
-                        catalogoContable.TotalCredito += dblMonto;
+                        catalogoContable.TotalDebito += dblMonto;
                     }
-                    dbContext.NotificarModificacion(catalogoContable);
-                    if (catalogoContable.IdCuentaGrupo > 0)
-                        MayorizarCuenta((int)catalogoContable.IdCuentaGrupo, strTipoMov, dblMonto);
-                }
-                catch (Exception ex)
+                else
+                    if (catalogoContable.TipoCuentaContable.TipoSaldo.Equals(StaticTipoDebitoCredito.Credito))
                 {
-                    throw ex;
+                    catalogoContable.SaldoActual += dblMonto;
+                    catalogoContable.TotalCredito += dblMonto;
                 }
+                else
+                {
+                    catalogoContable.SaldoActual -= dblMonto;
+                    catalogoContable.TotalCredito += dblMonto;
+                }
+                dbContext.NotificarModificacion(catalogoContable);
+                if (catalogoContable.IdCuentaGrupo > 0)
+                    MayorizarCuenta((int)catalogoContable.IdCuentaGrupo, strTipoMov, dblMonto);
             }
         }
 

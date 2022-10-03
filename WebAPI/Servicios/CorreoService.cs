@@ -16,7 +16,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
     public class CorreoService : ICorreoService
     {
-        private static IConfiguration config;
         private string smtpHost;
         private int smtpPort;
         private int pop3Port;
@@ -154,14 +153,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     attachment = new System.Net.Mail.Attachment(new MemoryStream(content), strAttachmentName);
                     message.Attachments.Add(attachment);
                 }
-                try
-                {
-                    smtpClient.Send(message);
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+                smtpClient.Send(message);
             };
         }
     }

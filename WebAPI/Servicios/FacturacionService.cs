@@ -2393,7 +2393,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
                                 strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
                                 string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
+                                //stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
                                 servicioCorreo.EliminarMensaje(datos.CuentaIvaAcreditable, datos.ClaveIvaAcreditable, correo.MessageNumber);
                                 JArray archivosJArray = new JArray();
                                 servicioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message, false, archivosJArray);
@@ -2426,7 +2426,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
                                 strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
                                 string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
+                                //stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
                                 servicioCorreo.EliminarMensaje(datos.CuentaGastoNoAcreditable, datos.ClaveGastoNoAcreditable, correo.MessageNumber);
                                 JArray archivosJArray = new JArray();
                                 servicioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente detalle: " + ex.Message, false, archivosJArray);
@@ -3309,7 +3309,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         jarrayObj.Add(jobDatosAdjuntos2);
                         JObject jobDatosAdjuntos3 = new JObject
                         {
-                            ["nombre"] = "RespuestaHacienda.xml",
+                            ["nombre"] = documentoElectronico.ClaveNumerica + "-respuesta.xml",
                             ["contenido"] = Convert.ToBase64String(documentoElectronico.Respuesta)
                         };
                         jarrayObj.Add(jobDatosAdjuntos3);
