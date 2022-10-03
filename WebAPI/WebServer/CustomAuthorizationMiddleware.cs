@@ -29,7 +29,7 @@ namespace WebServer.Middlewares
                     bool modoMantenimiento = servicioMantenimiento.EnModoMantenimiento();
                     if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible procesar su solicitud.");
                 }
-                if (!new string[] { "recibirrespuestahacienda", "descargaractualizacion" }.Contains(strPath[1]))
+                if (!new string[] { "descargaractualizacion" }.Contains(strPath[1]))
                 {
                     if (!environment.IsDevelopment() && !context.Request.IsHttps) throw new Exception("La petición no se encuentra en un protocolo seguro y no es posible procesar su solicitud");
                 }

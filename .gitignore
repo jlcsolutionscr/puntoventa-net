@@ -8,7 +8,7 @@ App_Data/
 .vscode/
 publish/
 errorLog*.*
-appsettings.*
+appsettings*.*
 .DS_Store
 appupdates/
 

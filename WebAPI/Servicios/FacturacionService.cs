@@ -3534,6 +3534,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         documento.ErrorEnvio = "No se logro obtener un token: " + ex.Message;
                         dbContext.NotificarModificacion(documento);
                         dbContext.Commit();
+                        credenciales.AccessToken = null;
                     }
                     if (credenciales.AccessToken != null)
                     {
