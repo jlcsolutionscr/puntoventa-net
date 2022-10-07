@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Servicios;
@@ -125,10 +125,22 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _servicioMantenimiento.RegistrarTerminal(usuario, strClaveFormateada, id, sucursal, terminal, tipodispositivo, dispositivo);
         }
 
-        [HttpGet("enviarcorreorestablecerclaveusuario")]
-        public void EnviarCorreoRestablecerClaveUsuario(string id)
+        [HttpGet("iniciarrestablecerclaveusuario")]
+        public void IniciarRestablecerClaveUsuario(string identificacion, string usuario)
         {
-            _servicioMantenimiento.EnviarCorreoRestablecerClaveUsuario(id);
+            _servicioMantenimiento.IniciarRestablecerClaveUsuario(identificacion, usuario);
+        }
+
+        [HttpGet("validarsesionrestablecerclaveusuario")]
+        public void ValidarSesionRestablecerClaveUsuario(string session)
+        {
+            _servicioMantenimiento.ValidarRegistroAutenticacion(session.Replace(" ", "+").Replace("~", "/"), StaticRolePorUsuario.USUARIO_SISTEMA, 1);
+        }
+
+        [HttpGet("restablecerclaveusuario")]
+        public void RestablecerClaveUsuario(string session, string clave)
+        {
+            _servicioMantenimiento.RestablecerClaveUsuario(session.Replace(" ", "+").Replace("~", "/"), clave.Replace(" ", "+"));
         }
     }
 }
