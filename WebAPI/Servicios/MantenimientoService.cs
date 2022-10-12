@@ -123,7 +123,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ValidarRegistroAutenticacion(string strToken, int intRole, int intHoras);
         void EliminarRegistroAutenticacionInvalidos();
         List<LlaveDescripcion> ObtenerListadoActividadEconomica(string strServicioURL, string strIdentificacion);
-        void IniciarRestablecerClaveUsuario(string strIdentificacion, string strCodigoUsuario);
+        void IniciarRestablecerClaveUsuario(string strServicioWebURL, string strIdentificacion, string strCodigoUsuario);
         void RestablecerClaveUsuario(string strToken, string strClave);
     }
 
@@ -2727,7 +2727,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void IniciarRestablecerClaveUsuario(string strIdentificacion, string strCodigoUsuario)
+        public void IniciarRestablecerClaveUsuario(string strServicioWebURL, string strIdentificacion, string strCodigoUsuario)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -2740,7 +2740,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
                     string strToken = GenerarRegistroAutenticacion(empresa.IdEmpresa, usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
                     JArray archivosJArray = new JArray();
-                    servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\nhttps://dev-facturacion.jlcsolutionscr.com/reset?id=" + strToken.Replace("/", "~") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false, archivosJArray);
+                    servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\n" + strServicioWebURL + "reset?id=" + strToken.Replace("/", "~") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false, archivosJArray);
                 }
                 catch (BusinessException ex)
                 {

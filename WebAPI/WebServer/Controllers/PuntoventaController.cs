@@ -11,6 +11,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
     [Route("puntoventa")]
     public class PuntoventaController : ControllerBase
     {
+        private static IConfiguration _configuration;
         private static IHostEnvironment _environment;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
@@ -27,6 +28,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             ICorreoService servicioCorreo
         )
         {
+            _configuration = configuration;
             _environment = environment;
             _servicioMantenimiento = servicioMantenimiento;
             _servicioFacturacion = servicioFacturacion;
@@ -128,7 +130,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("iniciarrestablecerclaveusuario")]
         public void IniciarRestablecerClaveUsuario(string identificacion, string usuario)
         {
-            _servicioMantenimiento.IniciarRestablecerClaveUsuario(identificacion, usuario);
+            string strServicioWebURL = _configuration.GetSection("appSettings").GetSection("strServicioWebURL").Value;
+            _servicioMantenimiento.IniciarRestablecerClaveUsuario(strServicioWebURL, identificacion, usuario);
         }
 
         [HttpGet("validarsesionrestablecerclaveusuario")]
