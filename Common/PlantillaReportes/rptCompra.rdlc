@@ -45,6 +45,10 @@
           <DataField>NombreProveedor</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="Observacion">
+          <DataField>Observacion</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="PrecioVenta">
           <DataField>PrecioVenta</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
@@ -59,9 +63,9 @@
         </Field>
       </Fields>
       <rd:DataSetInfo>
-        <rd:DataSetName>LeandroSoftware.Core.TiposComunes</rd:DataSetName>
+        <rd:DataSetName>LeandroSoftware.Common.DatosComunes</rd:DataSetName>
         <rd:TableName>ReporteCompra</rd:TableName>
-        <rd:ObjectDataSourceType>LeandroSoftware.Core.TiposComunes.ReporteCompra, Core, Version=4.3.9.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+        <rd:ObjectDataSourceType>LeandroSoftware.Common.DatosComunes.ReporteCompra, Common, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
@@ -284,7 +288,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -327,7 +330,7 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>0.28959in</Height>
+        <Height>0.27917in</Height>
         <Style>
           <Border>
             <Style>None</Style>
@@ -337,7 +340,7 @@
       <Width>8.42934in</Width>
       <Page>
         <PageHeader>
-          <Height>5.43813cm</Height>
+          <Height>6.39063cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <ReportItems>
             <Textbox Name="lblClaveNumerica">
@@ -359,7 +362,7 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>4.70048cm</Top>
+              <Top>5.65298cm</Top>
               <Left>0.37718cm</Left>
               <Height>0.6cm</Height>
               <Width>4.88378cm</Width>
@@ -392,7 +395,7 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>4.69325cm</Top>
+              <Top>5.64575cm</Top>
               <Left>15.34376cm</Left>
               <Height>0.6cm</Height>
               <Width>2.80868cm</Width>
@@ -426,7 +429,7 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>4.69325cm</Top>
+              <Top>5.64575cm</Top>
               <Left>18.20095cm</Left>
               <Height>0.6cm</Height>
               <Width>2.82853cm</Width>
@@ -728,7 +731,7 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <Top>4.70049cm</Top>
+              <Top>5.65299cm</Top>
               <Left>5.26096cm</Left>
               <Height>0.6cm</Height>
               <Width>10.0828cm</Width>
@@ -744,7 +747,7 @@
               </Style>
             </Textbox>
             <Line Name="Line1">
-              <Top>5.38688cm</Top>
+              <Top>6.33938cm</Top>
               <Left>21.17929cm</Left>
               <Height>0cm</Height>
               <Width>-20.8981cm</Width>
@@ -881,6 +884,74 @@
               <Height>0.6cm</Height>
               <Width>4.405cm</Width>
               <ZIndex>16</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="lblUsuario5">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Observaciones:</Value>
+                      <Style>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Right</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <Top>4.50404cm</Top>
+              <Left>0.98574cm</Left>
+              <Height>0.6cm</Height>
+              <Width>3.05402cm</Width>
+              <ZIndex>17</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="pFechaDesde2">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=First(Fields!Observacion.Value, "dstDatos")</Value>
+                      <Style>
+                        <FontFamily>Tahoma</FontFamily>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Left</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>pFechaDesde</rd:DefaultName>
+              <Top>4.50404cm</Top>
+              <Left>4.21614cm</Left>
+              <Height>0.6cm</Height>
+              <Width>16.81335cm</Width>
+              <ZIndex>18</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>

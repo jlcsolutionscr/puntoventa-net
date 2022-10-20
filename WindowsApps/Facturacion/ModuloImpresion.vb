@@ -519,6 +519,14 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, "Factura Nro: " & objImpresion.strDocumento, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(2, "Proveedor: " & objImpresion.strNombre, 0, 100, 10, StringAlignment.Near, False))
+            If objImpresion.strDetalle.Length > 0 Then
+                Dim notas As String = "Notas: " & objImpresion.strDetalle
+                While notas.Length > 32
+                    lineas.Add(New ClsLineaImpresion(1, notas.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                    notas = notas.Substring(32)
+                End While
+                lineas.Add(New ClsLineaImpresion(1, notas, 0, 100, 10, StringAlignment.Near, False))
+            End If
             lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "Descripción", 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(0, "Cant", 0, 50, 10, StringAlignment.Center, False))

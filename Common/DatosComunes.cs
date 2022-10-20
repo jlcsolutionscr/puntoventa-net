@@ -143,12 +143,13 @@ namespace LeandroSoftware.Common.DatosComunes
     {
         public ReporteCompra() { }
 
-        public ReporteCompra(int id, string referencia, string nombreProveedor, string fecha, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioVenta, decimal precioVentaAnt)
+        public ReporteCompra(int id, string referencia, string nombreProveedor, string fecha, string observacion, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioVenta, decimal precioVentaAnt)
         {
             IdCompra = id;
             Referencia = referencia;
             NombreProveedor = nombreProveedor;
             Fecha = fecha;
+            Observacion = observacion;
             Codigo = codigo;
             CodigoProveedor = codigoProveedor;
             Descripcion = descripcion;
@@ -161,6 +162,7 @@ namespace LeandroSoftware.Common.DatosComunes
         public string Referencia { get; set; }
         public string NombreProveedor { get; set; }
         public string Fecha { get; set; }
+        public string Observacion { get; set; }
         public string Codigo { get; set; }
         public string CodigoProveedor { get; set; }
         public string Descripcion { get; set; }
