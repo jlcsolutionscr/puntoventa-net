@@ -14,12 +14,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarCuentaIngreso(CuentaIngreso cuenta);
         void EliminarCuentaIngreso(int intIdCuenta);
         CuentaIngreso ObtenerCuentaIngreso(int intIdCuenta);
-        IList<LlaveDescripcion> ObtenerListadoCuentasIngreso(int intIdEmpresa, string strDescripcion = "");
+        IList<LlaveDescripcion> ObtenerListadoCuentasIngreso(int intIdEmpresa, string strDescripcion);
         string AgregarIngreso(Ingreso ingreso);
         void AnularIngreso(int intIdIngreso, int intIdUsuario, string strMotivoAnulacion);
         Ingreso ObtenerIngreso(int intIdIngreso);
-        int ObtenerTotalListaIngresos(int intIdEmpresa, int intIdSucursal, int intIdIngreso = 0, string strRecibidoDe = "", string strDetalle = "");
-        IList<EfectivoDetalle> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdIngreso = 0, string strRecibidoDe = "", string strDetalle = "");
+        int ObtenerTotalListaIngresos(int intIdEmpresa, int intIdSucursal, int intIdIngreso, string strRecibidoDe, string strDetalle, string strFechaFinal);
+        IList<EfectivoDetalle> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdIngreso, string strRecibidoDe, string strDetalle, string strFechaFinal);
         void AgregarCuentaEgreso(CuentaEgreso cuenta);
         void ActualizarCuentaEgreso(CuentaEgreso cuenta);
         void EliminarCuentaEgreso(int intIdCuenta);
@@ -28,8 +28,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarEgreso(Egreso egreso);
         void AnularEgreso(int intIdEgreso, int intIdUsuario, string strMotivoAnulacion);
         Egreso ObtenerEgreso(int intIdEgreso);
-        int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle);
-        IList<EfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle);
+        int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle, string strFechaFinal);
+        IList<EfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle, string strFechaFinal);
         CierreCaja GenerarDatosCierreCaja(int intIdEmpresa, int intIdSucursal);
         string GuardarDatosCierreCaja(CierreCaja cierre);
         void AbortarCierreCaja(int intIdEmpresa, int intIdSucursal);
@@ -42,6 +42,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         private readonly ILoggerManager _logger;
         private static IServiceScopeFactory serviceScopeFactory;
+        private static CultureInfo provider = CultureInfo.InvariantCulture;
+        private static string strFormat = "dd/MM/yyyy HH:mm:ss";
 
         public FlujoCajaService(ILoggerManager logger, IServiceScopeFactory pServiceScopeFactory)
         {
@@ -155,7 +157,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoCuentasIngreso(int intIdEmpresa, string strDescripcion = "")
+        public IList<LlaveDescripcion> ObtenerListadoCuentasIngreso(int intIdEmpresa, string strDescripcion)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -328,7 +330,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaIngresos(int intIdEmpresa, int intIdSucursal, int intIdIngreso = 0, string strRecibidoDe = "", string strDetalle = "")
+        public int ObtenerTotalListaIngresos(int intIdEmpresa, int intIdSucursal, int intIdIngreso, string strRecibidoDe, string strDetalle, string strFechaFinal)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -354,7 +356,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<EfectivoDetalle> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdIngreso = 0, string strRecibidoDe = "", string strDetalle = "")
+        public IList<EfectivoDetalle> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdIngreso, string strRecibidoDe, string strDetalle, string strFechaFinal)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -651,7 +653,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle)
+        public int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle, string strFechaFinal)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -660,12 +662,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listaEgresos = dbContext.EgresoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
                     if (intIdEgreso > 0)
                         listaEgresos = listaEgresos.Where(x => x.IdEgreso == intIdEgreso);
-                    else
-                    {
-                        if (!strBeneficiario.Equals(string.Empty))
-                            listaEgresos = listaEgresos.Where(x => x.Beneficiario.Contains(strBeneficiario));
-                        if (!strDetalle.Equals(string.Empty))
-                            listaEgresos = listaEgresos.Where(x => x.Detalle.Contains(strDetalle));
+                    if (!strBeneficiario.Equals(string.Empty))
+                        listaEgresos = listaEgresos.Where(x => x.Beneficiario.Contains(strBeneficiario));
+                    if (!strDetalle.Equals(string.Empty))
+                        listaEgresos = listaEgresos.Where(x => x.Detalle.Contains(strDetalle));
+                    if (strFechaFinal != "") {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listaEgresos = listaEgresos.Where(x => x.Fecha < datFechaFinal);
                     }
                     return listaEgresos.Count();
                 }
@@ -677,7 +680,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<EfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle)
+        public IList<EfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle, string strFechaFinal)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -687,12 +690,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.EgresoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
                     if (intIdEgreso > 0)
                         listado = listado.Where(x => x.IdEgreso == intIdEgreso);
-                    else
-                    {
-                        if (!strBeneficiario.Equals(string.Empty))
-                            listado = listado.Where(x => x.Beneficiario.Contains(strBeneficiario));
-                        if (!strDetalle.Equals(string.Empty))
-                            listado = listado.Where(x => x.Detalle.Contains(strDetalle));
+                    if (!strBeneficiario.Equals(string.Empty))
+                        listado = listado.Where(x => x.Beneficiario.Contains(strBeneficiario));
+                    if (!strDetalle.Equals(string.Empty))
+                        listado = listado.Where(x => x.Detalle.Contains(strDetalle));
+                    if (strFechaFinal != "") {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listado = listado.Where(x => x.Fecha < datFechaFinal);
                     }
                     listado = listado.OrderByDescending(x => x.IdEgreso).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var value in listado)
