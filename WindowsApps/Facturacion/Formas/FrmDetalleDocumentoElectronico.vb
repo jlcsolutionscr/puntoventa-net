@@ -61,7 +61,7 @@ Public Class FrmDetalleDocumentoElectronico
         Try
             listadoDocumentosProcesados = New List(Of DocumentoDetalle)()
             If intCantidadDePaginas > 0 Then
-                listadoDocumentosProcesados = Await Puntoventa.ObtenerListadoDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+                listadoDocumentosProcesados = Await Puntoventa.ObtenerListadoDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
             End If
             dgvDatos.DataSource = listadoDocumentosProcesados
             If listadoDocumentosProcesados.Count() > 0 Then
@@ -80,7 +80,7 @@ Public Class FrmDetalleDocumentoElectronico
 
     Private Async Function ObtenerCantidadDocumentosProcesados() As Task
         Try
-            intTotalDocumentos = Await Puntoventa.ObtenerTotalDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalDocumentos = Await Puntoventa.ObtenerTotalDocumentosElectronicosProcesados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -124,6 +124,7 @@ Public Class FrmDetalleDocumentoElectronico
                 AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
             End If
         Next
+        FechaFinal.Text = Date.Now.Day & "/" & Date.Now.Month & "/" & Date.Now.Year
     End Sub
 
     Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)

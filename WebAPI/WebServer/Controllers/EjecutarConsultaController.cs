@@ -1237,7 +1237,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
-                    int intTotalDocumentosProcesados = _servicioFacturacion.ObtenerTotalDocumentosElectronicosProcesados(intIdEmpresa, intIdSucursal, strNombre);
+                    strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
+                    int intTotalDocumentosProcesados = _servicioFacturacion.ObtenerTotalDocumentosElectronicosProcesados(intIdEmpresa, intIdSucursal, strNombre, strFechaFinal);
                     strRespuesta = intTotalDocumentosProcesados.ToString();
                     break;
                 case "ObtenerListadoDocumentosElectronicosProcesados":
@@ -1246,7 +1247,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
                     intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
-                    IList<DocumentoDetalle> listadoProcesados = _servicioFacturacion.ObtenerListadoDocumentosElectronicosProcesados(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, strNombre);
+                    strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
+                    IList<DocumentoDetalle> listadoProcesados = _servicioFacturacion.ObtenerListadoDocumentosElectronicosProcesados(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, strNombre, strFechaFinal);
                     if (listadoProcesados.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoProcesados);
                     break;

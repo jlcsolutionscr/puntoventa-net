@@ -63,8 +63,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void GenerarMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intEstado, bool bolIvaAplicable, ConfiguracionGeneral datos);
         void ProcesarCorreoRecepcion(ConfiguracionGeneral config, ConfiguracionRecepcion datos);
         void ReprocesarDocumentoElectronico(int intIdDocumento, ConfiguracionGeneral datos);
-        int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, string strNombre);
-        IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strNombre);
+        int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, string strNombre, string strFechaFinal);
+        IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strNombre, string strFechaFinal);
         DocumentoElectronico ObtenerDocumentoElectronico(int intIdDocumento);
         void ProcesarRespuestaHacienda(RespuestaHaciendaDTO mensaje, string strCorreoNotificacionErrores, byte[] bytLogo);
         void EnviarNotificacionDocumentoElectronico(int intIdDocumento, string strCorreoReceptor, string strCorreoNotificacionErrores, byte[] bytLogo);
@@ -999,7 +999,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.Cliente.Identificacion.Contains(strIdentificacion));
                     if (strFechaFinal != "") {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                        listado = listado.Where(x => x.Fecha < datFechaFinal);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
                     }
                     return listado.Count();
                 }
@@ -1029,7 +1029,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.Cliente.Identificacion.Contains(strIdentificacion));
                     if (strFechaFinal != "") {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                        listado = listado.Where(x => x.Fecha < datFechaFinal);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
                     }
                     listado = listado.OrderByDescending(x => x.IdFactura).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var factura in listado)
@@ -1190,7 +1190,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
                     if (strFechaFinal != "") {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                        listado = listado.Where(x => x.Fecha < datFechaFinal);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
                     }
                     return listado.Count();
                 }
@@ -1218,7 +1218,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
                     if (strFechaFinal != "") {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                        listado = listado.Where(x => x.Fecha < datFechaFinal);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
                     }
                     var proformas = listado.OrderByDescending(x => x.IdProforma).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var proforma in proformas)
@@ -1356,7 +1356,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaApartados = listaApartados.Where(x => x.NombreCliente.Contains(strNombre));
                     if (strFechaFinal != "") {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                        listaApartados = listaApartados.Where(x => x.Fecha < datFechaFinal);
+                        listaApartados = listaApartados.Where(x => x.Fecha <= datFechaFinal);
                     }
                     return listaApartados.Count();
                 }
@@ -1384,7 +1384,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
                     if (strFechaFinal != "") {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                        listado = listado.Where(x => x.Fecha < datFechaFinal);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
                     }
                     listado = listado.OrderByDescending(x => x.IdApartado).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var apartado in listado)
@@ -1662,7 +1662,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
                     if (strFechaFinal != "") {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                        listado = listado.Where(x => x.Fecha < datFechaFinal);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
                     }
                     return listado.Count();
                 }
@@ -1690,7 +1690,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
                     if (strFechaFinal != "") {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                        listado = listado.Where(x => x.Fecha < datFechaFinal);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
                     }
                     listado = listado.OrderByDescending(x => x.IdOrden).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var ordenServicio in listado)
@@ -2083,7 +2083,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaDevoluciones = listaDevoluciones.Where(x => x.Factura.NombreCliente.Contains(strNombre));
                     if (strFechaFinal != "") {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                        listaDevoluciones = listaDevoluciones.Where(x => x.Fecha < datFechaFinal);
+                        listaDevoluciones = listaDevoluciones.Where(x => x.Fecha <= datFechaFinal);
                     }
                     return listaDevoluciones.Count();
                 }
@@ -2109,7 +2109,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.Factura.NombreCliente.Contains(strNombre));
                     if (strFechaFinal != "") {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                        listado = listado.Where(x => x.Fecha < datFechaFinal);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
                     }
                     listado = listado.OrderByDescending(x => x.IdDevolucion).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var devolucion in listado)
@@ -2655,7 +2655,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, string strNombre)
+        public int ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, string strNombre, string strFechaFinal)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -2666,6 +2666,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && (x.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado));
                     if (!strNombre.Equals(string.Empty))
                         listado = listado.Where(x => x.NombreReceptor.Contains(strNombre));
+                    if (strFechaFinal != "")
+                    {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
+                    }
                     return listado.Count();
                 }
                 catch (BusinessException ex)
@@ -2680,7 +2685,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strNombre)
+        public IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strNombre, string strFechaFinal)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -2692,6 +2697,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && (x.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado));
                     if (!strNombre.Equals(string.Empty))
                         listado = listado.Where(x => x.NombreReceptor.Contains(strNombre));
+                    if (strFechaFinal != "")
+                    {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
+                    }
                     listado = listado.OrderByDescending(x => x.IdDocumento).Skip((numPagina - 1) * cantRec).Take(cantRec);
 
                     foreach (var value in listado)

@@ -31,6 +31,8 @@ Partial Class FrmBusquedaEgreso
         Me.txtDetalle = New System.Windows.Forms.TextBox()
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.FechaFinal = New System.Windows.Forms.DateTimePicker()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -151,7 +153,7 @@ Partial Class FrmBusquedaEgreso
         '
         Me.txtDetalle.Location = New System.Drawing.Point(148, 12)
         Me.txtDetalle.Name = "txtDetalle"
-        Me.txtDetalle.Size = New System.Drawing.Size(456, 20)
+        Me.txtDetalle.Size = New System.Drawing.Size(282, 20)
         Me.txtDetalle.TabIndex = 2
         '
         'cboSucursal
@@ -177,6 +179,24 @@ Partial Class FrmBusquedaEgreso
         Me.Label6.Text = "Sucursal:"
         Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(436, 15)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(78, 13)
+        Me.Label3.TabIndex = 158
+        Me.Label3.Text = "Fecha máxima:"
+        '
+        'FechaFinal
+        '
+        Me.FechaFinal.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.FechaFinal.Location = New System.Drawing.Point(520, 12)
+        Me.FechaFinal.Name = "FechaFinal"
+        Me.FechaFinal.Size = New System.Drawing.Size(84, 20)
+        Me.FechaFinal.TabIndex = 157
+        Me.FechaFinal.Value = New Date(2013, 6, 9, 0, 0, 0, 0)
+        '
         'FrmBusquedaEgreso
         '
         Me.AcceptButton = Me.btnFiltrar
@@ -184,6 +204,8 @@ Partial Class FrmBusquedaEgreso
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(644, 395)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.FechaFinal)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label2)
@@ -224,4 +246,6 @@ Partial Class FrmBusquedaEgreso
     Friend WithEvents txtDetalle As System.Windows.Forms.TextBox
     Friend WithEvents cboSucursal As ComboBox
     Friend WithEvents Label6 As Label
+    Friend WithEvents Label3 As Label
+    Friend WithEvents FechaFinal As DateTimePicker
 End Class

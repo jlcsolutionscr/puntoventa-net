@@ -43,7 +43,7 @@ Public Class FrmBusquedaEgreso
         Try
             Dim listado = New List(Of EfectivoDetalle)
             If intCantidadDePaginas > 0 Then
-                listado = Await Puntoventa.ObtenerListadoEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, "", txtDetalle.Text, FrmPrincipal.usuarioGlobal.Token)
+                listado = Await Puntoventa.ObtenerListadoEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, "", txtDetalle.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
             End If
             dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
@@ -56,7 +56,7 @@ Public Class FrmBusquedaEgreso
     End Function
 
     Private Async Function ValidarCantidadRegistros() As Task
-        intTotalRegistros = Await Puntoventa.ObtenerTotalListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intId, "", txtDetalle.Text, FrmPrincipal.usuarioGlobal.Token)
+        intTotalRegistros = Await Puntoventa.ObtenerTotalListaEgresos(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intId, "", txtDetalle.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
         intCantidadDePaginas = Math.Truncate(intTotalRegistros / intFilasPorPagina) + IIf((intTotalRegistros Mod intFilasPorPagina) = 0, 0, 1)
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
@@ -88,6 +88,7 @@ Public Class FrmBusquedaEgreso
                 AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
             End If
         Next
+        FechaFinal.Text = Date.Now.Day & "/" & Date.Now.Month & "/" & Date.Now.Year
     End Sub
 
     Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
