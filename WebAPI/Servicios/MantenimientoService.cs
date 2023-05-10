@@ -2166,8 +2166,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
                             PrecioCosto = detalleAjuste.PrecioCosto
                         };
-                        producto.MovimientoProducto = new List<MovimientoProducto>();
-                        producto.MovimientoProducto.Add(movimiento);
+                        dbContext.MovimientoProductoRepository.Add(movimiento);
                     }
                     dbContext.Commit();
                 }
@@ -2226,8 +2225,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
                             PrecioCosto = detalleAjuste.PrecioCosto
                         };
-                        producto.MovimientoProducto = new List<MovimientoProducto>();
-                        producto.MovimientoProducto.Add(movimiento);
+                        dbContext.MovimientoProductoRepository.Add(movimiento);
                     }
                     dbContext.Commit();
                 }
