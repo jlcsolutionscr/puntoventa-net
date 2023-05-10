@@ -302,16 +302,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 producto.PrecioCosto = detalleCompra.PrecioCosto;
                             }
-                            MovimientoProducto movimientoProducto = new MovimientoProducto
-                            {
-                                IdProducto = producto.IdProducto,
-                                IdSucursal = compra.IdSucursal,
-                                Fecha = compra.Fecha,
-                                Tipo = StaticTipoMovimientoProducto.Entrada,
-                                Origen = "Registro de compra de mercancía de factura " + compra.NoDocumento,
-                                Cantidad = detalleCompra.Cantidad,
-                                PrecioCosto = detalleCompra.PrecioCosto
-                            };
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
                             if (existencias != null)
                             {
@@ -329,8 +319,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 };
                                 dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
                             }
-                            producto.MovimientoProducto = new List<MovimientoProducto>();
-                            producto.MovimientoProducto.Add(movimientoProducto);
+                            MovimientoProducto movimiento = new MovimientoProducto
+                            {
+                                IdProducto = producto.IdProducto,
+                                IdSucursal = compra.IdSucursal,
+                                Fecha = compra.Fecha,
+                                Tipo = StaticTipoMovimientoProducto.Entrada,
+                                Origen = "Registro de compra de mercancía de factura " + compra.NoDocumento,
+                                Cantidad = detalleCompra.Cantidad,
+                                PrecioCosto = detalleCompra.PrecioCosto
+                            };
+                            dbContext.MovimientoProductoRepository.Add(movimiento);
                             dbContext.NotificarModificacion(producto);
                         }
                         if (empresa.Contabiliza)
@@ -600,7 +599,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 decPrecioCostoPromedio = ((cantidadExistente * producto.PrecioCosto) - (detalleCompra.Cantidad * detalleCompra.PrecioCosto)) / (cantidadExistente);
                             existencias.Cantidad -= detalleCompra.Cantidad;
                             dbContext.NotificarModificacion(existencias);
-                            MovimientoProducto movimientoProducto = new MovimientoProducto
+                            MovimientoProducto movimiento = new MovimientoProducto
                             {
                                 IdProducto = producto.IdProducto,
                                 IdSucursal = compra.IdSucursal,
@@ -610,8 +609,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Cantidad = detalleCompra.Cantidad,
                                 PrecioCosto = detalleCompra.PrecioCosto
                             };
-                            producto.MovimientoProducto = new List<MovimientoProducto>();
-                            producto.MovimientoProducto.Add(movimientoProducto);
+                            dbContext.MovimientoProductoRepository.Add(movimiento);
                             producto.PrecioCosto = decPrecioCostoPromedio;
                             dbContext.NotificarModificacion(producto);
                         }
@@ -926,7 +924,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
                             existencias.Cantidad -= detalleDevolucion.Cantidad;
                             dbContext.NotificarModificacion(existencias);
-                            MovimientoProducto movimientoProducto = new MovimientoProducto
+                            MovimientoProducto movimiento = new MovimientoProducto
                             {
                                 IdProducto = producto.IdProducto,
                                 IdSucursal = compra.IdSucursal,
@@ -936,8 +934,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Cantidad = detalleDevolucion.CantDevolucion,
                                 PrecioCosto = detalleDevolucion.PrecioCosto
                             };
-                            producto.MovimientoProducto = new List<MovimientoProducto>();
-                            producto.MovimientoProducto.Add(movimientoProducto);
+                            dbContext.MovimientoProductoRepository.Add(movimiento);
                         }
                     }
                     dbContext.DevolucionProveedorRepository.Add(devolucion);
@@ -987,7 +984,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
                         existencias.Cantidad += detalleDevolucion.Cantidad;
                         dbContext.NotificarModificacion(existencias);
-                        MovimientoProducto movimientoProducto = new MovimientoProducto
+                        MovimientoProducto movimiento = new MovimientoProducto
                         {
                             IdProducto = producto.IdProducto,
                             IdSucursal = compra.IdSucursal,
@@ -997,8 +994,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleDevolucion.CantDevolucion,
                             PrecioCosto = detalleDevolucion.PrecioCosto
                         };
-                        producto.MovimientoProducto = new List<MovimientoProducto>();
-                        producto.MovimientoProducto.Add(movimientoProducto);
+                        dbContext.MovimientoProductoRepository.Add(movimiento);
                     }
                     if (devolucion.IdMovimientoCxP > 0)
                     {

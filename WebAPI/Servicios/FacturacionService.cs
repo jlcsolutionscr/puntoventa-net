@@ -465,8 +465,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Cantidad = detalleFactura.Cantidad,
                                 PrecioCosto = detalleFactura.PrecioCosto
                             };
-                            producto.MovimientoProducto = new List<MovimientoProducto>();
-                            producto.MovimientoProducto.Add(movimiento);
+                            dbContext.MovimientoProductoRepository.Add(movimiento);
                         }
                         if (empresa.Contabiliza)
                         {
@@ -869,8 +868,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     Cantidad = cantPorAnular,
                                     PrecioCosto = detalleFactura.PrecioCosto
                                 };
-                                producto.MovimientoProducto = new List<MovimientoProducto>();
-                                producto.MovimientoProducto.Add(movimiento);
+                                dbContext.MovimientoProductoRepository.Add(movimiento);
                             }
                         }
                     }
@@ -1798,7 +1796,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
                             existencias.Cantidad += detalleDevolucion.Cantidad;
                             dbContext.NotificarModificacion(existencias);
-                            MovimientoProducto movimientoProducto = new MovimientoProducto
+                            MovimientoProducto movimiento = new MovimientoProducto
                             {
                                 IdProducto = producto.IdProducto,
                                 IdSucursal = factura.IdSucursal,
@@ -1808,8 +1806,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Cantidad = detalleDevolucion.Cantidad,
                                 PrecioCosto = detalleDevolucion.PrecioCosto
                             };
-                            producto.MovimientoProducto = new List<MovimientoProducto>();
-                            producto.MovimientoProducto.Add(movimientoProducto);
+                            dbContext.MovimientoProductoRepository.Add(movimiento);
                         }
                     }
                     MovimientoCuentaPorCobrar mov = null;
@@ -1957,7 +1954,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
                             existencias.Cantidad -= detalleDevolucion.Cantidad;
                             dbContext.NotificarModificacion(existencias);
-                            MovimientoProducto movimientoProducto = new MovimientoProducto
+                            MovimientoProducto movimiento = new MovimientoProducto
                             {
                                 IdProducto = producto.IdProducto,
                                 IdSucursal = factura.IdSucursal,
@@ -1967,8 +1964,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Cantidad = detalleDevolucion.Cantidad,
                                 PrecioCosto = detalleDevolucion.PrecioCosto
                             };
-                            producto.MovimientoProducto = new List<MovimientoProducto>();
-                            producto.MovimientoProducto.Add(movimientoProducto);
+                            dbContext.MovimientoProductoRepository.Add(movimiento);
                         }
                     }
                     if (devolucion.IdMovimientoCxC > 0)

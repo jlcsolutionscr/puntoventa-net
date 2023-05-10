@@ -148,8 +148,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Tipo = StaticTipoMovimientoProducto.Salida,
                             Cantidad = detalleTraslado.Cantidad
                         };
-                        producto.MovimientoProducto = new List<MovimientoProducto>();
-                        producto.MovimientoProducto.Add(movimiento);
+                        dbContext.MovimientoProductoRepository.Add(movimiento);
                         existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == traslado.IdSucursalDestino).FirstOrDefault();
                         if (existencias != null)
                         {
@@ -177,8 +176,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Tipo = StaticTipoMovimientoProducto.Entrada,
                             Cantidad = detalleTraslado.Cantidad
                         };
-                        producto.MovimientoProducto = new List<MovimientoProducto>();
-                        producto.MovimientoProducto.Add(movimiento);
+                        dbContext.MovimientoProductoRepository.Add(movimiento);
                         if (empresa.Contabiliza)
                         {
                             decimal decTotalPorLinea = Math.Round(detalleTraslado.PrecioCosto * detalleTraslado.Cantidad, 2, MidpointRounding.AwayFromZero);
