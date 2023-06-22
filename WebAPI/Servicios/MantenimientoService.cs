@@ -102,8 +102,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarAjusteInventario(AjusteInventario ajusteInventario);
         void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario, string strMotivoAnulacion);
         AjusteInventario ObtenerAjusteInventario(int intIdAjusteInventario);
-        int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion);
-        IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion);
+        int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion, string strFechaFinal);
+        IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion, string strFechaFinal);
         // Métodos para obtener parámetros generales del sistema
         IList<LlaveDescripcion> ObtenerListadoTipoIdentificacion();
         IList<LlaveDescripcion> ObtenerListadoCatalogoReportes();
@@ -2127,6 +2127,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     ajusteInventario.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
+                    MovimientoProducto movimiento = null;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -2156,7 +2157,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             };
                             dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
                         }
-                        MovimientoProducto movimiento = new MovimientoProducto
+                        movimiento = new MovimientoProducto
                         {
                             IdProducto = producto.IdProducto,
                             IdSucursal = ajusteInventario.IdSucursal,
@@ -2169,6 +2170,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.MovimientoProductoRepository.Add(movimiento);
                     }
                     dbContext.Commit();
+                    if (movimiento != null)
+                    {
+                        movimiento.Origen = "Registro de ajuste de inventario nro. " + ajusteInventario.IdAjuste;
+                        dbContext.NotificarModificacion(movimiento);
+                        dbContext.Commit();
+                    }
                 }
                 catch (BusinessException ex)
                 {
@@ -2221,7 +2228,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = ajusteInventario.IdSucursal,
                             Fecha = Validador.ObtenerFechaHoraCostaRica(),
                             Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Entrada : StaticTipoMovimientoProducto.Salida,
-                            Origen = "Registro de reversión de ajuste de inventario",
+                            Origen = "Registro de reversión de ajuste de inventario nro. " + ajusteInventario.IdAjuste,
                             Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
                             PrecioCosto = detalleAjuste.PrecioCosto
                         };
@@ -2260,18 +2267,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion)
+        public int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion, string strFechaFinal)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
-                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    var listado = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (intIdAjusteInventario > 0)
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
+                        listado = listado.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
-                    return listaAjusteInventario.Count();
+                        listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
+                    if (strFechaFinal != "") {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
+                    }
+                    return listado.Count();
                 }
                 catch (Exception ex)
                 {
@@ -2281,7 +2292,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion)
+        public IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion, string strFechaFinal)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -2293,6 +2304,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
                         listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    if (strFechaFinal != "") {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
+                    }
                     listado = listado.OrderByDescending(x => x.IdAjuste).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var ajuste in listado)
                     {

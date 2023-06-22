@@ -1330,7 +1330,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdAjuste").Value.ToString());
                     strDescripcion = parametrosJO.Property("Descripcion").Value.ToString();
                     strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
-                    int intTotalAjusteInventarios = _servicioMantenimiento.ObtenerTotalListaAjusteInventario(intIdEmpresa, intIdSucursal, intIdLlave1, strDescripcion);
+                    int intTotalAjusteInventarios = _servicioMantenimiento.ObtenerTotalListaAjusteInventario(intIdEmpresa, intIdSucursal, intIdLlave1, strDescripcion, strFechaFinal);
                     strRespuesta = intTotalAjusteInventarios.ToString();
                     break;
                 case "ObtenerListadoAjusteInventario":
@@ -1340,7 +1340,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdAjuste").Value.ToString());
                     strDescripcion = parametrosJO.Property("Descripcion").Value.ToString();
-                    IList<AjusteInventarioDetalle> listadoAjusteInventarios = _servicioMantenimiento.ObtenerListadoAjusteInventario(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, intIdLlave1, strDescripcion);
+                    strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
+                    IList<AjusteInventarioDetalle> listadoAjusteInventarios = _servicioMantenimiento.ObtenerListadoAjusteInventario(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, intIdLlave1, strDescripcion, strFechaFinal);
                     if (listadoAjusteInventarios.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoAjusteInventarios);
                     break;

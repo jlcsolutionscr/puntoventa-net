@@ -144,7 +144,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = traslado.IdSucursalOrigen,
                             Fecha = Validador.ObtenerFechaHoraCostaRica(),
                             PrecioCosto = detalleTraslado.PrecioCosto,
-                            Origen = "Salida de mercancía por traslado entre sucursales",
+                            Origen = "Salida de mercancía por traslado entre sucursales nro. " + traslado.IdTraslado,
                             Tipo = StaticTipoMovimientoProducto.Salida,
                             Cantidad = detalleTraslado.Cantidad
                         };
@@ -172,7 +172,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = traslado.IdSucursalDestino,
                             Fecha = Validador.ObtenerFechaHoraCostaRica(),
                             PrecioCosto = detalleTraslado.PrecioCosto,
-                            Origen = "Ingreso de mercancía por traslado entre sucursales",
+                            Origen = "Ingreso de mercancía por traslado entre sucursales nro. " + traslado.IdTraslado,
                             Tipo = StaticTipoMovimientoProducto.Entrada,
                             Cantidad = detalleTraslado.Cantidad
                         };
