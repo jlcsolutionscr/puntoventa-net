@@ -25,7 +25,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void EliminarCliente(int intIdCliente);
         Cliente ObtenerCliente(int intIdCliente);
         Cliente ValidaIdentificacionCliente(int intIdEmpresa, string strIdentificacion);
-        int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre, bool incluyeClienteContado = false);
+        int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre);
         IList<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
         string AgregarFactura(Factura factura, ConfiguracionGeneral datos);
         string AgregarFacturaCompra(FacturaCompra facturaCompra, ConfiguracionGeneral datos);
@@ -261,13 +261,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre, bool incluyeClienteContado = false)
+        public int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
-                    var listaClientes = dbContext.ClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa || x.IdCliente == 1);
+                    var listaClientes = dbContext.ClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdCliente != 1);
                     if (!strNombre.Equals(string.Empty))
                         listaClientes = listaClientes.Where(x => x.Nombre.Contains(strNombre));
                     return listaClientes.Count();
@@ -287,7 +287,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaCliente = new List<LlaveDescripcion>();
                 try
                 {
-                    var listado = dbContext.ClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa || x.IdCliente == 1);
+                    var listado = dbContext.ClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdCliente != 1);
                     if (!strNombre.Equals(string.Empty))
                         listado = listado.Where(x => x.Nombre.Contains(strNombre));
                     if (cantRec == 0)
