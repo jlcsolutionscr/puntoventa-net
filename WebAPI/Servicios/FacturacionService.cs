@@ -3373,7 +3373,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 else
                 {
-                    if ((documentoElectronico.EstadoEnvio == "aceptado" || documentoElectronico.EstadoEnvio == "rechazado"))
+                    if (documentoElectronico.EstadoEnvio == "rechazado")
                     {
                         strBody = "Estimado cliente, adjunto detalle del documento electrónico con clave " + documentoElectronico.ClaveNumerica + " el cual fue " + documentoElectronico.EstadoEnvio + ". Adjunto puede observar los archivos XML correspondientes al documento electrónico y la respuesta del Ministerio de Hacienda.";
                         JObject jobDatosAdjuntos1 = new JObject
