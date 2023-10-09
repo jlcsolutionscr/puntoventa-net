@@ -1851,10 +1851,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             DocumentoElectronico documentoExistente = dbContext.DocumentoElectronicoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.ClaveNumerica == strClaveNumerica);
             if (documentoExistente != null) throw new BusinessException("El documento electrónico con clave " + strClaveNumerica + " ya se encuentra registrado en el sistema. . .");
             decimal decTotalComprobante = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+            TimeZoneInfo cstZone = TimeZoneInfo.FindSystemTimeZoneById("Central America Standard Time");
+            DateTime fechaEmisionUTC = DateTime.Parse(documentoXml.GetElementsByTagName("FechaEmision").Item(0).InnerText, CultureInfo.InvariantCulture).ToUniversalTime();
+            DateTime fechaEmisionDoc = TimeZoneInfo.ConvertTimeFromUtc(fechaEmisionUTC, cstZone);
             MensajeReceptor mensajeReceptor = new MensajeReceptor
             {
                 Clave = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText,
-                FechaEmisionDoc = DateTime.Parse(documentoXml.GetElementsByTagName("FechaEmision").Item(0).InnerText, CultureInfo.InvariantCulture),
+                FechaEmisionDoc = fechaEmisionDoc,
                 Mensaje = (MensajeReceptorMensaje)intMensaje,
                 DetalleMensaje = "Mensaje de receptor con estado: " + (intMensaje == 0 ? "Aceptado" : intMensaje == 1 ? "Aceptado parcialmente" : "Rechazado"),
                 TotalFactura = decTotalComprobante,
