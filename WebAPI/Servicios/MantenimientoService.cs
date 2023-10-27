@@ -2128,6 +2128,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     ajusteInventario.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
                     MovimientoProducto movimiento = null;
+                    List<MovimientoProducto> listadoMovimientos = new();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -2167,13 +2168,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
                             PrecioCosto = detalleAjuste.PrecioCosto
                         };
+                        listadoMovimientos.Add(movimiento);
                         dbContext.MovimientoProductoRepository.Add(movimiento);
                     }
                     dbContext.Commit();
-                    if (movimiento != null)
+                    if (listadoMovimientos.Count > 0)
                     {
-                        movimiento.Origen = "Registro de ajuste de inventario nro. " + ajusteInventario.IdAjuste;
-                        dbContext.NotificarModificacion(movimiento);
+                        foreach (MovimientoProducto elm in listadoMovimientos)
+                        {
+                            elm.Origen = "Registro de ajuste de inventario nro. " + ajusteInventario.IdAjuste;
+                            dbContext.NotificarModificacion(elm);
+                        }
                         dbContext.Commit();
                     }
                 }
@@ -2278,7 +2283,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
                         listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
-                    if (strFechaFinal != "") {
+                    if (strFechaFinal != "")
+                    {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                         listado = listado.Where(x => x.Fecha <= datFechaFinal);
                     }
@@ -2304,7 +2310,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
                         listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
-                    if (strFechaFinal != "") {
+                    if (strFechaFinal != "")
+                    {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                         listado = listado.Where(x => x.Fecha <= datFechaFinal);
                     }
