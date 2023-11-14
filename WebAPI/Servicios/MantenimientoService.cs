@@ -1850,7 +1850,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     List<ReporteInventario> listaReporte = new List<ReporteInventario>();
-                    var listaProductos = dbContext.ProductoRepository.Include("Linea.LineaPorSucursal").Where(x => x.IdEmpresa == intIdEmpresa && x.Linea.LineaPorSucursal.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal).Select(z => z.IdLinea).Contains(x.IdLinea) && new int[] { 1, 2, 3 }.Contains(x.Tipo));
+                    var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal);
+                    if (intIdLinea > 0)
+                        listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.IdLinea == intIdLinea);
+                    int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
+                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Tipo) && lstLineasPorSucursal.Contains(x.IdLinea));
                     if (!bolIncluyeServicios)
                         listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
                     if (bolFiltraActivos)
@@ -1885,16 +1889,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaProducto = new List<ProductoDetalle>();
                 try
                 {
+                    var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal);
+                    if (intIdLinea > 0)
+                        listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.IdLinea == intIdLinea);
+                    int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
                     List<ProductoDetalle> listaReporte = new List<ProductoDetalle>();
-                    var listaProductos = dbContext.ProductoRepository.Include("Linea.LineaPorSucursal").Where(x => x.IdEmpresa == intIdEmpresa && x.Linea.LineaPorSucursal.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal).Select(z => z.IdLinea).Contains(x.IdLinea) && new int[] { 1, 2, 3 }.Contains(x.Tipo));
+                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Tipo) && lstLineasPorSucursal.Contains(x.IdLinea));
                     if (!bolIncluyeServicios)
                         listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
                     if (bolFiltraActivos)
                         listaProductos = listaProductos.Where(x => x.Activo);
                     if (bolFiltraConDescuento)
                         listaProductos = listaProductos.Where(x => x.PorcDescuento > 0);
-                    if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
+
                     if (!strCodigo.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
                     if (!strCodigoProveedor.Equals(string.Empty))
@@ -1907,7 +1914,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         foreach (var value in listado)
                         {
                             LlaveDescripcionValor tipoImpuesto = TipoDeImpuesto.ObtenerParametro(value.x.IdImpuesto);
-                            decimal decUtilidad = value.x.PrecioCosto > 0 ? ((value.x.PrecioVenta1 / (1 + (tipoImpuesto.Valor / 100))) * 100 / value.x.PrecioCosto) - 100 : value.x.PrecioVenta1 > 0 ? 100 : 0;
+                            decimal decUtilidad = value.x.PrecioCosto > 0 ? (value.x.PrecioVenta1 / (1 + (tipoImpuesto.Valor / 100)) * 100 / value.x.PrecioCosto) - 100 : value.x.PrecioVenta1 > 0 ? 100 : 0;
                             ProductoDetalle item = new ProductoDetalle(value.x.IdProducto, value.x.Codigo, value.x.CodigoProveedor, value.x.Descripcion, value.y.Cantidad, value.x.PrecioCosto, value.x.PrecioVenta1, value.x.Observacion, decUtilidad, value.x.Activo);
                             listaProducto.Add(item);
                         }
@@ -1920,7 +1927,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             LlaveDescripcionValor tipoImpuesto = TipoDeImpuesto.ObtenerParametro(value.IdImpuesto);
                             var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
                             decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
-                            decimal decUtilidad = value.PrecioCosto > 0 ? ((value.PrecioVenta1 / (1 + (tipoImpuesto.Valor / 100))) * 100 / value.PrecioCosto) - 100 : value.PrecioVenta1 > 0 ? 100 : 0;
+                            decimal decUtilidad = value.PrecioCosto > 0 ? (value.PrecioVenta1 / (1 + (tipoImpuesto.Valor / 100)) * 100 / value.PrecioCosto) - 100 : value.PrecioVenta1 > 0 ? 100 : 0;
                             ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, decUtilidad, value.Activo);
                             listaProducto.Add(item);
                         }
