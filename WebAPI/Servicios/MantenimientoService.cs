@@ -1861,8 +1861,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaProductos = listaProductos.Where(x => x.Activo);
                     if (bolFiltraConDescuento)
                         listaProductos = listaProductos.Where(x => x.PorcDescuento > 0);
-                    if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     if (!strCodigo.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
                     if (!strCodigoProveedor.Equals(string.Empty))
@@ -1901,7 +1899,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listaProductos = listaProductos.Where(x => x.Activo);
                     if (bolFiltraConDescuento)
                         listaProductos = listaProductos.Where(x => x.PorcDescuento > 0);
-
                     if (!strCodigo.Equals(string.Empty))
                         listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
                     if (!strCodigoProveedor.Equals(string.Empty))
