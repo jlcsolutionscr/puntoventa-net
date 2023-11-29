@@ -1847,35 +1847,51 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                try
+                using (var connection = dbContext.Database.GetDbConnection())
                 {
-                    List<ReporteInventario> listaReporte = new List<ReporteInventario>();
-                    var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal);
-                    if (intIdLinea > 0)
-                        listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.IdLinea == intIdLinea);
-                    int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Tipo) && lstLineasPorSucursal.Contains(x.IdLinea));
-                    if (!bolIncluyeServicios)
-                        listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
-                    if (bolFiltraActivos)
-                        listaProductos = listaProductos.Where(x => x.Activo);
-                    if (bolFiltraConDescuento)
-                        listaProductos = listaProductos.Where(x => x.PorcDescuento > 0);
-                    if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
-                    if (!strCodigoProveedor.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
-                    if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
-                    if (bolFiltraExistencias)
-                        return listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).Count();
-                    else
-                        return listaProductos.Count();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
+                    connection.Open();
+                    using (var command = connection.CreateCommand())
+                    {
+                        try
+                        {
+                            List<ReporteInventario> listaReporte = new List<ReporteInventario>();
+                            var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal);
+                            if (intIdLinea > 0)
+                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.IdLinea == intIdLinea);
+                            int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
+                            if (lstLineasPorSucursal.Length == 0) return 0;
+                            string listaProductos = "";
+                            if (bolFiltraExistencias)
+                                listaProductos = "SELECT COUNT(*) FROM Producto p, ExistenciaPorSucursal e WHERE p.IdProducto = e.IdProducto AND e.IdEmpresa = " + intIdEmpresa + " AND e.IdSucursal = " + intIdSucursal + " AND p.IdEmpresa = " + intIdEmpresa + " AND e.Cantidad > 0";
+                            else
+                                listaProductos = "SELECT COUNT(*) FROM Producto p WHERE p.IdEmpresa = " + intIdEmpresa;
+                            listaProductos += " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
+                            if (!bolIncluyeServicios)
+                                listaProductos += " AND p.Tipo = " + StaticTipoProducto.Producto;
+                            else
+                                listaProductos += " AND p.Tipo IN(1, 2, 3)";
+                            if (bolFiltraActivos)
+                                listaProductos += " AND p.Activo = true";
+                            if (bolFiltraConDescuento)
+                                listaProductos += " AND p.PorcDescuento > 0";
+                            if (!strCodigo.Equals(string.Empty))
+                                listaProductos += " AND LOCATE('" + strCodigo + "', p.Codigo) > 0";
+                            if (!strCodigoProveedor.Equals(string.Empty))
+                                listaProductos += " AND LOCATE('" + strCodigoProveedor + "', p.CodigoProveedor) > 0";
+                            if (!strDescripcion.Equals(string.Empty))
+                                listaProductos += " AND MATCH(p.Descripcion) AGAINST('\"" + strDescripcion + "\"')";
+                            listaProductos += ";";
+                            command.CommandText = listaProductos;
+                            string result = command.ExecuteScalar().ToString();
+                            if (result != null && result != "") return int.Parse(result);
+                            return 0;
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
+                            throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
+                        }
+                    }
                 }
             }
         }
@@ -1892,42 +1908,36 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.IdLinea == intIdLinea);
                     int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
                     List<ProductoDetalle> listaReporte = new List<ProductoDetalle>();
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Tipo) && lstLineasPorSucursal.Contains(x.IdLinea));
-                    if (!bolIncluyeServicios)
-                        listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
-                    if (bolFiltraActivos)
-                        listaProductos = listaProductos.Where(x => x.Activo);
-                    if (bolFiltraConDescuento)
-                        listaProductos = listaProductos.Where(x => x.PorcDescuento > 0);
-                    if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
-                    if (!strCodigoProveedor.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
-                    if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
+                    string listaProductos = "";
                     if (bolFiltraExistencias)
-                    {
-                        var listado = listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).OrderBy(x => x.x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
-                        foreach (var value in listado)
-                        {
-                            LlaveDescripcionValor tipoImpuesto = TipoDeImpuesto.ObtenerParametro(value.x.IdImpuesto);
-                            decimal decUtilidad = value.x.PrecioCosto > 0 ? (value.x.PrecioVenta1 / (1 + (tipoImpuesto.Valor / 100)) * 100 / value.x.PrecioCosto) - 100 : value.x.PrecioVenta1 > 0 ? 100 : 0;
-                            ProductoDetalle item = new ProductoDetalle(value.x.IdProducto, value.x.Codigo, value.x.CodigoProveedor, value.x.Descripcion, value.y.Cantidad, value.x.PrecioCosto, value.x.PrecioVenta1, value.x.Observacion, decUtilidad, value.x.Activo);
-                            listaProducto.Add(item);
-                        }
-                    }
+                        listaProductos = "SELECT p.* FROM Producto p, ExistenciaPorSucursal e WHERE p.IdProducto = e.IdProducto AND e.IdEmpresa = " + intIdEmpresa + " AND e.IdSucursal = " + intIdSucursal + " AND p.IdEmpresa = " + intIdEmpresa + " AND e.Cantidad > 0";
                     else
+                        listaProductos = "SELECT p.* FROM Producto p WHERE p.IdEmpresa = " + intIdEmpresa;
+                    listaProductos += " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
+                    if (!bolIncluyeServicios)
+                        listaProductos += " AND p.Tipo = " + StaticTipoProducto.Producto;
+                    else
+                        listaProductos += " AND p.Tipo IN(1, 2, 3)";
+                    if (bolFiltraActivos)
+                        listaProductos += " AND p.Activo = true";
+                    if (bolFiltraConDescuento)
+                        listaProductos += " AND p.PorcDescuento > 0";
+                    if (!strCodigo.Equals(string.Empty))
+                        listaProductos += " AND LOCATE('" + strCodigo + "', p.Codigo) > 0";
+                    if (!strCodigoProveedor.Equals(string.Empty))
+                        listaProductos += " AND LOCATE('" + strCodigoProveedor + "', p.CodigoProveedor) > 0";
+                    if (!strDescripcion.Equals(string.Empty))
+                        listaProductos += " AND MATCH(p.Descripcion) AGAINST('\"" + strDescripcion + "\"')";
+                    listaProductos += " ORDER BY p.Codigo LIMIT " + cantRec + " OFFSET " + ((numPagina - 1) * cantRec) + ";";
+                    var listado = dbContext.ProductoRepository.FromSqlRaw(listaProductos).ToList();
+                    foreach (var value in listado)
                     {
-                        var listado = listaProductos.OrderBy(x => x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
-                        foreach (var value in listado)
-                        {
-                            LlaveDescripcionValor tipoImpuesto = TipoDeImpuesto.ObtenerParametro(value.IdImpuesto);
-                            var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
-                            decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
-                            decimal decUtilidad = value.PrecioCosto > 0 ? (value.PrecioVenta1 / (1 + (tipoImpuesto.Valor / 100)) * 100 / value.PrecioCosto) - 100 : value.PrecioVenta1 > 0 ? 100 : 0;
-                            ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, decUtilidad, value.Activo);
-                            listaProducto.Add(item);
-                        }
+                        LlaveDescripcionValor tipoImpuesto = TipoDeImpuesto.ObtenerParametro(value.IdImpuesto);
+                        var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
+                        decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                        decimal decUtilidad = value.PrecioCosto > 0 ? (value.PrecioVenta1 / (1 + (tipoImpuesto.Valor / 100)) * 100 / value.PrecioCosto) - 100 : value.PrecioVenta1 > 0 ? 100 : 0;
+                        ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, decUtilidad, value.Activo);
+                        listaProducto.Add(item);
                     }
                     return listaProducto;
                 }
