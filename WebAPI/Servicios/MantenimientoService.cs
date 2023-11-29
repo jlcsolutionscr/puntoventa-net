@@ -1879,7 +1879,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (!strCodigoProveedor.Equals(string.Empty))
                                 listaProductos += " AND LOCATE('" + strCodigoProveedor + "', p.CodigoProveedor) > 0";
                             if (!strDescripcion.Equals(string.Empty))
-                                listaProductos += " AND MATCH(p.Descripcion) AGAINST('\"" + strDescripcion + "\"')";
+                                listaProductos += " AND MATCH(p.Descripcion) AGAINST('" + strDescripcion + "*' IN BOOLEAN MODE)";
                             listaProductos += ";";
                             command.CommandText = listaProductos;
                             string result = command.ExecuteScalar().ToString();
@@ -1927,7 +1927,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!strCodigoProveedor.Equals(string.Empty))
                         listaProductos += " AND LOCATE('" + strCodigoProveedor + "', p.CodigoProveedor) > 0";
                     if (!strDescripcion.Equals(string.Empty))
-                        listaProductos += " AND MATCH(p.Descripcion) AGAINST('\"" + strDescripcion + "\"')";
+                        listaProductos += " AND MATCH(p.Descripcion) AGAINST('" + strDescripcion + "*' IN BOOLEAN MODE)";
                     listaProductos += " ORDER BY p.Codigo LIMIT " + cantRec + " OFFSET " + ((numPagina - 1) * cantRec) + ";";
                     var listado = dbContext.ProductoRepository.FromSqlRaw(listaProductos).ToList();
                     foreach (var value in listado)

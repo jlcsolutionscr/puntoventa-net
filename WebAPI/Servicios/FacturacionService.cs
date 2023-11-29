@@ -2678,7 +2678,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (strFechaFinal != "")
                                 listaDocumentos += " AND Fecha <= '" + strFechaFinal.Substring(6) + "-" + strFechaFinal.Substring(3, 2) + "-" + strFechaFinal.Substring(0, 2) + " 23:59:59'";
                             if (!strNombre.Equals(string.Empty))
-                                listaDocumentos += " AND MATCH(p.NombreReceptor) AGAINST('\"" + strNombre + "\"')";
+                                listaDocumentos += " AND MATCH(p.NombreReceptor) AGAINST('" + strNombre + "*' IN BOOLEAN MODE)";
                             listaDocumentos += ";";
                             command.CommandText = listaDocumentos;
                             string result = command.ExecuteScalar().ToString();
@@ -2712,7 +2712,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (strFechaFinal != "")
                         listaDocumentos += " AND Fecha <= '" + strFechaFinal.Substring(6) + "-" + strFechaFinal.Substring(3, 2) + "-" + strFechaFinal.Substring(0, 2) + " 23:59:59'";
                     if (!strNombre.Equals(string.Empty))
-                        listaDocumentos += " AND MATCH(p.NombreReceptor) AGAINST('\"" + strNombre + "\"')";
+                        listaDocumentos += " AND MATCH(p.NombreReceptor) AGAINST('" + strNombre + "*' IN BOOLEAN MODE)";
                     listaDocumentos += " ORDER BY p.IdDocumento DESC LIMIT " + cantRec + " OFFSET " + ((numPagina - 1) * cantRec) + ";";
                     var listado = dbContext.DocumentoElectronicoRepository.FromSqlRaw(listaDocumentos).ToList();
                     foreach (var value in listado)
