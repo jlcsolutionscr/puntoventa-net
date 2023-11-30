@@ -74,6 +74,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         byte[] GenerarProformaPDF(int intIdProforma, byte[] bytLogo);
         void GenerarNotificacionFactura(int intIdFactura, byte[] bytLogo);
         void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, byte[] bytLogo);
+        void ActualizarListadoDocumentosElectronicosProcesados(string strFechaDesde, string strFechaHasta);
     }
 
     public class FacturacionService : IFacturacionService
@@ -2142,38 +2143,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado).OrderBy(x => x.ClaveNumerica).ToList();
                     foreach (var value in listado)
                     {
-                        string datosXml = "";
-                        string strNombre = "";
-                        decimal decTotal = 0;
-                        if (value.EsMensajeReceptor == "S")
-                            datosXml = Encoding.UTF8.GetString(value.DatosDocumentoOri);
-                        else
-                            datosXml = Encoding.UTF8.GetString(value.DatosDocumento);
-                        XmlDocument documentoXml = new XmlDocument();
-                        documentoXml.LoadXml(datosXml);
-                        if (value.EsMensajeReceptor == "S")
-                        {
-                            strNombre = "DOCUMENTO NO POSEE EMISOR";
-                            if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
-                            {
-                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
-                                strNombre = emisorNode["Nombre"].InnerText;
-                            }
-                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
-                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
-                        }
-                        else
-                        {
-                            strNombre = "CLIENTE DE CONTADO";
-                            if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
-                            {
-                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
-                                strNombre = emisorNode["Nombre"].InnerText;
-                            }
-                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
-                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
-                        }
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.IdTipoDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.IdTipoDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), value.NombreReceptor, value.EstadoEnvio, value.ErrorEnvio, value.Total, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -2203,38 +2173,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<DocumentoElectronico> listado = dbContext.DocumentoElectronicoRepository.Where(x => x.IdEmpresa == intIdEmpresa && (x.EstadoEnvio == StaticEstadoDocumentoElectronico.Registrado || x.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)).ToList();
                     foreach (var value in listado)
                     {
-                        string datosXml = "";
-                        string strNombre = "";
-                        decimal decTotal = 0;
-                        if (value.EsMensajeReceptor == "S")
-                            datosXml = Encoding.UTF8.GetString(value.DatosDocumentoOri);
-                        else
-                            datosXml = Encoding.UTF8.GetString(value.DatosDocumento);
-                        XmlDocument documentoXml = new XmlDocument();
-                        documentoXml.LoadXml(datosXml);
-                        if (value.EsMensajeReceptor == "S")
-                        {
-                            strNombre = "DOCUMENTO NO POSEE EMISOR";
-                            if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
-                            {
-                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
-                                strNombre = emisorNode["Nombre"].InnerText;
-                            }
-                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
-                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
-                        }
-                        else
-                        {
-                            strNombre = "CLIENTE DE CONTADO";
-                            if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
-                            {
-                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
-                                strNombre = emisorNode["Nombre"].InnerText;
-                            }
-                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
-                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
-                        }
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.IdTipoDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strNombre, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.IdTipoDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), value.NombreReceptor, value.EstadoEnvio, value.ErrorEnvio, value.Total, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -2717,38 +2656,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.DocumentoElectronicoRepository.FromSqlRaw(listaDocumentos).ToList();
                     foreach (var value in listado)
                     {
-                        string datosXml = "";
-                        string strReceptor = "";
-                        decimal decTotal = 0;
-                        if (value.EsMensajeReceptor == "S")
-                            if (value.DatosDocumentoOri != null)
-                                datosXml = Encoding.UTF8.GetString(value.DatosDocumentoOri);
-                            else
-                                datosXml = Encoding.UTF8.GetString(value.DatosDocumento);
-                        else
-                            datosXml = Encoding.UTF8.GetString(value.DatosDocumento);
-                        XmlDocument documentoXml = new XmlDocument();
-                        documentoXml.LoadXml(datosXml);
-                        if (value.EsMensajeReceptor == "S" || value.IdTipoDocumento == 8)
-                        {
-                            strReceptor = "SIN INFORMACION DEL EMISOR";
-                            if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
-                            {
-                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
-                                strReceptor = emisorNode["Nombre"].InnerText;
-                            }
-                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
-                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
-                            else
-                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalFactura").Item(0).InnerText, CultureInfo.InvariantCulture);
-                        }
-                        else
-                        {
-                            strReceptor = value.NombreReceptor;
-                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
-                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
-                        }
-                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.IdTipoDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), strReceptor, value.EstadoEnvio, value.ErrorEnvio, decTotal, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
+                        DocumentoDetalle item = new DocumentoDetalle(value.IdDocumento, value.IdTipoDocumento, value.ClaveNumerica, value.Consecutivo, value.Fecha.ToString("dd/MM/yyyy"), value.NombreReceptor, value.EstadoEnvio, value.ErrorEnvio, value.Total, value.EsMensajeReceptor, value.Reprocesado, value.CorreoNotificacion);
                         listaDocumento.Add(item);
                     }
                     return listaDocumento;
@@ -3605,6 +3513,67 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.NotificarModificacion(documento);
                         dbContext.Commit();
                     }
+                }
+            }
+        }
+
+        public void ActualizarListadoDocumentosElectronicosProcesados(string strFechaDesde, string strFechaHasta)
+        {
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    string strCommand = "SELECT * FROM DocumentoElectronico WHERE Fecha >= '" + strFechaDesde + "' AND Fecha <= '" + strFechaHasta + "';";
+                    var listado = dbContext.DocumentoElectronicoRepository.FromSqlRaw(strCommand).ToList();
+                    foreach (var documento in listado)
+                    {
+                        string datosXml = "";
+                        decimal decTotal = 0;
+                        if (documento.EsMensajeReceptor == "S")
+                            if (documento.DatosDocumentoOri != null && documento.DatosDocumentoOri.Length > 0)
+                                datosXml = Encoding.UTF8.GetString(documento.DatosDocumentoOri);
+                            else
+                                datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
+                        else
+                            datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
+                        XmlDocument documentoXml = new XmlDocument();
+                        documentoXml.LoadXml(datosXml);
+                        if (documento.EsMensajeReceptor == "S" || documento.IdTipoDocumento == 8)
+                        {
+                            if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
+                            {
+                                XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
+                                documento.NombreReceptor = emisorNode["Nombre"].InnerText;
+                            }
+                            else
+                                documento.NombreReceptor = "EMISOR NO REGISTRADO EN EL SISTEMA";
+                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                            else if (documentoXml.GetElementsByTagName("TotalFactura").Count > 0)
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalFactura").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                                decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                        }
+                        documento.Total = decTotal;
+                        if (documento.DatosDocumentoOri == null) documento.DatosDocumentoOri = new byte[0];
+                        dbContext.NotificarModificacion(documento);
+                        dbContext.Commit();
+                    }
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al consultar el listado de documentos electrónicos procesados: ", ex);
+                    if (ex.Message == "Service Unavailable")
+                        throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor consulte con su proveedor.");
+                    else
+                        throw new Exception("Se produjo un error al consultar el listado de documentos electrónicos procesados. Por favor consulte con su proveedor.");
                 }
             }
         }

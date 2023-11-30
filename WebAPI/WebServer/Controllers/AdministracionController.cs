@@ -576,7 +576,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("limpiarregistrosinvalidos")]
         public void LimpiarRegistrosInvalidos()
         {
-            Task.Run(() => {
+            Task.Run(() =>
+            {
                 try
                 {
                     string[] directoryEntries = Directory.GetFileSystemEntries(_environment.ContentRootPath, "errorlog-??-??-????.txt");
@@ -645,6 +646,24 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 int intId = int.Parse(parametrosJO.Property("IdParametro").Value.ToString());
                 string strValor = parametrosJO.Property("Valor").Value.ToString();
                 _servicioMantenimiento.ActualizarParametroSistema(intId, strValor);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpPost("actualizardocumentoselectronicos")]
+        public void ActualizarDocumentosElectronicos([FromBody] string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                string strFechaDesde = parametrosJO.Property("FechaDesde").Value.ToString();
+                string strFechaHasta = parametrosJO.Property("FechaHasta").Value.ToString();
+                if (strFechaDesde == null || strFechaHasta == null)
+                    throw new Exception("La petición no contiene los parámetros requeridos. . .");
+                _servicioFacturacion.ActualizarListadoDocumentosElectronicosProcesados(strFechaDesde, strFechaHasta);
             }
             catch (Exception ex)
             {

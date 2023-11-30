@@ -244,10 +244,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             foreach (DetalleFacturaCompra detalleFactura in facturaCompra.DetalleFacturaCompra)
             {
                 decimal decSubtotal = 0;
-                FacturaElectronicaCompraLineaDetalle lineaDetalle = new FacturaElectronicaCompraLineaDetalle();
-                lineaDetalle.NumeroLinea = detalleFactura.Linea.ToString();
-                lineaDetalle.Codigo = detalleFactura.Codigo;
-                lineaDetalle.Cantidad = detalleFactura.Cantidad;
+                FacturaElectronicaCompraLineaDetalle lineaDetalle = new FacturaElectronicaCompraLineaDetalle
+                {
+                    NumeroLinea = detalleFactura.Linea.ToString(),
+                    Codigo = detalleFactura.Codigo,
+                    Cantidad = detalleFactura.Cantidad
+                };
                 if (detalleFactura.UnidadMedida == "Und")
                     lineaDetalle.UnidadMedida = FacturaElectronicaCompraUnidadMedidaType.Unid;
                 else if (detalleFactura.UnidadMedida == "Sp")
@@ -380,8 +382,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (facturaCompra.TextoAdicional != "")
             {
                 FacturaElectronicaCompraOtros otros = new FacturaElectronicaCompraOtros();
-                FacturaElectronicaCompraOtrosOtroTexto otrosTextos = new FacturaElectronicaCompraOtrosOtroTexto();
-                otrosTextos.Value = facturaCompra.TextoAdicional;
+                FacturaElectronicaCompraOtrosOtroTexto otrosTextos = new FacturaElectronicaCompraOtrosOtroTexto
+                {
+                    Value = facturaCompra.TextoAdicional
+                };
                 otros.OtroTexto = new FacturaElectronicaCompraOtrosOtroTexto[] { otrosTextos };
                 facturaElectronica.Otros = otros;
             }
@@ -399,7 +403,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 msDatosXML.Position = 0;
                 documentoXml.Load(msDatosXML);
             }
-            return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, facturaCompra.IdSucursal, facturaCompra.IdTerminal, TipoDocumento.FacturaElectronicaCompra, false, strCorreoNotificacion, empresa.NombreEmpresa);
+            return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, facturaCompra.IdSucursal, facturaCompra.IdTerminal, TipoDocumento.FacturaElectronicaCompra, false, strCorreoNotificacion);
         }
 
         public static DocumentoElectronico GenerarFacturaElectronica(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
@@ -528,12 +532,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (detalleFactura.Producto.Tipo != StaticTipoProducto.ImpuestodeServicio)
                 {
                     decimal decSubtotal = 0;
-                    FacturaElectronicaLineaDetalle lineaDetalle = new FacturaElectronicaLineaDetalle();
-                    lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
-                    lineaDetalle.Codigo = detalleFactura.Producto.CodigoClasificacion;
-                    FacturaElectronicaCodigoType codigoComercial = new FacturaElectronicaCodigoType();
-                    codigoComercial.Tipo = FacturaElectronicaCodigoTypeTipo.Item01;
-                    codigoComercial.Codigo = detalleFactura.Producto.Codigo;
+                    FacturaElectronicaLineaDetalle lineaDetalle = new FacturaElectronicaLineaDetalle
+                    {
+                        NumeroLinea = (detalleServicioList.Count() + 1).ToString(),
+                        Codigo = detalleFactura.Producto.CodigoClasificacion
+                    };
+                    FacturaElectronicaCodigoType codigoComercial = new FacturaElectronicaCodigoType
+                    {
+                        Tipo = FacturaElectronicaCodigoTypeTipo.Item01,
+                        Codigo = detalleFactura.Producto.Codigo
+                    };
                     lineaDetalle.CodigoComercial = new FacturaElectronicaCodigoType[] { codigoComercial };
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
@@ -614,11 +622,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 else
                 {
                     decimal decTotalPorLinea = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
-                    FacturaElectronicaOtrosCargosType lineaOtrosCargos = new FacturaElectronicaOtrosCargosType();
-                    lineaOtrosCargos.Detalle = detalleFactura.Producto.Descripcion;
-                    lineaOtrosCargos.MontoCargo = decTotalPorLinea;
-                    lineaOtrosCargos.Porcentaje = detalleFactura.Producto.PrecioVenta1;
-                    lineaOtrosCargos.TipoDocumento = FacturaElectronicaOtrosCargosTypeTipoDocumento.Item06;
+                    FacturaElectronicaOtrosCargosType lineaOtrosCargos = new FacturaElectronicaOtrosCargosType
+                    {
+                        Detalle = detalleFactura.Producto.Descripcion,
+                        MontoCargo = decTotalPorLinea,
+                        Porcentaje = detalleFactura.Producto.PrecioVenta1,
+                        TipoDocumento = FacturaElectronicaOtrosCargosTypeTipoDocumento.Item06
+                    };
                     detalleOtrosCargosList.Add(lineaOtrosCargos);
                     decTotalOtrosCargos += decTotalPorLinea;
                 }
@@ -684,8 +694,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (factura.TextoAdicional != "")
             {
                 FacturaElectronicaOtros otros = new FacturaElectronicaOtros();
-                FacturaElectronicaOtrosOtroTexto otrosTextos = new FacturaElectronicaOtrosOtroTexto();
-                otrosTextos.Value = factura.TextoAdicional;
+                FacturaElectronicaOtrosOtroTexto otrosTextos = new FacturaElectronicaOtrosOtroTexto
+                {
+                    Value = factura.TextoAdicional
+                };
                 otros.OtroTexto = new FacturaElectronicaOtrosOtroTexto[] { otrosTextos };
                 facturaElectronica.Otros = otros;
             }
@@ -703,7 +715,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 msDatosXML.Position = 0;
                 documentoXml.Load(msDatosXML);
             }
-            return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.FacturaElectronica, false, strCorreoNotificacion, factura.NombreCliente);
+            return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.FacturaElectronica, false, strCorreoNotificacion);
         }
 
         public static DocumentoElectronico GeneraTiqueteElectronico(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
@@ -802,12 +814,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (detalleFactura.Producto.Tipo != StaticTipoProducto.ImpuestodeServicio)
                 {
                     decimal decSubtotal = 0;
-                    TiqueteElectronicoLineaDetalle lineaDetalle = new TiqueteElectronicoLineaDetalle();
-                    lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
-                    lineaDetalle.Codigo = detalleFactura.Producto.CodigoClasificacion;
-                    TiqueteElectronicoCodigoType codigoComercial = new TiqueteElectronicoCodigoType();
-                    codigoComercial.Tipo = TiqueteElectronicoCodigoTypeTipo.Item01;
-                    codigoComercial.Codigo = detalleFactura.Producto.Codigo;
+                    TiqueteElectronicoLineaDetalle lineaDetalle = new TiqueteElectronicoLineaDetalle
+                    {
+                        NumeroLinea = (detalleServicioList.Count() + 1).ToString(),
+                        Codigo = detalleFactura.Producto.CodigoClasificacion
+                    };
+                    TiqueteElectronicoCodigoType codigoComercial = new TiqueteElectronicoCodigoType
+                    {
+                        Tipo = TiqueteElectronicoCodigoTypeTipo.Item01,
+                        Codigo = detalleFactura.Producto.Codigo
+                    };
                     lineaDetalle.CodigoComercial = new TiqueteElectronicoCodigoType[] { codigoComercial };
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
@@ -868,11 +884,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 else
                 {
                     decimal decTotalPorLinea = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
-                    TiqueteElectronicoOtrosCargosType lineaOtrosCargos = new TiqueteElectronicoOtrosCargosType();
-                    lineaOtrosCargos.Detalle = detalleFactura.Producto.Descripcion;
-                    lineaOtrosCargos.MontoCargo = decTotalPorLinea;
-                    lineaOtrosCargos.Porcentaje = detalleFactura.Producto.PrecioVenta1;
-                    lineaOtrosCargos.TipoDocumento = TiqueteElectronicoOtrosCargosTypeTipoDocumento.Item06;
+                    TiqueteElectronicoOtrosCargosType lineaOtrosCargos = new TiqueteElectronicoOtrosCargosType
+                    {
+                        Detalle = detalleFactura.Producto.Descripcion,
+                        MontoCargo = decTotalPorLinea,
+                        Porcentaje = detalleFactura.Producto.PrecioVenta1,
+                        TipoDocumento = TiqueteElectronicoOtrosCargosTypeTipoDocumento.Item06
+                    };
                     detalleOtrosCargosList.Add(lineaOtrosCargos);
                     decTotalOtrosCargos += decTotalPorLinea;
                 }
@@ -933,13 +951,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 resumenFactura.TotalImpuesto = Math.Round(decTotalImpuestos, 2, MidpointRounding.AwayFromZero);
                 resumenFactura.TotalImpuestoSpecified = true;
             }
-            resumenFactura.TotalComprobante = Math.Round(resumenFactura.TotalVentaNeta + resumenFactura.TotalOtrosCargos  + decTotalImpuestos, 2, MidpointRounding.AwayFromZero);
+            resumenFactura.TotalComprobante = Math.Round(resumenFactura.TotalVentaNeta + resumenFactura.TotalOtrosCargos + decTotalImpuestos, 2, MidpointRounding.AwayFromZero);
             tiqueteElectronico.ResumenFactura = resumenFactura;
             if (factura.TextoAdicional != "")
             {
                 TiqueteElectronicoOtros otros = new TiqueteElectronicoOtros();
-                TiqueteElectronicoOtrosOtroTexto otrosTextos = new TiqueteElectronicoOtrosOtroTexto();
-                otrosTextos.Value = factura.TextoAdicional;
+                TiqueteElectronicoOtrosOtroTexto otrosTextos = new TiqueteElectronicoOtrosOtroTexto
+                {
+                    Value = factura.TextoAdicional
+                };
                 otros.OtroTexto = new TiqueteElectronicoOtrosOtroTexto[] { otrosTextos };
                 tiqueteElectronico.Otros = otros;
             }
@@ -957,7 +977,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 msDatosXML.Position = 0;
                 documentoXml.Load(msDatosXML);
             }
-            return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.TiqueteElectronico, false, strCorreoNotificacion, factura.NombreCliente);
+            return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.TiqueteElectronico, false, strCorreoNotificacion);
         }
 
         public static DocumentoElectronico GenerarNotaDeCreditoElectronica(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
@@ -1089,12 +1109,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (detalleFactura.Producto.Tipo != StaticTipoProducto.ImpuestodeServicio)
                 {
                     decimal decSubtotal = 0;
-                    NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle();
-                    lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
-                    lineaDetalle.Codigo = detalleFactura.Producto.CodigoClasificacion;
-                    NotaCreditoElectronicaCodigoType codigoComercial = new NotaCreditoElectronicaCodigoType();
-                    codigoComercial.Tipo = NotaCreditoElectronicaCodigoTypeTipo.Item01;
-                    codigoComercial.Codigo = detalleFactura.Producto.Codigo;
+                    NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle
+                    {
+                        NumeroLinea = (detalleServicioList.Count() + 1).ToString(),
+                        Codigo = detalleFactura.Producto.CodigoClasificacion
+                    };
+                    NotaCreditoElectronicaCodigoType codigoComercial = new NotaCreditoElectronicaCodigoType
+                    {
+                        Tipo = NotaCreditoElectronicaCodigoTypeTipo.Item01,
+                        Codigo = detalleFactura.Producto.Codigo
+                    };
                     lineaDetalle.CodigoComercial = new NotaCreditoElectronicaCodigoType[] { codigoComercial };
                     lineaDetalle.Cantidad = detalleFactura.Cantidad;
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
@@ -1175,11 +1199,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 else
                 {
                     decimal decTotalPorLinea = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
-                    NotaCreditoElectronicaOtrosCargosType lineaOtrosCargos = new NotaCreditoElectronicaOtrosCargosType();
-                    lineaOtrosCargos.Detalle = detalleFactura.Producto.Descripcion;
-                    lineaOtrosCargos.MontoCargo = decTotalPorLinea;
-                    lineaOtrosCargos.Porcentaje = detalleFactura.Producto.PrecioVenta1;
-                    lineaOtrosCargos.TipoDocumento = NotaCreditoElectronicaOtrosCargosTypeTipoDocumento.Item06;
+                    NotaCreditoElectronicaOtrosCargosType lineaOtrosCargos = new NotaCreditoElectronicaOtrosCargosType
+                    {
+                        Detalle = detalleFactura.Producto.Descripcion,
+                        MontoCargo = decTotalPorLinea,
+                        Porcentaje = detalleFactura.Producto.PrecioVenta1,
+                        TipoDocumento = NotaCreditoElectronicaOtrosCargosTypeTipoDocumento.Item06
+                    };
                     detalleOtrosCargosList.Add(lineaOtrosCargos);
                     decTotalOtrosCargos += decTotalPorLinea;
                 }
@@ -1240,7 +1266,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 resumenFactura.TotalImpuesto = Math.Round(decTotalImpuestos, 2, MidpointRounding.AwayFromZero);
                 resumenFactura.TotalImpuestoSpecified = true;
             }
-            resumenFactura.TotalComprobante = Math.Round(resumenFactura.TotalVentaNeta + resumenFactura.TotalOtrosCargos  + decTotalImpuestos, 2, MidpointRounding.AwayFromZero);
+            resumenFactura.TotalComprobante = Math.Round(resumenFactura.TotalVentaNeta + resumenFactura.TotalOtrosCargos + decTotalImpuestos, 2, MidpointRounding.AwayFromZero);
             notaCreditoElectronica.ResumenFactura = resumenFactura;
             NotaCreditoElectronicaInformacionReferencia informacionReferencia = new NotaCreditoElectronicaInformacionReferencia
             {
@@ -1254,8 +1280,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (factura.TextoAdicional != "")
             {
                 NotaCreditoElectronicaOtros otros = new NotaCreditoElectronicaOtros();
-                NotaCreditoElectronicaOtrosOtroTexto otrosTextos = new NotaCreditoElectronicaOtrosOtroTexto();
-                otrosTextos.Value = factura.TextoAdicional;
+                NotaCreditoElectronicaOtrosOtroTexto otrosTextos = new NotaCreditoElectronicaOtrosOtroTexto
+                {
+                    Value = factura.TextoAdicional
+                };
                 otros.OtroTexto = new NotaCreditoElectronicaOtrosOtroTexto[] { otrosTextos };
                 notaCreditoElectronica.Otros = otros;
             }
@@ -1273,7 +1301,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 msDatosXML.Position = 0;
                 documentoXml.Load(msDatosXML);
             }
-            return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion, factura.NombreCliente);
+            return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion);
         }
 
         public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
@@ -1380,12 +1408,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (detalle.Producto.Tipo != StaticTipoProducto.ImpuestodeServicio)
                 {
                     decimal decSubtotal = 0;
-                    NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle();
-                    lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
-                    lineaDetalle.Codigo = detalle.Producto.CodigoClasificacion;
-                    NotaCreditoElectronicaCodigoType codigoComercial = new NotaCreditoElectronicaCodigoType();
-                    codigoComercial.Tipo = NotaCreditoElectronicaCodigoTypeTipo.Item01;
-                    codigoComercial.Codigo = detalle.Producto.Codigo;
+                    NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle
+                    {
+                        NumeroLinea = (detalleServicioList.Count() + 1).ToString(),
+                        Codigo = detalle.Producto.CodigoClasificacion
+                    };
+                    NotaCreditoElectronicaCodigoType codigoComercial = new NotaCreditoElectronicaCodigoType
+                    {
+                        Tipo = NotaCreditoElectronicaCodigoTypeTipo.Item01,
+                        Codigo = detalle.Producto.Codigo
+                    };
                     lineaDetalle.CodigoComercial = new NotaCreditoElectronicaCodigoType[] { codigoComercial };
                     lineaDetalle.Cantidad = detalle.Cantidad;
                     if (detalle.Producto.Tipo == StaticTipoProducto.Producto)
@@ -1466,11 +1498,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 else
                 {
                     decimal decTotalPorLinea = Math.Round(detalle.PrecioVenta, 2, MidpointRounding.AwayFromZero);
-                    NotaCreditoElectronicaOtrosCargosType lineaOtrosCargos = new NotaCreditoElectronicaOtrosCargosType();
-                    lineaOtrosCargos.Detalle = detalle.Producto.Descripcion;
-                    lineaOtrosCargos.MontoCargo = decTotalPorLinea;
-                    lineaOtrosCargos.Porcentaje = detalle.Producto.PrecioVenta1;
-                    lineaOtrosCargos.TipoDocumento = NotaCreditoElectronicaOtrosCargosTypeTipoDocumento.Item06;
+                    NotaCreditoElectronicaOtrosCargosType lineaOtrosCargos = new NotaCreditoElectronicaOtrosCargosType
+                    {
+                        Detalle = detalle.Producto.Descripcion,
+                        MontoCargo = decTotalPorLinea,
+                        Porcentaje = detalle.Producto.PrecioVenta1,
+                        TipoDocumento = NotaCreditoElectronicaOtrosCargosTypeTipoDocumento.Item06
+                    };
                     detalleOtrosCargosList.Add(lineaOtrosCargos);
                     decTotalOtrosCargos += detalle.PrecioVenta;
                 }
@@ -1551,7 +1585,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 msDatosXML.Position = 0;
                 documentoXml.Load(msDatosXML);
             }
-            return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion, factura.NombreCliente);
+            return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion);
         }
 
         public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
@@ -1658,12 +1692,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (detalle.Producto.Tipo != StaticTipoProducto.ImpuestodeServicio)
                 {
                     decimal decSubtotal = 0;
-                    NotaDebitoElectronicaLineaDetalle lineaDetalle = new NotaDebitoElectronicaLineaDetalle();
-                    lineaDetalle.NumeroLinea = (detalleServicioList.Count() + 1).ToString();
-                    lineaDetalle.Codigo = detalle.Producto.CodigoClasificacion;
-                    NotaDebitoElectronicaCodigoType codigoComercial = new NotaDebitoElectronicaCodigoType();
-                    codigoComercial.Tipo = NotaDebitoElectronicaCodigoTypeTipo.Item01;
-                    codigoComercial.Codigo = detalle.Producto.Codigo;
+                    NotaDebitoElectronicaLineaDetalle lineaDetalle = new NotaDebitoElectronicaLineaDetalle
+                    {
+                        NumeroLinea = (detalleServicioList.Count() + 1).ToString(),
+                        Codigo = detalle.Producto.CodigoClasificacion
+                    };
+                    NotaDebitoElectronicaCodigoType codigoComercial = new NotaDebitoElectronicaCodigoType
+                    {
+                        Tipo = NotaDebitoElectronicaCodigoTypeTipo.Item01,
+                        Codigo = detalle.Producto.Codigo
+                    };
                     lineaDetalle.CodigoComercial = new NotaDebitoElectronicaCodigoType[] { codigoComercial };
                     lineaDetalle.Cantidad = detalle.Cantidad;
                     if (detalle.Producto.Tipo == StaticTipoProducto.Producto)
@@ -1744,11 +1782,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 else
                 {
                     decimal decTotalPorLinea = Math.Round(detalle.PrecioVenta, 2, MidpointRounding.AwayFromZero);
-                    NotaDebitoElectronicaOtrosCargosType lineaOtrosCargos = new NotaDebitoElectronicaOtrosCargosType();
-                    lineaOtrosCargos.Detalle = detalle.Producto.Descripcion;
-                    lineaOtrosCargos.MontoCargo = decTotalPorLinea;
-                    lineaOtrosCargos.Porcentaje = detalle.Producto.PrecioVenta1;
-                    lineaOtrosCargos.TipoDocumento = NotaDebitoElectronicaOtrosCargosTypeTipoDocumento.Item06;
+                    NotaDebitoElectronicaOtrosCargosType lineaOtrosCargos = new NotaDebitoElectronicaOtrosCargosType
+                    {
+                        Detalle = detalle.Producto.Descripcion,
+                        MontoCargo = decTotalPorLinea,
+                        Porcentaje = detalle.Producto.PrecioVenta1,
+                        TipoDocumento = NotaDebitoElectronicaOtrosCargosTypeTipoDocumento.Item06
+                    };
                     detalleOtrosCargosList.Add(lineaOtrosCargos);
                     decTotalOtrosCargos += detalle.PrecioVenta;
                 }
@@ -1829,7 +1869,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 msDatosXML.Position = 0;
                 documentoXml.Load(msDatosXML);
             }
-            return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaDebitoElectronica, false, strCorreoNotificacion, factura.NombreCliente);
+            return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaDebitoElectronica, false, strCorreoNotificacion);
         }
 
         public static DocumentoElectronico GeneraMensajeReceptor(string datosXml, Empresa empresa, LeandroContext dbContext, int intSucursal, int intTerminal, int intMensaje, bool bolIvaAcreditable)
@@ -1946,11 +1986,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 mensajeReceptorXml.Load(msDatosXML);
             }
             TipoDocumento tipoDoc = intMensaje == 0 ? TipoDocumento.MensajeReceptorAceptado : intMensaje == 1 ? TipoDocumento.MensajeReceptorAceptadoParcial : TipoDocumento.MensajeReceptorRechazado;
-            DocumentoElectronico documento = RegistrarDocumentoElectronico(empresa, mensajeReceptorXml, documentoXml, dbContext, intSucursal, intTerminal, tipoDoc, bolIvaAcreditable, strCorreoNotificacion, empresa.NombreEmpresa);
+            DocumentoElectronico documento = RegistrarDocumentoElectronico(empresa, mensajeReceptorXml, documentoXml, dbContext, intSucursal, intTerminal, tipoDoc, bolIvaAcreditable, strCorreoNotificacion);
             return documento;
         }
 
-        public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, XmlDocument documentoOriXml, LeandroContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, bool bolIvaAcreditable, string strCorreoNotificacion, string strNombreReceptor)
+        public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, XmlDocument documentoOriXml, LeandroContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, bool bolIvaAcreditable, string strCorreoNotificacion)
         {
             DateTime horaActual = Validador.ObtenerFechaHoraCostaRica();
             int intMesEnCurso = horaActual.Month;
@@ -1992,6 +2032,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             DateTime fechaEmision;
             string strConsucutivo = "";
             string strClaveNumerica = "";
+            string strNombreReceptor = empresa.NombreEmpresa;
+            decimal decTotal = 0;
             if (!esMensajeReceptor)
             {
                 fechaEmision = DateTime.Parse(documentoXml.GetElementsByTagName("FechaEmision").Item(0).InnerText, CultureInfo.InvariantCulture);
@@ -2002,7 +2044,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     strTipoIdentificacionReceptor = documentoXml.GetElementsByTagName("Receptor").Item(0).ChildNodes.Item(1).ChildNodes.Item(0).InnerText;
                     strIdentificacionReceptor = documentoXml.GetElementsByTagName("Receptor").Item(0).ChildNodes.Item(1).ChildNodes.Item(1).InnerText.PadLeft(12, '0');
+                    strNombreReceptor = documentoXml.GetElementsByTagName("Receptor").Item(0)["Nombre"].InnerText;
                 }
+                if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                    decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                if (tipoDocumento == TipoDocumento.FacturaElectronicaCompra)
+                    if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
+                        strNombreReceptor = documentoXml.GetElementsByTagName("Emisor").Item(0)["Nombre"].InnerText;
             }
             else
             {
@@ -2015,6 +2063,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 string strReceptorId = documentoXml.GetElementsByTagName("NumeroCedulaReceptor").Item(0).InnerText;
                 strTipoIdentificacionReceptor = strReceptorId.Length == 9 ? "01" : strReceptorId.Length == 10 ? "02" : "03";
                 strIdentificacionReceptor = strReceptorId.PadLeft(12, '0');
+                if (documentoOriXml.GetElementsByTagName("TotalComprobante").Count > 0)
+                    decTotal = decimal.Parse(documentoOriXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
+                if (documentoOriXml.GetElementsByTagName("Emisor").Count > 0)
+                    strNombreReceptor = documentoOriXml.GetElementsByTagName("Emisor").Item(0)["Nombre"].InnerText;
             }
             int intTipoDocumentoElectronico = (int)tipoDocumento;
             int intIdConsecutivo = 1;
@@ -2124,7 +2176,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 CorreoNotificacion = strCorreoNotificacion,
                 DatosDocumento = signedDataEncoded,
                 DatosDocumentoOri = documentoOriEncoded,
-                Respuesta = new byte[0]
+                Respuesta = new byte[0],
+                Total = decTotal
             };
             dbContext.DocumentoElectronicoRepository.Add(documento);
             return documento;
@@ -2141,7 +2194,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 byte[] mensajeEncoded = Encoding.UTF8.GetBytes(documentoXml.OuterXml);
                 string strComprobanteXML = Convert.ToBase64String(mensajeEncoded);
-                
+
                 string JsonObject = "{\"clave\": \"" + documento.ClaveNumerica + "\",\"fecha\": \"" + documento.Fecha.ToString("yyyy-MM-ddTHH:mm:ssss") + "\"," +
                     "\"emisor\": {\"tipoIdentificacion\": \"" + documento.TipoIdentificacionEmisor + "\"," +
                     "\"numeroIdentificacion\": \"" + documento.IdentificacionEmisor + "\"},";
