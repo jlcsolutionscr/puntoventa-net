@@ -74,7 +74,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         byte[] GenerarProformaPDF(int intIdProforma, byte[] bytLogo);
         void GenerarNotificacionFactura(int intIdFactura, byte[] bytLogo);
         void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, byte[] bytLogo);
-        void ActualizarListadoDocumentosElectronicosProcesados(int intCantidadRegistros, string strFechaHasta);
     }
 
     public class FacturacionService : IFacturacionService
@@ -3513,87 +3512,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.NotificarModificacion(documento);
                         dbContext.Commit();
                     }
-                }
-            }
-        }
-
-        public void ActualizarListadoDocumentosElectronicosProcesados(int intCantidadRegistros, string strFechaHasta)
-        {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    int intCantidadPorPagina = 100;
-                    int intTotalPaginas = intCantidadRegistros > intCantidadPorPagina ? intCantidadRegistros / intCantidadPorPagina : 1;
-                    if (intCantidadRegistros - (intCantidadPorPagina * intTotalPaginas) > 0) intTotalPaginas++;
-                    ParametroSistema parametro = dbContext.ParametroSistemaRepository.FirstOrDefault(x => x.IdParametro == 6);
-                    if (parametro == null) throw new Exception("El parámetro de 'Página en proceso' no se encuentra configurado");
-                    int intPaginaEnProceso = parametro.Valor != "" ? int.Parse(parametro.Valor) : 1;
-                    ParametroSistema actualizando = dbContext.ParametroSistemaRepository.FirstOrDefault(x => x.IdParametro == 7);
-                    if (actualizando == null) throw new Exception("El parámetro de 'Actualizando' no se encuentra configurado");
-                    actualizando.Valor = "SI";
-                    dbContext.NotificarModificacion(actualizando);
-                    dbContext.Commit();
-                    while (intPaginaEnProceso <= intTotalPaginas)
-                    {
-                        string strCommand = "SELECT * FROM DocumentoElectronico WHERE Fecha <= '" + strFechaHasta + "' ORDER BY Fecha DESC LIMIT " + ((intPaginaEnProceso - 1) * intCantidadPorPagina) + "," + intCantidadPorPagina + ";";
-                        var listado = dbContext.DocumentoElectronicoRepository.FromSqlRaw(strCommand).ToList();
-                        foreach (var documento in listado)
-                        {
-                            string datosXml = "";
-                            decimal decTotal = 0;
-                            if (documento.EsMensajeReceptor == "S")
-                                if (documento.DatosDocumentoOri != null && documento.DatosDocumentoOri.Length > 0)
-                                    datosXml = Encoding.UTF8.GetString(documento.DatosDocumentoOri);
-                                else
-                                    datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
-                            else
-                                datosXml = Encoding.UTF8.GetString(documento.DatosDocumento);
-                            XmlDocument documentoXml = new XmlDocument();
-                            documentoXml.LoadXml(datosXml);
-                            if (documento.EsMensajeReceptor == "S" || documento.IdTipoDocumento == 8)
-                            {
-                                if (documentoXml.GetElementsByTagName("Emisor").Count > 0)
-                                {
-                                    XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
-                                    documento.NombreReceptor = emisorNode["Nombre"].InnerText;
-                                }
-                                else
-                                    documento.NombreReceptor = "EMISOR NO REGISTRADO EN EL SISTEMA";
-                                if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
-                                    decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
-                                else if (documentoXml.GetElementsByTagName("TotalFactura").Count > 0)
-                                    decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalFactura").Item(0).InnerText, CultureInfo.InvariantCulture);
-                            }
-                            else
-                            {
-                                if (documentoXml.GetElementsByTagName("TotalComprobante").Count > 0)
-                                    decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalComprobante").Item(0).InnerText, CultureInfo.InvariantCulture);
-                            }
-                            documento.Total = decTotal;
-                            if (documento.DatosDocumentoOri == null) documento.DatosDocumentoOri = new byte[0];
-                            dbContext.NotificarModificacion(documento);
-                        }
-                        parametro.Valor = intPaginaEnProceso.ToString();
-                        dbContext.NotificarModificacion(parametro);
-                        dbContext.Commit();
-                        intPaginaEnProceso++;
-                    }
-                    actualizando.Valor = "NO";
-                    dbContext.NotificarModificacion(actualizando);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error al consultar el listado de documentos electrónicos procesados: ", ex);
-                    if (ex.Message == "Service Unavailable")
-                        throw new Exception("El servicio de factura electrónica se encuentra fuera de servicio. Por favor consulte con su proveedor.");
-                    else
-                        throw new Exception("Se produjo un error al consultar el listado de documentos electrónicos procesados. Por favor consulte con su proveedor.");
                 }
             }
         }

@@ -652,29 +652,5 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 throw new Exception(ex.Message);
             }
         }
-
-        [HttpPost("actualizardocumentoselectronicos")]
-        public void ActualizarDocumentosElectronicos([FromBody] string strDatos)
-        {
-            try
-            {
-                JObject parametrosJO = JObject.Parse(strDatos);
-                int intCantidadRegistros = parametrosJO.Property("Cantidad") != null ? int.Parse(parametrosJO.Property("Cantidad").Value.ToString()) : 0;
-                string strFechaHasta = parametrosJO.Property("FechaHasta").Value.ToString();
-                if (strFechaHasta == null)
-                    throw new Exception("La petición no contiene los parámetros requeridos. . .");
-                if (intCantidadRegistros > 0)
-                {
-                    Task.Run(() =>
-                    {
-                        _servicioFacturacion.ActualizarListadoDocumentosElectronicosProcesados(intCantidadRegistros, strFechaHasta);
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
     }
 }
