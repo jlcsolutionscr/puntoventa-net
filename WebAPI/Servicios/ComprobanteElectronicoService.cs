@@ -2032,7 +2032,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             DateTime fechaEmision;
             string strConsucutivo = "";
             string strClaveNumerica = "";
-            string strNombreReceptor = empresa.NombreEmpresa;
+            string strNombreReceptor = "CLIENTE DE CONTADO";
             decimal decTotal = 0;
             if (!esMensajeReceptor)
             {
