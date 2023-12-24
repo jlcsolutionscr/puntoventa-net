@@ -148,7 +148,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
-                if (_config?.EsModoDesarrollo ?? false) throw;
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                 else throw new Exception("Se produjo un error al inicializar el servicio de Mantenimiento. Por favor consulte con su proveedor.");
             }
         }
@@ -204,7 +204,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de terminales disponibles: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Error al obtener las terminales disponibles. . .");
                 }
             }
@@ -229,7 +229,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al validar la lista de empresas para usuario administrador: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
                 }
             }
@@ -254,7 +254,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al validar la lista de sucursales asignadas a la empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Error al validar la lista de sucursales asignadas a la empresa. . .");
                 }
             }
@@ -279,7 +279,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al validar la lista de terminales asignadas a la empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Error al validar la lista de terminales asignadas a la empresa. . .");
                 }
             }
@@ -304,7 +304,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al validar la lista de empresas asignadas a una terminal: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Error al validar la lista de empresas asignadas a una terminal. . .");
                 }
             }
@@ -330,7 +330,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al consultar el parámetro de modo mantenimiento del sistema: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("No es posible consultar el modo mantenimieto del sistema.");
                 }
             }
@@ -374,7 +374,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al registrar el dispositivo movil para la identificación suministrada: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Error al registrar el dispositivo movil para la identificación suministrada.");
                 }
             }
@@ -402,7 +402,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al validar credenciales del usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
@@ -429,7 +429,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al validar los credenciales del usuario por identificación: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
@@ -454,7 +454,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al validar los credenciales del usuario por terminal: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
@@ -534,8 +534,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 if (_logger != null) _logger.LogError("Error al validar los credenciales del usuario en Hacienda: ", ex);
-                if (_config?.EsModoDesarrollo ?? false) throw;
-                else if (_config?.EsModoDesarrollo ?? false) throw;
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                else if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                 else throw new Exception("No fue posible validar los credenciales de Hacienda. Por favor verifique la información. . .");
             }
         }
@@ -551,7 +551,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 if (_logger != null) _logger.LogError("Error al validar la llave criptográfica: ", ex);
-                if (_config?.EsModoDesarrollo ?? false) throw;
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                 else throw new Exception("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información suministrada");
             }
             if (uidCert.NotAfter <= Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
@@ -576,7 +576,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al autorizar un porcentaje de descuento con credenciales: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Error al obtener la autorización del descuento. Por favor consulte con su proveedor.");
                 }
             }
@@ -598,7 +598,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al consultar el parámetro 'Version' del sistema: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
                 }
                 return strUltimaVersion;
@@ -621,7 +621,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al consultar el parámetro 'Version' del sistema: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
                 }
                 return strUltimaVersion;
@@ -640,7 +640,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al consultar el listado d parámetros del sistema: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Error al consultar el listado d parámetros del sistema. . .");
                 }
             }
@@ -663,7 +663,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar el parámetro del sistema: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando el parámetro del sistema. Por favor consulte con su proveedor.");
                 }
             }
@@ -688,7 +688,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al validar la lista de empresas para usuario administrador: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
                 }
             }
@@ -710,7 +710,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar la empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -734,7 +734,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener la empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la información de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -777,7 +777,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar la empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando la información de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -808,7 +808,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -834,7 +834,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
                 }
             }
@@ -857,7 +857,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al actualizar el listado de reportes por empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al actualizar el listado de reportes por empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -880,7 +880,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al actualizar el listado de roles por empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al actualizar el listado de roles por empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -907,7 +907,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -938,7 +938,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al actualizar el logotipo de la empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error registrando el logotipo de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -957,7 +957,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al agregar los credenciales de Hacienda: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando los credenciales de Hacienda. Por favor consulte con su proveedor.");
                 }
             }
@@ -978,7 +978,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al consultar los credenciales de Hacienda: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la información de los credenciales de Hacienda. Por favor consulte con su proveedor.");
                 }
             }
@@ -1025,7 +1025,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener la información del catalogo de reporte: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la parametrización de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -1044,7 +1044,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener la información de la sucursal: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al obtener la información de la sucursal. Por favor consulte con su proveedor.");
                 }
             }
@@ -1064,7 +1064,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar la sucursal: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error adicionando la información de la sucursal. Por favor consulte con su proveedor.");
                 }
             }
@@ -1084,7 +1084,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar la sucursal: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
                 }
             }
@@ -1106,7 +1106,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al eliminar los registros de la empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error eliminando los registros de la empresa. Por favor consulte con su proveedor.");
                 }
             }
@@ -1125,7 +1125,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener la información de la terminal: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al obtener la información de la terminal. Por favor consulte con su proveedor.");
                 }
             }
@@ -1145,7 +1145,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar la terminal: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error adicionando la información de la terminal. Por favor consulte con su proveedor.");
                 }
             }
@@ -1165,7 +1165,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar la terminal: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando la información de la terminal. Por favor consulte con su proveedor.");
                 }
             }
@@ -1197,7 +1197,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar el usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información del usuario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1233,7 +1233,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar el usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando la información del usuario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1260,7 +1260,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar la contraseña del usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando la contraseña del usuario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1298,7 +1298,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al eliminar el usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error eliminando al usuario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1323,7 +1323,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la información del usuario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1351,7 +1351,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de usuarios: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de usuarios. Por favor consulte con su proveedor.");
                 }
             }
@@ -1378,7 +1378,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar el vendedor: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
@@ -1405,7 +1405,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar el vendedor: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
@@ -1440,7 +1440,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al eliminar el vendedor: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error eliminando al vendedor. Por favor consulte con su proveedor.");
                 }
             }
@@ -1465,7 +1465,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el vendedor: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
@@ -1490,7 +1490,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el vendedor: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
@@ -1518,7 +1518,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de vendedores: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de vendedores. Por favor consulte con su proveedor.");
                 }
             }
@@ -1536,7 +1536,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el registro de role de usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la información del role de acceso. Por favor consulte con su proveedor.");
                 }
             }
@@ -1561,7 +1561,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
                 }
             }
@@ -1588,7 +1588,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar la línea de producto: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información de la línea. Por favor consulte con su proveedor.");
                 }
             }
@@ -1622,7 +1622,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar la línea de producto: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando la información de la línea. Por favor consulte con su proveedor.");
                 }
             }
@@ -1657,7 +1657,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al eliminar la línea de producto: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error eliminando la línea. Por favor consulte con su proveedor.");
                 }
             }
@@ -1676,7 +1676,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener la línea de producto: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la información de la línea. Por favor consulte con su proveedor.");
                 }
             }
@@ -1704,7 +1704,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de líneas general: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de líneas. Por favor consulte con su proveedor.");
                 }
             }
@@ -1764,7 +1764,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar el producto: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -1803,7 +1803,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar el producto: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -1846,7 +1846,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar el precio de venta del inventario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando el precio de venta del inventario. Por favor consulte con su proveedor.");
                 }
             }
@@ -1878,7 +1878,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al eliminar el producto: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error eliminando el producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -1903,7 +1903,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el producto: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -1921,7 +1921,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el código de producto transitorio: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el producto transitorio. Por favor consulte con su proveedor.");
                 }
             }
@@ -1946,7 +1946,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el producto: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -1971,7 +1971,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el producto: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -2010,7 +2010,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
                 }
             }
@@ -2071,7 +2071,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
                 }
             }
@@ -2092,7 +2092,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
                 }
             }
@@ -2116,7 +2116,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
                 }
             }
@@ -2158,7 +2158,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar el registro de banco adquiriente: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información del banco adquiriente. Por favor consulte con su proveedor.");
                 }
             }
@@ -2185,7 +2185,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar el registro de banco adquiriente: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando la información del banco adquiriente. Por favor consulte con su proveedor.");
                 }
             }
@@ -2219,7 +2219,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al eliminar registro de banco adquiriente: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error eliminando el banco adquiriente. Por favor consulte con su proveedor.");
                 }
             }
@@ -2237,7 +2237,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el registro de banco adquiriente: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la información del banco adquiriente. Por favor consulte con su proveedor.");
                 }
             }
@@ -2264,7 +2264,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de registros de banco adquiriente: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de bancos adquirientes. Por favor consulte con su proveedor.");
                 }
             }
@@ -2348,7 +2348,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar el registro de ajuste de inventario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error guardando la información del ajuste de inventario. Por favor consulte con su proveedor.");
                 }
                 return ajusteInventario.IdAjuste.ToString();
@@ -2409,7 +2409,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al anular el registro de ajuste de inventario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error anulando el ajuste de inventario. Por favor consulte con su proveedor.");
                 }
             }
@@ -2428,7 +2428,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el registro de facturación: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la información de la factura. Por favor consulte con su proveedor.");
                 }
             }
@@ -2456,7 +2456,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el total del listado de registros de facturación: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el total del listado de facturas. Por favor consulte con su proveedor.");
                 }
             }
@@ -2491,7 +2491,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de registros de facturación: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de facturas. Por favor consulte con su proveedor.");
                 }
             }
@@ -2521,7 +2521,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de reportes: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de reportes. Por favor consulte con su proveedor.");
                 }
             }
@@ -2546,7 +2546,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de provincias: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de provincias. Por favor consulte con su proveedor.");
                 }
             }
@@ -2571,7 +2571,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de cantones: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de cantones. Por favor consulte con su proveedor.");
                 }
             }
@@ -2596,7 +2596,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de distritos: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de distritos. Por favor consulte con su proveedor.");
                 }
             }
@@ -2621,7 +2621,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de barrios: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
                 }
             }
@@ -2647,7 +2647,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 if (_logger != null) _logger.LogError("Error al obtener el listado de tipos de precio: ", ex);
-                if (_config?.EsModoDesarrollo ?? false) throw;
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                 else throw new Exception("Se produjo un error consultando el listado de tipos de precio. Por favor consulte con su proveedor.");
             }
         }
@@ -2669,7 +2669,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de barrios: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
                 }
             }
@@ -2692,7 +2692,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de clasificaciones de producto: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de clasificaciones de producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -2711,7 +2711,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener la clasificación del producto: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la clasificación del producto. Por favor consulte con su proveedor.");
                 }
             }
@@ -2731,7 +2731,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar el punto de servicio: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agragando la información del punto de servicio. Por favor consulte con su proveedor.");
                 }
             }
@@ -2751,7 +2751,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar el punto de servicio: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando la información del punto de servicio. Por favor consulte con su proveedor.");
                 }
             }
@@ -2784,7 +2784,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al eliminar el punto de servicio: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error eliminando al punto de servicio. Por favor consulte con su proveedor.");
                 }
             }
@@ -2803,7 +2803,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener la entidad PuntoDeServicio: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el punto  de servicio. Por favor consulte con su proveedor.");
                 }
             }
@@ -2832,7 +2832,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de puntos de servicio: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de puntos de servicio. Por favor consulte con su proveedor.");
                 }
             }
@@ -2861,7 +2861,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al generar registro de autenticación: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando al generar el registro de autenticación. Por favor consulte con su proveedor.");
                 }
                 string strTokenEncriptado = Encriptador.EncriptarDatos(strGuid);
@@ -2945,7 +2945,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al consultar el listado de actividades económicas del contribuyente: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de actividades económicas del contribuyente. Por favor consulte con su proveedor.");
                 }
             }
@@ -2974,7 +2974,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al iniciar el proceso de restablecimiento de la clave del usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al iniciar el proceso de restablecimiento de la clave del usuario. Por favor consulte con su proveedor.");
                 }
             }
@@ -3009,7 +3009,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al restablecer la clave del usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al restablecer la clave del usuario. Por favor consulte con su proveedor.");
                 }
             }

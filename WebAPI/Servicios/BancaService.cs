@@ -44,7 +44,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
-                if (_config?.EsModoDesarrollo ?? false) throw;
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                 else throw new Exception("Se produjo un error al inicializar el servicio del auxiliar bancario. Por favor consulte con su proveedor..");
             }
         }
@@ -60,7 +60,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
-                if (_config?.EsModoDesarrollo ?? false) throw;
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                 else throw new Exception("Se produjo un error al inicializar el servicio del auxiliar bancario. Por favor consulte con su proveedor..");
             }
         }
@@ -86,7 +86,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar la cuenta bancaría: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la cuenta bancaria. Por favor consulte con su proveedor..");
                 }
             }
@@ -113,7 +113,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar la cuenta bancaría: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando la cuenta bancaria. Por favor consulte con su proveedor..");
                 }
             }
@@ -147,7 +147,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al eliminar la cuenta bancaría: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error eliminando la cuenta bancaria. Por favor consulte con su proveedor..");
                 }
             }
@@ -165,7 +165,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener la cuenta bancaría: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la cuenta bancaria. Por favor consulte con su proveedor..");
                 }
             }
@@ -193,7 +193,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas bancaría: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error obteniendo el listado de cuentas bancarias. Por favor consulte con su proveedor..");
                 }
             }
@@ -219,7 +219,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el tipo de movimiento: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de tipos de movimientos bancarios. Por favor consulte con su proveedor..");
                 }
             }
@@ -269,7 +269,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 dbContext.RollBack();
                 if (_logger != null) _logger.LogError("Error al agregar el movimiento bancario: ", ex);
-                if (_config?.EsModoDesarrollo ?? false) throw;
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                 else throw new Exception("Se produjo un error agregando el movimiento bancario. Por favor consulte con su proveedor..");
             }
         }
@@ -297,7 +297,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al actualizar el movimiento bancario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando el movimiento bancario. Por favor consulte con su proveedor..");
                 }
             }
@@ -344,7 +344,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 dbContext.RollBack();
                 if (_logger != null) _logger.LogError("Error al anular el movimiento bancario: ", ex);
-                if (_config?.EsModoDesarrollo ?? false) throw;
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                 else throw new Exception("Se produjo un error anulando el movimiento bancario. Por favor consulte con su proveedor..");
             }
         }
@@ -361,7 +361,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el movimiento bancario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el movimiento bancario. Por favor consulte con su proveedor..");
                 }
             }
@@ -387,7 +387,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el total del listado de movimientos bancarios: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el total del listado de movimientos bancarios. Por favor consulte con su proveedor..");
                 }
             }
@@ -421,7 +421,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de movimientos bancarios: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de movimientos bancarios. Por favor consulte con su proveedor..");
                 }
             }

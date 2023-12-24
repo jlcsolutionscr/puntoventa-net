@@ -58,7 +58,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
-                if (_config?.EsModoDesarrollo ?? false) throw;
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                 else throw new Exception("Se produjo un error al inicializar el servicio de Cuentas por Cobrar. Por favor consulte con su proveedor.");
             }
         }
@@ -75,7 +75,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al obtener la Cuenta por Cobrar. Por favor consulte con su proveedor.");
                 }
             }
@@ -103,7 +103,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
@@ -145,7 +145,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
@@ -170,7 +170,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de movimientos de cuentas por cobrar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de movimientos de cuentas por cobrar. Por favor consulte con su proveedor.");
                 }
             }
@@ -364,7 +364,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al aplicar el movimiento de una cuenta por cobrar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error aplicando el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
@@ -409,7 +409,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al anular el movimiento de una cuenta por cobrar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error anulando el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
@@ -432,7 +432,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al obtener el movimiento de una cuenta por cobrar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al obtener el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
@@ -450,7 +450,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener la cantidad de cuentas por cobrar vencidas de un cliente: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la cantidad de cuentas por cobrar vencidas. Por favor consulte con su proveedor.");
                 }
             }
@@ -468,7 +468,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el saldo total de cuentas por cobrar activas de un cliente: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el saldo acumulado de cuentas por cobrar vigentes. Por favor consulte con su proveedor.");
                 }
             }
@@ -486,7 +486,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener la cuenta por cobrar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al obtener la cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
@@ -514,7 +514,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
@@ -555,7 +555,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
@@ -580,7 +580,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de movimientos de cuentas por pagar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de movimientos de cuentas por pagar. Por favor consulte con su proveedor.");
                 }
             }
@@ -722,7 +722,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al aplicar el movimiento de una cuenta por pagar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error aplicando el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
                 }
             }
@@ -772,7 +772,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al anular el movimiento de una cuenta por pagar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error anulando el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
                 }
             }
@@ -795,7 +795,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al obtener el movimiento de una cuenta por pagar: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al obtener el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
                 }
             }
@@ -813,7 +813,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener la cantidad de cuentas por pagar vencidas de un proveedor: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando la cantidad de cuentas por cobrar vencidas. Por favor consulte con su proveedor.");
                 }
             }
@@ -831,7 +831,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el saldo total de cuentas por pagar activas de un proveedor: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al ejecutar la transacción. Por favor consulte con su proveedor.");
                 }
             }
@@ -856,7 +856,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de apartados pendientes: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de apartados pendientes. Por favor consulte con su proveedor.");
                 }
             }
@@ -881,7 +881,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de movimientos del apartado: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de movimientos del apartado. Por favor consulte con su proveedor.");
                 }
             }
@@ -955,7 +955,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al aplicar el movimiento al registro de apartado: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error aplicando el movimiento al registro de apartado. Por favor consulte con su proveedor.");
                 }
             }
@@ -995,7 +995,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al anular el movimiento del registro de apartado: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error anulando el movimiento del registro de apartado. Por favor consulte con su proveedor.");
                 }
             }
@@ -1015,7 +1015,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al obtener el movimiento del registro de apartado: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al obtener el movimiento del registro de apartado. Por favor consulte con su proveedor.");
                 }
             }
@@ -1040,7 +1040,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de ordenes de servicio pendientes: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de ordenes de servicio pendientes. Por favor consulte con su proveedor.");
                 }
             }
@@ -1065,7 +1065,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al obtener el listado de movimientos de la orden de servicio: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de movimientos de la orden de servicio. Por favor consulte con su proveedor.");
                 }
             }
@@ -1139,7 +1139,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al aplicar el movimiento a la orden de servicio: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error aplicando el movimiento a la orden de servicio. Por favor consulte con su proveedor.");
                 }
             }
@@ -1179,7 +1179,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al anular el movimiento del registro de orden de servicio: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error anulando el movimiento del registro de orden de servicio. Por favor consulte con su proveedor.");
                 }
             }
@@ -1199,7 +1199,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al obtener el movimiento del registro de orden de servicio: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al obtener el movimiento del registro de orden de servicio. Por favor consulte con su proveedor.");
                 }
             }
