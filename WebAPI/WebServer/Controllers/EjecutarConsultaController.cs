@@ -19,7 +19,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static IReporteService _servicioReportes;
         private static ITrasladoService _servicioTraslado;
         private static ICuentaPorProcesarService _servicioCuentaPorProcesar;
-        private static ConfiguracionGeneral configuracionGeneral;
         private static Empresa? empresa;
         private static CredencialesHacienda credenciales;
         private static BancoAdquiriente? bancoAdquiriente;
@@ -87,6 +86,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static string strFechaFinal;
         private static byte[] bytLogo;
 
+        private static string strConsultaInformacionContribuyenteURL;
+
         public EjecutarConsultaController(
             IConfiguration configuration,
             IHostEnvironment environment,
@@ -109,16 +110,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _servicioTraslado = servicioTraslado;
             _servicioCuentaPorProcesar = servicioCuentaPorProcesar;
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
-            configuracionGeneral = new ConfiguracionGeneral
-            (
-                configuration.GetSection("appSettings").GetSection("strConsultaTipoCambioDolarURL").Value,
-                configuration.GetSection("appSettings").GetSection("strConsultaContribuyenteURL").Value,
-                configuration.GetSection("appSettings").GetSection("strServicioComprobantesURL").Value,
-                configuration.GetSection("appSettings").GetSection("strClientId").Value,
-                configuration.GetSection("appSettings").GetSection("strServicioTokenURL").Value,
-                configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
-                configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
-            );
+            strConsultaInformacionContribuyenteURL = configuration.GetSection("appSettings").GetSection("strConsultaContribuyenteURL").Value;
             if (decTipoCambioDolar == 0) decTipoCambioDolar = 1;
         }
 
@@ -151,7 +143,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "ObtenerListadoActividadEconomica":
                     strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
-                    IList<LlaveDescripcion> listadoActividades = _servicioMantenimiento.ObtenerListadoActividadEconomica(configuracionGeneral.ConsultaInformacionContribuyenteURL, strIdentificacion);
+                    IList<LlaveDescripcion> listadoActividades = _servicioMantenimiento.ObtenerListadoActividadEconomica(strConsultaInformacionContribuyenteURL, strIdentificacion);
                     if (listadoActividades.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoActividades);
                     break;
@@ -914,12 +906,12 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarFactura":
                     factura = JsonConvert.DeserializeObject<Factura>(strEntidad);
-                    string strIdFactura = _servicioFacturacion.AgregarFactura(factura, configuracionGeneral);
+                    string strIdFactura = _servicioFacturacion.AgregarFactura(factura);
                     strRespuesta = JsonConvert.SerializeObject(strIdFactura);
                     break;
                 case "AgregarFacturaCompra":
                     facturaCompra = JsonConvert.DeserializeObject<FacturaCompra>(strEntidad);
-                    string strIdFacturaCompra = _servicioFacturacion.AgregarFacturaCompra(facturaCompra, configuracionGeneral);
+                    string strIdFacturaCompra = _servicioFacturacion.AgregarFacturaCompra(facturaCompra);
                     strRespuesta = JsonConvert.SerializeObject(strIdFacturaCompra);
                     break;
                 case "ObtenerFactura":
@@ -951,7 +943,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarDevolucionCliente":
                     devolucionCliente = JsonConvert.DeserializeObject<DevolucionCliente>(strEntidad);
-                    string strIdDevolucionCliente = _servicioFacturacion.AgregarDevolucionCliente(devolucionCliente, configuracionGeneral);
+                    string strIdDevolucionCliente = _servicioFacturacion.AgregarDevolucionCliente(devolucionCliente);
                     strRespuesta = JsonConvert.SerializeObject(strIdDevolucionCliente);
                     break;
                 case "ObtenerDevolucionCliente":

@@ -18,7 +18,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static IReporteService _servicioReportes;
         private static ITrasladoService _servicioTraslado;
         private static ICuentaPorProcesarService _servicioCuentaPorProcesar;
-        private static ConfiguracionGeneral configuracionGeneral;
         private static Empresa? empresa;
         private static CredencialesHacienda credenciales;
         private static SucursalPorEmpresa? sucursal;
@@ -59,7 +58,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static decimal decTipoCambioDolar = 0;
 
         public EjecutarController(
-            IConfiguration configuration,
             IHostEnvironment environment,
             IMantenimientoService servicioMantenimiento,
             IFacturacionService servicioFacturacion,
@@ -80,16 +78,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _servicioTraslado = servicioTraslado;
             _servicioCuentaPorProcesar = servicioCuentaPorProcesar;
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
-            configuracionGeneral = new ConfiguracionGeneral
-            (
-                configuration.GetSection("appSettings").GetSection("strConsultaTipoCambioDolarURL").Value,
-                configuration.GetSection("appSettings").GetSection("strConsultaContribuyenteURL").Value,
-                configuration.GetSection("appSettings").GetSection("strServicioComprobantesURL").Value,
-                configuration.GetSection("appSettings").GetSection("strClientId").Value,
-                configuration.GetSection("appSettings").GetSection("strServicioTokenURL").Value,
-                configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
-                configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
-            );
             if (decTipoCambioDolar == 0) decTipoCambioDolar = 1;
         }
 
@@ -176,7 +164,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "ValidarCredencialesHacienda":
                     string strCodigo = parametrosJO.Property("CodigoUsuario").Value.ToString();
                     strClave = parametrosJO.Property("Clave").Value.ToString();
-                    _servicioMantenimiento.ValidarCredencialesHacienda(strCodigo, strClave, configuracionGeneral);
+                    _servicioMantenimiento.ValidarCredencialesHacienda(strCodigo, strClave);
                     break;
                 case "ValidarCertificadoHacienda":
                     strPin = parametrosJO.Property("PinCertificado").Value.ToString();
@@ -327,13 +315,13 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
                     intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                     strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
-                    _servicioFacturacion.AnularFactura(intIdLlave1, intIdUsuario, strMotivoAnulacion, configuracionGeneral);
+                    _servicioFacturacion.AnularFactura(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                     break;
                 case "AnularDevolucionCliente":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdDevolucion").Value.ToString());
                     intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                     strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
-                    _servicioFacturacion.AnularDevolucionCliente(intIdLlave1, intIdUsuario, strMotivoAnulacion, configuracionGeneral);
+                    _servicioFacturacion.AnularDevolucionCliente(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                     break;
                 case "AnularCompra":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdCompra").Value.ToString());
@@ -454,13 +442,13 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdTerminal").Value.ToString());
                     intIdTipoPago = int.Parse(parametrosJO.Property("IdEstado").Value.ToString());
                     bolAplicado = bool.Parse(parametrosJO.Property("IvaAcreditable").Value.ToString());
-                    _servicioFacturacion.GenerarMensajeReceptor(strDatos, intIdEmpresa, intIdSucursal, intIdLlave1, intIdTipoPago, bolAplicado, configuracionGeneral);
+                    _servicioFacturacion.GenerarMensajeReceptor(strDatos, intIdEmpresa, intIdSucursal, intIdLlave1, intIdTipoPago, bolAplicado);
                     break;
                 case "EnviarNotificacionDocumentoElectronico":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                     strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
-                    _servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdLlave1, strCorreoReceptor, configuracionGeneral.CorreoNotificacionErrores, bytLogo);
+                    _servicioFacturacion.EnviarNotificacionDocumentoElectronico(intIdLlave1, strCorreoReceptor, bytLogo);
                     break;
                 case "GenerarNotificacionFactura":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
@@ -475,7 +463,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "ReprocesarDocumentoElectronico":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
-                    _servicioFacturacion.ReprocesarDocumentoElectronico(intIdLlave1, configuracionGeneral);
+                    _servicioFacturacion.ReprocesarDocumentoElectronico(intIdLlave1);
                     break;
                 case "EnviarReportePorCorreoElectronico":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

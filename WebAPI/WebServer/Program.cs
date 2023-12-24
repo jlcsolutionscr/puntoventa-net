@@ -12,6 +12,8 @@ builder.Services.AddCors(options => options.AddPolicy("CorsPolicy", builder => b
 string strConnection = builder.Configuration.GetSection("connectionString").Value;
 
 builder.Services.AddDbContext<LeandroContext>(x => x.UseMySQL(strConnection), ServiceLifetime.Transient);
+builder.Services.AddSingleton<IConfiguracionGeneral, ConfiguracionGeneral>();
+builder.Services.AddSingleton<IConfiguracionRecepcion, ConfiguracionRecepcion>();
 builder.Services.AddSingleton<IMantenimientoService, MantenimientoService>();
 builder.Services.AddSingleton<IFacturacionService, FacturacionService>();
 builder.Services.AddSingleton<ICompraService, CompraService>();

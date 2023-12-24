@@ -49,38 +49,44 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class ContabilidadService: IContabilidadService
     {
         private readonly ILoggerManager _logger;
-        private static IServiceScopeFactory serviceScopeFactory;
+        private static IServiceScopeFactory? _serviceScopeFactory;
+        private static IConfiguracionGeneral? _config;
 
-        public ContabilidadService(ILoggerManager logger)
+        public ContabilidadService(ILoggerManager logger, IConfiguracionGeneral? config)
         {
             try
             {
                 _logger = logger;
+                _config = config;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error al inicializar el servicio: ", ex);
-                throw new Exception("Se produjo un error al inicializar el servicio de Contabilidad. Por favor consulte con su proveedor.");
+                if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw;
+                else throw new Exception("Se produjo un error al inicializar el servicio de Contabilidad. Por favor consulte con su proveedor.");
             }
         }
 
-        public ContabilidadService(ILoggerManager logger, IServiceScopeFactory pServiceScopeFactory)
+        public ContabilidadService(ILoggerManager logger, IServiceScopeFactory serviceScopeFactory, IConfiguracionGeneral config)
         {
             try
             {
                 _logger = logger;
-                serviceScopeFactory = pServiceScopeFactory;
+                _serviceScopeFactory = serviceScopeFactory;
+                _config = config;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error al inicializar el servicio: ", ex);
-                throw new Exception("Se produjo un error al inicializar el servicio de Contabilidad. Por favor consulte con su proveedor.");
+                if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw;
+                else throw new Exception("Se produjo un error al inicializar el servicio de Contabilidad. Por favor consulte con su proveedor.");
             }
         }
 
         public void AgregarCuentaContable(CatalogoContable cuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -97,15 +103,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar la cuenta contable: ", ex);
-                    throw new Exception("Se produjo un error agregando la cuenta contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar la cuenta contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error agregando la cuenta contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarCuentaContable(CatalogoContable cuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -122,20 +130,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar la cuenta contable: ", ex);
-                    throw new Exception("Se produjo un error actualizando la cuenta contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar la cuenta contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error actualizando la cuenta contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void EliminarCuentaContable(int intIdCuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     CatalogoContable cuenta = dbContext.CatalogoContableRepository.Find(intIdCuenta);
-                    if (cuenta == null) throw new Exception("La cuenta contable por eliminar no existe.");
+                    if (cuenta == null) throw new BusinessException("La cuenta contable por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.CatalogoContableRepository.Remove(cuenta);
@@ -143,7 +153,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException uex)
                 {
-                    _logger.LogError("Validación al eliminar la cuenta contable: ", uex);
+                    if (_logger != null) _logger.LogError("Validación al eliminar la cuenta contable: ", uex);
                     throw new BusinessException("No es posible eliminar la cuenta contable seleccionada. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -154,15 +164,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al eliminar la cuenta contable: ", ex);
-                    throw new Exception("Se produjo un error eliminando la cuenta contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al eliminar la cuenta contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error eliminando la cuenta contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public CatalogoContable ObtenerCuentaContable(int intIdCuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -170,15 +182,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la cuenta contable: ", ex);
-                    throw new Exception("Se produjo un error consultando la cuenta contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la cuenta contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando la cuenta contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<CatalogoContable> ObtenerListaCuentasContables(int intIdEmpresa, string strDescripcion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -189,32 +203,36 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas contables: ", ex);
-                    throw new Exception("Se produjo un error cosultando el listado de cuentas contables. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas contables: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error cosultando el listado de cuentas contables. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         private bool esCuentaMadre(int intIdCuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     CatalogoContable cuenta = dbContext.CatalogoContableRepository.Find(intIdCuenta);
-                    return (cuenta.IdCuentaGrupo == null);
+                    return cuenta.IdCuentaGrupo == null;
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al evaluar si la cuenta indicada es cuenta madre: ", ex);
-                    throw new Exception("Se produjo un error verificando la cuenta contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al evaluar si la cuenta indicada es cuenta madre: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error verificando la cuenta contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public ParametroContable AgregarParametroContable(ParametroContable parametro)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -236,8 +254,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el parámetro contable: ", ex);
-                    throw new Exception("Se produjo un error agregando el parámetro contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el parámetro contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error agregando el parámetro contable. Por favor consulte con su proveedor.");
                 }
                 return parametro;
             }
@@ -245,7 +264,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void ActualizarParametroContable(ParametroContable parametro)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -255,36 +275,39 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar el parámetro contable: ", ex);
-                    throw new Exception("Se produjo un error actualizando el parámetro contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el parámetro contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error actualizando el parámetro contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void EliminarParametroContable(int intIdParametro)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     ParametroContable parametro = dbContext.ParametroContableRepository.Find(intIdParametro);
-                    if (parametro == null)
-                        throw new Exception("El parámetro contable por eliminar no existe");
+                    if (parametro == null) throw new Exception("El parámetro contable por eliminar no existe");
                     dbContext.ParametroContableRepository.Remove(parametro);
                     dbContext.Commit();
                 }
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al eliminar el parámetro contable: ", ex);
-                    throw new Exception("Se produjo un error eliminando el parámetro contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al eliminar el parámetro contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error eliminando el parámetro contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public ParametroContable ObtenerParametroContable(int intIdParametro)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -293,15 +316,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el parámetro contable: ", ex);
-                    throw new Exception("Se produjo un error consultando el parámetro contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el parámetro contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el parámetro contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public TipoParametroContable ObtenerTipoParametroContable(int intIdTipo)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -310,15 +335,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el parámetro contable: ", ex);
-                    throw new Exception("Se produjo un error consultando el parámetro contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el parámetro contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el parámetro contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<ParametroContable> ObtenerListaParametrosContables(string strDescripcion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -329,15 +356,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de parámetros contables: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de parámetros contables. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de parámetros contables: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de parámetros contables. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<TipoCuentaContable> ObtenerTiposCuentaContable()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -345,15 +374,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el tipo de cuenta contable: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de tipos de cuenta contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el tipo de cuenta contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de tipos de cuenta contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<TipoParametroContable> ObtenerTiposParametroContable()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -361,15 +392,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el tipo de parámetro contable: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de tipos de parámetro contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el tipo de parámetro contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de tipos de parámetro contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<ClaseCuentaContable> ObtenerClaseCuentaContable()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -377,15 +410,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de clases de cuentas contables: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de tipos de clases de cuentas contables. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de clases de cuentas contables: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de tipos de clases de cuentas contables. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<CatalogoContable> ObtenerListaCuentasPrimerOrden(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -393,15 +428,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas contables de primer orden: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuentas contables de primer orden. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas contables de primer orden: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de cuentas contables de primer orden. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<CatalogoContable> ObtenerListaCuentasParaMovimientos(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -409,15 +446,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas contables para movimientos: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuentas contables para movimientos. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas contables para movimientos: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de cuentas contables para movimientos. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<ParametroContable> ObtenerListaCuentasParaLineasDeProducto(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -425,15 +464,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas contables para líneas de producto: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuentas contables para líneas de producto. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas contables para líneas de producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de cuentas contables para líneas de producto. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<ParametroContable> ObtenerListaCuentasParaLineasDeServicio(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -441,15 +482,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas contables para líneas de servicio: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuentas contables para líneas de servicio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas contables para líneas de servicio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de cuentas contables para líneas de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<ParametroContable> ObtenerListaCuentasParaBancos(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -457,15 +500,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas contables para cuentas bancarias: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuentas contables para cuentas bancarías. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas contables para cuentas bancarias: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de cuentas contables para cuentas bancarías. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<ParametroContable> ObtenerListaCuentasParaEgresos(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -473,15 +518,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas contables para cuentas de egreso: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuentas contables para egresos. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas contables para cuentas de egreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de cuentas contables para egresos. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<ParametroContable> ObtenerListaCuentasParaIngresos(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -489,15 +536,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas contables para cuentas de egreso: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuentas contables para egresos. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas contables para cuentas de egreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de cuentas contables para egresos. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<CatalogoContable> ObtenerListaCuentasDeBalance(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -505,15 +554,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas contables para cuentas de PyG: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuentas contables de perdias y ganancias. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas contables para cuentas de PyG: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de cuentas contables de perdias y ganancias. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Asiento AgregarAsiento(Asiento asiento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 return AdicionarAsiento(asiento, dbContext);
             }
@@ -552,15 +603,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                _logger.LogError("Error al agregar el asiento contable: ", ex);
-                throw new Exception("Se produjo un error agregando la información del asiento contable. Por favor consulte con su proveedor.");
+                if (_logger != null) _logger.LogError("Error al agregar el asiento contable: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw;
+                else throw new Exception("Se produjo un error agregando la información del asiento contable. Por favor consulte con su proveedor.");
             }
             return asiento;
         }
 
         public void ReversarAsientoContable(int intIdAsiento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 InvalidarAsientoContable(intIdAsiento, dbContext);
             }
@@ -600,14 +653,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             catch (Exception ex)
             {
                 dbContext.RollBack();
-                _logger.LogError("Error al reversar asiento contable: ", ex);
-                throw new Exception("Se produjo un error reversando el asiento contable. Por favor consulte con su proveedor.");
+                if (_logger != null) _logger.LogError("Error al reversar asiento contable: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw;
+                else throw new Exception("Se produjo un error reversando el asiento contable. Por favor consulte con su proveedor.");
             }
         }
 
         public void ActualizarAsiento(Asiento asiento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -624,21 +679,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar el asiento contable: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del asiento contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el asiento contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error actualizando la información del asiento contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AnularAsiento(int intIdAsiento, int intIdUsuario)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     Asiento asiento = dbContext.AsientoRepository.Include("DetalleAsiento").FirstOrDefault(x => x.IdAsiento == intIdAsiento);
-                    if (asiento == null)
-                        throw new Exception("El asiento contable por anular no existe");
+                    if (asiento == null) throw new BusinessException("El asiento contable por anular no existe");
                     if (asiento.Nulo)
                         return;
                     Empresa empresa = dbContext.EmpresaRepository.Find(asiento.IdEmpresa);
@@ -663,15 +719,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al anular el asiento contable: ", ex);
-                    throw new Exception("Se produjo un error anulando el asiento contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al anular el asiento contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error anulando el asiento contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Asiento ObtenerAsiento(int intIdAsiento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -679,15 +737,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el asiento contable: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del asiento contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el asiento contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando la información del asiento contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerTotalListaAsientos(int intIdEmpresa, int intIdAsiento, string strDetalle)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -700,15 +760,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el total del listado de asientos contables: ", ex);
-                    throw new Exception("Se produjo un error consultando el total del listado de asientos contables. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el total del listado de asientos contables: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el total del listado de asientos contables. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IEnumerable<Asiento> ObtenerListaAsientos(int intIdEmpresa, int numPagina, int cantRec, int intIdAsiento, string strDetalle)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -721,19 +783,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de asientos contables: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de asientos contables. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de asientos contables: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error consultando el listado de asientos contables. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void MayorizarCuenta(int intIdCuenta, string strTipoMov, decimal dblMonto)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 CatalogoContable catalogoContable = dbContext.CatalogoContableRepository.Include("TipoCuentaContable").FirstOrDefault(x => x.IdCuenta == intIdCuenta);
-                if (catalogoContable == null)
-                    throw new Exception("La cuenta contable por mayorizar no existe");
+                if (catalogoContable == null) throw new Exception("La cuenta contable por mayorizar no existe");
                 if (strTipoMov.Equals(StaticTipoDebitoCredito.Debito))
                     if (catalogoContable.TipoCuentaContable.TipoSaldo.Equals(StaticTipoDebitoCredito.Debito))
                     {
@@ -764,7 +827,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void ProcesarCierreMensual(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 decimal decTotalEgresos = 0;
                 decimal decTotalIngresos = 0;
@@ -779,7 +843,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     //empresa.CierreEnEjecucion = true;
                     dbContext.Commit();
                     perdidaGananciaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.PerdidasyGanancias).FirstOrDefault();
-                    if (perdidaGananciaParam == null) throw new Exception("La cuenta de perdidas y ganancias no se encuentra parametrizada y no se puede ejecutar el cierre contable. Por favor verificar.");
+                    if (perdidaGananciaParam == null) throw new BusinessException("La cuenta de perdidas y ganancias no se encuentra parametrizada y no se puede ejecutar el cierre contable. Por favor verificar.");
 
                     var saldosMensuales = dbContext.CatalogoContableRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.SaldoActual != 0)
                         .OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7).ToList();
@@ -874,15 +938,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     //    empresa.CierreEnEjecucion = false;
                     //    dbContext.Commit();
                     //}
-                    _logger.LogError("Error al ejecutar el cierre mensual contable: ", ex);
-                    throw new Exception("Se produjo un error ejecutando el cierre mensual contable. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al ejecutar el cierre mensual contable: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error ejecutando el cierre mensual contable. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AjustarSaldosCuentasdeMayor()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -901,8 +967,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al realizar el ajuste de saldos contables: ", ex);
-                    throw new Exception("Se produjo un error ejecutando el ajuste de saldos contables. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al realizar el ajuste de saldos contables: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw;
+                    else throw new Exception("Se produjo un error ejecutando el ajuste de saldos contables. Por favor consulte con su proveedor.");
                 }
             }
         }

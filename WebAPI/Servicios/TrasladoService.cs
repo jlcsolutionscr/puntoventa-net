@@ -24,25 +24,28 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class TrasladoService : ITrasladoService
     {
         private readonly ILoggerManager _logger;
-        private static IServiceScopeFactory serviceScopeFactory;
+        private static IServiceScopeFactory? _serviceScopeFactory;
+        private static IConfiguracionGeneral? _config;
 
-        public TrasladoService(ILoggerManager logger, IServiceScopeFactory pServiceScopeFactory)
+        public TrasladoService(ILoggerManager logger, IServiceScopeFactory serviceScopeFactory, IConfiguracionGeneral config)
         {
             try
             {
                 _logger = logger;
-                serviceScopeFactory = pServiceScopeFactory;
+                _serviceScopeFactory = serviceScopeFactory;
+                _config = config;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error al inicializar el servicio: ", ex);
+                if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
                 throw new Exception("Se produjo un error al inicializar el servicio de Traslados. Por favor consulte con su proveedor.");
             }
         }
 
         public string AgregarTraslado(Traslado traslado)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -72,7 +75,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el registro de devolución: ", ex);
+                    if (_logger != null) _logger.LogError("Error al agregar el registro de devolución: ", ex);
                     throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
                 }
                 return traslado.IdTraslado.ToString();
@@ -91,7 +94,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             dtbInventarios.Columns.Add("Total", typeof(decimal));
             dtbInventarios.PrimaryKey = new DataColumn[] { dtbInventarios.Columns[0] };
             Asiento asiento = null;
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -265,7 +269,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalDebito += detalleAsiento.Debito;
                         }
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.AgregarAsiento(asiento, dbContext);
                     }
                     dbContext.Commit();
@@ -286,7 +290,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al aplicar el registro de traslado: ", ex);
+                    if (_logger != null) _logger.LogError("Error al aplicar el registro de traslado: ", ex);
                     throw new Exception("Se produjo un error aplicando la información del traslado. Por favor consulte con su proveedor.");
                 }
             }
@@ -294,7 +298,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AnularTraslado(int intIdTraslado, int intIdUsuario, string strMotivoAnulacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -312,7 +317,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(traslado);
                     if (traslado.IdAsiento > 0)
                     {
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.ReversarAsientoContable(traslado.IdAsiento, dbContext);
                     }
                     dbContext.Commit();
@@ -325,7 +330,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al anular el registro de traslado: ", ex);
+                    if (_logger != null) _logger.LogError("Error al anular el registro de traslado: ", ex);
                     throw new Exception("Se produjo un error anulando el traslado. Por favor consulte con su proveedor.");
                 }
             }
@@ -333,7 +338,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public Traslado ObtenerTraslado(int intIdTraslado)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -346,7 +352,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el registro de traslado: ", ex);
+                    if (_logger != null) _logger.LogError("Error al obtener el registro de traslado: ", ex);
                     throw new Exception("Se produjo un error consultado la información del traslado. Por favor consulte con su proveedor.");
                 }
             }
@@ -354,7 +360,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public int ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int intIdTraslado)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -365,7 +372,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el total del listado de registros de traslado: ", ex);
+                    if (_logger != null) _logger.LogError("Error al obtener el total del listado de registros de traslado: ", ex);
                     throw new Exception("Se produjo un error consultando el total del listado de traslados. Por favor consulte con su proveedor.");
                 }
             }
@@ -373,7 +380,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public IList<TrasladoDetalle> ObtenerListadoTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int numPagina, int cantRec, int intIdTraslado)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaTraslado = new List<TrasladoDetalle>();
                 try
@@ -396,7 +404,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de registros de traslado: ", ex);
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de traslado: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de traslados. Por favor consulte con su proveedor.");
                 }
             }
@@ -404,7 +412,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public int ObtenerTotalListaTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, bool bolAplicado)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -413,7 +422,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el total del listado de registros de traslados por aplicar: ", ex);
+                    if (_logger != null) _logger.LogError("Error al obtener el total del listado de registros de traslados por aplicar: ", ex);
                     throw new Exception("Se produjo un error consultando el total del listado de traslados por aplicar. Por favor consulte con su proveedor.");
                 }
             }
@@ -421,7 +430,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public IList<TrasladoDetalle> ObtenerListadoTrasladosPorAplicar(int intIdEmpresa, int intIdSucursalDestino, bool bolAplicado, int numPagina, int cantRec)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaTraslado = new List<TrasladoDetalle>();
                 try
@@ -442,7 +452,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de registros de traslados por aplicar: ", ex);
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de traslados por aplicar: ", ex);
                     throw new Exception("Se produjo un error consultando el listado de traslados por aplicar. Por favor consulte con su proveedor.");
                 }
             }

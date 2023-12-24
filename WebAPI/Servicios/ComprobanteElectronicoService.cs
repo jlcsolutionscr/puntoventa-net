@@ -156,7 +156,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public static DocumentoElectronico GenerarFacturaCompraElectronica(FacturaCompra facturaCompra, Empresa empresa, LeandroContext dbContext, decimal decTipoCambioDolar)
         {
             string strCorreoNotificacion = empresa.CorreoNotificacion;
-            if (facturaCompra.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (facturaCompra.CodigoActividad == 0) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
             FacturaElectronicaCompra facturaElectronica = new FacturaElectronicaCompra
             {
                 Clave = "",
@@ -420,7 +420,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (factura.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad == 0) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
             FacturaElectronica facturaElectronica = new FacturaElectronica
             {
                 Clave = "",
@@ -732,7 +732,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (factura.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad == 0) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
             TiqueteElectronico tiqueteElectronico = new TiqueteElectronico
             {
                 Clave = "",
@@ -994,7 +994,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (factura.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad == 0) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
             NotaCreditoElectronica notaCreditoElectronica = new NotaCreditoElectronica
             {
                 Clave = "",
@@ -1318,7 +1318,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (factura.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad == 0) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
             NotaCreditoElectronica notaCreditoElectronica = new NotaCreditoElectronica
             {
                 Clave = "",
@@ -1602,7 +1602,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (factura.CodigoActividad == null) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad == 0) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
             NotaDebitoElectronica NotaDebitoElectronica = new NotaDebitoElectronica
             {
                 Clave = "",
@@ -1990,7 +1990,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return documento;
         }
 
-        public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, XmlDocument documentoOriXml, LeandroContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, bool bolIvaAcreditable, string strCorreoNotificacion)
+        public static DocumentoElectronico RegistrarDocumentoElectronico(Empresa empresa, XmlDocument documentoXml, XmlDocument? documentoOriXml, LeandroContext dbContext, int intSucursal, int intTerminal, TipoDocumento tipoDocumento, bool bolIvaAcreditable, string strCorreoNotificacion)
         {
             DateTime horaActual = Validador.ObtenerFechaHoraCostaRica();
             int intMesEnCurso = horaActual.Month;
@@ -2183,7 +2183,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return documento;
         }
 
-        public static async Task EnviarDocumentoElectronico(string AccessToken, DocumentoElectronico documento, ConfiguracionGeneral datos)
+        public static async Task EnviarDocumentoElectronico(string AccessToken, DocumentoElectronico documento, IConfiguracionGeneral? datos)
         {
             try
             {
@@ -2251,7 +2251,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static async Task<DocumentoElectronico> ConsultarDocumentoElectronico(CredencialesHacienda credenciales, DocumentoElectronico documento, LeandroContext dbContext, ConfiguracionGeneral datos)
+        public static async Task<DocumentoElectronico> ConsultarDocumentoElectronico(CredencialesHacienda credenciales, DocumentoElectronico documento, LeandroContext dbContext, IConfiguracionGeneral? datos)
         {
             if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Enviado)
             {

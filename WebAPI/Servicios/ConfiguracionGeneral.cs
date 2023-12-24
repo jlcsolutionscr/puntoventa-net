@@ -1,16 +1,30 @@
-﻿namespace LeandroSoftware.ServicioWeb.Servicios
+﻿using Microsoft.Extensions.Configuration;
+
+namespace LeandroSoftware.ServicioWeb.Servicios
 {
-    public class ConfiguracionGeneral
+    public interface IConfiguracionGeneral
     {
-        public ConfiguracionGeneral(string strConsultaTipoDeCambioDolarURL, string strConsultaInformacionContribuyenteURL, string strComprobantesElectronicosURL, string strClientId, string strServicioTokenURL, string strComprobantesCallbackURL, string strCorreoNotificacionErrores)
+        public string ConsultaTipoDeCambioDolarURL { get; set; }
+        public string ConsultaInformacionContribuyenteURL { get; set; }
+        public string ComprobantesElectronicosURL { get; set; }
+        public string ClientId { get; set; }
+        public string ServicioTokenURL { get; set; }
+        public string CallbackURL { get; set; }
+        public string CorreoNotificacionErrores { get; set; }
+        public bool EsModoDesarrollo { get; set; }
+    }
+    public class ConfiguracionGeneral: IConfiguracionGeneral
+    {
+        public ConfiguracionGeneral(IConfiguration configuration)
         {
-            ConsultaTipoDeCambioDolarURL = strConsultaTipoDeCambioDolarURL;
-            ConsultaInformacionContribuyenteURL = strConsultaInformacionContribuyenteURL;
-            ComprobantesElectronicosURL = strComprobantesElectronicosURL;
-            ClientId = strClientId;
-            ServicioTokenURL = strServicioTokenURL;
-            CallbackURL = strComprobantesCallbackURL;
-            CorreoNotificacionErrores = strCorreoNotificacionErrores;
+            ConsultaTipoDeCambioDolarURL = configuration.GetSection("appSettings").GetSection("strConsultaTipoCambioDolarURL").Value;
+            ConsultaInformacionContribuyenteURL = configuration.GetSection("appSettings").GetSection("strConsultaContribuyenteURL").Value;
+            ComprobantesElectronicosURL = configuration.GetSection("appSettings").GetSection("strServicioComprobantesURL").Value;
+            ClientId = configuration.GetSection("appSettings").GetSection("strClientId").Value;
+            ServicioTokenURL = configuration.GetSection("appSettings").GetSection("strServicioTokenURL").Value;
+            CallbackURL = configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value;
+            CorreoNotificacionErrores = configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value;
+            EsModoDesarrollo = configuration.GetSection("appSettings").GetSection("strEnvironment").Value != "production";
         }
 
         public string ConsultaTipoDeCambioDolarURL { get; set; }
@@ -20,5 +34,6 @@
         public string ServicioTokenURL { get; set; }
         public string CallbackURL { get; set; }
         public string CorreoNotificacionErrores { get; set; }
+        public bool EsModoDesarrollo { get; set; }
     }
 }
