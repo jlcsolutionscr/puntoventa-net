@@ -1862,15 +1862,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
                             if (lstLineasPorSucursal.Length > 0)
                             {
-                                string listaProductos = "";
-                                string strUsaIndex = "";
-                                if (!strDescripcion.Equals(string.Empty))
-                                    strUsaIndex = " USE INDEX (descripcion_fulltext_idx) ";
-                                if (bolFiltraExistencias)
-                                    listaProductos = "SELECT COUNT(*) FROM Producto p, ExistenciaPorSucursal e " + strUsaIndex + " WHERE p.IdProducto = e.IdProducto AND e.IdEmpresa = " + intIdEmpresa + " AND e.IdSucursal = " + intIdSucursal + " AND p.IdEmpresa = " + intIdEmpresa + " AND e.Cantidad > 0";
-                                else
-                                    listaProductos = "SELECT COUNT(*) FROM Producto p " + strUsaIndex + " WHERE p.IdEmpresa = " + intIdEmpresa;
-                                listaProductos += " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
+                                string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
+                                string strUsaIndex = "";        
                                 if (!bolIncluyeServicios)
                                     listaProductos += " AND p.Tipo = " + StaticTipoProducto.Producto;
                                 else
@@ -1880,11 +1873,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 if (bolFiltraConDescuento)
                                     listaProductos += " AND p.PorcDescuento > 0";
                                 if (!strCodigo.Equals(string.Empty))
+                                {
+                                    strUsaIndex = "USE INDEX (empresa_codigo_idx)";
                                     listaProductos += " AND LOCATE('" + strCodigo + "', p.Codigo) > 0";
+                                }
                                 if (!strCodigoProveedor.Equals(string.Empty))
+                                {
+                                    strUsaIndex = "USE INDEX (empresa_codigo_prov_idx)";
                                     listaProductos += " AND LOCATE('" + strCodigoProveedor + "', p.CodigoProveedor) > 0";
+                                }
                                 if (!strDescripcion.Equals(string.Empty))
+                                {
+                                    strUsaIndex = "USE INDEX (descripcion_fulltext_idx)";
                                     listaProductos += " AND LOCATE('" + strDescripcion + "', p.Descripcion) > 0";
+                                }
+                                if (bolFiltraExistencias)
+                                    listaProductos = "SELECT COUNT(*) FROM Producto p, ExistenciaPorSucursal e " + strUsaIndex + " WHERE p.IdProducto = e.IdProducto AND e.IdEmpresa = " + intIdEmpresa + " AND e.IdSucursal = " + intIdSucursal + " AND p.IdEmpresa = " + intIdEmpresa + " AND e.Cantidad > 0" + listaProductos;
+                                else
+                                    listaProductos = "SELECT COUNT(*) FROM Producto p " + strUsaIndex + " WHERE p.IdEmpresa = " + intIdEmpresa + listaProductos;
                                 listaProductos += ";";
                                 command.CommandText = listaProductos;
                                 string result = command.ExecuteScalar().ToString();
@@ -1920,15 +1926,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
                             if (lstLineasPorSucursal.Length > 0)
                             {
-                                string listaProductos = "";
-                                string strUsaIndex = "";
-                                if (!strDescripcion.Equals(string.Empty))
-                                    strUsaIndex = "USE INDEX (descripcion_fulltext_idx)";
-                                if (bolFiltraExistencias)
-                                    listaProductos = "SELECT p.* FROM Producto p, ExistenciaPorSucursal e " + strUsaIndex + " WHERE p.IdProducto = e.IdProducto AND e.IdEmpresa = " + intIdEmpresa + " AND e.IdSucursal = " + intIdSucursal + " AND p.IdEmpresa = " + intIdEmpresa + " AND e.Cantidad > 0";
-                                else
-                                    listaProductos = "SELECT p.* FROM Producto p " + strUsaIndex + " WHERE p.IdEmpresa = " + intIdEmpresa;
-                                listaProductos += " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
+                                string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
+                                string strUsaIndex = "";        
                                 if (!bolIncluyeServicios)
                                     listaProductos += " AND p.Tipo = " + StaticTipoProducto.Producto;
                                 else
@@ -1938,11 +1937,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 if (bolFiltraConDescuento)
                                     listaProductos += " AND p.PorcDescuento > 0";
                                 if (!strCodigo.Equals(string.Empty))
+                                {
+                                    strUsaIndex = "USE INDEX (empresa_codigo_idx)";
                                     listaProductos += " AND LOCATE('" + strCodigo + "', p.Codigo) > 0";
+                                }
                                 if (!strCodigoProveedor.Equals(string.Empty))
+                                {
+                                    strUsaIndex = "USE INDEX (empresa_codigo_prov_idx)";
                                     listaProductos += " AND LOCATE('" + strCodigoProveedor + "', p.CodigoProveedor) > 0";
+                                }
                                 if (!strDescripcion.Equals(string.Empty))
+                                {
+                                    strUsaIndex = "USE INDEX (descripcion_fulltext_idx)";
                                     listaProductos += " AND LOCATE('" + strDescripcion + "', p.Descripcion) > 0";
+                                }
+                                if (bolFiltraExistencias)
+                                    listaProductos = "SELECT p.* FROM Producto p, ExistenciaPorSucursal e " + strUsaIndex + " WHERE p.IdProducto = e.IdProducto AND e.IdEmpresa = " + intIdEmpresa + " AND e.IdSucursal = " + intIdSucursal + " AND p.IdEmpresa = " + intIdEmpresa + " AND e.Cantidad > 0" + listaProductos;
+                                else
+                                    listaProductos = "SELECT p.* FROM Producto p " + strUsaIndex + " WHERE p.IdEmpresa = " + intIdEmpresa + listaProductos;
                                 listaProductos += " ORDER BY p.Codigo LIMIT " + cantRec + " OFFSET " + ((numPagina - 1) * cantRec) + ";";
                                 var listado = dbContext.ProductoRepository.FromSqlRaw(listaProductos).ToList();
                                 foreach (var value in listado)
