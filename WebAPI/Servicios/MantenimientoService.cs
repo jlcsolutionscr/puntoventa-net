@@ -2061,7 +2061,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (intIdLinea > 0)
                                 listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.IdLinea == intIdLinea);
                             int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
-                            List<ProductoDetalle> listaReporte = new List<ProductoDetalle>();
                             if (lstLineasPorSucursal.Length > 0)
                             {
                                 string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
@@ -2105,7 +2104,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     listaProducto.Add(item);
                                 }
                             }
-                            return listaProducto;
                         }
                         catch (Exception ex)
                         {
@@ -2113,6 +2111,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                             else throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
                         }
+                        return listaProducto;
                     }
                 }
             }
