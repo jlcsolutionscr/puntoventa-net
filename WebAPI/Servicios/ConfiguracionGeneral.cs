@@ -24,7 +24,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             ServicioTokenURL = configuration.GetSection("appSettings").GetSection("strServicioTokenURL").Value;
             CallbackURL = configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value;
             CorreoNotificacionErrores = configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value;
-            EsModoDesarrollo = configuration.GetSection("appSettings").GetSection("strEnvironment").Value != "production";
+            EsModoDesarrollo = configuration.GetSection("appSettings").GetSection("strEnvironment").Value == "development";
         }
 
         public string ConsultaTipoDeCambioDolarURL { get; set; }
