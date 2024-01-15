@@ -12,3 +12,4 @@ appsettings*.*
 .DS_Store
 appupdates/
 
+/Setup/Setup-cache

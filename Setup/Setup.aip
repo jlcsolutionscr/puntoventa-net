@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT Type="Advanced Installer" CreateVersion="21.3.1" version="21.3.1" Modules="simple" RootPath="." Language="en" Id="{2592E2E8-50A9-442B-837E-D2EBB749ECD7}">
+  <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
+    <ROW Name="HiddenItems" Value="AppXProductDetailsComponent;AppXDependenciesComponent;AppXAppDetailsComponent;AppXVisualAssetsComponent;AppXCapabilitiesComponent;AppXAppDeclarationsComponent;AppXUriRulesComponent;FixupComponent;MsiXDiffComponent;MsixManifestEditorComponent"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_App.exe" Value="..\WindowsApps\Facturacion\bin"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_App.exe.config" Value="..\WindowsApps\Facturacion\bin"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_ClienteWCF.dll" Value="..\WindowsApps\ClienteWCF\bin"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Common.dll" Value="..\Common\bin\Release\netstandard2.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_EnvDTE.dll" Value="..\..\..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.Common.dll" Value="..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1484.0\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.DataVisualization.dll" Value="..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1484.0\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.Design.dll" Value="..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1484.0\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.ProcessingObjectModel.dll" Value="..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1484.0\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.WinForms.dll" Value="..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1484.0\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.SqlServer.Types.dll" Value="..\packages\Microsoft.SqlServer.Types.14.0.1016.290\lib\net40"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Newtonsoft.Json.dll" Value="..\WindowsApps\ClienteWCF\bin"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_stdole.dll" Value="..\..\..\..\..\..\Program Files (x86)\Microsoft.NET\Primary Interop Assemblies"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_App.exe" Value="App.exe"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_App.exe.config" Value="App.exe.config"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" Value="ClienteWCF.dll"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_Common.dll" Value="Common.dll"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_EnvDTE.dll" Value="EnvDTE.dll"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.Common.dll" Value="Microsoft.ReportViewer.Common.dll"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.DataVisualization.dll" Value="Microsoft.ReportViewer.DataVisualization.dll"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.Design.dll" Value="Microsoft.ReportViewer.Design.dll"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.ProcessingObjectModel.dll" Value="Microsoft.ReportViewer.ProcessingObjectModel.dll"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.WinForms.dll" Value="Microsoft.ReportViewer.WinForms.dll"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_Microsoft.SqlServer.Types.dll" Value="Microsoft.SqlServer.Types.dll"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_Newtonsoft.Json.dll" Value="Newtonsoft.Json.dll"/>
+    <ROW Property="AI_PROPPATH_FILENAME_PERBUILD_stdole.dll" Value="stdole.dll"/>
+    <ROW Property="ALLUSERS" Value="1"/>
+    <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
+    <ROW Property="ARPCONTACT" Value="ventas@jlcsolutionscr.com"/>
+    <ROW Property="Manufacturer" Value="JLC Solutions CR"/>
+    <ROW Property="ProductCode" Value="1033:{81690365-7C84-4DF4-B67C-08C43674C272} " Type="16"/>
+    <ROW Property="ProductLanguage" Value="1033"/>
+    <ROW Property="ProductName" Value="puntoventaJLC"/>
+    <ROW Property="ProductVersion" Value="5.5.0" Options="32"/>
+    <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
+    <ROW Property="UpgradeCode" Value="{6DE6977F-E27E-4C68-8B91-EDDB74510900}"/>
+    <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40Display" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50" MultiBuildValue="DefaultBuild:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50Display" MultiBuildValue="DefaultBuild:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5X" MultiBuildValue="DefaultBuild:Windows XP/2003" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="DefaultBuild:Windows XP/2003" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT60" MultiBuildValue="DefaultBuild:Windows Vista/Server 2008" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT60Display" MultiBuildValue="DefaultBuild:Windows Vista/Server 2008" ValueLocId="-"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
+    <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
+    <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
+    <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="AI_PROPPATH_FILENAME_PERBUILD_App.exe" ComponentId="{3A346A51-4B99-444A-AD3E-090B3B748902}" Directory_="APPDIR" Attributes="0" KeyPath="App.exe"/>
+    <ROW Component="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" ComponentId="{2F591301-8435-43FC-8876-85FCBCD024AF}" Directory_="APPDIR" Attributes="0" KeyPath="ClienteWCF.dll" Type="0"/>
+    <ROW Component="APPDIR" ComponentId="{0A25B94C-09E4-4113-8572-3FA227225D41}" Directory_="APPDIR" Attributes="0"/>
+    <ROW Component="Facturacion_PrimaryOutput" ComponentId="{1B62A276-AD48-451C-BD4D-0F922AACA88B}" Directory_="APPDIR" Attributes="0" KeyPath="App.exe.config"/>
+    <ROW Component="ProductInformation" ComponentId="{84055BC5-926E-4891-BDD1-5E49D8B6E498}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
+    <ROW Component="SHORTCUTDIR" ComponentId="{ECAE68A8-7DF6-44B9-B33A-49EDFCF0B343}" Directory_="SHORTCUTDIR" Attributes="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
+    <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="App.exe" Component_="AI_PROPPATH_FILENAME_PERBUILD_App.exe" FileName="[|AI_PROPPATH_FILENAME_PERBUILD_App.exe]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_App.exe&gt;" SelfReg="false" DigSign="true"/>
+    <ROW File="App.exe.config" Component_="Facturacion_PrimaryOutput" FileName="APPEXE~1.CON|[|AI_PROPPATH_FILENAME_PERBUILD_App.exe.config]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_App.exe.config&gt;" SelfReg="false"/>
+    <ROW File="ClienteWCF.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="CLIENT~1.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_ClienteWCF.dll&gt;" SelfReg="false"/>
+    <ROW File="Common.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="[|AI_PROPPATH_FILENAME_PERBUILD_Common.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Common.dll&gt;" SelfReg="false"/>
+    <ROW File="Microsoft.ReportViewer.Common.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="MICROS~1.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.Common.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Microsoft.ReportViewer.Common.dll&gt;" SelfReg="false"/>
+    <ROW File="Microsoft.ReportViewer.DataVisualization.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="MICROS~2.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.DataVisualization.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Microsoft.ReportViewer.DataVisualization.dll&gt;" SelfReg="false"/>
+    <ROW File="Microsoft.ReportViewer.Design.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="MICROS~3.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.Design.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Microsoft.ReportViewer.Design.dll&gt;" SelfReg="false"/>
+    <ROW File="Microsoft.ReportViewer.ProcessingObjectModel.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="MICROS~4.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.ProcessingObjectModel.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Microsoft.ReportViewer.ProcessingObjectModel.dll&gt;" SelfReg="false"/>
+    <ROW File="Microsoft.ReportViewer.WinForms.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="MICROS~5.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.WinForms.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Microsoft.ReportViewer.WinForms.dll&gt;" SelfReg="false"/>
+    <ROW File="Microsoft.SqlServer.Types.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="MICROS~6.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.SqlServer.Types.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Microsoft.SqlServer.Types.dll&gt;" SelfReg="false"/>
+    <ROW File="Newtonsoft.Json.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="NEWTON~1.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_Newtonsoft.Json.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Newtonsoft.Json.dll&gt;" SelfReg="false"/>
+    <ROW File="EnvDTE.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="[|AI_PROPPATH_FILENAME_PERBUILD_EnvDTE.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_EnvDTE.dll&gt;" SelfReg="false"/>
+    <ROW File="stdole.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="[|AI_PROPPATH_FILENAME_PERBUILD_stdole.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_stdole.dll&gt;" SelfReg="false"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.AppPathsComponent">
+    <ROW Name="AI_APPPATH_PERBUILD_App.exe" Path="[|AI_PROPPATH_DIR_PERBUILD_App.exe]\[|AI_PROPPATH_FILENAME_PERBUILD_App.exe]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_App.exe.config" Path="[|AI_PROPPATH_DIR_PERBUILD_App.exe.config]\[|AI_PROPPATH_FILENAME_PERBUILD_App.exe.config]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_ClienteWCF.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_ClienteWCF.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_Common.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_Common.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_Common.dll]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_EnvDTE.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_EnvDTE.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_EnvDTE.dll]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_Microsoft.ReportViewer.Common.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.Common.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.Common.dll]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_Microsoft.ReportViewer.DataVisualization.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.DataVisualization.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.DataVisualization.dll]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_Microsoft.ReportViewer.Design.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.Design.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.Design.dll]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_Microsoft.ReportViewer.ProcessingObjectModel.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.ProcessingObjectModel.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.ProcessingObjectModel.dll]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_Microsoft.ReportViewer.WinForms.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.WinForms.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.WinForms.dll]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_Microsoft.SqlServer.Types.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_Microsoft.SqlServer.Types.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.SqlServer.Types.dll]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_Newtonsoft.Json.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_Newtonsoft.Json.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_Newtonsoft.Json.dll]" Type="2" Content="0"/>
+    <ROW Name="AI_APPPATH_PERBUILD_stdole.dll" Path="[|AI_PROPPATH_DIR_PERBUILD_stdole.dll]\[|AI_PROPPATH_FILENAME_PERBUILD_stdole.dll]" Type="2" Content="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
+    <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="build" PackageFileName="puntoventaJLC" Languages="en" InstallationType="4" UseLargeSchema="true"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
+    <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
+    <ROW Fragment="FolderDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\FolderDlg.aip"/>
+    <ROW Fragment="MaintenanceTypeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\MaintenanceTypeDlg.aip"/>
+    <ROW Fragment="MaintenanceWelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\MaintenanceWelcomeDlg.aip"/>
+    <ROW Fragment="SequenceDialogs.aip" Path="&lt;AI_THEMES&gt;classic\fragments\SequenceDialogs.aip"/>
+    <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
+    <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="Themes.aip" Path="&lt;AI_FRAGS&gt;Themes.aip"/>
+    <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;classic\fragments\UI.aip"/>
+    <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
+    <ROW Fragment="VerifyRemoveDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRemoveDlg.aip"/>
+    <ROW Fragment="VerifyRepairDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRepairDlg.aip"/>
+    <ROW Fragment="WelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomeDlg.aip"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL" Ordering="201"/>
+    <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="99"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_MAINT" Ordering="198"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="202"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_INSTALL" Ordering="197"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="201"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_MAINT" Ordering="101"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="ChangeButton" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="501"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceWelcomeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="RemoveButton" Event="NewDialog" Argument="VerifyRemoveDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="601"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="RepairButton" Event="NewDialog" Argument="VerifyRepairDlg" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="601"/>
+    <ROW Dialog_="VerifyRepairDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="1"/>
+    <ROW Dialog_="VerifyRepairDlg" Control_="Repair" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Repair&quot;" Ordering="399" Options="1"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control_="Remove" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="299" Options="1"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_PATCH" Ordering="201"/>
+    <ROW Dialog_="ResumeDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_RESUME" Ordering="299"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_PATCH" Ordering="199"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="203"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
+    <ROW Directory_="APPDIR" Component_="APPDIR" ManualDelete="true"/>
+    <ROW Directory_="SHORTCUTDIR" Component_="SHORTCUTDIR" ManualDelete="false"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
+    <ROW Action="AI_DpiContentScale" Type="1" Source="aicustact.dll" Target="DpiContentScale"/>
+    <ROW Action="AI_EnableDebugLog" Type="321" Source="aicustact.dll" Target="EnableDebugLog"/>
+    <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_PRESERVE_INSTALL_TYPE" Type="65" Source="aicustact.dll" Target="PreserveInstallType"/>
+    <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
+    <ROW Action="AI_ResolveKnownFolders" Type="1" Source="aicustact.dll" Target="AI_ResolveKnownFolders"/>
+    <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
+    <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder]\[ProductName]"/>
+    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
+    <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatCompsComponent">
+    <ROW Feature_="MainFeature" Component_="APPDIR"/>
+    <ROW Feature_="MainFeature" Component_="ProductInformation"/>
+    <ROW Feature_="MainFeature" Component_="Facturacion_PrimaryOutput"/>
+    <ROW Feature_="MainFeature" Component_="AI_PROPPATH_FILENAME_PERBUILD_App.exe"/>
+    <ROW Feature_="MainFeature" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll"/>
+    <ROW Feature_="MainFeature" Component_="SHORTCUTDIR"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
+    <ROW Name="App.exe" SourcePath="setup.ico" Index="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
+    <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+    <ROW Action="AI_STORE_LOCATION" Condition="(Not Installed) OR REINSTALL" Sequence="1501"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
+    <ROW Action="AI_EnableDebugLog" Sequence="51"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
+    <ROW Action="AI_PRESERVE_INSTALL_TYPE" Sequence="199"/>
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="53"/>
+    <ROW Action="AI_DpiContentScale" Sequence="52"/>
+    <ROW Action="AI_EnableDebugLog" Sequence="51"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
+    <ROW Condition="((VersionNT &lt;&gt; 501) AND (VersionNT &lt;&gt; 502))" Description="[ProductName] cannot be installed on [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on [WindowsTypeNT40Display]." DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="(VersionNT &lt;&gt; 500)" Description="[ProductName] cannot be installed on [WindowsTypeNT50Display]." DescriptionLocId="AI.LaunchCondition.NoNT50" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="(VersionNT &lt;&gt; 600)" Description="[ProductName] cannot be installed on [WindowsTypeNT60Display]." DescriptionLocId="AI.LaunchCondition.NoNT60" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+    <ROW Registry="Manufacturer" Root="-1" Key="Software\[Manufacturer]" Name="\"/>
+    <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
+    <ROW Registry="ProductName" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="\"/>
+    <ROW Registry="Software" Root="-1" Key="Software" Name="\"/>
+    <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
+    <ROW Shortcut="App" Directory_="DesktopFolder" Name="PUNTOV~1|puntoventaJLC" Component_="Facturacion_PrimaryOutput" Target="[#App.exe]" Hotkey="0" Icon_="App.exe" IconIndex="0" ShowCmd="1"/>
+    <ROW Shortcut="puntoventaJLC" Directory_="SHORTCUTDIR" Name="PUNTOV~1|puntoventaJLC" Component_="AI_PROPPATH_FILENAME_PERBUILD_App.exe" Target="[#App.exe]" Hotkey="0" Icon_="App.exe" IconIndex="0" ShowCmd="1"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
+    <ATTRIBUTE name="UsedTheme" value="classic"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="0.0.1" VersionMax="[|ProductVersion]" Attributes="257" ActionProperty="OLDPRODUCTS"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.VsProjectComponent">
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="PrimaryOutput" OutputFile="App.exe" OutputFileShortcut="App"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="PrimaryOutput" OutputFile="App.exe.config"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="ClienteWCF.dll"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Common.dll"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Microsoft.ReportViewer.Common.dll"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Microsoft.ReportViewer.DataVisualization.dll"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Microsoft.ReportViewer.Design.dll"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Microsoft.ReportViewer.ProcessingObjectModel.dll"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Microsoft.ReportViewer.WinForms.dll"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Microsoft.SqlServer.Types.dll"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Newtonsoft.Json.dll"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="EnvDTE.dll"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="stdole.dll"/>
+  </COMPONENT>
+</DOCUMENT>
