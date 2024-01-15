@@ -2271,6 +2271,13 @@ namespace LeandroSoftware.ClienteWCF
             return true;
         }
 
+        public static async Task<bool> GenerarNotificacionOrdenServicio(int intIdOrden, string strCorreoReceptor, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'GenerarNotificacionOrdenServicio', Parametros: {IdOrden: " + intIdOrden + ", CorreoReceptor: '" + strCorreoReceptor + "'}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+            return true;
+        }
+
         public static async Task<bool> ReprocesarDocumentoElectronico(int intIdDocumento, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ReprocesarDocumentoElectronico', Parametros: {IdDocumento: " + intIdDocumento + "}}";

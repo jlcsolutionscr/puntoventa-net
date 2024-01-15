@@ -909,7 +909,7 @@ Public Class FrmProforma
         End If
     End Sub
 
-    Private Async Sub btnEnviar_Click(sender As Object, e As EventArgs) Handles btnEnviar.Click
+    Private Async Sub BtnEnviar_Click(sender As Object, e As EventArgs) Handles btnEnviar.Click
         If txtIdProforma.Text <> "" Then
             Dim strCorreoReceptor = ""
             If cliente.IdCliente > 1 Then
@@ -922,7 +922,7 @@ Public Class FrmProforma
                 strCorreoReceptor = InputBox("Ingrese la(s) dirección(es) de correo electrónico donde se enviará el comprobante, separados por punto y coma:")
             End If
             If strCorreoReceptor <> "" Then
-                btnGuardar.Enabled = False
+                btnEnviar.Enabled = False
                 Try
                     Await Puntoventa.GenerarNotificacionProforma(proforma.IdProforma, strCorreoReceptor, FrmPrincipal.usuarioGlobal.Token)
                     MessageBox.Show("Documento enviado satisfactoriamente", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
