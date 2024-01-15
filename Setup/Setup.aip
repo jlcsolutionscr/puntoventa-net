@@ -212,8 +212,8 @@
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="App" Directory_="DesktopFolder" Name="PUNTOV~1|puntoventaJLC" Component_="Facturacion_PrimaryOutput" Target="[#App.exe]" Hotkey="0" Icon_="App.exe" IconIndex="0" ShowCmd="1"/>
-    <ROW Shortcut="puntoventaJLC" Directory_="SHORTCUTDIR" Name="PUNTOV~1|puntoventaJLC" Component_="AI_PROPPATH_FILENAME_PERBUILD_App.exe" Target="[#App.exe]" Hotkey="0" Icon_="App.exe" IconIndex="0" ShowCmd="1"/>
+    <ROW Shortcut="App" Directory_="DesktopFolder" Name="JLCSOL~1|JLCSolutions" Component_="Facturacion_PrimaryOutput" Target="[#App.exe]" Hotkey="0" Icon_="App.exe" IconIndex="0" ShowCmd="1"/>
+    <ROW Shortcut="puntoventaJLC" Directory_="SHORTCUTDIR" Name="JLCSOL~1|JLCSolutions" Component_="AI_PROPPATH_FILENAME_PERBUILD_App.exe" Target="[#App.exe]" Hotkey="0" Icon_="App.exe" IconIndex="0" ShowCmd="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>

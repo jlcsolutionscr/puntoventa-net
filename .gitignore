@@ -13,3 +13,4 @@ appsettings*.*
 appupdates/
 
 /Setup/Setup-cache
+/Setup/build/*
