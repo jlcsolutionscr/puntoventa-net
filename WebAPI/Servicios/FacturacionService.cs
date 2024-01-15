@@ -74,6 +74,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         byte[] GenerarProformaPDF(int intIdProforma, byte[] bytLogo);
         void GenerarNotificacionFactura(int intIdFactura, byte[] bytLogo);
         void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, byte[] bytLogo);
+        void GenerarNotificacionOrdenServicio(int intIdOrden, string strCorreoReceptor, byte[] bytLogo);
     }
 
     public class FacturacionService : IFacturacionService
@@ -3476,6 +3477,44 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     _logger.LogError("Error al enviar notificación al receptor para el documento con ID: " + intIdProforma, ex);
                     throw new Exception("Se produjo un error al notificar al cliente. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void GenerarNotificacionOrdenServicio(int intIdOrden, string strCorreoReceptor, byte[] bytLogo)
+        {
+            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    if (strCorreoReceptor == "") throw new BusinessException("Se debe proveer una dirección de válida para el receptor del documento. Por favor verifique la información suministrada");
+                    OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente").Include("DetalleOrdenServicio.Producto").Where(x => x.IdOrden == intIdOrden).FirstOrDefault();
+                    if (ordenServicio == null) throw new BusinessException("No existe registro de orden de servicio para el identificador suministrado: " + intIdOrden);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    string strBody;
+                    string strTitle = empresa.NombreComercial + " - Orden de servicio";
+                    strBody = "Estimado cliente, adjunto encontrará el detalle de la orden de servicio solicitada.";
+                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, bytLogo);
+                    JArray jarrayObj = new JArray();
+                    string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
+                    byte[] pdfAttactment = Generador.GenerarPDF(datos);
+                    JObject jobDatosAdjuntos1 = new JObject
+                    {
+                        ["nombre"] = "orden-" + intIdOrden + ".pdf",
+                        ["contenido"] = Convert.ToBase64String(pdfAttactment)
+                    };
+                    jarrayObj.Add(jobDatosAdjuntos1);
+                    servicioCorreo.SendEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al enviar notificación del orden de servicio al receptor para el documento con ID: " + intIdOrden, ex);
+                    throw new Exception("Se produjo un error al notificar la orden de servicio al cliente. Por favor consulte con su proveedor.");
                 }
             }
         }
