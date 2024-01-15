@@ -27,5 +27,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string ErrorEnvio { get; set; }
         public bool Reprocesado { get; set; }
         public string CorreoNotificacion { get; set; }
+        public decimal Total { get; set; }
     }
 }

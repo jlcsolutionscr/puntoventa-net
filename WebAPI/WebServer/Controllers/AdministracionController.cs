@@ -576,7 +576,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("limpiarregistrosinvalidos")]
         public void LimpiarRegistrosInvalidos()
         {
-            Task.Run(() => {
+            Task.Run(() =>
+            {
                 try
                 {
                     string[] directoryEntries = Directory.GetFileSystemEntries(_environment.ContentRootPath, "errorlog-??-??-????.txt");

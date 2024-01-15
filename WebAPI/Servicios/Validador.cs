@@ -16,20 +16,13 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
         {
             string expresion;
             expresion = @"^([\w\.\-]+)@([\w\-]+)(\.{0,2})([\w\-]+)((\.(\w){2,3})+)$";
-            try
+            string[] entries = email.Split(';');
+            foreach (var entry in entries)
             {
-                string[] entries = email.Split(';');
-                foreach (var entry in entries)
+                if (!Regex.IsMatch(entry, expresion))
                 {
-                    if (!Regex.IsMatch(entry, expresion))
-                    {
-                        throw new Exception("El correo ingresado no posee un formato válido. Por favor verifique!");
-                    }
+                    throw new Exception("El correo ingresado no posee un formato válido. Por favor verifique!");
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
 

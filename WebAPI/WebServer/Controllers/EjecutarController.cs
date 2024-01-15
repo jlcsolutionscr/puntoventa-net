@@ -473,6 +473,12 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
                     _servicioFacturacion.GenerarNotificacionProforma(intIdLlave1, strCorreoReceptor, bytLogo);
                     break;
+                case "GenerarNotificacionOrdenServicio":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdOrden").Value.ToString());
+                    strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
+                    bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
+                    _servicioFacturacion.GenerarNotificacionOrdenServicio(intIdLlave1, strCorreoReceptor, bytLogo);
+                    break;
                 case "ReprocesarDocumentoElectronico":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                     _servicioFacturacion.ReprocesarDocumentoElectronico(intIdLlave1, configuracionGeneral);

@@ -33,7 +33,7 @@ Public Class FrmBusquedaMovimientoBanco
 
     Private Async Sub ActualizarDatos(ByVal intNumeroPagina As Integer)
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoMovimientoBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoMovimientoBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, intNumeroPagina, intFilasPorPagina, txtDescripcion.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -45,7 +45,7 @@ Public Class FrmBusquedaMovimientoBanco
 
     Private Async Sub ValidarCantidadRegistros()
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaMovimientoBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, txtDescripcion.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaMovimientoBanco(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, txtDescripcion.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -74,6 +74,7 @@ Public Class FrmBusquedaMovimientoBanco
                 AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
             End If
         Next
+        FechaFinal.Text = Date.Now.Day & "/" & Date.Now.Month & "/" & Date.Now.Year
     End Sub
 
     Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)

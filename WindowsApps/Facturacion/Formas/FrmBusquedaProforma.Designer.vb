@@ -33,6 +33,8 @@ Partial Class FrmBusquedaProforma
         Me.Label6 = New System.Windows.Forms.Label()
         Me.lblEstado = New System.Windows.Forms.Label()
         Me.cboEstado = New System.Windows.Forms.ComboBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.FechaFinal = New System.Windows.Forms.DateTimePicker()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -202,6 +204,24 @@ Partial Class FrmBusquedaProforma
         Me.cboEstado.TabIndex = 171
         Me.cboEstado.TabStop = False
         '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(247, 15)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(78, 13)
+        Me.Label3.TabIndex = 174
+        Me.Label3.Text = "Fecha máxima:"
+        '
+        'FechaFinal
+        '
+        Me.FechaFinal.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.FechaFinal.Location = New System.Drawing.Point(331, 12)
+        Me.FechaFinal.Name = "FechaFinal"
+        Me.FechaFinal.Size = New System.Drawing.Size(84, 20)
+        Me.FechaFinal.TabIndex = 173
+        Me.FechaFinal.Value = New Date(2013, 6, 9, 0, 0, 0, 0)
+        '
         'FrmBusquedaProforma
         '
         Me.AcceptButton = Me.btnFiltrar
@@ -209,6 +229,8 @@ Partial Class FrmBusquedaProforma
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(644, 415)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.FechaFinal)
         Me.Controls.Add(Me.lblEstado)
         Me.Controls.Add(Me.cboEstado)
         Me.Controls.Add(Me.cboSucursal)
@@ -255,4 +277,6 @@ Partial Class FrmBusquedaProforma
     Friend WithEvents Label6 As Label
     Friend WithEvents lblEstado As Label
     Friend WithEvents cboEstado As ComboBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents FechaFinal As DateTimePicker
 End Class

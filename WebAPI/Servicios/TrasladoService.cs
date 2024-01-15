@@ -144,12 +144,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = traslado.IdSucursalOrigen,
                             Fecha = Validador.ObtenerFechaHoraCostaRica(),
                             PrecioCosto = detalleTraslado.PrecioCosto,
-                            Origen = "Salida de mercancía por traslado entre sucursales",
+                            Origen = "Salida de mercancía por traslado entre sucursales nro. " + traslado.IdTraslado,
                             Tipo = StaticTipoMovimientoProducto.Salida,
                             Cantidad = detalleTraslado.Cantidad
                         };
-                        producto.MovimientoProducto = new List<MovimientoProducto>();
-                        producto.MovimientoProducto.Add(movimiento);
+                        dbContext.MovimientoProductoRepository.Add(movimiento);
                         existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == traslado.IdSucursalDestino).FirstOrDefault();
                         if (existencias != null)
                         {
@@ -173,12 +172,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = traslado.IdSucursalDestino,
                             Fecha = Validador.ObtenerFechaHoraCostaRica(),
                             PrecioCosto = detalleTraslado.PrecioCosto,
-                            Origen = "Ingreso de mercancía por traslado entre sucursales",
+                            Origen = "Ingreso de mercancía por traslado entre sucursales nro. " + traslado.IdTraslado,
                             Tipo = StaticTipoMovimientoProducto.Entrada,
                             Cantidad = detalleTraslado.Cantidad
                         };
-                        producto.MovimientoProducto = new List<MovimientoProducto>();
-                        producto.MovimientoProducto.Add(movimiento);
+                        dbContext.MovimientoProductoRepository.Add(movimiento);
                         if (empresa.Contabiliza)
                         {
                             decimal decTotalPorLinea = Math.Round(detalleTraslado.PrecioCosto * detalleTraslado.Cantidad, 2, MidpointRounding.AwayFromZero);

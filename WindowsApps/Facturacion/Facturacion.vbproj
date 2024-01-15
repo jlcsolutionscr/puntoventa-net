@@ -741,7 +741,6 @@
     <Compile Include="Formas\FrmUsuario.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\Utilities.vb" />
     <Compile Include="ModuloImpresion.vb" />
     <Compile Include="Formas\FrmActualizarClave.Designer.vb">
       <DependentUpon>FrmActualizarClave.vb</DependentUpon>

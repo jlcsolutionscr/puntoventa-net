@@ -1,4 +1,5 @@
-﻿using LeandroSoftware.Common.Constantes;
+﻿using System.Globalization;
+using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
@@ -13,7 +14,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarCuentaBanco(CuentaBanco cuentaBanco);
         void EliminarCuentaBanco(int intIdCuenta);
         CuentaBanco ObtenerCuentaBanco(int intIdCuenta);
-        IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "");
+        IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion);
         IList<LlaveDescripcion> ObtenerListadoTipoMovimientoBanco();
         string AgregarMovimientoBanco(MovimientoBanco movimiento);
         string AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext);
@@ -21,14 +22,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion, LeandroContext dbContext);
         MovimientoBanco ObtenerMovimientoBanco(int intIdMovimiento);
-        int ObtenerTotalListaMovimientos(int intIdEmpresa, int intIdSucursal, string strDescripcion = "");
-        IList<EfectivoDetalle> ObtenerListadoMovimientos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strDescripcion = "");
+        int ObtenerTotalListaMovimientos(int intIdEmpresa, int intIdSucursal, string strDescripcion, string strFechaFinal);
+        IList<EfectivoDetalle> ObtenerListadoMovimientos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strDescripcion, string strFechaFinal);
     }
 
     public class BancaService : IBancaService
     {
         private readonly ILoggerManager _logger;
         private static IServiceScopeFactory serviceScopeFactory;
+        private static CultureInfo provider = CultureInfo.InvariantCulture;
+        private static string strFormat = "dd/MM/yyyy HH:mm:ss";
 
         public BancaService(ILoggerManager logger)
         {
@@ -155,7 +158,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion = "")
+        public IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -339,7 +342,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaMovimientos(int intIdEmpresa, int intIdSucursal, string strDescripcion = "")
+        public int ObtenerTotalListaMovimientos(int intIdEmpresa, int intIdSucursal, string strDescripcion, string strFechaFinal)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -349,6 +352,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             .Where(a => !a.a.Nulo & a.b.IdEmpresa == intIdEmpresa && a.a.IdSucursal == intIdSucursal);
                     if (!strDescripcion.Equals(string.Empty))
                         listaMovimientos = listaMovimientos.Where(a => a.a.Descripcion.Contains(strDescripcion));
+                    if (strFechaFinal != "") {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listaMovimientos = listaMovimientos.Where(a => a.a.Fecha < datFechaFinal);
+                    }
                     return listaMovimientos.Count();
                 }
                 catch (Exception ex)
@@ -359,7 +366,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<EfectivoDetalle> ObtenerListadoMovimientos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strDescripcion = "")
+        public IList<EfectivoDetalle> ObtenerListadoMovimientos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strDescripcion, string strFechaFinal)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -370,6 +377,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Where(a => !a.a.Nulo & a.b.IdEmpresa == intIdEmpresa && a.a.IdSucursal == intIdSucursal);
                     if (!strDescripcion.Equals(string.Empty))
                         listaMovimientos = listaMovimientos.Where(a => a.a.Descripcion.Contains(strDescripcion));
+                    if (strFechaFinal != "") {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listaMovimientos = listaMovimientos.Where(a => a.a.Fecha < datFechaFinal);
+                    }
                     var lista = listaMovimientos.OrderByDescending(x => x.a.IdMov).Skip((numPagina - 1) * cantRec).Take(cantRec)
                         .Select(z => new { z.a.IdMov, z.a.Fecha, z.a.Descripcion, z.a.Monto }).ToList();
                     foreach (var value in lista)

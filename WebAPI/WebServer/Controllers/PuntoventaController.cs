@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Servicios;
@@ -11,6 +11,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
     [Route("puntoventa")]
     public class PuntoventaController : ControllerBase
     {
+        private static IConfiguration _configuration;
         private static IHostEnvironment _environment;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
@@ -27,6 +28,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             ICorreoService servicioCorreo
         )
         {
+            _configuration = configuration;
             _environment = environment;
             _servicioMantenimiento = servicioMantenimiento;
             _servicioFacturacion = servicioFacturacion;
@@ -36,176 +38,112 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("obtenerultimaversionapp")]
         public string ObtenerUltimaVersionApp()
         {
-            try
-            {
-                return _servicioMantenimiento.ObtenerUltimaVersionApp();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return _servicioMantenimiento.ObtenerUltimaVersionApp();
         }
 
         [HttpGet("obtenerlistadotiqueteordenserviciopendiente")]
         public string ObtenerListadoTiqueteOrdenServicioPendiente(int idempresa, int idsucursal)
         {
-            try
-            {
-                IList<ClsTiquete> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, false, false);
-                string strRespuesta = "";
-                if (listadoTiqueteOrdenServicio.Count > 0)
-                    strRespuesta = JsonConvert.SerializeObject(listadoTiqueteOrdenServicio);
-                return strRespuesta;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            IList<ClsTiquete> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, false, false);
+            string strRespuesta = "";
+            if (listadoTiqueteOrdenServicio.Count > 0)
+                strRespuesta = JsonConvert.SerializeObject(listadoTiqueteOrdenServicio);
+            return strRespuesta;
         }
 
         [HttpGet("cambiarestadoaimpresotiqueteordenservicio")]
         public void CambiarEstadoAImpresoTiqueteOrdenServicio(int idtiquete)
         {
-            try
-            {
-                _servicioFacturacion.ActualizarEstadoTiqueteOrdenServicio(idtiquete, true);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            _servicioFacturacion.ActualizarEstadoTiqueteOrdenServicio(idtiquete, true);
         }
 
         [HttpGet("descargaractualizacion")]
         public FileStreamResult DescargarActualizacion()
         {
-            try
-            {
-                string strVersion = _servicioMantenimiento.ObtenerUltimaVersionApp().Replace('.', '-');
-                string downloadFilePath = Path.Combine(_environment.ContentRootPath, "appupdates/" + strVersion + "/puntoventaJLC.msi");
-                FileStream fileStream = new FileStream(downloadFilePath, FileMode.Open, FileAccess.Read);
-                Response.Headers.Add("content-disposition", "attachment; filename=puntoventaJLC.msi");
-                return File(fileStream, "application/octet-stream");
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            string strVersion = _servicioMantenimiento.ObtenerUltimaVersionApp().Replace('.', '-');
+            string downloadFilePath = Path.Combine(_environment.ContentRootPath, "appupdates/" + strVersion + "/puntoventaJLC.msi");
+            FileStream fileStream = new FileStream(downloadFilePath, FileMode.Open, FileAccess.Read);
+            Response.Headers.Add("content-disposition", "attachment; filename=puntoventaJLC.msi");
+            return File(fileStream, "application/octet-stream");
         }
 
         [HttpGet("obtenerlistadoempresasadmin")]
         public string ObtenerListadoEmpresasAdministrador()
         {
-            try
-            {
-                IList<LlaveDescripcion> listadoEmpresaAdministrador = _servicioMantenimiento.ObtenerListadoEmpresasAdministrador();
-                string strRespuesta = "";
-                if (listadoEmpresaAdministrador.Count > 0)
-                    strRespuesta = JsonConvert.SerializeObject(listadoEmpresaAdministrador);
-                return strRespuesta;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            IList<LlaveDescripcion> listadoEmpresaAdministrador = _servicioMantenimiento.ObtenerListadoEmpresasAdministrador();
+            string strRespuesta = "";
+            if (listadoEmpresaAdministrador.Count > 0)
+                strRespuesta = JsonConvert.SerializeObject(listadoEmpresaAdministrador);
+            return strRespuesta;
         }
 
         [HttpGet("obtenerlistadoempresas")]
         public string ObtenerListadoEmpresasPorTerminal(string dispositivo)
         {
-            try
-            {
-                IList<LlaveDescripcion> listadoEmpresaPorDispositivo = _servicioMantenimiento.ObtenerListadoEmpresasPorTerminal(dispositivo);
-                string strRespuesta = "";
-                if (listadoEmpresaPorDispositivo.Count > 0)
-                    strRespuesta = JsonConvert.SerializeObject(listadoEmpresaPorDispositivo);
-                return strRespuesta;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            IList<LlaveDescripcion> listadoEmpresaPorDispositivo = _servicioMantenimiento.ObtenerListadoEmpresasPorTerminal(dispositivo);
+            string strRespuesta = "";
+            if (listadoEmpresaPorDispositivo.Count > 0)
+                strRespuesta = JsonConvert.SerializeObject(listadoEmpresaPorDispositivo);
+            return strRespuesta;
         }
 
         [HttpGet("validarcredenciales")]
         public string ValidarCredenciales(string usuario, string clave, int idempresa, string dispositivo)
         {
-            try
-            {
-                string strClaveFormateada = clave.Replace(" ", "+");
-                empresa = _servicioMantenimiento.ValidarCredenciales(usuario, strClaveFormateada, idempresa, dispositivo);
-                string strRespuesta = "";
-                if (empresa != null)
-                    strRespuesta = JsonConvert.SerializeObject(empresa);
-                return strRespuesta;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            string strClaveFormateada = clave.Replace(" ", "+");
+            empresa = _servicioMantenimiento.ValidarCredenciales(usuario, strClaveFormateada, idempresa, dispositivo);
+            string strRespuesta = "";
+            if (empresa != null)
+                strRespuesta = JsonConvert.SerializeObject(empresa);
+            return strRespuesta;
         }
 
         [HttpGet("validarcredencialesweb")]
         public string ValidarCredencialesWeb(string usuario, string clave, string identificacion)
         {
-            try
-            {
-                string strClaveFormateada = clave.Replace(" ", "+");
-                Empresa empresa = _servicioMantenimiento.ValidarCredenciales(usuario, strClaveFormateada, identificacion);
-                string strRespuesta = "";
-                if (empresa != null)
-                    strRespuesta = JsonConvert.SerializeObject(empresa);
-                return strRespuesta;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            string strClaveFormateada = clave.Replace(" ", "+");
+            Empresa empresa = _servicioMantenimiento.ValidarCredenciales(usuario, strClaveFormateada, identificacion);
+            string strRespuesta = "";
+            if (empresa != null)
+                strRespuesta = JsonConvert.SerializeObject(empresa);
+            return strRespuesta;
         }
 
         [HttpGet("obtenerlistadoterminalesdisponibles")]
         public string ObtenerListadoTerminalesDisponibles(string usuario, string clave, string id, int tipodispositivo)
         {
-            try
-            {
-                string strClaveFormateada = clave.Replace(" ", "+");
-                IList<EquipoRegistrado> listadoSucursales = (List<EquipoRegistrado>)_servicioMantenimiento.ObtenerListadoTerminalesDisponibles(usuario, strClaveFormateada, id, tipodispositivo);
-                string strRespuesta = "";
-                if (listadoSucursales.Count > 0)
-                    strRespuesta = JsonConvert.SerializeObject(listadoSucursales);
-                return strRespuesta;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            string strClaveFormateada = clave.Replace(" ", "+");
+            IList<EquipoRegistrado> listadoSucursales = (List<EquipoRegistrado>)_servicioMantenimiento.ObtenerListadoTerminalesDisponibles(usuario, strClaveFormateada, id, tipodispositivo);
+            string strRespuesta = "";
+            if (listadoSucursales.Count > 0)
+                strRespuesta = JsonConvert.SerializeObject(listadoSucursales);
+            return strRespuesta;
         }
 
         [HttpGet("registrarterminal")]
         public void RegistrarTerminal(string usuario, string clave, string id, int sucursal, int terminal, int tipodispositivo, string dispositivo)
         {
-            try
-            {
-                string strClaveFormateada = clave.Replace(" ", "+");
-                _servicioMantenimiento.RegistrarTerminal(usuario, strClaveFormateada, id, sucursal, terminal, tipodispositivo, dispositivo);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            string strClaveFormateada = clave.Replace(" ", "+");
+            _servicioMantenimiento.RegistrarTerminal(usuario, strClaveFormateada, id, sucursal, terminal, tipodispositivo, dispositivo);
         }
 
-        [HttpGet("enviarcorreorestablecerclaveusuario")]
-        public void EnviarCorreoRestablecerClaveUsuario(string id)
+        [HttpGet("iniciarrestablecerclaveusuario")]
+        public void IniciarRestablecerClaveUsuario(string identificacion, string usuario)
         {
-            try
-            {
-                _servicioMantenimiento.EnviarCorreoRestablecerClaveUsuario(id);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            string strServicioWebURL = _configuration.GetSection("appSettings").GetSection("strServicioWebURL").Value;
+            _servicioMantenimiento.IniciarRestablecerClaveUsuario(strServicioWebURL, identificacion, usuario);
+        }
+
+        [HttpGet("validarsesionrestablecerclaveusuario")]
+        public void ValidarSesionRestablecerClaveUsuario(string session)
+        {
+            _servicioMantenimiento.ValidarRegistroAutenticacion(session.Replace(" ", "+").Replace("~", "/"), StaticRolePorUsuario.USUARIO_SISTEMA, 1);
+        }
+
+        [HttpGet("restablecerclaveusuario")]
+        public void RestablecerClaveUsuario(string session, string clave)
+        {
+            _servicioMantenimiento.RestablecerClaveUsuario(session.Replace(" ", "+").Replace("~", "/"), clave.Replace(" ", "+"));
         }
     }
 }

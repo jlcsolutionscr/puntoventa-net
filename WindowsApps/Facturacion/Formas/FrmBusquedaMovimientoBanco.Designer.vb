@@ -27,6 +27,8 @@ Partial Class FrmBusquedaMovimientoBanco
         Me.btnNext = New System.Windows.Forms.Button()
         Me.btnPrevious = New System.Windows.Forms.Button()
         Me.btnFirst = New System.Windows.Forms.Button()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.FechaFinal = New System.Windows.Forms.DateTimePicker()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -70,7 +72,7 @@ Partial Class FrmBusquedaMovimientoBanco
         '
         Me.txtDescripcion.Location = New System.Drawing.Point(84, 12)
         Me.txtDescripcion.Name = "txtDescripcion"
-        Me.txtDescripcion.Size = New System.Drawing.Size(520, 20)
+        Me.txtDescripcion.Size = New System.Drawing.Size(346, 20)
         Me.txtDescripcion.TabIndex = 0
         '
         'lblPagina
@@ -134,6 +136,24 @@ Partial Class FrmBusquedaMovimientoBanco
         Me.btnFirst.Text = "<<"
         Me.btnFirst.UseVisualStyleBackColor = True
         '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(436, 15)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(78, 13)
+        Me.Label3.TabIndex = 158
+        Me.Label3.Text = "Fecha máxima:"
+        '
+        'FechaFinal
+        '
+        Me.FechaFinal.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.FechaFinal.Location = New System.Drawing.Point(520, 12)
+        Me.FechaFinal.Name = "FechaFinal"
+        Me.FechaFinal.Size = New System.Drawing.Size(84, 20)
+        Me.FechaFinal.TabIndex = 157
+        Me.FechaFinal.Value = New Date(2013, 6, 9, 0, 0, 0, 0)
+        '
         'FrmBusquedaMovimientoBanco
         '
         Me.AcceptButton = Me.btnFiltrar
@@ -141,6 +161,8 @@ Partial Class FrmBusquedaMovimientoBanco
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(644, 387)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.FechaFinal)
         Me.Controls.Add(Me.lblPagina)
         Me.Controls.Add(Me.btnLast)
         Me.Controls.Add(Me.btnNext)
@@ -173,4 +195,6 @@ Partial Class FrmBusquedaMovimientoBanco
     Private WithEvents btnNext As System.Windows.Forms.Button
     Private WithEvents btnPrevious As System.Windows.Forms.Button
     Private WithEvents btnFirst As System.Windows.Forms.Button
+    Friend WithEvents Label3 As Label
+    Friend WithEvents FechaFinal As DateTimePicker
 End Class

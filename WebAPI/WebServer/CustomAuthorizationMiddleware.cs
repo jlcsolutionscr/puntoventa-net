@@ -29,17 +29,17 @@ namespace WebServer.Middlewares
                     bool modoMantenimiento = servicioMantenimiento.EnModoMantenimiento();
                     if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible procesar su solicitud.");
                 }
-                if (!new string[] { "recibirrespuestahacienda", "descargaractualizacion" }.Contains(strPath[1]))
+                if (!new string[] { "descargaractualizacion" }.Contains(strPath[1]))
                 {
                     if (!environment.IsDevelopment() && !context.Request.IsHttps) throw new Exception("La petición no se encuentra en un protocolo seguro y no es posible procesar su solicitud");
                 }
-                if (!new string[] { "recibirrespuestahacienda", "enviarcorreorestablecerclaveusuario", "limpiarregistrosinvalidos", "obtenerultimaversionapp", "obtenerlistadotiqueteordenserviciopendiente", "cambiarestadoaimpresotiqueteordenservicio", "descargaractualizacion", "obtenerlistadoempresasadmin", "obtenerlistadoempresas", "validarcredenciales", "validarcredencialesweb", "validarcredencialesadmin", "obtenerlistadoterminalesdisponibles", "registrarterminal", "procesarpendientes" }.Contains(strPath[1]))
+                if (!new string[] { "recibirrespuestahacienda", "iniciarrestablecerclaveusuario", "validarsesionrestablecerclaveusuario", "restablecerclaveusuario", "limpiarregistrosinvalidos", "obtenerultimaversionapp", "obtenerlistadotiqueteordenserviciopendiente", "cambiarestadoaimpresotiqueteordenservicio", "descargaractualizacion", "obtenerlistadoempresasadmin", "obtenerlistadoempresas", "validarcredenciales", "validarcredencialesweb", "validarcredencialesadmin", "obtenerlistadoterminalesdisponibles", "registrarterminal", "procesarpendientes" }.Contains(strPath[1]))
                 {
                     var headers = context.Request.Headers;
                     string strToken = headers["Authorization"];
                     if (strToken == null) throw new Exception("La sessión del usuario no es válida. Debe reiniciar su sesión.");
                     strToken = strToken.Substring(7);
-                    servicioMantenimiento.ValidarRegistroAutenticacion(strToken, StaticRolePorUsuario.USUARIO_SISTEMA);
+                    servicioMantenimiento.ValidarRegistroAutenticacion(strToken, StaticRolePorUsuario.USUARIO_SISTEMA, 12);
                 }
             }
             else throw new Exception("La petición solicitada no existe");
