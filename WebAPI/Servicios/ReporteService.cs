@@ -29,7 +29,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteGrupoDetalle> ObtenerReporteMovimientosCxCClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente);
         List<ReporteGrupoDetalle> ObtenerReporteMovimientosCxPProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor);
         List<ReporteMovimientosBanco> ObtenerReporteMovimientosBanco(int intIdCuenta, int intIdSucursal, string strFechaInicial, string strFechaFinal);
-        List<DescripcionValor> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
+        List<ReporteResumenMovimientos> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<ReporteGrupoDetalle> ObtenerReporteDetalleEgreso(int intIdEmpresa, int intIdSucursal, int idCuentaEgreso, string strFechaInicial, string strFechaFinal);
         List<ReporteGrupoDetalle> ObtenerReporteDetalleIngreso(int intIdEmpresa, int intIdSucursal, int idCuentaIngreso, string strFechaInicial, string strFechaFinal);
         List<DescripcionValor> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
@@ -689,7 +689,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<DescripcionValor> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
+        public List<ReporteResumenMovimientos> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
         {
             using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -697,7 +697,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    List<DescripcionValor> listaReporte = new List<DescripcionValor>();
+                    List<ReporteResumenMovimientos> listaReporte = new List<ReporteResumenMovimientos>();
                     var grupoFacturas = dbContext.FacturaRepository.Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
                         .Where(s => s.x.IdEmpresa == intIdEmpresa && s.x.Nulo == false && s.x.Fecha >= datFechaInicial && s.x.Fecha <= datFechaFinal)
                         .GroupBy(x => x.y.IdFormaPago)
@@ -715,7 +715,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             strTipo = " con tarjeta";
                         else
                             strTipo = " otras formas de pago";
-                        DescripcionValor reporteLinea = new DescripcionValor("Ventas" + strTipo, eachFactura.total);
+                        ReporteResumenMovimientos reporteLinea = new ReporteResumenMovimientos("Ventas" + strTipo, "Ingresos", eachFactura.total);
                         listaReporte.Add(reporteLinea);
                     }
                     var ingreso = dbContext.IngresoRepository.Where(w => w.IdEmpresa == intIdEmpresa && w.Nulo == false && w.Fecha >= datFechaInicial && w.Fecha <= datFechaFinal)
@@ -724,12 +724,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(a => new { Total = a.Sum(b => b.x.Monto), Desc = a.Key });
                     foreach (var value in ingreso)
                     {
-                        DescripcionValor reporteLinea = new DescripcionValor(value.Desc, value.Total);
+                        ReporteResumenMovimientos reporteLinea = new ReporteResumenMovimientos(value.Desc, "Ingresos", value.Total);
                         listaReporte.Add(reporteLinea);
                     }
                     if (grupoFacturas.Count() == 0 && ingreso.Count() == 0)
                     {
-                        DescripcionValor reporteLinea = new DescripcionValor("No hay registros", 0);
+                        ReporteResumenMovimientos reporteLinea = new ReporteResumenMovimientos("No hay registros", "Ingresos", 0);
                         listaReporte.Add(reporteLinea);
                     }
                     var grupoCompras = dbContext.CompraRepository.Join(dbContext.DesglosePagoCompraRepository, x => x.IdCompra, y => y.IdCompra, (x, y) => new { x, y })
@@ -751,7 +751,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 strTipo = " con tarjeta";
                             else
                                 strTipo = " con otras formas de pago";
-                            DescripcionValor reporteLinea = new DescripcionValor("Compras" + strTipo, eachCompra.total);
+                            ReporteResumenMovimientos reporteLinea = new ReporteResumenMovimientos("Compras" + strTipo, "Egresos", eachCompra.total);
                             listaReporte.Add(reporteLinea);
                         }
                     }
@@ -761,13 +761,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(a => new { Total = a.Sum(b => b.x.Monto), Desc = a.Key });
                     foreach (var value in egreso)
                     {
-                        DescripcionValor reporteLinea = new DescripcionValor(value.Desc, value.Total);
+                        ReporteResumenMovimientos reporteLinea = new ReporteResumenMovimientos(value.Desc, "Egresos", value.Total);
                         listaReporte.Add(reporteLinea);
                     }
 
                     if (grupoCompras.Count() == 0 && egreso.Count() == 0)
                     {
-                        DescripcionValor reporteLinea = new DescripcionValor("No hay registros", 0);
+                        ReporteResumenMovimientos reporteLinea = new ReporteResumenMovimientos("No hay registros", "Egresos", 0);
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -1942,7 +1942,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
-                    IList<DescripcionValor> dstDatos = ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                    IList<ReporteResumenMovimientos> dstDatos = ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                     ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
                     ReportParameter[] parameters = new ReportParameter[5];
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
