@@ -208,9 +208,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdEmpresa = traslado.IdEmpresa,
                             Fecha = traslado.Fecha,
                             TotalCredito = 0,
-                            TotalDebito = 0
+                            TotalDebito = 0,
+                            Detalle = "Registro de traslado de mercancías entre sucursales."
                         };
-                        asiento.Detalle = "Registro de traslado de mercancías entre sucursales.";
                         //Detalle asiento sucursal origen
                         DetalleAsiento detalleAsiento = new DetalleAsiento();
                         int intLineaDetalleAsiento = 1;

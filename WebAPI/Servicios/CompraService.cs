@@ -353,8 +353,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario || desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
                         {
-                            movimientoBanco = new MovimientoBanco();
-                            movimientoBanco.IdSucursal = compra.IdSucursal;
+                            movimientoBanco = new MovimientoBanco
+                            {
+                                IdSucursal = compra.IdSucursal
+                            };
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null)
                                 throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
