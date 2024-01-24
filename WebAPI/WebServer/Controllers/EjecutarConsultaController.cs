@@ -1436,7 +1436,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                                 strRespuesta = JsonConvert.SerializeObject(listado2);
                             break;
                         case "Resumen de movimientos":
-                            IList<DescripcionValor> listado3 = _servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                            IList<ReporteEstadoResultados> listado3 = _servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                             if (listado3.Count > 0)
                                 strRespuesta = JsonConvert.SerializeObject(listado3);
                             break;

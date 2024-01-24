@@ -738,16 +738,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         string strTipo = "";
                         if (eachFactura.tipopago == StaticFormaPago.Efectivo)
-                            strTipo = " de contado";
+                            strTipo = " DE CONTADO";
                         else if (eachFactura.tipopago == StaticFormaPago.Cheque)
-                            strTipo = " con cheque";
+                            strTipo = " CON CHEQUE";
                         else if (eachFactura.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
-                            strTipo = " con depósito bancario";
+                            strTipo = " CON DEPOSITO BANCARIO/TRANSFERENCIA";
                         else if (eachFactura.tipopago == StaticFormaPago.Tarjeta)
-                            strTipo = " con tarjeta";
+                            strTipo = " CON TARJETA";
                         else
-                            strTipo = " otras formas de pago";
-                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("Ventas" + strTipo, "Ingresos", eachFactura.total);
+                            strTipo = " OTRAS FORMAS DE PAGO";
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("VENTAS" + strTipo, "Ingresos", eachFactura.total);
                         listaReporte.Add(reporteLinea);
                     }
                     var ingreso = dbContext.IngresoRepository.Where(w => w.IdEmpresa == intIdEmpresa && w.Nulo == false && w.Fecha >= datFechaInicial && w.Fecha <= datFechaFinal)
@@ -756,12 +756,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(a => new { Total = a.Sum(b => b.x.Monto), Desc = a.Key });
                     foreach (var value in ingreso)
                     {
-                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados(value.Desc, "Ingresos", value.Total);
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados(value.Desc.ToUpper(), "Ingresos", value.Total);
                         listaReporte.Add(reporteLinea);
                     }
                     if (grupoFacturas.Count() == 0 && ingreso.Count() == 0)
                     {
-                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("No hay registros", "Ingresos", 0);
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("NO HAY REGISTROS", "Ingresos", 0);
                         listaReporte.Add(reporteLinea);
                     }
                     var grupoCompras = dbContext.CompraRepository.Join(dbContext.DesglosePagoCompraRepository, x => x.IdCompra, y => y.IdCompra, (x, y) => new { x, y })
@@ -774,16 +774,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             string strTipo = "";
                             if (eachCompra.tipopago == StaticFormaPago.Efectivo)
-                                strTipo = " de contado";
+                                strTipo = " DE CONTADO";
                             else if (eachCompra.tipopago == StaticFormaPago.Cheque)
-                                strTipo = " con cheque";
+                                strTipo = " CON CHEQUE";
                             else if (eachCompra.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
-                                strTipo = " con depósito bancario";
+                                strTipo = " CON DEPOSITO BANCARIO/TRANSFERENCIA";
                             else if (eachCompra.tipopago == StaticFormaPago.Tarjeta)
-                                strTipo = " con tarjeta";
+                                strTipo = " CON TARJETA";
                             else
-                                strTipo = " con otras formas de pago";
-                            ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("Compras" + strTipo, "Egresos", eachCompra.total);
+                                strTipo = " OTRAS FORMAS DE PAGO";
+                            ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("COMPRAS" + strTipo, "Egresos", eachCompra.total);
                             listaReporte.Add(reporteLinea);
                         }
                     }
@@ -793,13 +793,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(a => new { Total = a.Sum(b => b.x.Monto), Desc = a.Key });
                     foreach (var value in egreso)
                     {
-                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados(value.Desc, "Egresos", value.Total);
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados(value.Desc.ToUpper(), "Egresos", value.Total);
                         listaReporte.Add(reporteLinea);
                     }
 
                     if (grupoCompras.Count() == 0 && egreso.Count() == 0)
                     {
-                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("No hay registros", "Egresos", 0);
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("NO HAY REGISTROS", "Egresos", 0);
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
