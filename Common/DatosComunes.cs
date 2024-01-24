@@ -252,11 +252,11 @@ namespace LeandroSoftware.Common.DatosComunes
 
     }
 
-    public class ReporteResumenMovimientos
+    public class ReporteEstadoResultados
     {
-        public ReporteResumenMovimientos() { }
+        public ReporteEstadoResultados() { }
 
-        public ReporteResumenMovimientos(string descripcion, string nombreTipoRegistro, decimal valor)
+        public ReporteEstadoResultados(string descripcion, string nombreTipoRegistro, decimal valor)
         {
             Descripcion = descripcion;
             NombreTipoRegistro = nombreTipoRegistro;

@@ -672,7 +672,7 @@ Public Class FrmMenuReportes
                             End If
                         End If
                     Case "Resumen de movimientos"
-                        Dim datosReporte As List(Of DescripcionValor)
+                        Dim datosReporte As List(Of ReporteEstadoResultados)
                         Try
                             datosReporte = Await Puntoventa.ObtenerReporteEstadoResultados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
                         Catch ex As Exception

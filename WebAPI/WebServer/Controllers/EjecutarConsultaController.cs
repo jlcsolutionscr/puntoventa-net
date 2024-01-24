@@ -331,7 +331,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                     strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                    IList<DescripcionValor> listadoReporteEstadoResultados = _servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                    IList<ReporteEstadoResultados> listadoReporteEstadoResultados = _servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                     if (listadoReporteEstadoResultados.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoReporteEstadoResultados);
                     break;
