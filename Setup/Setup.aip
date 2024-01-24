@@ -8,7 +8,7 @@
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_App.exe" Value="..\WindowsApps\Facturacion\bin"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_App.exe.config" Value="..\WindowsApps\Facturacion\bin"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_ClienteWCF.dll" Value="..\WindowsApps\ClienteWCF\bin"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Common.dll" Value="..\Common\bin\Release\netstandard2.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Common.dll" Value="..\Common\bin\Debug\netstandard2.0"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_EnvDTE.dll" Value="..\..\..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.Common.dll" Value="..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1484.0\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.DataVisualization.dll" Value="..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1484.0\lib\net40"/>
@@ -35,10 +35,10 @@
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
     <ROW Property="ARPCONTACT" Value="ventas@jlcsolutionscr.com"/>
     <ROW Property="Manufacturer" Value="JLC Solutions CR"/>
-    <ROW Property="ProductCode" Value="1033:{B5345B0C-1588-451C-8BAA-614A52E44AE5} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{E6152E60-C1A9-4151-8FD4-55390D3FE408} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="puntoventaJLC"/>
-    <ROW Property="ProductVersion" Value="5.5.2" Options="32"/>
+    <ROW Property="ProductVersion" Value="5.5.3" Options="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{6DE6977F-E27E-4C68-8B91-EDDB74510900}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
