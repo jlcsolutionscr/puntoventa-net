@@ -742,7 +742,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         else if (eachFactura.tipopago == StaticFormaPago.Cheque)
                             strTipo = " CON CHEQUE";
                         else if (eachFactura.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
-                            strTipo = " CON DEPOSITO BANCARIO/TRANSFERENCIA";
+                            strTipo = " CON DEPOSITO BANCARIO";
                         else if (eachFactura.tipopago == StaticFormaPago.Tarjeta)
                             strTipo = " CON TARJETA";
                         else
@@ -778,7 +778,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             else if (eachCompra.tipopago == StaticFormaPago.Cheque)
                                 strTipo = " CON CHEQUE";
                             else if (eachCompra.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
-                                strTipo = " CON DEPOSITO BANCARIO/TRANSFERENCIA";
+                                strTipo = " CON DEPOSITO BANCARIO";
                             else if (eachCompra.tipopago == StaticFormaPago.Tarjeta)
                                 strTipo = " CON TARJETA";
                             else
