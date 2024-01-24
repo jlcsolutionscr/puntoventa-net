@@ -222,8 +222,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
-                            movimientoBanco = new MovimientoBanco();
-                            movimientoBanco.IdSucursal = movimiento.IdSucursal;
+                            movimientoBanco = new MovimientoBanco
+                            {
+                                IdSucursal = movimiento.IdSucursal
+                            };
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null)
                                 throw new BusinessException("La cuenta bancaria asignada al movimiento no existe");
@@ -622,8 +624,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
-                            movimientoBanco = new MovimientoBanco();
-                            movimientoBanco.IdSucursal = movimiento.IdSucursal;
+                            movimientoBanco = new MovimientoBanco
+                            {
+                                IdSucursal = movimiento.IdSucursal
+                            };
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
@@ -912,8 +916,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
-                            movimientoBanco = new MovimientoBanco();
-                            movimientoBanco.IdSucursal = movimiento.IdSucursal;
+                            movimientoBanco = new MovimientoBanco
+                            {
+                                IdSucursal = movimiento.IdSucursal
+                            };
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
@@ -1096,8 +1102,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
-                            movimientoBanco = new MovimientoBanco();
-                            movimientoBanco.IdSucursal = movimiento.IdSucursal;
+                            movimientoBanco = new MovimientoBanco
+                            {
+                                IdSucursal = movimiento.IdSucursal
+                            };
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;

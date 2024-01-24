@@ -323,7 +323,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                     strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                    IList<DescripcionValor> listadoReporteEstadoResultados = _servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                    IList<ReporteEstadoResultados> listadoReporteEstadoResultados = _servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                     if (listadoReporteEstadoResultados.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoReporteEstadoResultados);
                     break;
@@ -1428,7 +1428,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                                 strRespuesta = JsonConvert.SerializeObject(listado2);
                             break;
                         case "Resumen de movimientos":
-                            IList<DescripcionValor> listado3 = _servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                            IList<ReporteEstadoResultados> listado3 = _servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                             if (listado3.Count > 0)
                                 strRespuesta = JsonConvert.SerializeObject(listado3);
                             break;

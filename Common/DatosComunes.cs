@@ -252,6 +252,22 @@ namespace LeandroSoftware.Common.DatosComunes
 
     }
 
+    public class ReporteEstadoResultados
+    {
+        public ReporteEstadoResultados() { }
+
+        public ReporteEstadoResultados(string descripcion, string nombreTipoRegistro, decimal valor)
+        {
+            Descripcion = descripcion;
+            NombreTipoRegistro = nombreTipoRegistro;
+            Valor = valor;
+        }
+
+        public string Descripcion { get; set; }
+        public string NombreTipoRegistro { get; set; }
+        public decimal Valor { get; set; }
+    }
+
     public class EquipoRegistrado
     {
         public int IdSucursal { get; set; }

@@ -662,6 +662,7 @@ Public Class FrmOrdenServicio
         btnAnular.Enabled = False
         btnImprimir.Enabled = False
         btnGenerarPDF.Enabled = False
+        btnEnviar.Enabled = False
         btnBuscaVendedor.Enabled = True
         btnBuscarCliente.Enabled = True
         cliente = New Cliente With {
@@ -750,6 +751,7 @@ Public Class FrmOrdenServicio
                 txtNombreCliente.ReadOnly = IIf(ordenServicio.IdCliente = 1, False, True)
                 btnImprimir.Enabled = Not ordenServicio.Nulo
                 btnGenerarPDF.Enabled = Not ordenServicio.Nulo
+                btnEnviar.Enabled = Not ordenServicio.Nulo
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
                 btnInsertarPago.Enabled = False
@@ -972,6 +974,7 @@ Public Class FrmOrdenServicio
         End If
         btnImprimir.Enabled = True
         btnGenerarPDF.Enabled = True
+        btnEnviar.Enabled = True
         btnImprimir.Focus()
         btnGuardar.Enabled = True
         btnInsertarPago.Enabled = False
@@ -1154,6 +1157,31 @@ Public Class FrmOrdenServicio
             grdDesglosePago.Refresh()
             CargarTotalesPago()
             cboFormaPago.Focus()
+        End If
+    End Sub
+
+    Private Async Sub BtnEnviar_Click(sender As Object, e As EventArgs) Handles btnEnviar.Click
+        If txtIdOrdenServicio.Text <> "" Then
+            Dim strCorreoReceptor = ""
+            If cliente.IdCliente > 1 Then
+                If MessageBox.Show("Desea utilizar la dirección(es) de correo electrónico registrada(s) en el cliente?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    strCorreoReceptor = cliente.CorreoElectronico
+                Else
+                    strCorreoReceptor = InputBox("Ingrese la(s) dirección(es) de correo electrónico donde se enviará el comprobante, separados por punto y coma:")
+                End If
+            Else
+                strCorreoReceptor = InputBox("Ingrese la(s) dirección(es) de correo electrónico donde se enviará el comprobante, separados por punto y coma:")
+            End If
+            If strCorreoReceptor <> "" Then
+                btnEnviar.Enabled = False
+                Try
+                    Await Puntoventa.GenerarNotificacionOrdenServicio(ordenServicio.IdOrden, strCorreoReceptor, FrmPrincipal.usuarioGlobal.Token)
+                    MessageBox.Show("Documento enviado satisfactoriamente", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End Try
+                btnEnviar.Enabled = True
+            End If
         End If
     End Sub
 

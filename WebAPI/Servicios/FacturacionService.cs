@@ -1579,8 +1579,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     data["Cantidad"] = detalle.Cantidad.ToString();
                     dtbDetalleTiquete.Rows.Add(data);
                 }
-                DataView view = new DataView(dtbDetalleTiquete);
-                view.Sort = "Linea ASC";
+                DataView view = new DataView(dtbDetalleTiquete)
+                {
+                    Sort = "Linea ASC"
+                };
                 string strLineaDesc = view[0].Row["Linea"].ToString();
                 IList<ClsLineaImpresion> lineasDetalle = new List<ClsLineaImpresion> { };
                 IList<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
@@ -3043,8 +3045,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, byte[] bytLogo)
         {
-            EstructuraPDF datos = new EstructuraPDF();
-            datos.PoweredByLogotipo = bytLogo;
+            EstructuraPDF datos = new EstructuraPDF
+            {
+                PoweredByLogotipo = bytLogo
+            };
             if (empresa.Logotipo.Length > 0)
             {
                 try
@@ -3124,8 +3128,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         private EstructuraPDF GenerarEstructuraApartadoPDF(Empresa empresa, Apartado apartado, byte[] bytLogo)
         {
-            EstructuraPDF datos = new EstructuraPDF();
-            datos.PoweredByLogotipo = bytLogo;
+            EstructuraPDF datos = new EstructuraPDF
+            {
+                PoweredByLogotipo = bytLogo
+            };
             if (empresa.Logotipo.Length > 0)
             {
                 try
@@ -3201,8 +3207,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         private EstructuraPDF GenerarEstructuraOrdenServicioPDF(Empresa empresa, OrdenServicio ordenServicio, byte[] bytLogo)
         {
-            EstructuraPDF datos = new EstructuraPDF();
-            datos.PoweredByLogotipo = bytLogo;
+            EstructuraPDF datos = new EstructuraPDF
+            {
+                PoweredByLogotipo = bytLogo
+            };
             if (empresa.Logotipo.Length > 0)
             {
                 try
@@ -3277,8 +3285,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         private EstructuraPDF GenerarEstructuraProformaPDF(Empresa empresa, Proforma proforma, byte[] bytLogo)
         {
-            EstructuraPDF datos = new EstructuraPDF();
-            datos.PoweredByLogotipo = bytLogo;
+            EstructuraPDF datos = new EstructuraPDF
+            {
+                PoweredByLogotipo = bytLogo
+            };
             if (empresa.Logotipo.Length > 0)
             {
                 try
@@ -3444,8 +3454,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         private EstructuraPDF GenerarEstructuraDocumentoPDF(LeandroContext dbContext, Empresa empresa, DocumentoElectronico documentoElectronico, byte[] bytLogo)
         {
-            EstructuraPDF datos = new EstructuraPDF();
-            datos.PoweredByLogotipo = bytLogo;
+            EstructuraPDF datos = new EstructuraPDF
+            {
+                PoweredByLogotipo = bytLogo
+            };
             if (empresa.Logotipo.Length > 0)
             {
                 try

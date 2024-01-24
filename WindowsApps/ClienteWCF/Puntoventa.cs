@@ -665,13 +665,13 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<DescripcionValor>> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteEstadoResultados>> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerReporteEstadoResultados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<DescripcionValor> listado = new List<DescripcionValor>();
+            List<ReporteEstadoResultados> listado = new List<ReporteEstadoResultados>();
             if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<DescripcionValor>>(respuesta);
+                listado = JsonConvert.DeserializeObject<List<ReporteEstadoResultados>>(respuesta);
             return listado;
         }
 
@@ -2267,6 +2267,13 @@ namespace LeandroSoftware.ClienteWCF
         public static async Task<bool> GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, string strToken)
         {
             string strDatos = "{NombreMetodo: 'GenerarNotificacionProforma', Parametros: {IdProforma: " + intIdProforma + ", CorreoReceptor: '" + strCorreoReceptor + "'}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+            return true;
+        }
+
+        public static async Task<bool> GenerarNotificacionOrdenServicio(int intIdOrden, string strCorreoReceptor, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'GenerarNotificacionOrdenServicio', Parametros: {IdOrden: " + intIdOrden + ", CorreoReceptor: '" + strCorreoReceptor + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
             return true;
         }

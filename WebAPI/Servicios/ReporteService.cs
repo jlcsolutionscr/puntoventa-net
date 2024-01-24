@@ -29,7 +29,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteGrupoDetalle> ObtenerReporteMovimientosCxCClientes(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdCliente);
         List<ReporteGrupoDetalle> ObtenerReporteMovimientosCxPProveedores(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, int intIdProveedor);
         List<ReporteMovimientosBanco> ObtenerReporteMovimientosBanco(int intIdCuenta, int intIdSucursal, string strFechaInicial, string strFechaFinal);
-        List<DescripcionValor> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
+        List<ReporteEstadoResultados> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<ReporteGrupoDetalle> ObtenerReporteDetalleEgreso(int intIdEmpresa, int intIdSucursal, int idCuentaEgreso, string strFechaInicial, string strFechaFinal);
         List<ReporteGrupoDetalle> ObtenerReporteDetalleIngreso(int intIdEmpresa, int intIdSucursal, int idCuentaIngreso, string strFechaInicial, string strFechaFinal);
         List<DescripcionValor> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
@@ -147,13 +147,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(x => new { x.IdCliente, x.Nulo, x.ConsecProforma, x.Fecha, x.NombreCliente, x.Impuesto, Total = (x.Excento + x.Gravado + x.Exonerado + x.Impuesto) });
                     foreach (var value in detalleVentas)
                     {
-                        ReporteDetalle reporteLinea = new ReporteDetalle();
-                        reporteLinea.Id = value.ConsecProforma;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Nombre = value.NombreCliente;
-                        reporteLinea.NoDocumento = "";
-                        reporteLinea.Impuesto = value.Impuesto;
-                        reporteLinea.Total = value.Total;
+                        ReporteDetalle reporteLinea = new ReporteDetalle
+                        {
+                            Id = value.ConsecProforma,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            Nombre = value.NombreCliente,
+                            NoDocumento = "",
+                            Impuesto = value.Impuesto,
+                            Total = value.Total
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -181,13 +183,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(x => new { x.IdCliente, x.Nulo, x.ConsecApartado, x.Fecha, x.NombreCliente, x.Impuesto, Total = (x.Excento + x.Gravado + x.Exonerado + x.Impuesto) });
                     foreach (var value in detalleVentas)
                     {
-                        ReporteDetalle reporteLinea = new ReporteDetalle();
-                        reporteLinea.Id = value.ConsecApartado;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Nombre = value.NombreCliente;
-                        reporteLinea.NoDocumento = "";
-                        reporteLinea.Impuesto = value.Impuesto;
-                        reporteLinea.Total = value.Total;
+                        ReporteDetalle reporteLinea = new ReporteDetalle
+                        {
+                            Id = value.ConsecApartado,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            Nombre = value.NombreCliente,
+                            NoDocumento = "",
+                            Impuesto = value.Impuesto,
+                            Total = value.Total
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -215,13 +219,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(x => new { x.IdCliente, x.Nulo, x.ConsecOrdenServicio, x.Fecha, x.NombreCliente, x.Impuesto, Total = (x.Excento + x.Gravado + x.Exonerado + x.Impuesto) });
                     foreach (var value in detalleVentas)
                     {
-                        ReporteDetalle reporteLinea = new ReporteDetalle();
-                        reporteLinea.Id = value.ConsecOrdenServicio;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Nombre = value.NombreCliente;
-                        reporteLinea.NoDocumento = "";
-                        reporteLinea.Impuesto = value.Impuesto;
-                        reporteLinea.Total = value.Total;
+                        ReporteDetalle reporteLinea = new ReporteDetalle
+                        {
+                            Id = value.ConsecOrdenServicio,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            Nombre = value.NombreCliente,
+                            NoDocumento = "",
+                            Impuesto = value.Impuesto,
+                            Total = value.Total
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -253,13 +259,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             detalleVentas = detalleVentas.Where(x => x.IdCliente == intIdCliente);
                         foreach (var value in detalleVentas)
                         {
-                            ReporteDetalle reporteLinea = new ReporteDetalle();
-                            reporteLinea.Id = value.ConsecFactura;
-                            reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                            reporteLinea.Nombre = value.NombreCliente;
-                            reporteLinea.NoDocumento = "";
-                            reporteLinea.Impuesto = value.Impuesto;
-                            reporteLinea.Total = value.Total;
+                            ReporteDetalle reporteLinea = new ReporteDetalle
+                            {
+                                Id = value.ConsecFactura,
+                                Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                                Nombre = value.NombreCliente,
+                                NoDocumento = "",
+                                Impuesto = value.Impuesto,
+                                Total = value.Total
+                            };
                             listaReporte.Add(reporteLinea);
                         }
                     }
@@ -278,13 +286,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 detalleVentas = detalleVentas.Where(x => x.IdCliente == intIdCliente);
                             foreach (var value in detalleVentas)
                             {
-                                ReporteDetalle reporteLinea = new ReporteDetalle();
-                                reporteLinea.Id = value.ConsecFactura;
-                                reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                                reporteLinea.Nombre = value.NombreCliente;
-                                reporteLinea.NoDocumento = "";
-                                reporteLinea.Impuesto = value.Impuesto;
-                                reporteLinea.Total = value.Total;
+                                ReporteDetalle reporteLinea = new ReporteDetalle
+                                {
+                                    Id = value.ConsecFactura,
+                                    Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                                    Nombre = value.NombreCliente,
+                                    NoDocumento = "",
+                                    Impuesto = value.Impuesto,
+                                    Total = value.Total
+                                };
                                 listaReporte.Add(reporteLinea);
                             }
                         }
@@ -313,13 +323,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 detalleVentas = detalleVentas.Where(x => x.IdCliente == intIdCliente);
                             foreach (var value in detalleVentas)
                             {
-                                ReporteDetalle reporteLinea = new ReporteDetalle();
-                                reporteLinea.Id = value.ConsecFactura;
-                                reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                                reporteLinea.Nombre = value.NombreCliente;
-                                reporteLinea.NoDocumento = "";
-                                reporteLinea.Impuesto = value.Impuesto;
-                                reporteLinea.Total = value.Total;
+                                ReporteDetalle reporteLinea = new ReporteDetalle
+                                {
+                                    Id = value.ConsecFactura,
+                                    Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                                    Nombre = value.NombreCliente,
+                                    NoDocumento = "",
+                                    Impuesto = value.Impuesto,
+                                    Total = value.Total
+                                };
                                 listaReporte.Add(reporteLinea);
                             }
                         }
@@ -350,13 +362,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleVentas = detalleVentas.Where(x => x.Factura.IdCliente == intIdCliente);
                     foreach (var value in detalleVentas)
                     {
-                        ReporteDetalle reporteLinea = new ReporteDetalle();
-                        reporteLinea.Id = value.IdDevolucion;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Nombre = value.Factura.NombreCliente;
-                        reporteLinea.NoDocumento = "";
-                        reporteLinea.Impuesto = value.Impuesto;
-                        reporteLinea.Total = value.Total;
+                        ReporteDetalle reporteLinea = new ReporteDetalle
+                        {
+                            Id = value.IdDevolucion,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            Nombre = value.Factura.NombreCliente,
+                            NoDocumento = "",
+                            Impuesto = value.Impuesto,
+                            Total = value.Total
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -386,13 +400,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleVentas = detalleVentas.Where(x => x.IdVendedor == intIdVendedor);
                     foreach (var value in detalleVentas)
                     {
-                        ReporteVentasPorVendedor reporteLinea = new ReporteVentasPorVendedor();
-                        reporteLinea.NombreVendedor = value.Nombre;
-                        reporteLinea.IdFactura = value.ConsecFactura;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.NombreCliente = value.NombreCliente;
-                        reporteLinea.NoDocumento = "";
-                        reporteLinea.Total = value.Total;
+                        ReporteVentasPorVendedor reporteLinea = new ReporteVentasPorVendedor
+                        {
+                            NombreVendedor = value.Nombre,
+                            IdFactura = value.ConsecFactura,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            NombreCliente = value.NombreCliente,
+                            NoDocumento = "",
+                            Total = value.Total
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -424,13 +440,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             detalleCompras = detalleCompras.Where(x => x.IdProveedor == intIdProveedor);
                         foreach (var value in detalleCompras)
                         {
-                            ReporteDetalle reporteLinea = new ReporteDetalle();
-                            reporteLinea.Id = value.IdCompra;
-                            reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                            reporteLinea.Nombre = value.NombreProveedor;
-                            reporteLinea.NoDocumento = value.NoDocumento;
-                            reporteLinea.Impuesto = value.Impuesto;
-                            reporteLinea.Total = value.Total;
+                            ReporteDetalle reporteLinea = new ReporteDetalle
+                            {
+                                Id = value.IdCompra,
+                                Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                                Nombre = value.NombreProveedor,
+                                NoDocumento = value.NoDocumento,
+                                Impuesto = value.Impuesto,
+                                Total = value.Total
+                            };
                             listaReporte.Add(reporteLinea);
                         }
                     }
@@ -449,13 +467,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 detalleCompras = detalleCompras.Where(x => x.IdProveedor == intIdProveedor);
                             foreach (var value in detalleCompras)
                             {
-                                ReporteDetalle reporteLinea = new ReporteDetalle();
-                                reporteLinea.Id = value.IdCompra;
-                                reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                                reporteLinea.Nombre = value.NombreProveedor;
-                                reporteLinea.NoDocumento = value.NoDocumento;
-                                reporteLinea.Impuesto = value.Impuesto;
-                                reporteLinea.Total = value.Total;
+                                ReporteDetalle reporteLinea = new ReporteDetalle
+                                {
+                                    Id = value.IdCompra,
+                                    Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                                    Nombre = value.NombreProveedor,
+                                    NoDocumento = value.NoDocumento,
+                                    Impuesto = value.Impuesto,
+                                    Total = value.Total
+                                };
                                 listaReporte.Add(reporteLinea);
                             }
                         }
@@ -484,13 +504,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 detalleCompras = detalleCompras.Where(x => x.IdProveedor == intIdProveedor);
                             foreach (var value in detalleCompras)
                             {
-                                ReporteDetalle reporteLinea = new ReporteDetalle();
-                                reporteLinea.Id = value.IdCompra;
-                                reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                                reporteLinea.Nombre = value.NombreProveedor;
-                                reporteLinea.NoDocumento = value.NoDocumento;
-                                reporteLinea.Impuesto = value.Impuesto;
-                                reporteLinea.Total = value.Total;
+                                ReporteDetalle reporteLinea = new ReporteDetalle
+                                {
+                                    Id = value.IdCompra,
+                                    Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                                    Nombre = value.NombreProveedor,
+                                    NoDocumento = value.NoDocumento,
+                                    Impuesto = value.Impuesto,
+                                    Total = value.Total
+                                };
                                 listaReporte.Add(reporteLinea);
                             }
                         }
@@ -525,17 +547,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleCxCClientes = detalleCxCClientes.Where(x => x.IdPropietario == intIdCliente);
                     foreach (var value in detalleCxCClientes)
                     {
-                        ReporteCuentas reporteLinea = new ReporteCuentas();
-                        reporteLinea.IdPropietario = value.IdPropietario;
-                        reporteLinea.Nombre = value.Nombre;
-                        reporteLinea.IdCuenta = value.IdCxC;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Plazo = value.Plazo;
-                        reporteLinea.FechaVence = value.Fecha.AddDays(value.Plazo).ToString("dd/MM/yyyy");
-                        reporteLinea.Descripcion = "Cuenta por cobrar de factura " + value.Referencia;
-                        reporteLinea.Referencia = value.Referencia;
-                        reporteLinea.Total = value.Total;
-                        reporteLinea.Saldo = value.Saldo;
+                        ReporteCuentas reporteLinea = new ReporteCuentas
+                        {
+                            IdPropietario = value.IdPropietario,
+                            Nombre = value.Nombre,
+                            IdCuenta = value.IdCxC,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            Plazo = value.Plazo,
+                            FechaVence = value.Fecha.AddDays(value.Plazo).ToString("dd/MM/yyyy"),
+                            Descripcion = "Cuenta por cobrar de factura " + value.Referencia,
+                            Referencia = value.Referencia,
+                            Total = value.Total,
+                            Saldo = value.Saldo
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -568,17 +592,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleCxPProveedores = detalleCxPProveedores.Where(x => x.IdPropietario == intIdProveedor);
                     foreach (var value in detalleCxPProveedores)
                     {
-                        ReporteCuentas reporteLinea = new ReporteCuentas();
-                        reporteLinea.IdPropietario = value.IdPropietario;
-                        reporteLinea.Nombre = value.Nombre;
-                        reporteLinea.IdCuenta = value.IdCxP;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Plazo = value.Plazo;
-                        reporteLinea.FechaVence = value.Fecha.AddDays(value.Plazo).ToString("dd/MM/yyyy");
-                        reporteLinea.Descripcion = "Cuenta por pagar de compra " + value.Referencia;
-                        reporteLinea.Referencia = value.Referencia;
-                        reporteLinea.Total = value.Total;
-                        reporteLinea.Saldo = value.Saldo;
+                        ReporteCuentas reporteLinea = new ReporteCuentas
+                        {
+                            IdPropietario = value.IdPropietario,
+                            Nombre = value.Nombre,
+                            IdCuenta = value.IdCxP,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            Plazo = value.Plazo,
+                            FechaVence = value.Fecha.AddDays(value.Plazo).ToString("dd/MM/yyyy"),
+                            Descripcion = "Cuenta por pagar de compra " + value.Referencia,
+                            Referencia = value.Referencia,
+                            Total = value.Total,
+                            Saldo = value.Saldo
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -610,12 +636,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         cxcClientes = cxcClientes.Where(a => a.IdPropietario == intIdCliente);
                     foreach (var value in cxcClientes)
                     {
-                        ReporteGrupoDetalle reporteLinea = new ReporteGrupoDetalle();
-                        reporteLinea.Descripcion = value.Nombre;
-                        reporteLinea.Id = value.IdMovCxC;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Detalle = "Cuenta por cobrar de factura " + value.Referencia;
-                        reporteLinea.Total = value.Monto;
+                        ReporteGrupoDetalle reporteLinea = new ReporteGrupoDetalle
+                        {
+                            Descripcion = value.Nombre,
+                            Id = value.IdMovCxC,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            Detalle = "Cuenta por cobrar de factura " + value.Referencia,
+                            Total = value.Monto
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -647,12 +675,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         cxpProveedores = cxpProveedores.Where(a => a.IdPropietario == intIdProveedor);
                     foreach (var value in cxpProveedores)
                     {
-                        ReporteGrupoDetalle reporteLinea = new ReporteGrupoDetalle();
-                        reporteLinea.Descripcion = value.Nombre;
-                        reporteLinea.Id = value.IdMovCxP;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Detalle = "Cuenta por pagar de compra " + value.Referencia;
-                        reporteLinea.Total = value.Monto;
+                        ReporteGrupoDetalle reporteLinea = new ReporteGrupoDetalle
+                        {
+                            Descripcion = value.Nombre,
+                            Id = value.IdMovCxP,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            Detalle = "Cuenta por pagar de compra " + value.Referencia,
+                            Total = value.Monto
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -683,16 +713,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .OrderBy(x => x.IdMov).ThenBy(x => x.Fecha);
                     foreach (var value in movimientoBanco)
                     {
-                        ReporteMovimientosBanco reporteLinea = new ReporteMovimientosBanco();
-                        reporteLinea.IdMov = value.IdMov;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.IdCuenta = value.IdCuenta;
-                        reporteLinea.NombreCuenta = value.NombreCuenta;
-                        reporteLinea.SaldoAnterior = value.SaldoAnterior;
-                        reporteLinea.Numero = value.Numero;
-                        reporteLinea.Beneficiario = value.Beneficiario;
-                        reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.Tipo = value.DescTipo;
+                        ReporteMovimientosBanco reporteLinea = new ReporteMovimientosBanco
+                        {
+                            IdMov = value.IdMov,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            IdCuenta = value.IdCuenta,
+                            NombreCuenta = value.NombreCuenta,
+                            SaldoAnterior = value.SaldoAnterior,
+                            Numero = value.Numero,
+                            Beneficiario = value.Beneficiario,
+                            Descripcion = value.Descripcion,
+                            Tipo = value.DescTipo
+                        };
                         if (value.DebeHaber.Equals("D"))
                         {
                             reporteLinea.Debito = value.Total;
@@ -718,7 +750,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<DescripcionValor> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
+        public List<ReporteEstadoResultados> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -727,7 +759,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    List<DescripcionValor> listaReporte = new List<DescripcionValor>();
+                    List<ReporteEstadoResultados> listaReporte = new List<ReporteEstadoResultados>();
                     var grupoFacturas = dbContext.FacturaRepository.Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
                         .Where(s => s.x.IdEmpresa == intIdEmpresa && s.x.Nulo == false && s.x.Fecha >= datFechaInicial && s.x.Fecha <= datFechaFinal)
                         .GroupBy(x => x.y.IdFormaPago)
@@ -736,16 +768,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         string strTipo = "";
                         if (eachFactura.tipopago == StaticFormaPago.Efectivo)
-                            strTipo = " de contado";
+                            strTipo = " DE CONTADO";
                         else if (eachFactura.tipopago == StaticFormaPago.Cheque)
-                            strTipo = " con cheque";
+                            strTipo = " CON CHEQUE";
                         else if (eachFactura.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
-                            strTipo = " con depósito bancario";
+                            strTipo = " CON DEPOSITO BANCARIO";
                         else if (eachFactura.tipopago == StaticFormaPago.Tarjeta)
-                            strTipo = " con tarjeta";
+                            strTipo = " CON TARJETA";
                         else
-                            strTipo = " otras formas de pago";
-                        DescripcionValor reporteLinea = new DescripcionValor("Ventas" + strTipo, eachFactura.total);
+                            strTipo = " OTRAS FORMAS DE PAGO";
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("VENTAS" + strTipo, "Ingresos", eachFactura.total);
                         listaReporte.Add(reporteLinea);
                     }
                     var ingreso = dbContext.IngresoRepository.Where(w => w.IdEmpresa == intIdEmpresa && w.Nulo == false && w.Fecha >= datFechaInicial && w.Fecha <= datFechaFinal)
@@ -754,12 +786,32 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(a => new { Total = a.Sum(b => b.x.Monto), Desc = a.Key });
                     foreach (var value in ingreso)
                     {
-                        DescripcionValor reporteLinea = new DescripcionValor(value.Desc, value.Total);
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados(value.Desc.ToUpper(), "Ingresos", value.Total);
                         listaReporte.Add(reporteLinea);
                     }
-                    if (grupoFacturas.Count() == 0 && ingreso.Count() == 0)
+                    var abonosCxC = dbContext.MovimientoCuentaPorCobrarRepository.Join(dbContext.DesglosePagoMovimientoCuentaPorCobrarRepository, x => x.IdMovCxC, y => y.IdMovCxC, (x, y) => new { x, y })
+                        .Where(s => s.x.IdEmpresa == intIdEmpresa && s.x.Nulo == false && s.x.Fecha >= datFechaInicial && s.x.Fecha <= datFechaFinal)
+                        .GroupBy(x => x.y.IdFormaPago)
+                        .Select(sf => new { tipopago = sf.Key, total = sf.Sum(a => a.y.MontoLocal) });
+                    foreach (var eachAbono in abonosCxC)
                     {
-                        DescripcionValor reporteLinea = new DescripcionValor("No hay registros", 0);
+                        string strTipo = "";
+                        if (eachAbono.tipopago == StaticFormaPago.Efectivo)
+                            strTipo = " DE CONTADO";
+                        else if (eachAbono.tipopago == StaticFormaPago.Cheque)
+                            strTipo = " CON CHEQUE";
+                        else if (eachAbono.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
+                            strTipo = " CON DEPOSITO BANCARIO";
+                        else if (eachAbono.tipopago == StaticFormaPago.Tarjeta)
+                            strTipo = " CON TARJETA";
+                        else
+                            strTipo = " OTRAS FORMAS DE PAGO";
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("ABONO CXC" + strTipo, "Ingresos", eachAbono.total);
+                        listaReporte.Add(reporteLinea);
+                    }
+                    if (grupoFacturas.Count() == 0 && ingreso.Count() == 0 && abonosCxC.Count() == 0)
+                    {
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("NO HAY REGISTROS", "Ingresos", 0);
                         listaReporte.Add(reporteLinea);
                     }
                     var grupoCompras = dbContext.CompraRepository.Join(dbContext.DesglosePagoCompraRepository, x => x.IdCompra, y => y.IdCompra, (x, y) => new { x, y })
@@ -772,16 +824,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             string strTipo = "";
                             if (eachCompra.tipopago == StaticFormaPago.Efectivo)
-                                strTipo = " de contado";
+                                strTipo = " DE CONTADO";
                             else if (eachCompra.tipopago == StaticFormaPago.Cheque)
-                                strTipo = " con cheque";
+                                strTipo = " CON CHEQUE";
                             else if (eachCompra.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
-                                strTipo = " con depósito bancario";
+                                strTipo = " CON DEPOSITO BANCARIO";
                             else if (eachCompra.tipopago == StaticFormaPago.Tarjeta)
-                                strTipo = " con tarjeta";
+                                strTipo = " CON TARJETA";
                             else
-                                strTipo = " con otras formas de pago";
-                            DescripcionValor reporteLinea = new DescripcionValor("Compras" + strTipo, eachCompra.total);
+                                strTipo = " OTRAS FORMAS DE PAGO";
+                            ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("COMPRAS" + strTipo, "Egresos", eachCompra.total);
                             listaReporte.Add(reporteLinea);
                         }
                     }
@@ -791,13 +843,32 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(a => new { Total = a.Sum(b => b.x.Monto), Desc = a.Key });
                     foreach (var value in egreso)
                     {
-                        DescripcionValor reporteLinea = new DescripcionValor(value.Desc, value.Total);
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados(value.Desc.ToUpper(), "Egresos", value.Total);
                         listaReporte.Add(reporteLinea);
                     }
-
-                    if (grupoCompras.Count() == 0 && egreso.Count() == 0)
+                    var abonosCxP = dbContext.MovimientoCuentaPorPagarRepository.Join(dbContext.DesglosePagoMovimientoCuentaPorPagarRepository, x => x.IdMovCxP, y => y.IdMovCxP, (x, y) => new { x, y })
+                        .Where(s => s.x.IdEmpresa == intIdEmpresa && s.x.Nulo == false && s.x.Fecha >= datFechaInicial && s.x.Fecha <= datFechaFinal)
+                        .GroupBy(x => x.y.IdFormaPago)
+                        .Select(sf => new { tipopago = sf.Key, total = sf.Sum(a => a.y.MontoLocal) });
+                    foreach (var eachAbono in abonosCxP)
                     {
-                        DescripcionValor reporteLinea = new DescripcionValor("No hay registros", 0);
+                        string strTipo = "";
+                        if (eachAbono.tipopago == StaticFormaPago.Efectivo)
+                            strTipo = " DE CONTADO";
+                        else if (eachAbono.tipopago == StaticFormaPago.Cheque)
+                            strTipo = " CON CHEQUE";
+                        else if (eachAbono.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
+                            strTipo = " CON DEPOSITO BANCARIO";
+                        else if (eachAbono.tipopago == StaticFormaPago.Tarjeta)
+                            strTipo = " CON TARJETA";
+                        else
+                            strTipo = " OTRAS FORMAS DE PAGO";
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("ABONO CXP" + strTipo, "Egresos", eachAbono.total);
+                        listaReporte.Add(reporteLinea);
+                    }
+                    if (grupoCompras.Count() == 0 && egreso.Count() == 0 && abonosCxP.Count() == 0)
+                    {
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("NO HAY REGISTROS", "Egresos", 0);
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -828,12 +899,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (intIdCuentaEgreso > 0 && value.IdCuenta != intIdCuentaEgreso)
                             continue;
-                        ReporteGrupoDetalle reporteLinea = new ReporteGrupoDetalle();
-                        reporteLinea.Id = value.IdEgreso;
-                        reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.Detalle = value.Detalle;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Total = value.Total;
+                        ReporteGrupoDetalle reporteLinea = new ReporteGrupoDetalle
+                        {
+                            Id = value.IdEgreso,
+                            Descripcion = value.Descripcion,
+                            Detalle = value.Detalle,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            Total = value.Total
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -864,12 +937,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (intIdCuentaIngreso > 0 && value.IdCuenta != intIdCuentaIngreso)
                             continue;
-                        ReporteGrupoDetalle reporteLinea = new ReporteGrupoDetalle();
-                        reporteLinea.Id = value.IdIngreso;
-                        reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.Detalle = value.Detalle;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Total = value.Total;
+                        ReporteGrupoDetalle reporteLinea = new ReporteGrupoDetalle
+                        {
+                            Id = value.IdIngreso,
+                            Descripcion = value.Descripcion,
+                            Detalle = value.Detalle,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            Total = value.Total
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -901,9 +976,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(sf => new { NombreLinea = sf.Key, Total = sf.Sum(z => (z.x.x.y.Cantidad - z.x.x.y.CantDevuelto) * (z.x.x.y.PrecioVenta * (1 + (z.x.x.y.PorcentajeIVA / 100)))) });
                     foreach (var value in ventasResumen)
                     {
-                        DescripcionValor reporteLinea = new DescripcionValor();
-                        reporteLinea.Descripcion = value.NombreLinea;
-                        reporteLinea.Valor = value.Total;
+                        DescripcionValor reporteLinea = new DescripcionValor
+                        {
+                            Descripcion = value.NombreLinea,
+                            Valor = value.Total
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -937,12 +1014,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(sf => new { sf.Key.NombreLinea, sf.Key.Codigo, Cantidad = sf.Sum(z => (z.x.x.y.Cantidad - z.x.x.y.CantDevuelto)), sf.Key.Descripcion, Total = sf.Sum(z => (z.x.x.y.Cantidad - z.x.x.y.CantDevuelto) * (z.x.x.y.PrecioVenta * (1 + (z.x.x.y.PorcentajeIVA / 100)))) });
                     foreach (var value in listado)
                     {
-                        ReporteGrupoLineaDetalle reporteLinea = new ReporteGrupoLineaDetalle();
-                        reporteLinea.NombreLinea = value.NombreLinea;
-                        reporteLinea.Codigo = value.Codigo;
-                        reporteLinea.Cantidad = value.Cantidad;
-                        reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.Total = value.Total;
+                        ReporteGrupoLineaDetalle reporteLinea = new ReporteGrupoLineaDetalle
+                        {
+                            NombreLinea = value.NombreLinea,
+                            Codigo = value.Codigo,
+                            Cantidad = value.Cantidad,
+                            Descripcion = value.Descripcion,
+                            Total = value.Total
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -1077,10 +1156,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(a => new { TotalDebito = a.Sum(b => b.c.b.Debito), TotalCredito = a.Sum(b => b.c.b.Credito), Descripcion = a.Key });
                     foreach (var value in listaCuentas)
                     {
-                        ReporteMovimientosContables reporteLinea = new ReporteMovimientosContables();
-                        reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.SaldoDebe = value.TotalDebito;
-                        reporteLinea.SaldoHaber = value.TotalCredito;
+                        ReporteMovimientosContables reporteLinea = new ReporteMovimientosContables
+                        {
+                            Descripcion = value.Descripcion,
+                            SaldoDebe = value.TotalDebito,
+                            SaldoHaber = value.TotalCredito
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -1108,9 +1189,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (CatalogoContable value in listaCuentas)
                     {
                         decimal decSaldo = 0;
-                        ReporteBalanceComprobacion reporteLinea = new ReporteBalanceComprobacion();
-                        reporteLinea.IdCuenta = value.IdCuenta;
-                        reporteLinea.Descripcion = value.Descripcion;
+                        ReporteBalanceComprobacion reporteLinea = new ReporteBalanceComprobacion
+                        {
+                            IdCuenta = value.IdCuenta,
+                            Descripcion = value.Descripcion
+                        };
                         if (intMes > 0 && intAnnio > 0)
                             decSaldo = dbContext.SaldoMensualContableRepository.Where(x => x.Mes == intMes && x.Annio == intAnnio && x.IdCuenta == value.IdCuenta).Select(a => a.SaldoFinMes).FirstOrDefault();
                         else
@@ -1153,9 +1236,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (CatalogoContable value in listaCuentas)
                     {
                         decimal decSaldo = 0;
-                        ReportePerdidasyGanancias reporteLinea = new ReportePerdidasyGanancias();
-                        reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.IdTipoCuenta = value.IdTipoCuenta;
+                        ReportePerdidasyGanancias reporteLinea = new ReportePerdidasyGanancias
+                        {
+                            Descripcion = value.Descripcion,
+                            IdTipoCuenta = value.IdTipoCuenta
+                        };
                         if (value.TipoCuentaContable.TipoSaldo == StaticTipoDebitoCredito.Debito)
                             reporteLinea.DescGrupo = "Cuentas de Egresos";
                         else
@@ -1211,14 +1296,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Select(a => new { a.c.a.IdCuenta, a.c.a.Descripcion, a.c.b.SaldoAnterior, a.d.Fecha, a.d.Detalle, a.c.b.Debito, a.c.b.Credito }).OrderBy(a => a.IdCuenta).ThenBy(a => a.Fecha).ToList();
                     foreach (var value in listaCuentas)
                     {
-                        ReporteDetalleMovimientosCuentasDeBalance reporteLinea = new ReporteDetalleMovimientosCuentasDeBalance();
-                        reporteLinea.DescCuentaBalance = cuentaDeBalance.Descripcion;
-                        reporteLinea.Descripcion = value.Descripcion;
-                        reporteLinea.SaldoInicial = value.SaldoAnterior;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Detalle = value.Detalle;
-                        reporteLinea.Debito = value.Debito;
-                        reporteLinea.Credito = value.Credito;
+                        ReporteDetalleMovimientosCuentasDeBalance reporteLinea = new ReporteDetalleMovimientosCuentasDeBalance
+                        {
+                            DescCuentaBalance = cuentaDeBalance.Descripcion,
+                            Descripcion = value.Descripcion,
+                            SaldoInicial = value.SaldoAnterior,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            Detalle = value.Detalle,
+                            Debito = value.Debito,
+                            Credito = value.Credito
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -1243,13 +1330,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var datosEgreso = dbContext.EgresoRepository.Where(a => a.IdEgreso == intIdEgreso);
                     foreach (var value in datosEgreso)
                     {
-                        ReporteEgreso reporteLinea = new ReporteEgreso();
-                        reporteLinea.IdEgreso = value.IdEgreso;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.Detalle = value.Detalle;
-                        reporteLinea.Beneficiario = value.Beneficiario;
-                        reporteLinea.Monto = value.Monto;
-                        reporteLinea.MontoEnLetras = Utilitario.Validador.NumeroALetras((double)value.Monto);
+                        ReporteEgreso reporteLinea = new ReporteEgreso
+                        {
+                            IdEgreso = value.IdEgreso,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            Detalle = value.Detalle,
+                            Beneficiario = value.Beneficiario,
+                            Monto = value.Monto,
+                            MontoEnLetras = Utilitario.Validador.NumeroALetras((double)value.Monto)
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -1274,13 +1363,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var datosIngreso = dbContext.IngresoRepository.Where(a => a.IdIngreso == intIdIngreso);
                     foreach (var value in datosIngreso)
                     {
-                        ReporteIngreso reporteLinea = new ReporteIngreso();
-                        reporteLinea.IdIngreso = value.IdIngreso;
-                        reporteLinea.Fecha = value.Fecha.ToString("dd/MM/yyyy");
-                        reporteLinea.RecibidoDe = value.RecibidoDe;
-                        reporteLinea.Detalle = value.Detalle;
-                        reporteLinea.Monto = value.Monto;
-                        reporteLinea.MontoEnLetras = Utilitario.Validador.NumeroALetras((double)value.Monto);
+                        ReporteIngreso reporteLinea = new ReporteIngreso
+                        {
+                            IdIngreso = value.IdIngreso,
+                            Fecha = value.Fecha.ToString("dd/MM/yyyy"),
+                            RecibidoDe = value.RecibidoDe,
+                            Detalle = value.Detalle,
+                            Monto = value.Monto,
+                            MontoEnLetras = Utilitario.Validador.NumeroALetras((double)value.Monto)
+                        };
                         listaReporte.Add(reporteLinea);
                     }
                     return listaReporte;
@@ -1389,16 +1480,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 decTotal = decTotal * decTipoDeCambio;
                                 decTotalImpuesto = decTotalImpuesto * decTipoDeCambio;
                             }
-                            ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
-                            reporteLinea.TipoDocumento = documentoXml.DocumentElement.Name == "FacturaElectronica" ? "FACTURA ELECTRONICA" : documentoXml.DocumentElement.Name == "NotaCreditoElectronica" ? "NOTA DE CREDITO" : documentoXml.DocumentElement.Name == "FacturaElectronicaCompra" ? "FACTURA ELEC. DE COMPRA" : "NOTA DE DEBITO";
-                            reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
-                            reporteLinea.Consecutivo = documentoXml.GetElementsByTagName("NumeroConsecutivo").Item(0).InnerText;
-                            reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
-                            reporteLinea.Nombre = strNombreEmisor;
-                            reporteLinea.Moneda = strCodigoMoneda;
-                            reporteLinea.Identificacion = strIdentificacion;
-                            reporteLinea.Impuesto = decTotalImpuesto;
-                            reporteLinea.Total = decTotal;
+                            ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico
+                            {
+                                TipoDocumento = documentoXml.DocumentElement.Name == "FacturaElectronica" ? "FACTURA ELECTRONICA" : documentoXml.DocumentElement.Name == "NotaCreditoElectronica" ? "NOTA DE CREDITO" : documentoXml.DocumentElement.Name == "FacturaElectronicaCompra" ? "FACTURA ELEC. DE COMPRA" : "NOTA DE DEBITO",
+                                ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText,
+                                Consecutivo = documentoXml.GetElementsByTagName("NumeroConsecutivo").Item(0).InnerText,
+                                Fecha = documento.Fecha.ToString("dd/MM/yyyy"),
+                                Nombre = strNombreEmisor,
+                                Moneda = strCodigoMoneda,
+                                Identificacion = strIdentificacion,
+                                Impuesto = decTotalImpuesto,
+                                Total = decTotal
+                            };
                             listaReporte.Add(reporteLinea);
                         }
                         else
@@ -1415,15 +1508,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 decTotal = decimal.Parse(documentoXml.GetElementsByTagName("TotalFactura").Item(0).InnerText, CultureInfo.InvariantCulture);
                             if (documentoXml.GetElementsByTagName("MontoTotalImpuesto").Count > 0)
                                 decTotalImpuesto = decimal.Parse(documentoXml.GetElementsByTagName("MontoTotalImpuesto").Item(0).InnerText, CultureInfo.InvariantCulture);
-                            ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico();
-                            reporteLinea.TipoDocumento = "FACTURA ELECTRONICA";
-                            reporteLinea.ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText;
-                            reporteLinea.Fecha = documento.Fecha.ToString("dd/MM/yyyy");
-                            reporteLinea.Nombre = strNombreEmisor;
-                            reporteLinea.Identificacion = strIdentificacion;
-                            reporteLinea.Moneda = strCodigoMoneda;
-                            reporteLinea.Impuesto = decTotalImpuesto;
-                            reporteLinea.Total = decTotal;
+                            ReporteDocumentoElectronico reporteLinea = new ReporteDocumentoElectronico
+                            {
+                                TipoDocumento = "FACTURA ELECTRONICA",
+                                ClaveNumerica = documentoXml.GetElementsByTagName("Clave").Item(0).InnerText,
+                                Fecha = documento.Fecha.ToString("dd/MM/yyyy"),
+                                Nombre = strNombreEmisor,
+                                Identificacion = strIdentificacion,
+                                Moneda = strCodigoMoneda,
+                                Impuesto = decTotalImpuesto,
+                                Total = decTotal
+                            };
                             listaReporte.Add(reporteLinea);
                         }
 
@@ -1588,23 +1683,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decTotalVentaServiciosExento -= decVentaServiciosExento * decTipoDeCambio;
                         }
                     }
-                    ReporteResumenMovimiento reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Ventas de bienes o mercancias";
-                    reporteLinea.Exento = decTotalVentaBienesExento;
-                    reporteLinea.Tasa1 = decTotalVentaBienesTasa1;
-                    reporteLinea.Tasa2 = decTotalVentaBienesTasa2;
-                    reporteLinea.Tasa4 = decTotalVentaBienesTasa4;
-                    reporteLinea.Tasa8 = decTotalVentaBienesTasa8;
-                    reporteLinea.Tasa13 = decTotalVentaBienesTasa13;
+                    ReporteResumenMovimiento reporteLinea = new ReporteResumenMovimiento
+                    {
+                        Descripcion = "Ventas de bienes o mercancias",
+                        Exento = decTotalVentaBienesExento,
+                        Tasa1 = decTotalVentaBienesTasa1,
+                        Tasa2 = decTotalVentaBienesTasa2,
+                        Tasa4 = decTotalVentaBienesTasa4,
+                        Tasa8 = decTotalVentaBienesTasa8,
+                        Tasa13 = decTotalVentaBienesTasa13
+                    };
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Ventas de servicios";
-                    reporteLinea.Exento = decTotalVentaServiciosExento;
-                    reporteLinea.Tasa1 = decTotalVentaServiciosTasa1;
-                    reporteLinea.Tasa2 = decTotalVentaServiciosTasa2;
-                    reporteLinea.Tasa4 = decTotalVentaServiciosTasa4;
-                    reporteLinea.Tasa8 = decTotalVentaServiciosTasa8;
-                    reporteLinea.Tasa13 = decTotalVentaServiciosTasa13;
+                    reporteLinea = new ReporteResumenMovimiento
+                    {
+                        Descripcion = "Ventas de servicios",
+                        Exento = decTotalVentaServiciosExento,
+                        Tasa1 = decTotalVentaServiciosTasa1,
+                        Tasa2 = decTotalVentaServiciosTasa2,
+                        Tasa4 = decTotalVentaServiciosTasa4,
+                        Tasa8 = decTotalVentaServiciosTasa8,
+                        Tasa13 = decTotalVentaServiciosTasa13
+                    };
                     listaReporte.Add(reporteLinea);
                     var grupoFacturasRecibidas = dbContext.DocumentoElectronicoRepository
                         .Where(a => a.IdEmpresa == intIdEmpresa && a.IdSucursal == intIdSucursal && a.Fecha >= datFechaInicial && a.Fecha <= datFechaFinal && new[] { 5, 8 }.Any(s => s == a.IdTipoDocumento) && a.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado).ToList();
@@ -1836,41 +1935,49 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                         }
                     }
-                    reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Compras de bienes o mercancias IVA acreditable";
-                    reporteLinea.Exento = decTotalCompraBienesIvaExento;
-                    reporteLinea.Tasa1 = decTotalCompraBienesIvaTasa1;
-                    reporteLinea.Tasa2 = decTotalCompraBienesIvaTasa2;
-                    reporteLinea.Tasa4 = decTotalCompraBienesIvaTasa4;
-                    reporteLinea.Tasa8 = decTotalCompraBienesIvaTasa8;
-                    reporteLinea.Tasa13 = decTotalCompraBienesIvaTasa13;
+                    reporteLinea = new ReporteResumenMovimiento
+                    {
+                        Descripcion = "Compras de bienes o mercancias IVA acreditable",
+                        Exento = decTotalCompraBienesIvaExento,
+                        Tasa1 = decTotalCompraBienesIvaTasa1,
+                        Tasa2 = decTotalCompraBienesIvaTasa2,
+                        Tasa4 = decTotalCompraBienesIvaTasa4,
+                        Tasa8 = decTotalCompraBienesIvaTasa8,
+                        Tasa13 = decTotalCompraBienesIvaTasa13
+                    };
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Compras de servicios IVA acreditable";
-                    reporteLinea.Exento = decTotalCompraServiciosIvaExento;
-                    reporteLinea.Tasa1 = decTotalCompraServiciosIvaTasa1;
-                    reporteLinea.Tasa2 = decTotalCompraServiciosIvaTasa2;
-                    reporteLinea.Tasa4 = decTotalCompraServiciosIvaTasa4;
-                    reporteLinea.Tasa8 = decTotalCompraServiciosIvaTasa8;
-                    reporteLinea.Tasa13 = decTotalCompraServiciosIvaTasa13;
+                    reporteLinea = new ReporteResumenMovimiento
+                    {
+                        Descripcion = "Compras de servicios IVA acreditable",
+                        Exento = decTotalCompraServiciosIvaExento,
+                        Tasa1 = decTotalCompraServiciosIvaTasa1,
+                        Tasa2 = decTotalCompraServiciosIvaTasa2,
+                        Tasa4 = decTotalCompraServiciosIvaTasa4,
+                        Tasa8 = decTotalCompraServiciosIvaTasa8,
+                        Tasa13 = decTotalCompraServiciosIvaTasa13
+                    };
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Compras de bienes o mercancias sin IVA acreditable";
-                    reporteLinea.Exento = decTotalCompraBienesGastoExento;
-                    reporteLinea.Tasa1 = decTotalCompraBienesGastoTasa1;
-                    reporteLinea.Tasa2 = decTotalCompraBienesGastoTasa2;
-                    reporteLinea.Tasa4 = decTotalCompraBienesGastoTasa4;
-                    reporteLinea.Tasa8 = decTotalCompraBienesGastoTasa8;
-                    reporteLinea.Tasa13 = decTotalCompraBienesGastoTasa13;
+                    reporteLinea = new ReporteResumenMovimiento
+                    {
+                        Descripcion = "Compras de bienes o mercancias sin IVA acreditable",
+                        Exento = decTotalCompraBienesGastoExento,
+                        Tasa1 = decTotalCompraBienesGastoTasa1,
+                        Tasa2 = decTotalCompraBienesGastoTasa2,
+                        Tasa4 = decTotalCompraBienesGastoTasa4,
+                        Tasa8 = decTotalCompraBienesGastoTasa8,
+                        Tasa13 = decTotalCompraBienesGastoTasa13
+                    };
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new ReporteResumenMovimiento();
-                    reporteLinea.Descripcion = "Compras de servicios sin IVA acreditable";
-                    reporteLinea.Exento = decTotalCompraServiciosGastoExento;
-                    reporteLinea.Tasa1 = decTotalCompraServiciosGastoTasa1;
-                    reporteLinea.Tasa2 = decTotalCompraServiciosGastoTasa2;
-                    reporteLinea.Tasa4 = decTotalCompraServiciosGastoTasa4;
-                    reporteLinea.Tasa8 = decTotalCompraServiciosGastoTasa8;
-                    reporteLinea.Tasa13 = decTotalCompraServiciosGastoTasa13;
+                    reporteLinea = new ReporteResumenMovimiento
+                    {
+                        Descripcion = "Compras de servicios sin IVA acreditable",
+                        Exento = decTotalCompraServiciosGastoExento,
+                        Tasa1 = decTotalCompraServiciosGastoTasa1,
+                        Tasa2 = decTotalCompraServiciosGastoTasa2,
+                        Tasa4 = decTotalCompraServiciosGastoTasa4,
+                        Tasa8 = decTotalCompraServiciosGastoTasa8,
+                        Tasa13 = decTotalCompraServiciosGastoTasa13
+                    };
                     listaReporte.Add(reporteLinea);
                     return listaReporte;
                 }
@@ -1899,10 +2006,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .OrderBy(x => x.Annio).ThenBy(x => x.Mes).ToList();
                     foreach (var value in detalleVentas)
                     {
-                        LlaveDescripcionValor reporteLinea = new LlaveDescripcionValor();
-                        reporteLinea.Id = value.Annio;
-                        reporteLinea.Descripcion = ObtenerNombreDelMes(value.Mes);
-                        reporteLinea.Valor = value.Total;
+                        LlaveDescripcionValor reporteLinea = new LlaveDescripcionValor
+                        {
+                            Id = value.Annio,
+                            Descripcion = ObtenerNombreDelMes(value.Mes),
+                            Valor = value.Total
+                        };
                         listado.Add(reporteLinea);
                     }
                     return listado;
@@ -2010,7 +2119,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     string strNombreEmpresa = empresa.NombreComercial != "" ? empresa.NombreComercial : empresa.NombreEmpresa;
-                    IList<DescripcionValor> dstDatos = ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                    IList<ReporteEstadoResultados> dstDatos = ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                     ReportDataSource rds = new ReportDataSource("dstDatos", dstDatos);
                     ReportParameter[] parameters = new ReportParameter[5];
                     parameters[0] = new ReportParameter("pUsuario", "SYSTEM");
