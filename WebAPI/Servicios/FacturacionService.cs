@@ -3152,7 +3152,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
                 {
                     Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
-                    Codigo = linea.Producto.CodigoClasificacion,
+                    Codigo = linea.Producto.Codigo,
                     Detalle = linea.Descripcion,
                     PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
                     TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
@@ -3230,7 +3230,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
                 {
                     Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
-                    Codigo = linea.Producto.CodigoClasificacion,
+                    Codigo = linea.Producto.Codigo,
                     Detalle = linea.Descripcion,
                     PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
                     TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
