@@ -30,6 +30,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal PagosCxPBancos { get; set; }
         public decimal RetencionTarjeta { get; set; }
         public decimal ComisionTarjeta { get; set; }
+        public decimal LiquidacionTarjeta { get; set; }
         public decimal VentasCredito { get; set; }
         public decimal ComprasCredito { get; set; }
         public decimal RetiroEfectivo { get; set; }

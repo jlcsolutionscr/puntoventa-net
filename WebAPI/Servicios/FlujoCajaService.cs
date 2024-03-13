@@ -760,6 +760,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.VentasCredito = 0;
                     cierre.ComprasCredito = 0;
                     cierre.RetiroEfectivo = 0;
+                    cierre.LiquidacionTarjeta = 0;
 
                     var facturas = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (facturas.Count > 0)
@@ -784,8 +785,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 cierre.VentasTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                if (banco != null)
+                                {
+                                    cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
+                                    cierre.ComisionTarjeta += dato.MontoLocal * banco.PorcentajeComision / 100;
+                                }
                                 listaMovimientos.Add(new DetalleMovimientoCierreCaja
                                 {
                                     IdReferencia = dato.ConsecFactura,
@@ -850,8 +854,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 cierre.AdelantosApartadoTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                if (banco != null)
+                                {
+                                    cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
+                                    cierre.ComisionTarjeta += dato.MontoLocal * banco.PorcentajeComision / 100;
+                                }
                                 listaMovimientos.Add(new DetalleMovimientoCierreCaja
                                 {
                                     IdReferencia = dato.ConsecApartado,
@@ -899,8 +906,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 cierre.AdelantosApartadoTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                if (banco != null)
+                                {
+                                    cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
+                                    cierre.ComisionTarjeta += dato.MontoLocal * banco.PorcentajeComision / 100;
+                                }
                                 listaMovimientos.Add(new DetalleMovimientoCierreCaja
                                 {
                                     IdReferencia = dato.IdMovApartado,
@@ -948,8 +958,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 cierre.AdelantosOrdenTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                if (banco != null)
+                                {
+                                    cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
+                                    cierre.ComisionTarjeta += dato.MontoLocal * banco.PorcentajeComision / 100;
+                                }
                                 listaMovimientos.Add(new DetalleMovimientoCierreCaja
                                 {
                                     IdReferencia = dato.ConsecOrdenServicio,
@@ -997,8 +1010,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 cierre.AdelantosOrdenTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                if (banco != null)
+                                {
+                                    cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
+                                    cierre.ComisionTarjeta += dato.MontoLocal * banco.PorcentajeComision / 100;
+                                }
                                 listaMovimientos.Add(new DetalleMovimientoCierreCaja
                                 {
                                     IdReferencia = dato.IdMovOrden,
@@ -1046,8 +1062,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 cierre.PagosCxCTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                if (banco != null)
+                                {
+                                    cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
+                                    cierre.ComisionTarjeta += dato.MontoLocal * banco.PorcentajeComision / 100;
+                                }
                                 listaMovimientos.Add(new DetalleMovimientoCierreCaja
                                 {
                                     IdReferencia = dato.IdMovCxC,
