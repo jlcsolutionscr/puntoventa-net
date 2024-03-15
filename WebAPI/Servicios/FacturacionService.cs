@@ -1658,9 +1658,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var listado = dbContext.OrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
-                    if (!bolIncluyeNulos)
-                        listado = listado.Where(x => !x.Nulo);
+                    var listado = dbContext.OrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (bolAplicado)
+                        listado = listado.Where(x => x.Nulo == bolAplicado || x.Aplicado);
+                    else
+                        listado = listado.Where(x => !x.Nulo && !x.Aplicado);
                     if (intIdOrdenServicio > 0)
                         listado = listado.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                     if (!strNombre.Equals(string.Empty))
@@ -1687,9 +1689,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaOrdenServicio = new List<FacturaDetalle>();
                 try
                 {
-                    var listado = dbContext.OrdenServicioRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
-                    if (!bolIncluyeNulos)
-                        listado = listado.Where(x => !x.Nulo);
+                    var listado = dbContext.OrdenServicioRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (bolAplicado)
+                        listado = listado.Where(x => x.Nulo == bolAplicado || x.Aplicado);
+                    else
+                        listado = listado.Where(x => !x.Nulo && !x.Aplicado);
                     if (intIdOrdenServicio > 0)
                         listado = listado.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                     if (!strNombre.Equals(string.Empty))
@@ -3148,7 +3152,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
                 {
                     Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
-                    Codigo = linea.Producto.CodigoClasificacion,
+                    Codigo = linea.Producto.Codigo,
                     Detalle = linea.Descripcion,
                     PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
                     TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
@@ -3226,7 +3230,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
                 {
                     Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
-                    Codigo = linea.Producto.CodigoClasificacion,
+                    Codigo = linea.Producto.Codigo,
                     Detalle = linea.Descripcion,
                     PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
                     TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)

@@ -759,7 +759,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados(value.Desc.ToUpper(), "Ingresos", value.Total);
                         listaReporte.Add(reporteLinea);
                     }
-                    if (grupoFacturas.Count() == 0 && ingreso.Count() == 0)
+                    var abonosCxC = dbContext.MovimientoCuentaPorCobrarRepository.Join(dbContext.DesglosePagoMovimientoCuentaPorCobrarRepository, x => x.IdMovCxC, y => y.IdMovCxC, (x, y) => new { x, y })
+                        .Where(s => s.x.IdEmpresa == intIdEmpresa && s.x.Nulo == false && s.x.Fecha >= datFechaInicial && s.x.Fecha <= datFechaFinal)
+                        .GroupBy(x => x.y.IdFormaPago)
+                        .Select(sf => new { tipopago = sf.Key, total = sf.Sum(a => a.y.MontoLocal) });
+                    foreach (var eachAbono in abonosCxC)
+                    {
+                        string strTipo = "";
+                        if (eachAbono.tipopago == StaticFormaPago.Efectivo)
+                            strTipo = " DE CONTADO";
+                        else if (eachAbono.tipopago == StaticFormaPago.Cheque)
+                            strTipo = " CON CHEQUE";
+                        else if (eachAbono.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
+                            strTipo = " CON DEPOSITO BANCARIO";
+                        else if (eachAbono.tipopago == StaticFormaPago.Tarjeta)
+                            strTipo = " CON TARJETA";
+                        else
+                            strTipo = " OTRAS FORMAS DE PAGO";
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("ABONO CXC" + strTipo, "Ingresos", eachAbono.total);
+                        listaReporte.Add(reporteLinea);
+                    }
+                    if (grupoFacturas.Count() == 0 && ingreso.Count() == 0 && abonosCxC.Count() == 0)
                     {
                         ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("NO HAY REGISTROS", "Ingresos", 0);
                         listaReporte.Add(reporteLinea);
@@ -796,8 +816,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados(value.Desc.ToUpper(), "Egresos", value.Total);
                         listaReporte.Add(reporteLinea);
                     }
-
-                    if (grupoCompras.Count() == 0 && egreso.Count() == 0)
+                    var abonosCxP = dbContext.MovimientoCuentaPorPagarRepository.Join(dbContext.DesglosePagoMovimientoCuentaPorPagarRepository, x => x.IdMovCxP, y => y.IdMovCxP, (x, y) => new { x, y })
+                        .Where(s => s.x.IdEmpresa == intIdEmpresa && s.x.Nulo == false && s.x.Fecha >= datFechaInicial && s.x.Fecha <= datFechaFinal)
+                        .GroupBy(x => x.y.IdFormaPago)
+                        .Select(sf => new { tipopago = sf.Key, total = sf.Sum(a => a.y.MontoLocal) });
+                    foreach (var eachAbono in abonosCxP)
+                    {
+                        string strTipo = "";
+                        if (eachAbono.tipopago == StaticFormaPago.Efectivo)
+                            strTipo = " DE CONTADO";
+                        else if (eachAbono.tipopago == StaticFormaPago.Cheque)
+                            strTipo = " CON CHEQUE";
+                        else if (eachAbono.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
+                            strTipo = " CON DEPOSITO BANCARIO";
+                        else if (eachAbono.tipopago == StaticFormaPago.Tarjeta)
+                            strTipo = " CON TARJETA";
+                        else
+                            strTipo = " OTRAS FORMAS DE PAGO";
+                        ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("ABONO CXP" + strTipo, "Egresos", eachAbono.total);
+                        listaReporte.Add(reporteLinea);
+                    }
+                    if (grupoCompras.Count() == 0 && egreso.Count() == 0 && abonosCxP.Count() == 0)
                     {
                         ReporteEstadoResultados reporteLinea = new ReporteEstadoResultados("NO HAY REGISTROS", "Egresos", 0);
                         listaReporte.Add(reporteLinea);
