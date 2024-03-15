@@ -1120,6 +1120,14 @@ Public Class FrmCompra
         End If
     End Sub
 
+    Private Sub TxtCodigo_KeyPress(sender As Object, e As KeyEventArgs) Handles txtCodigo.KeyUp
+        If FrmPrincipal.empresaGlobal.AutoCompletaProducto And e.KeyCode <> Keys.Back Then
+            If txtCodigo.Text.Length = 2 Then
+                FrmPrincipal.MostrarDatosAutocompletar(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token, txtCodigo.Text, txtCodigo)
+            End If
+        End If
+    End Sub
+
     Private Sub txtPrecioCosto_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPrecioCosto.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
             If producto IsNot Nothing Then
