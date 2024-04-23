@@ -48,7 +48,7 @@ Public Class FrmPrincipal
     Private listaSucursales As List(Of LlaveDescripcion)
     Private listaTipoPrecio As List(Of LlaveDescripcion)
     Private listaActividadEconomica As List(Of LlaveDescripcion)
-    Private listaCodigosCargados As New List(Of String)
+
 #End Region
 
 #Region "Métodos"
@@ -208,24 +208,6 @@ Public Class FrmPrincipal
         End If
         Return True
     End Function
-
-    Public Async Sub MostrarDatosAutocompletar(idEmpresa As Integer, idSucursal As Integer, strToken As String, strFiltro As String, textField As TextBox)
-        If Not listaCodigosCargados.Contains(strFiltro) Then
-            Dim intTotalRegistros As Integer = Await Puntoventa.ObtenerTotalListaProductos(idEmpresa, idSucursal, True, True, False, False, 0, strFiltro, "", "", usuarioGlobal.Token)
-            If intTotalRegistros > 0 Then
-                Dim listado As List(Of ProductoDetalle) = Await Puntoventa.ObtenerListadoProductos(idEmpresa, idSucursal, 1, intTotalRegistros, True, True, False, False, 0, strFiltro, "", "", strToken)
-                listaCodigosCargados.Add(strFiltro)
-                listaProductos.AddRange(listado)
-            End If
-            Dim source As New AutoCompleteStringCollection()
-            For Each p As ProductoDetalle In listaProductos
-                source.Add(p.Codigo + ": " + p.Descripcion)
-            Next
-            textField.AutoCompleteMode = AutoCompleteMode.Suggest
-            textField.AutoCompleteSource = AutoCompleteSource.CustomSource
-            textField.AutoCompleteCustomSource = source
-        End If
-    End Sub
 #End Region
 
 #Region "Eventos del Menu"
@@ -698,6 +680,18 @@ Public Class FrmPrincipal
         Dim formInicio As New FrmInicio()
         Dim bolAdministrador = usuarioGlobal.CodigoUsuario = "ADMIN"
         formInicio.ShowDialog()
+        If empresaGlobal.AutoCompletaProducto Then
+            picLoader.Visible = True
+            Dim intTotalRegistros As Integer = Await Puntoventa.ObtenerTotalListaProductos(empresaGlobal.IdEmpresa, equipoGlobal.IdSucursal, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
+            If intTotalRegistros > 0 Then
+                Dim intCantPaginas As Integer = Math.Ceiling(intTotalRegistros / 1000)
+                For intPagina As Integer = 1 To intCantPaginas
+                    Dim listado As List(Of ProductoDetalle) = Await Puntoventa.ObtenerListadoProductos(empresaGlobal.IdEmpresa, equipoGlobal.IdSucursal, intPagina, 1000, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
+                    listaProductos.AddRange(listado)
+                Next
+            End If
+            picLoader.Visible = False
+        End If
         mnuMenuPrincipal.Visible = True
         For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa.OrderBy(Function(obj) obj.IdReporte)
             lstListaReportes.Add(reportePorEmpresa.CatalogoReporte.NombreReporte)
