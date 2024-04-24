@@ -2786,7 +2786,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     _logger.LogError("Error al consultar el listado de actividades económicas del contribuyente: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de actividades económicas del contribuyente. Por favor consulte con su proveedor.");
+                    return listado;
                 }
             }
         }
