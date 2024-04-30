@@ -2934,7 +2934,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             EstructuraPDF datos = new EstructuraPDF
             {
-                PoweredByLogotipo = bytLogo
+                PoweredByLogotipo = bytLogo,
+                EsDocumentoElectronico = true
             };
             if (empresa.Logotipo.Length > 0)
             {
@@ -3017,7 +3018,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             EstructuraPDF datos = new EstructuraPDF
             {
-                PoweredByLogotipo = bytLogo
+                PoweredByLogotipo = bytLogo,
+                EsDocumentoElectronico = false
             };
             if (empresa.Logotipo.Length > 0)
             {
@@ -3096,7 +3098,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             EstructuraPDF datos = new EstructuraPDF
             {
-                PoweredByLogotipo = bytLogo
+                PoweredByLogotipo = bytLogo,
+                EsDocumentoElectronico = false
             };
             if (empresa.Logotipo.Length > 0)
             {
@@ -3174,7 +3177,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             EstructuraPDF datos = new EstructuraPDF
             {
-                PoweredByLogotipo = bytLogo
+                PoweredByLogotipo = bytLogo,
+                EsDocumentoElectronico = false
             };
             if (empresa.Logotipo.Length > 0)
             {
@@ -3343,7 +3347,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             EstructuraPDF datos = new EstructuraPDF
             {
-                PoweredByLogotipo = bytLogo
+                PoweredByLogotipo = bytLogo,
+                EsDocumentoElectronico = true
             };
             if (empresa.Logotipo.Length > 0)
             {

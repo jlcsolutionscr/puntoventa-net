@@ -55,6 +55,7 @@ namespace LeandroSoftware.ServicioWeb.EstructuraDatos
         public string TipoDeCambio { get; set; }
         public byte[] Logotipo { get; set; }
         public byte[] PoweredByLogotipo { get; set; }
+        public bool EsDocumentoElectronico { get; set; }
 
         public List<EstructuraPDFDetalleServicio> DetalleServicio { get; set; }
     }

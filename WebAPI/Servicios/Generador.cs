@@ -120,7 +120,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
                 gfx.DrawString(strDescripcion, font, XBrushes.Black, new XRect(150, lineaPos, 280, 12), XStringFormats.TopLeft);
                 tf.DrawString(linea.PrecioUnitario, font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
                 tf.DrawString(linea.TotalLinea, font, XBrushes.Black, new XRect(500, lineaPos, 80, 12), XStringFormats.TopLeft);
-                if ((cantPaginas == 1 && cantLineasDetalle == 35) || (cantPaginas > 1 && cantLineasDetalle == 55))
+                if ((cantPaginas == 1 && cantLineasDetalle == 33) || (cantPaginas > 1 && cantLineasDetalle == 53))
                 {
                     cantPaginas += 1;
                     cantLineasDetalle = 0;
@@ -208,7 +208,12 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
                     lineaPos += 12;
                 }
             }
-
+            if (datos.EsDocumentoElectronico)
+            {
+                lineaPos = 816;
+                font = new XFont("Arial", 8, XFontStyle.Bold, options);
+                gfx.DrawString("AUTORIZADO MEDIANTE RESOLUCION DGT-R-48-2016 DEL 07-OCT-2016", font, XBrushes.Black, new XRect(20, lineaPos, 550, 12), XStringFormats.Center    );
+            }
             MemoryStream stream = new MemoryStream();
             document.Save(stream, false);
             byte[] bytes = stream.ToArray();
