@@ -210,7 +210,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             }
             if (datos.EsDocumentoElectronico)
             {
-                lineaPos = 816;
+                lineaPos += 24;
                 font = new XFont("Arial", 8, XFontStyle.Bold, options);
                 gfx.DrawString("AUTORIZADO MEDIANTE RESOLUCION DGT-R-48-2016 DEL 07-OCT-2016", font, XBrushes.Black, new XRect(20, lineaPos, 550, 12), XStringFormats.Center    );
             }
