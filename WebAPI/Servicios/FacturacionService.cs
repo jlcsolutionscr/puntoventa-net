@@ -826,7 +826,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Factura factura = dbContext.FacturaRepository.Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     if (factura.Nulo) throw new BusinessException("La factura ya ha sido anulada.");
-                    if (factura.Procesado) throw new BusinessException("La factura ya fue procesada en un cierre diario y no puede ser anulada.");
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -868,6 +867,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     PrecioCosto = detalleFactura.PrecioCosto
                                 };
                                 dbContext.MovimientoProductoRepository.Add(movimiento);
+                            }
+                        }
+                    }
+                    if (factura.Procesado) 
+                    {
+                        foreach (var desglosePago in factura.DesglosePagoFactura)
+                        {
+                            if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
+                            {
+                                CuentaEgreso cuenta = dbContext.CuentaEgresoRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
+                                if (cuenta == null) throw new BusinessException("La empresa no posee ninguna cuenta de egresos parametrizada para devoluciones de clientes");
+                                Egreso egreso = new Egreso
+                                {
+                                    IdEmpresa = factura.IdEmpresa,
+                                    IdSucursal = factura.IdSucursal,
+                                    IdUsuario = factura.IdUsuario,
+                                    Fecha = Validador.ObtenerFechaHoraCostaRica(),
+                                    IdCuenta = cuenta.IdCuenta,
+                                    Beneficiario = factura.NombreCliente,
+                                    Detalle = "Anulación de factura posterior a cierre de efectivo " + factura.ConsecFactura,
+                                    Monto = desglosePago.MontoLocal,
+                                    Nulo = false,
+                                    Procesado = false
+                                };
+                                dbContext.EgresoRepository.Add(egreso);
                             }
                         }
                     }
