@@ -202,7 +202,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     CatalogoContable cuenta = dbContext.CatalogoContableRepository.Find(intIdCuenta);
-                    return (cuenta.IdCuentaGrupo == null);
+                    return cuenta.IdCuentaGrupo == null;
                 }
                 catch (Exception ex)
                 {
