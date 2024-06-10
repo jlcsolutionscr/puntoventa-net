@@ -43,7 +43,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             {
                 while (intentos <= 2)
                 {
-                    if (lineaDireccion.Length > 60 || direccionArray.Length == 0) {
+                    if (lineaDireccion.Length > 50 || direccionArray.Length == 0) {
                         gfx.DrawString(lineaDireccion, font, XBrushes.Black, new XRect(210, 100 + (intentos * 15), 200, 15), XStringFormats.TopLeft);
                         lineaDireccion = "";
                         intentos++;
