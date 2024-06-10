@@ -24,7 +24,7 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`aa6591_develop`@`%` PROCEDURE `limpiarregistros` (IN `intIdEmpresa` INT(11))   BEGIN
+CREATE PROCEDURE `limpiarregistros` (IN `intIdEmpresa` INT(11))   BEGIN
 DELETE FROM desglosepagomovimientoapartado WHERE idmovapartado IN (select idmovapartado FROM movimientoapartado WHERE idempresa = intIdEmpresa);
 DELETE FROM movimientoapartado WHERE idempresa = intIdEmpresa;
 DELETE FROM desglosepagoapartado WHERE idapartado IN (select idapartado FROM apartado WHERE idempresa = intIdEmpresa);
@@ -86,7 +86,7 @@ DELETE FROM sucursalporempresa WHERE idempresa = intIdEmpresa;
 DELETE FROM credencialeshacienda WHERE idempresa = intIdEmpresa;
 END$$
 
-CREATE DEFINER=`aa6591_factura`@`%` PROCEDURE `MarcaRegistrosProcesados` (IN `intIdEmpresa` INT(11), IN `intIdSucursal` INT(11))   BEGIN
+CREATE PROCEDURE `MarcaRegistrosProcesados` (IN `intIdEmpresa` INT(11), IN `intIdSucursal` INT(11))   BEGIN
 UPDATE apartado SET Procesado = True WHERE IdEmpresa = intIdEmpresa AND IdSucursal = intIdSucursal AND Procesado = False;
 UPDATE ordenservicio SET Procesado = True WHERE IdEmpresa = intIdEmpresa AND IdSucursal = intIdSucursal AND Procesado = False;
 UPDATE Egreso SET Procesado = True WHERE IdEmpresa = intIdEmpresa AND IdSucursal = intIdSucursal AND Procesado = False;
@@ -103,7 +103,7 @@ END$$
 --
 -- Functions
 --
-CREATE DEFINER=`aa6591_develop`@`%` FUNCTION `DiffDays` (`dateFrom` DATE, `dateTo` DATE) RETURNS INT  RETURN TIMESTAMPDIFF(DAY, dateFrom, dateTo)$$
+CREATE FUNCTION `DiffDays` (`dateFrom` DATE, `dateTo` DATE) RETURNS INT  RETURN TIMESTAMPDIFF(DAY, dateFrom, dateTo)$$
 
 DELIMITER ;
 
@@ -3391,7 +3391,6 @@ ALTER TABLE `traslado`
 --
 ALTER TABLE `vendedor`
   ADD CONSTRAINT `vendedor_ibfk_1` FOREIGN KEY (`IdEmpresa`) REFERENCES `empresa` (`IdEmpresa`);
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
