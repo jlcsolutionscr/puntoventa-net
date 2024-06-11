@@ -10,6 +10,10 @@ SET time_zone = "+00:00";
 INSERT INTO `usuario` (`IdUsuario`, `CodigoUsuario`, `Clave`, `PermiteRegistrarDispositivo`, `PorcMaxDescuento`, `IdEmpresa`, `IdSucursal`) VALUES
 (1, 'ADMIN', '', 0, 0, 0, 0);
 
+INSERT INTO `roleporusuario` (`IdUsuario`, `IdRole`) VALUES (1, 1);
+
+INSERT INTO `cliente` (`IdEmpresa`, `IdCliente`, `IdTipoIdentificacion`, `Identificacion`, `Direccion`, `Nombre`, `NombreComercial`, `Telefono`, `Celular`, `Fax`, `CorreoElectronico`, `IdVendedor`, `IdTipoPrecio`, `AplicaTasaDiferenciada`, `IdImpuesto`, `IdTipoExoneracion`, `NumDocExoneracion`, `NombreInstExoneracion`, `FechaEmisionDoc`, `PorcentajeExoneracion`, `PermiteCredito`) VALUES ('1', '1', '0', '102220333', '', 'CLIENTE DE CONTADO', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, '1', NULL, NULL, '2024-06-11 13:30:39.000000', '0', false);
+
 INSERT INTO `catalogoreporte` (`IdReporte`, `NombreReporte`) VALUES
 (1, 'Proformas en general'),
 (2, 'Proformas anuladas'),
