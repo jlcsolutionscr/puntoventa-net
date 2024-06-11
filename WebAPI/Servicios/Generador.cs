@@ -54,8 +54,8 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
                 }
             }
             
-            gfx.DrawString("CORREO: " + datos.CorreoElectronicoEmisor, font, XBrushes.Black, new XRect(210, 115 + (intentos * 15), 200, 15), XStringFormats.TopLeft);
-            gfx.DrawString("TELEFONO: " + datos.TelefonoEmisor + (datos.FaxEmisor.Length > 0 ? " Fax: " + datos.FaxEmisor : ""), font, XBrushes.Black, new XRect(210, 130 + (intentos * 15), 200, 15), XStringFormats.TopLeft);
+            gfx.DrawString("CORREO: " + datos.CorreoElectronicoEmisor, font, XBrushes.Black, new XRect(210, 100 + (intentos * 15), 200, 15), XStringFormats.TopLeft);
+            gfx.DrawString("TELEFONO: " + datos.TelefonoEmisor + (datos.FaxEmisor.Length > 0 ? " Fax: " + datos.FaxEmisor : ""), font, XBrushes.Black, new XRect(210, 115 + (intentos * 15), 200, 15), XStringFormats.TopLeft);
             font = new XFont("Courier New", 12, XFontStyle.Bold, options);
             gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(210, 190, 200, 15), XStringFormats.TopLeft);
             font = new XFont("Arial", 8, XFontStyle.Regular, options);
