@@ -665,13 +665,13 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<DescripcionValor>> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
+        public static async Task<List<ReporteEstadoResultados>> ObtenerReporteEstadoResultados(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerReporteEstadoResultados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<DescripcionValor> listado = new List<DescripcionValor>();
+            List<ReporteEstadoResultados> listado = new List<ReporteEstadoResultados>();
             if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<DescripcionValor>>(respuesta);
+                listado = JsonConvert.DeserializeObject<List<ReporteEstadoResultados>>(respuesta);
             return listado;
         }
 
@@ -1400,9 +1400,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaMovimientoBanco(int intIdEmpresa, int intIdSucursal, string strDescripcion, string strToken)
+        public static async Task<int> ObtenerTotalListaMovimientoBanco(int intIdEmpresa, int intIdSucursal, string strDescripcion, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaMovimientoBanco', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Descripcion: '" + strDescripcion + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaMovimientoBanco', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Descripcion: '" + strDescripcion + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1410,9 +1410,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<EfectivoDetalle>> ObtenerListadoMovimientoBanco(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, string strDescripcion, string strToken)
+        public static async Task<List<EfectivoDetalle>> ObtenerListadoMovimientoBanco(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, string strDescripcion, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoMovimientoBanco', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", Descripcion: '" + strDescripcion + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoMovimientoBanco', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", Descripcion: '" + strDescripcion + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<EfectivoDetalle> listado = new List<EfectivoDetalle>();
             if (respuesta != "")
@@ -1470,9 +1470,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle, string strToken)
+        public static async Task<int> ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaEgresos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdEgreso: " + intIdEgreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaEgresos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdEgreso: " + intIdEgreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1480,9 +1480,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<EfectivoDetalle>> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdEgreso, string strBeneficiario, string strDetalle, string strToken)
+        public static async Task<List<EfectivoDetalle>> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdEgreso, string strBeneficiario, string strDetalle, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoEgresos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdEgreso: " + intIdEgreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoEgresos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdEgreso: " + intIdEgreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<EfectivoDetalle> listado = new List<EfectivoDetalle>();
             if (respuesta != "")
@@ -1514,9 +1514,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaIngresos(int intIdEmpresa, int intIdSucursal, int intIdIngreso, string strBeneficiario, string strDetalle, string strToken)
+        public static async Task<int> ObtenerTotalListaIngresos(int intIdEmpresa, int intIdSucursal, int intIdIngreso, string strBeneficiario, string strDetalle, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaIngresos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdIngreso: " + intIdIngreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaIngresos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdIngreso: " + intIdIngreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1524,9 +1524,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<EfectivoDetalle>> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdIngreso, string strBeneficiario, string strDetalle, string strToken)
+        public static async Task<List<EfectivoDetalle>> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdIngreso, string strBeneficiario, string strDetalle, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoIngresos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdIngreso: " + intIdIngreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoIngresos', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdIngreso: " + intIdIngreso + ", Beneficiario: '" + strBeneficiario + "', Detalle: '" + strDetalle + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<EfectivoDetalle> listado = new List<EfectivoDetalle>();
             if (respuesta != "")
@@ -1558,9 +1558,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strToken)
+        public static async Task<int> ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IncluyeNulos: '" + bolIncluyeNulos + "', IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "', Identificacion: '" + strIdentificacion + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IncluyeNulos: '" + bolIncluyeNulos + "', IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "', Identificacion: '" + strIdentificacion + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1568,10 +1568,10 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<FacturaDetalle>> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intNumeroPagina, int intFilasPorPagina, int intIdFactura, string strNombre, string strIdentificacion, string strToken)
+        public static async Task<List<FacturaDetalle>> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intNumeroPagina, int intFilasPorPagina, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IncluyeNulos: '" + bolIncluyeNulos + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "', Identificacion: '" + strIdentificacion + "'}}";
-        string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            string strDatos = "{NombreMetodo: 'ObtenerListadoFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IncluyeNulos: '" + bolIncluyeNulos + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "', Identificacion: '" + strIdentificacion + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<FacturaDetalle> listado = new List<FacturaDetalle>();
             if (respuesta != "")
                 listado = JsonConvert.DeserializeObject<List<FacturaDetalle>>(respuesta);
@@ -1610,9 +1610,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, int intIdDevolucion, string strNombre, string strToken)
+        public static async Task<int> ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, int intIdDevolucion, string strNombre, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaDevolucionesPorCliente', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdDevolucion: " + intIdDevolucion + ", Nombre: '" + strNombre + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaDevolucionesPorCliente', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdDevolucion: " + intIdDevolucion + ", Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1620,9 +1620,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<FacturaDetalle>> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdDevolucion, string strNombre, string strToken)
+        public static async Task<List<FacturaDetalle>> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdDevolucion, string strNombre, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoDevolucionesPorCliente', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdDevolucion: " + intIdDevolucion + ", Nombre: '" + strNombre + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoDevolucionesPorCliente', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdDevolucion: " + intIdDevolucion + ", Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<FacturaDetalle> listado = new List<FacturaDetalle>();
             if (respuesta != "")
@@ -1654,9 +1654,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdProforma, string strNombre, string strToken)
+        public static async Task<int> ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdProforma, string strNombre, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaProformas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Aplicado: '" + bolAplicado + "', IncluyeNulos: '" + bolIncluyeNulos + "', IdProforma: " + intIdProforma + ", Nombre: '" + strNombre + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaProformas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Aplicado: '" + bolAplicado + "', IncluyeNulos: '" + bolIncluyeNulos + "', IdProforma: " + intIdProforma + ", Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1664,9 +1664,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<FacturaDetalle>> ObtenerListadoProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intNumeroPagina, int intFilasPorPagina, int intIdProforma, string strNombre, string strToken)
+        public static async Task<List<FacturaDetalle>> ObtenerListadoProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intNumeroPagina, int intFilasPorPagina, int intIdProforma, string strNombre, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoProformas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Aplicado: '" + bolAplicado + "', IncluyeNulos: '" + bolIncluyeNulos + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdProforma: " + intIdProforma + ", Nombre: '" + strNombre + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoProformas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Aplicado: '" + bolAplicado + "', IncluyeNulos: '" + bolIncluyeNulos + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdProforma: " + intIdProforma + ", Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<FacturaDetalle> listado = new List<FacturaDetalle>();
             if (respuesta != "")
@@ -1705,9 +1705,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdApartado, string strNombre, string strToken)
+        public static async Task<int> ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdApartado, string strNombre, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaApartados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Aplicado: '" + bolAplicado + "', IncluyeNulos: '" + bolIncluyeNulos + "', IdApartado: " + intIdApartado + ", Nombre: '" + strNombre + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaApartados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Aplicado: '" + bolAplicado + "', IncluyeNulos: '" + bolIncluyeNulos + "', IdApartado: " + intIdApartado + ", Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1715,9 +1715,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<FacturaDetalle>> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intNumeroPagina, int intFilasPorPagina, int intIdApartado, string strNombre, string strToken)
+        public static async Task<List<FacturaDetalle>> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intNumeroPagina, int intFilasPorPagina, int intIdApartado, string strNombre, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoApartados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Aplicado: '" + bolAplicado + "', IncluyeNulos: '" + bolIncluyeNulos + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdApartado: " + intIdApartado + ", Nombre: '" + strNombre + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoApartados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Aplicado: '" + bolAplicado + "', IncluyeNulos: '" + bolIncluyeNulos + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdApartado: " + intIdApartado + ", Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<FacturaDetalle> listado = new List<FacturaDetalle>();
             if (respuesta != "")
@@ -1749,9 +1749,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdOrdenServicio, string strNombre, string strToken)
+        public static async Task<int> ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdOrdenServicio, string strNombre, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaOrdenServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Aplicado: '" + bolAplicado + "', IncluyeNulos: '" + bolIncluyeNulos + "', IdOrdenServicio: " + intIdOrdenServicio + ", Nombre: '" + strNombre + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaOrdenServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Aplicado: '" + bolAplicado + "', IncluyeNulos: '" + bolIncluyeNulos + "', IdOrdenServicio: " + intIdOrdenServicio + ", Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1759,9 +1759,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<FacturaDetalle>> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intNumeroPagina, int intFilasPorPagina, int intIdOrdenServicio, string strNombre, string strToken)
+        public static async Task<List<FacturaDetalle>> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intNumeroPagina, int intFilasPorPagina, int intIdOrdenServicio, string strNombre, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoOrdenServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Aplicado: '" + bolAplicado + "', IncluyeNulos: '" + bolIncluyeNulos + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdOrdenServicio: " + intIdOrdenServicio + ", Nombre: '" + strNombre + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoOrdenServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Aplicado: '" + bolAplicado + "', IncluyeNulos: '" + bolIncluyeNulos + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdOrdenServicio: " + intIdOrdenServicio + ", Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<FacturaDetalle> listado = new List<FacturaDetalle>();
             if (respuesta != "")
@@ -1800,9 +1800,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, int intIdCompra, string strRefFactura, string strNombre, string strToken)
+        public static async Task<int> ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, int intIdCompra, string strRefFactura, string strNombre, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaCompras', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdCompra: " + intIdCompra + ", RefFactura: '" + strRefFactura + "', Nombre: '" + strNombre + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaCompras', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdCompra: " + intIdCompra + ", RefFactura: '" + strRefFactura + "', Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1810,9 +1810,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<CompraDetalle>> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdCompra, string strRefFactura, string strNombre, string strToken)
+        public static async Task<List<CompraDetalle>> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdCompra, string strRefFactura, string strNombre, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoCompras', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdCompra: " + intIdCompra + ", RefFactura: '" + strRefFactura + "', Nombre: '" + strNombre + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoCompras', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdCompra: " + intIdCompra + ", RefFactura: '" + strRefFactura + "', Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<CompraDetalle> listado = new List<CompraDetalle>();
             if (respuesta != "")
@@ -1844,9 +1844,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int intIdTraslado, string strToken)
+        public static async Task<int> ObtenerTotalListaTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int intIdTraslado, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaTraslados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalOrigen: " + intIdSucursalOrigen + ", Aplicado: '" + bolAplicado + "', IdTraslado: " + intIdTraslado + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaTraslados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalOrigen: " + intIdSucursalOrigen + ", Aplicado: '" + bolAplicado + "', IdTraslado: " + intIdTraslado + ", FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1854,9 +1854,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<TrasladoDetalle>> ObtenerListadoTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int intNumeroPagina, int intFilasPorPagina, int intIdTraslado, string strToken)
+        public static async Task<List<TrasladoDetalle>> ObtenerListadoTraslados(int intIdEmpresa, int intIdSucursalOrigen, bool bolAplicado, int intNumeroPagina, int intFilasPorPagina, int intIdTraslado, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoTraslados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalOrigen: " + intIdSucursalOrigen + ", Aplicado: '" + bolAplicado + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdTraslado: " + intIdTraslado + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoTraslados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursalOrigen: " + intIdSucursalOrigen + ", Aplicado: '" + bolAplicado + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdTraslado: " + intIdTraslado + ", FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<TrasladoDetalle> listado = new List<TrasladoDetalle>();
             if (respuesta != "")
@@ -1914,9 +1914,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjuste, string strDescripcion, string strToken)
+        public static async Task<int> ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjuste, string strDescripcion, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaAjusteInventario', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdAjuste: " + intIdAjuste + ", Descripcion: '" + strDescripcion + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaAjusteInventario', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdAjuste: " + intIdAjuste + ", Descripcion: '" + strDescripcion + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1924,9 +1924,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<AjusteInventarioDetalle>> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdAjuste, string strDescripcion, string strToken)
+        public static async Task<List<AjusteInventarioDetalle>> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdAjuste, string strDescripcion, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoAjusteInventario', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdAjuste: " + intIdAjuste + ", Descripcion: '" + strDescripcion + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoAjusteInventario', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdAjuste: " + intIdAjuste + ", Descripcion: '" + strDescripcion + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<AjusteInventarioDetalle> listado = new List<AjusteInventarioDetalle>();
             if (respuesta != "")
@@ -2217,9 +2217,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, string strNombre, string strToken)
+        public static async Task<int> ObtenerTotalDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, string strNombre, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalDocumentosElectronicosProcesados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Nombre: '" + strNombre + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalDocumentosElectronicosProcesados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -2227,9 +2227,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<DocumentoDetalle>> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, string strNombre, string strToken)
+        public static async Task<List<DocumentoDetalle>> ObtenerListadoDocumentosElectronicosProcesados(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, string strNombre, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoDocumentosElectronicosProcesados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ", FilasPorPagina: " + intFilasPorPagina + ", Nombre: '" + strNombre + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoDocumentosElectronicosProcesados', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ", FilasPorPagina: " + intFilasPorPagina + ", Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<DocumentoDetalle> listado = new List<DocumentoDetalle>();
             if (respuesta != "")
@@ -2267,6 +2267,13 @@ namespace LeandroSoftware.ClienteWCF
         public static async Task<bool> GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, string strToken)
         {
             string strDatos = "{NombreMetodo: 'GenerarNotificacionProforma', Parametros: {IdProforma: " + intIdProforma + ", CorreoReceptor: '" + strCorreoReceptor + "'}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+            return true;
+        }
+
+        public static async Task<bool> GenerarNotificacionOrdenServicio(int intIdOrden, string strCorreoReceptor, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'GenerarNotificacionOrdenServicio', Parametros: {IdOrden: " + intIdOrden + ", CorreoReceptor: '" + strCorreoReceptor + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
             return true;
         }

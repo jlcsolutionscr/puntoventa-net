@@ -55,6 +55,7 @@ Public Class FrmDescargaActualizacion
                 bolCancelaDescarga = True
                 FrmPrincipal.bolDescargaFinalizada = True
                 DownloaderClient.CancelAsync()
+                FrmPrincipal.Close()
             Else
                 e.Cancel = True
             End If

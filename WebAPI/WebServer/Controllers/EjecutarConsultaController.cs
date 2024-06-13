@@ -19,7 +19,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static IReporteService _servicioReportes;
         private static ITrasladoService _servicioTraslado;
         private static ICuentaPorProcesarService _servicioCuentaPorProcesar;
-        private static ConfiguracionGeneral configuracionGeneral;
         private static Empresa? empresa;
         private static CredencialesHacienda credenciales;
         private static BancoAdquiriente? bancoAdquiriente;
@@ -87,6 +86,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static string strFechaFinal;
         private static byte[] bytLogo;
 
+        private static string strConsultaInformacionContribuyenteURL;
+
         public EjecutarConsultaController(
             IConfiguration configuration,
             IHostEnvironment environment,
@@ -109,16 +110,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _servicioTraslado = servicioTraslado;
             _servicioCuentaPorProcesar = servicioCuentaPorProcesar;
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
-            configuracionGeneral = new ConfiguracionGeneral
-            (
-                configuration.GetSection("appSettings").GetSection("strConsultaTipoCambioDolarURL").Value,
-                configuration.GetSection("appSettings").GetSection("strConsultaContribuyenteURL").Value,
-                configuration.GetSection("appSettings").GetSection("strServicioComprobantesURL").Value,
-                configuration.GetSection("appSettings").GetSection("strClientId").Value,
-                configuration.GetSection("appSettings").GetSection("strServicioTokenURL").Value,
-                configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
-                configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
-            );
+            strConsultaInformacionContribuyenteURL = configuration.GetSection("appSettings").GetSection("strConsultaContribuyenteURL").Value;
             if (decTipoCambioDolar == 0) decTipoCambioDolar = 1;
         }
 
@@ -151,7 +143,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "ObtenerListadoActividadEconomica":
                     strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();
-                    IList<LlaveDescripcion> listadoActividades = _servicioMantenimiento.ObtenerListadoActividadEconomica(configuracionGeneral.ConsultaInformacionContribuyenteURL, strIdentificacion);
+                    IList<LlaveDescripcion> listadoActividades = _servicioMantenimiento.ObtenerListadoActividadEconomica(strConsultaInformacionContribuyenteURL, strIdentificacion);
                     if (listadoActividades.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoActividades);
                     break;
@@ -331,7 +323,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                     strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                    IList<DescripcionValor> listadoReporteEstadoResultados = _servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                    IList<ReporteEstadoResultados> listadoReporteEstadoResultados = _servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                     if (listadoReporteEstadoResultados.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoReporteEstadoResultados);
                     break;
@@ -914,12 +906,12 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarFactura":
                     factura = JsonConvert.DeserializeObject<Factura>(strEntidad);
-                    string strIdFactura = _servicioFacturacion.AgregarFactura(factura, configuracionGeneral);
+                    string strIdFactura = _servicioFacturacion.AgregarFactura(factura);
                     strRespuesta = JsonConvert.SerializeObject(strIdFactura);
                     break;
                 case "AgregarFacturaCompra":
                     facturaCompra = JsonConvert.DeserializeObject<FacturaCompra>(strEntidad);
-                    string strIdFacturaCompra = _servicioFacturacion.AgregarFacturaCompra(facturaCompra, configuracionGeneral);
+                    string strIdFacturaCompra = _servicioFacturacion.AgregarFacturaCompra(facturaCompra);
                     strRespuesta = JsonConvert.SerializeObject(strIdFacturaCompra);
                     break;
                 case "ObtenerFactura":
@@ -951,7 +943,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarDevolucionCliente":
                     devolucionCliente = JsonConvert.DeserializeObject<DevolucionCliente>(strEntidad);
-                    string strIdDevolucionCliente = _servicioFacturacion.AgregarDevolucionCliente(devolucionCliente, configuracionGeneral);
+                    string strIdDevolucionCliente = _servicioFacturacion.AgregarDevolucionCliente(devolucionCliente);
                     strRespuesta = JsonConvert.SerializeObject(strIdDevolucionCliente);
                     break;
                 case "ObtenerDevolucionCliente":
@@ -1237,7 +1229,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
-                    int intTotalDocumentosProcesados = _servicioFacturacion.ObtenerTotalDocumentosElectronicosProcesados(intIdEmpresa, intIdSucursal, strNombre);
+                    strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
+                    int intTotalDocumentosProcesados = _servicioFacturacion.ObtenerTotalDocumentosElectronicosProcesados(intIdEmpresa, intIdSucursal, strNombre, strFechaFinal);
                     strRespuesta = intTotalDocumentosProcesados.ToString();
                     break;
                 case "ObtenerListadoDocumentosElectronicosProcesados":
@@ -1246,7 +1239,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
                     intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
-                    IList<DocumentoDetalle> listadoProcesados = _servicioFacturacion.ObtenerListadoDocumentosElectronicosProcesados(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, strNombre);
+                    strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
+                    IList<DocumentoDetalle> listadoProcesados = _servicioFacturacion.ObtenerListadoDocumentosElectronicosProcesados(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, strNombre, strFechaFinal);
                     if (listadoProcesados.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoProcesados);
                     break;
@@ -1328,7 +1322,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdAjuste").Value.ToString());
                     strDescripcion = parametrosJO.Property("Descripcion").Value.ToString();
                     strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
-                    int intTotalAjusteInventarios = _servicioMantenimiento.ObtenerTotalListaAjusteInventario(intIdEmpresa, intIdSucursal, intIdLlave1, strDescripcion);
+                    int intTotalAjusteInventarios = _servicioMantenimiento.ObtenerTotalListaAjusteInventario(intIdEmpresa, intIdSucursal, intIdLlave1, strDescripcion, strFechaFinal);
                     strRespuesta = intTotalAjusteInventarios.ToString();
                     break;
                 case "ObtenerListadoAjusteInventario":
@@ -1338,7 +1332,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdAjuste").Value.ToString());
                     strDescripcion = parametrosJO.Property("Descripcion").Value.ToString();
-                    IList<AjusteInventarioDetalle> listadoAjusteInventarios = _servicioMantenimiento.ObtenerListadoAjusteInventario(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, intIdLlave1, strDescripcion);
+                    strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
+                    IList<AjusteInventarioDetalle> listadoAjusteInventarios = _servicioMantenimiento.ObtenerListadoAjusteInventario(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, intIdLlave1, strDescripcion, strFechaFinal);
                     if (listadoAjusteInventarios.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoAjusteInventarios);
                     break;
@@ -1433,7 +1428,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                                 strRespuesta = JsonConvert.SerializeObject(listado2);
                             break;
                         case "Resumen de movimientos":
-                            IList<DescripcionValor> listado3 = _servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                            IList<ReporteEstadoResultados> listado3 = _servicioReportes.ObtenerReporteEstadoResultados(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
                             if (listado3.Count > 0)
                                 strRespuesta = JsonConvert.SerializeObject(listado3);
                             break;

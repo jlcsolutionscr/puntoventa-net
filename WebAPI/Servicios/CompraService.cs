@@ -41,27 +41,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class CompraService : ICompraService
     {
         private readonly ILoggerManager _logger;
-        private static IServiceScopeFactory serviceScopeFactory;
+        private static IServiceScopeFactory? _serviceScopeFactory;
+        private static IConfiguracionGeneral? _config;
         private static CultureInfo provider = CultureInfo.InvariantCulture;
         private static string strFormat = "dd/MM/yyyy HH:mm:ss";
 
-        public CompraService(ILoggerManager logger, IServiceScopeFactory pServiceScopeFactory)
+        public CompraService(ILoggerManager logger, IServiceScopeFactory serviceScopeFactory, IConfiguracionGeneral config)
         {
             try
             {
                 _logger = logger;
-                serviceScopeFactory = pServiceScopeFactory;
+                _serviceScopeFactory = serviceScopeFactory;
+                _config = config;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error al inicializar el servicio: ", ex);
-                throw new Exception("Se produjo un error al inicializar el servicio de Compras. Por favor consulte con su proveedor.");
+                if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                else throw new Exception("Se produjo un error al inicializar el servicio de Compras. Por favor consulte con su proveedor.");
             }
         }
 
         public void AgregarProveedor(Proveedor proveedor)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -78,15 +82,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el proveedor: ", ex);
-                    throw new Exception("Se produjo un error agregando la información del proveedor. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el proveedor: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la información del proveedor. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarProveedor(Proveedor proveedor)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -103,20 +109,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar el proveedor: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del proveedor. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el proveedor: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información del proveedor. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void EliminarProveedor(int intIdProveedor)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     Proveedor proveedor = dbContext.ProveedorRepository.Find(intIdProveedor);
-                    if (proveedor == null) throw new Exception("El proveedor por eliminar no existe.");
+                    if (proveedor == null) throw new BusinessException("El proveedor por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(proveedor.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.ProveedorRepository.Remove(proveedor);
@@ -124,7 +132,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    _logger.LogError("Validación al eliminar el proveedor: ", ex);
+                    if (_logger != null) _logger.LogError("Validación al eliminar el proveedor: ", ex);
                     throw new BusinessException("No es posible eliminar el proveedor seleccionado. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -135,15 +143,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al eliminar el proveedor: ", ex);
-                    throw new Exception("Se produjo un error eliminando al proveedor. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al eliminar el proveedor: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error eliminando al proveedor. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Proveedor ObtenerProveedor(int intIdProveedor)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -151,15 +161,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el proveedor: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del proveedor. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el proveedor: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del proveedor. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerTotalListaProveedores(int intIdEmpresa, string strNombre)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -170,15 +182,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de proveedores: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de proveedores. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de proveedores: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de proveedores. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaProveedores = new List<LlaveDescripcion>();
                 try
@@ -199,15 +213,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de proveedores: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de proveedores. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de proveedores: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de proveedores. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public string AgregarCompra(Compra compra)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 compra.Fecha = Validador.ObtenerFechaHoraCostaRica();
                 decimal decTotalImpuesto = 0;
@@ -279,7 +295,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.Find(detalleCompra.IdProducto);
                         if (producto == null)
-                            throw new Exception("El producto asignado al detalle de la compra no existe.");
+                            throw new BusinessException("El producto asignado al detalle de la compra no existe.");
                         if (producto.Tipo != StaticTipoProducto.Producto && producto.Tipo != StaticTipoProducto.Transitorio)
                             throw new BusinessException("El tipo del producto " + producto.Descripcion + " no puede ser un servicio. Por favor verificar.");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
@@ -302,16 +318,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 producto.PrecioCosto = detalleCompra.PrecioCosto;
                             }
-                            MovimientoProducto movimientoProducto = new MovimientoProducto
-                            {
-                                IdProducto = producto.IdProducto,
-                                IdSucursal = compra.IdSucursal,
-                                Fecha = compra.Fecha,
-                                Tipo = StaticTipoMovimientoProducto.Entrada,
-                                Origen = "Registro de compra de mercancía de factura " + compra.NoDocumento,
-                                Cantidad = detalleCompra.Cantidad,
-                                PrecioCosto = detalleCompra.PrecioCosto
-                            };
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
                             if (existencias != null)
                             {
@@ -329,8 +335,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 };
                                 dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
                             }
-                            producto.MovimientoProducto = new List<MovimientoProducto>();
-                            producto.MovimientoProducto.Add(movimientoProducto);
+                            MovimientoProducto movimiento = new MovimientoProducto
+                            {
+                                IdProducto = producto.IdProducto,
+                                IdSucursal = compra.IdSucursal,
+                                Fecha = compra.Fecha,
+                                Tipo = StaticTipoMovimientoProducto.Entrada,
+                                Origen = "Registro de compra de mercancía de factura " + compra.NoDocumento,
+                                Cantidad = detalleCompra.Cantidad,
+                                PrecioCosto = detalleCompra.PrecioCosto
+                            };
+                            dbContext.MovimientoProductoRepository.Add(movimiento);
                             dbContext.NotificarModificacion(producto);
                         }
                         if (empresa.Contabiliza)
@@ -354,11 +369,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario || desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
                         {
-                            movimientoBanco = new MovimientoBanco();
-                            movimientoBanco.IdSucursal = compra.IdSucursal;
+                            movimientoBanco = new MovimientoBanco
+                            {
+                                IdSucursal = compra.IdSucursal
+                            };
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null)
-                                throw new Exception("La cuenta bancaria asignada al movimiento no existe.");
+                                throw new BusinessException("La cuenta bancaria asignada al movimiento no existe.");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
                             movimientoBanco.IdUsuario = compra.IdUsuario;
                             movimientoBanco.Fecha = compra.Fecha;
@@ -380,7 +397,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             movimientoBanco.Numero = desglosePago.NroMovimiento;
                             movimientoBanco.Beneficiario = dbContext.ProveedorRepository.Find(compra.IdProveedor).Nombre;
                             movimientoBanco.Monto = desglosePago.MontoLocal;
-                            IBancaService servicioAuxiliarBancario = new BancaService(_logger);
+                            IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
                             servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco, dbContext);
                         }
                     }
@@ -391,7 +408,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (decTotalDiff != 0)
                         {
                             if (decTotalDiff >= 1 || decTotalDiff <= -1)
-                                throw new Exception("La diferencia de ajuste sobrepasa el valor permitido.");
+                                throw new BusinessException("La diferencia de ajuste sobrepasa el valor permitido.");
                             dtbInventarios.Rows[0]["Total"] = (decimal)dtbInventarios.Rows[0]["Total"] - decTotalDiff;
                             decTotalInventario -= decTotalDiff;
                         }
@@ -495,7 +512,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalDebito += detalleAsiento.Debito;
                         }
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.AgregarAsiento(asiento, dbContext);
                     }
                     dbContext.Commit();
@@ -531,15 +548,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el registro de compra: ", ex);
-                    throw new Exception("Se produjo un error agregando la información de la compra. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el registro de compra: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la información de la compra. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarCompra(Compra compra)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -559,15 +578,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar el registro de compra: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la compra. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el registro de compra: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información de la compra. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AnularCompra(int intIdCompra, int intIdUsuario, string strMotivoAnulacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -586,7 +607,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleCompra.IdProducto);
                         if (producto == null)
-                            throw new Exception("El producto asignado al detalle de la compra no existe.");
+                            throw new BusinessException("El producto asignado al detalle de la compra no existe.");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
@@ -597,10 +618,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal cantidadExistente = existenciasLista.Sum(x => x.Cantidad);
                             decimal decPrecioCostoPromedio = producto.PrecioCosto;
                             if (cantidadExistente > 0)
-                                decPrecioCostoPromedio = ((cantidadExistente * producto.PrecioCosto) - (detalleCompra.Cantidad * detalleCompra.PrecioCosto)) / (cantidadExistente);
+                                decPrecioCostoPromedio = ((cantidadExistente * producto.PrecioCosto) - (detalleCompra.Cantidad * detalleCompra.PrecioCosto)) / cantidadExistente;
                             existencias.Cantidad -= detalleCompra.Cantidad;
                             dbContext.NotificarModificacion(existencias);
-                            MovimientoProducto movimientoProducto = new MovimientoProducto
+                            MovimientoProducto movimiento = new MovimientoProducto
                             {
                                 IdProducto = producto.IdProducto,
                                 IdSucursal = compra.IdSucursal,
@@ -610,8 +631,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Cantidad = detalleCompra.Cantidad,
                                 PrecioCosto = detalleCompra.PrecioCosto
                             };
-                            producto.MovimientoProducto = new List<MovimientoProducto>();
-                            producto.MovimientoProducto.Add(movimientoProducto);
+                            dbContext.MovimientoProductoRepository.Add(movimiento);
                             producto.PrecioCosto = decPrecioCostoPromedio;
                             dbContext.NotificarModificacion(producto);
                         }
@@ -620,7 +640,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         CuentaPorPagar cuentaPorPagar = dbContext.CuentaPorPagarRepository.Find(compra.IdCxP);
                         if (cuentaPorPagar == null)
-                            throw new Exception("La cuenta por pagar correspondiente a la compra no existe.");
+                            throw new BusinessException("La cuenta por pagar correspondiente a la compra no existe.");
                         cuentaPorPagar.Nulo = true;
                         cuentaPorPagar.IdAnuladoPor = intIdUsuario;
                         dbContext.NotificarModificacion(cuentaPorPagar);
@@ -629,12 +649,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (compra.IdAsiento > 0)
                     {
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.ReversarAsientoContable(compra.IdAsiento, dbContext);
                     }
                     if (compra.IdMovBanco > 0)
                     {
-                        IBancaService servicioAuxiliarBancario = new BancaService(_logger);
+                        IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
                         servicioAuxiliarBancario.AnularMovimientoBanco(compra.IdMovBanco, intIdUsuario, "Anulación de registro de compra " + compra.IdCompra, dbContext);
                     }
                     dbContext.Commit();
@@ -647,15 +667,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al anular el registro de compra: ", ex);
-                    throw new Exception("Se produjo un error anulando la compra. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al anular el registro de compra: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error anulando la compra. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Compra ObtenerCompra(int intIdCompra)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -672,15 +694,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el registro de compra: ", ex);
-                    throw new Exception("Se produjo un error consultando la información de la compra. Por favor consulte con su proveedor..");
+                    if (_logger != null) _logger.LogError("Error al obtener el registro de compra: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información de la compra. Por favor consulte con su proveedor..");
                 }
             }
         }
 
         public int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, int intIdCompra, string strRefFactura, string strNombre, string strFechaFinal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -699,15 +723,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el total del listado de registros de compra: ", ex);
-                    throw new Exception("Se produjo un error consultando el total del listado de las compras. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el total del listado de registros de compra: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el total del listado de las compras. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdCompra, string strRefFactura, string strNombre, string strFechaFinal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaCompras = new List<CompraDetalle>();
                 try
@@ -733,15 +759,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de registros de compra: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de las compras. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de compra: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de las compras. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AgregarOrdenCompra(OrdenCompra ordenCompra)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -754,15 +782,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el registro de orden de compra: ", ex);
-                    throw new Exception("Se produjo un error agregando la información de la orden de compra. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el registro de orden de compra: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la información de la orden de compra. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarOrdenCompra(OrdenCompra ordenCompra)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -784,20 +814,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar el registro de orden de compra: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la orden de compra. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el registro de orden de compra: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información de la orden de compra. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AnularOrdenCompra(int intIdOrdenCompra, int intIdUsuario, string strMotivoAnulacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     OrdenCompra ordenCompra = dbContext.OrdenRepository.Find(intIdOrdenCompra);
-                    if (ordenCompra == null) throw new Exception("La orden de compra por anular no existe.");
+                    if (ordenCompra == null) throw new BusinessException("La orden de compra por anular no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenCompra.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (ordenCompra.Aplicado == true) throw new BusinessException("La orden de servicio no puede ser anulada porque ya genero un registro de compra.");
@@ -814,15 +846,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al anular el registro de orden de compra: ", ex);
-                    throw new Exception("Se produjo un error anulando la orden de compra. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al anular el registro de orden de compra: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error anulando la orden de compra. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public OrdenCompra ObtenerOrdenCompra(int intIdOrdenCompra)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -830,15 +864,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el registro de orden de compra: ", ex);
-                    throw new Exception("Se produjo un error consultando la información de la orden de compra. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el registro de orden de compra: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información de la orden de compra. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerTotalListaOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int intIdOrdenCompra, string strNombre)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -853,15 +889,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el total del listado de registros de orden de compra: ", ex);
-                    throw new Exception("Se produjo un error consultando el total del listado de ordenes de compra. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el total del listado de registros de orden de compra: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el total del listado de ordenes de compra. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<OrdenCompra> ObtenerListadoOrdenesCompra(int intIdEmpresa, bool bolIncluyeTodo, int numPagina, int cantRec, int intIdOrdenCompra, string strNombre)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -876,15 +914,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de registros de orden de compra: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de ordenes de compra. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de orden de compra: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de ordenes de compra. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<Compra> ObtenerListadoComprasPorProveedor(int intIdProveedor)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -892,21 +932,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de registros de compra por proveedor: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de compras por proveedor. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de compra por proveedor: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de compras por proveedor. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AgregarDevolucionProveedor(DevolucionProveedor devolucion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     devolucion.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     Compra compra = dbContext.CompraRepository.AsNoTracking().Where(x => x.IdCompra == devolucion.IdCompra).FirstOrDefault();
-                    if (compra == null) throw new Exception("La compra asignada a la devolución no existe.");
+                    if (compra == null) throw new BusinessException("La compra asignada a la devolución no existe.");
                     if (compra.Nulo) throw new BusinessException("La compra asingada a la devolución está anulada.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(devolucion.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -918,7 +960,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                             if (producto == null)
-                                throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                                throw new BusinessException("El producto asignado al detalle de la devolución no existe.");
                             if (producto.Tipo != StaticTipoProducto.Producto)
                                 throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
@@ -926,7 +968,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
                             existencias.Cantidad -= detalleDevolucion.Cantidad;
                             dbContext.NotificarModificacion(existencias);
-                            MovimientoProducto movimientoProducto = new MovimientoProducto
+                            MovimientoProducto movimiento = new MovimientoProducto
                             {
                                 IdProducto = producto.IdProducto,
                                 IdSucursal = compra.IdSucursal,
@@ -936,8 +978,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Cantidad = detalleDevolucion.CantDevolucion,
                                 PrecioCosto = detalleDevolucion.PrecioCosto
                             };
-                            producto.MovimientoProducto = new List<MovimientoProducto>();
-                            producto.MovimientoProducto.Add(movimientoProducto);
+                            dbContext.MovimientoProductoRepository.Add(movimiento);
                         }
                     }
                     dbContext.DevolucionProveedorRepository.Add(devolucion);
@@ -951,26 +992,28 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el registro de devolución: ", ex);
-                    throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el registro de devolución: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AnularDevolucionProveedor(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     DevolucionProveedor devolucion = dbContext.DevolucionProveedorRepository.Include("DetalleDevolucionProveedor").FirstOrDefault(x => x.IdDevolucion == intIdDevolucion);
-                    if (devolucion == null) throw new Exception("La devolución por anular no existe.");
+                    if (devolucion == null) throw new BusinessException("La devolución por anular no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(devolucion.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     //if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (devolucion.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     Compra compra = dbContext.CompraRepository.AsNoTracking().Where(x => x.IdCompra == devolucion.IdCompra).FirstOrDefault();
-                    if (compra == null) throw new Exception("La compra asignada a la devolución no existe.");
+                    if (compra == null) throw new BusinessException("La compra asignada a la devolución no existe.");
                     if (compra.Nulo) throw new BusinessException("La compra asingada a la devolución está anulada.");
                     devolucion.Nulo = true;
                     devolucion.IdAnuladoPor = intIdUsuario;
@@ -979,7 +1022,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                         if (producto == null)
-                            throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                            throw new BusinessException("El producto asignado al detalle de la devolución no existe.");
                         if (producto.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
@@ -987,7 +1030,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
                         existencias.Cantidad += detalleDevolucion.Cantidad;
                         dbContext.NotificarModificacion(existencias);
-                        MovimientoProducto movimientoProducto = new MovimientoProducto
+                        MovimientoProducto movimiento = new MovimientoProducto
                         {
                             IdProducto = producto.IdProducto,
                             IdSucursal = compra.IdSucursal,
@@ -997,14 +1040,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleDevolucion.CantDevolucion,
                             PrecioCosto = detalleDevolucion.PrecioCosto
                         };
-                        producto.MovimientoProducto = new List<MovimientoProducto>();
-                        producto.MovimientoProducto.Add(movimientoProducto);
+                        dbContext.MovimientoProductoRepository.Add(movimiento);
                     }
                     if (devolucion.IdMovimientoCxP > 0)
                     {
                         MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("DesgloseMovimientoCuentaPorPagar").FirstOrDefault(x => x.IdMovCxP == devolucion.IdMovimientoCxP);
                         if (movimiento == null)
-                            throw new Exception("El movimiento de la cuenta por pagar correspondiente a la devolución no existe.");
+                            throw new BusinessException("El movimiento de la cuenta por pagar correspondiente a la devolución no existe.");
                         movimiento.Nulo = true;
                         movimiento.IdAnuladoPor = intIdUsuario;
                         dbContext.NotificarModificacion(movimiento);
@@ -1014,7 +1056,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (devolucion.IdAsiento > 0)
                     {
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.ReversarAsientoContable(devolucion.IdAsiento, dbContext);
                     }
                     dbContext.Commit();
@@ -1027,15 +1069,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al anular el registro de devolución: ", ex);
-                    throw new Exception("Se produjo un error anulando la devolución. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al anular el registro de devolución: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error anulando la devolución. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public DevolucionProveedor ObtenerDevolucionProveedor(int intIdDevolucion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1043,15 +1087,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el registro de devolución: ", ex);
-                    throw new Exception("Se produjo un error consultado la información de la devolución. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el registro de devolución: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultado la información de la devolución. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerTotalListaDevolucionesPorProveedor(int intIdEmpresa, int intIdDevolucion, string strNombre)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1064,15 +1110,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el total del listado de registros de devolución: ", ex);
-                    throw new Exception("Se produjo un error consultando el total del listado de devoluciones. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el total del listado de registros de devolución: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el total del listado de devoluciones. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<DevolucionProveedor> ObtenerListadoDevolucionesPorProveedor(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1085,8 +1133,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de registros de devolución: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de devoluciones. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de devolución: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de devoluciones. Por favor consulte con su proveedor.");
                 }
             }
         }

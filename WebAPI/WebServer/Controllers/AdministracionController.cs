@@ -15,14 +15,12 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static ICorreoService _servicioCorreo;
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
-        private static ConfiguracionGeneral configuracionGeneral;
-        private static ConfiguracionRecepcion configuracionRecepcion;
-        private static string _strCorreoNotificacionErrores;
+        private static string _strCorreoNotificacionErrores = "";
         private string strLogoPath;
-        private byte[] bytLogo;
+        private byte[]? bytLogo;
 
         public AdministracionController(
-            IConfiguration configuration,
+            IConfiguracionGeneral configuration,
             IHostEnvironment environment,
             ICorreoService servicioCorreo,
             IMantenimientoService servicioMantenimiento,
@@ -34,24 +32,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _servicioMantenimiento = servicioMantenimiento;
             _servicioFacturacion = servicioFacturacion;
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
-            _strCorreoNotificacionErrores = configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value;
-            configuracionGeneral = new ConfiguracionGeneral
-            (
-                configuration.GetSection("appSettings").GetSection("strConsultaTipoCambioDolarURL").Value,
-                configuration.GetSection("appSettings").GetSection("strConsultaContribuyenteURL").Value,
-                configuration.GetSection("appSettings").GetSection("strServicioComprobantesURL").Value,
-                configuration.GetSection("appSettings").GetSection("strClientId").Value,
-                configuration.GetSection("appSettings").GetSection("strServicioTokenURL").Value,
-                configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value,
-                configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value
-            );
-            configuracionRecepcion = new ConfiguracionRecepcion
-            (
-                configuration.GetSection("appSettings").GetSection("pop3IvaAccount").Value,
-                configuration.GetSection("appSettings").GetSection("pop3IvaPass").Value,
-                configuration.GetSection("appSettings").GetSection("pop3GastoAccount").Value,
-                configuration.GetSection("appSettings").GetSection("pop3GastoPass").Value
-            );
+            _strCorreoNotificacionErrores = configuration.CorreoNotificacionErrores;
+            
         }
 
         [HttpPost("actualizararchivoaplicacion")]
@@ -568,15 +550,16 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             Task.Run(() =>
             {
                 bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
-                _servicioFacturacion.ProcesarDocumentosElectronicosPendientes(configuracionGeneral, bytLogo);
+                _servicioFacturacion.ProcesarDocumentosElectronicosPendientes(bytLogo);
             });
-            Task.Run(() => _servicioFacturacion.ProcesarCorreoRecepcion(configuracionGeneral, configuracionRecepcion));
+            Task.Run(() => _servicioFacturacion.ProcesarCorreoRecepcion());
         }
 
         [HttpGet("limpiarregistrosinvalidos")]
         public void LimpiarRegistrosInvalidos()
         {
-            Task.Run(() => {
+            Task.Run(() =>
+            {
                 try
                 {
                     string[] directoryEntries = Directory.GetFileSystemEntries(_environment.ContentRootPath, "errorlog-??-??-????.txt");

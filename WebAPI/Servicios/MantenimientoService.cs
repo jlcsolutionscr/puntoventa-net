@@ -36,7 +36,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
-        void ValidarCredencialesHacienda(string strCodigoUsuario, string strClave, ConfiguracionGeneral config);
+        void ValidarCredencialesHacienda(string strCodigoUsuario, string strClave);
         void ValidarCertificadoHacienda(string strPin, string strCertificado);
         void AgregarCredencialesHacienda(CredencialesHacienda credenciales);
         CredencialesHacienda ObtenerCredencialesHacienda(int intIdEmpresa);
@@ -102,8 +102,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarAjusteInventario(AjusteInventario ajusteInventario);
         void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario, string strMotivoAnulacion);
         AjusteInventario ObtenerAjusteInventario(int intIdAjusteInventario);
-        int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion);
-        IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion);
+        int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion, string strFechaFinal);
+        IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion, string strFechaFinal);
         // Métodos para obtener parámetros generales del sistema
         IList<LlaveDescripcion> ObtenerListadoTipoIdentificacion();
         IList<LlaveDescripcion> ObtenerListadoCatalogoReportes();
@@ -130,31 +130,35 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class MantenimientoService : IMantenimientoService
     {
         private readonly ILoggerManager _logger;
-        private static IServiceScopeFactory serviceScopeFactory;
-        private static ICorreoService servicioCorreo;
+        private static IServiceScopeFactory? _serviceScopeFactory;
+        private static ICorreoService? _servicioCorreo;
+        private static IConfiguracionGeneral? _config;
         private static CultureInfo provider = CultureInfo.InvariantCulture;
         private static string strFormat = "dd/MM/yyyy HH:mm:ss";
 
-        public MantenimientoService(ILoggerManager logger, ICorreoService pServicioCorreo, IServiceScopeFactory pServiceScopeFactory)
+        public MantenimientoService(ILoggerManager logger, ICorreoService servicioCorreo, IServiceScopeFactory serviceScopeFactory, IConfiguracionGeneral config)
         {
             try
             {
                 _logger = logger;
-                servicioCorreo = pServicioCorreo;
-                serviceScopeFactory = pServiceScopeFactory;
+                _servicioCorreo = servicioCorreo;
+                _serviceScopeFactory = serviceScopeFactory;
+                _config = config;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error al inicializar el servicio: ", ex);
-                throw new Exception("Se produjo un error al inicializar el servicio de Mantenimiento. Por favor consulte con su proveedor.");
+                if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                else throw new Exception("Se produjo un error al inicializar el servicio de Mantenimiento. Por favor consulte con su proveedor.");
             }
         }
 
         public IList<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strCodigoUsuario, string strClave, string strIdentificacion, int intTipoDispositivo)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                if (strCodigoUsuario.ToUpper() == "CONTADOR") throw new Exception("El usuario que envia la petición no posee los privilegios necesarios.");
+                if (strCodigoUsuario.ToUpper() == "CONTADOR") throw new BusinessException("El usuario que envia la petición no posee los privilegios necesarios.");
                 var listaEquipoRegistrado = new List<EquipoRegistrado>();
                 try
                 {
@@ -199,15 +203,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de terminales disponibles: ", ex);
-                    throw new Exception("Error al obtener las terminales disponibles. . .");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de terminales disponibles: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Error al obtener las terminales disponibles. . .");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoEmpresasAdministrador()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaEmpresa = new List<LlaveDescripcion>();
                 try
@@ -222,15 +228,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al validar la lista de empresas para usuario administrador: ", ex);
-                    throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
+                    if (_logger != null) _logger.LogError("Error al validar la lista de empresas para usuario administrador: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoSucursales(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaEmpresa = new List<LlaveDescripcion>();
                 try
@@ -245,15 +253,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al validar la lista de sucursales asignadas a la empresa: ", ex);
-                    throw new Exception("Error al validar la lista de sucursales asignadas a la empresa. . .");
+                    if (_logger != null) _logger.LogError("Error al validar la lista de sucursales asignadas a la empresa: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Error al validar la lista de sucursales asignadas a la empresa. . .");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaEmpresa = new List<LlaveDescripcion>();
                 try
@@ -268,15 +278,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al validar la lista de terminales asignadas a la empresa: ", ex);
-                    throw new Exception("Error al validar la lista de terminales asignadas a la empresa. . .");
+                    if (_logger != null) _logger.LogError("Error al validar la lista de terminales asignadas a la empresa: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Error al validar la lista de terminales asignadas a la empresa. . .");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaEmpresa = new List<LlaveDescripcion>();
                 try
@@ -291,15 +303,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al validar la lista de empresas asignadas a una terminal: ", ex);
-                    throw new Exception("Error al validar la lista de empresas asignadas a una terminal. . .");
+                    if (_logger != null) _logger.LogError("Error al validar la lista de empresas asignadas a una terminal: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Error al validar la lista de empresas asignadas a una terminal. . .");
                 }
             }
         }
 
         public bool EnModoMantenimiento()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -315,15 +329,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al consultar el parámetro de modo mantenimiento del sistema: ", ex);
-                    throw new Exception("No es posible consultar el modo mantenimieto del sistema.");
+                    if (_logger != null) _logger.LogError("Error al consultar el parámetro de modo mantenimiento del sistema: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("No es posible consultar el modo mantenimieto del sistema.");
                 }
             }
         }
 
         public void RegistrarTerminal(string strCodigoUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -357,15 +373,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al registrar el dispositivo movil para la identificación suministrada: ", ex);
-                    throw new Exception("Error al registrar el dispositivo movil para la identificación suministrada.");
+                    if (_logger != null) _logger.LogError("Error al registrar el dispositivo movil para la identificación suministrada: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Error al registrar el dispositivo movil para la identificación suministrada.");
                 }
             }
         }
 
         public Usuario ValidarCredencialesAdmin(string strCodigoUsuario, string strClave)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 if (strCodigoUsuario.ToUpper() != "ADMIN") throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
                 try
@@ -383,15 +401,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al validar credenciales del usuario: ", ex);
-                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
+                    if (_logger != null) _logger.LogError("Error al validar credenciales del usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
         }
 
         public Empresa ValidarCredenciales(string strCodigoUsuario, string strClave, string strIdentificacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -408,15 +428,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al validar los credenciales del usuario por identificación: ", ex);
-                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
+                    if (_logger != null) _logger.LogError("Error al validar los credenciales del usuario por identificación: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
         }
 
         public Empresa ValidarCredenciales(string strCodigoUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -431,15 +453,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al validar los credenciales del usuario por terminal: ", ex);
-                    throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
+                    if (_logger != null) _logger.LogError("Error al validar los credenciales del usuario por terminal: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Error en la validación de los credenciales suministrados por favor verifique la información. . .");
                 }
             }
         }
 
         private Empresa ObtenerEmpresaPorUsuario(string strCodigoUsuario, string strClave, int intIdEmpresa, string strValorRegistro)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                 empresa.ListadoTipoIdentificacion = ObtenerListadoTipoIdentificacion();
@@ -500,16 +524,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ValidarCredencialesHacienda(string strCodigoUsuario, string strClave, ConfiguracionGeneral config)
+        public void ValidarCredencialesHacienda(string strCodigoUsuario, string strClave)
         {
+            if (_config == null) throw new Exception("Configuration not set");
             try
             {
-                TokenType token = ComprobanteElectronicoService.ObtenerToken(config.ServicioTokenURL, config.ClientId, strCodigoUsuario, strClave).Result;
+                TokenType token = ComprobanteElectronicoService.ObtenerToken(_config.ServicioTokenURL, _config.ClientId, strCodigoUsuario, strClave).Result;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error al validar los credenciales del usuario en Hacienda: ", ex);
-                throw new Exception("No fue posible validar los credenciales de Hacienda. Por favor verifique la información. . .");
+                if (_logger != null) _logger.LogError("Error al validar los credenciales del usuario en Hacienda: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                else if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                else throw new Exception("No fue posible validar los credenciales de Hacienda. Por favor verifique la información. . .");
             }
         }
 
@@ -523,15 +550,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error al validar la llave criptográfica: ", ex);
-                throw new Exception("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información suministrada");
+                if (_logger != null) _logger.LogError("Error al validar la llave criptográfica: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                else throw new Exception("No se logró abrir la llave criptográfica con el pin suministrado. Por favor verifique la información suministrada");
             }
-            if (uidCert.NotAfter <= Validador.ObtenerFechaHoraCostaRica()) throw new Exception("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
+            if (uidCert.NotAfter <= Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La llave criptográfica para la firma del documento electrónico se encuentra vencida. Por favor reemplace su llave criptográfica para poder emitir documentos electrónicos");
         }
 
         public decimal AutorizacionPorcentaje(string strCodigoUsuario, string strClave, int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -546,15 +575,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al autorizar un porcentaje de descuento con credenciales: ", ex);
-                    throw new Exception("Error al obtener la autorización del descuento. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al autorizar un porcentaje de descuento con credenciales: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Error al obtener la autorización del descuento. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public string ObtenerUltimaVersionApp()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 string strUltimaVersion = "";
                 try
@@ -566,8 +597,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al consultar el parámetro 'Version' del sistema: ", ex);
-                    throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al consultar el parámetro 'Version' del sistema: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
                 }
                 return strUltimaVersion;
             }
@@ -575,7 +607,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public string ObtenerUltimaVersionMobileApp()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 string strUltimaVersion = "";
                 try
@@ -587,8 +620,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al consultar el parámetro 'Version' del sistema: ", ex);
-                    throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al consultar el parámetro 'Version' del sistema: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultado la versión actual del sistema. Por favor consulte con su proveedor.");
                 }
                 return strUltimaVersion;
             }
@@ -596,7 +630,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public IList<ParametroSistema> ObtenerListadoParametros()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -604,15 +639,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al consultar el listado d parámetros del sistema: ", ex);
-                    throw new Exception("Error al consultar el listado d parámetros del sistema. . .");
+                    if (_logger != null) _logger.LogError("Error al consultar el listado d parámetros del sistema: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Error al consultar el listado d parámetros del sistema. . .");
                 }
             }
         }
 
         public void ActualizarParametroSistema(int intIdParametro, string strValor)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -625,15 +662,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar el parámetro del sistema: ", ex);
-                    throw new Exception("Se produjo un error actualizando el parámetro del sistema. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el parámetro del sistema: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando el parámetro del sistema. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoEmpresa()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaEmpresa = new List<LlaveDescripcion>();
                 try
@@ -648,15 +687,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al validar la lista de empresas para usuario administrador: ", ex);
-                    throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
+                    if (_logger != null) _logger.LogError("Error al validar la lista de empresas para usuario administrador: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Error al validar la lista de empresas para usuario administrador. . .");
                 }
             }
         }
 
         public string AgregarEmpresa(Empresa empresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -668,15 +709,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar la empresa: ", ex);
-                    throw new Exception("Se produjo un error agregando la información de la empresa. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar la empresa: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la información de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Empresa ObtenerEmpresa(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -690,15 +733,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la empresa: ", ex);
-                    throw new Exception("Se produjo un error consultando la información de la empresa. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la empresa: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarEmpresa(Empresa empresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -731,15 +776,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar la empresa: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la empresa. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar la empresa: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public List<LlaveDescripcion> ObtenerListadoReportePorEmpresa(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaReportes = new List<LlaveDescripcion>();
                 try
@@ -760,15 +807,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
-                    throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa, bool bolAdministrator)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaRoles = new List<LlaveDescripcion>();
                 try
@@ -784,15 +833,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarReportePorEmpresa(int intIdEmpresa, List<ReportePorEmpresa> listado)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -805,15 +856,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al actualizar el listado de reportes por empresa: ", ex);
-                    throw new Exception("Se produjo un error al actualizar el listado de reportes por empresa. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el listado de reportes por empresa: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al actualizar el listado de reportes por empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -826,15 +879,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al actualizar el listado de roles por empresa: ", ex);
-                    throw new Exception("Se produjo un error al actualizar el listado de roles por empresa. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el listado de roles por empresa: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al actualizar el listado de roles por empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public string ObtenerLogotipoEmpresa(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -851,15 +906,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
-                    throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -880,15 +937,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al actualizar el logotipo de la empresa: ", ex);
-                    throw new Exception("Se produjo un error registrando el logotipo de la empresa. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el logotipo de la empresa: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error registrando el logotipo de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AgregarCredencialesHacienda(CredencialesHacienda credenciales)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -897,15 +956,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al agregar los credenciales de Hacienda: ", ex);
-                    throw new Exception("Se produjo un error agregando los credenciales de Hacienda. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar los credenciales de Hacienda: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando los credenciales de Hacienda. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public CredencialesHacienda ObtenerCredencialesHacienda(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -916,15 +977,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al consultar los credenciales de Hacienda: ", ex);
-                    throw new Exception("Se produjo un error consultando la información de los credenciales de Hacienda. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al consultar los credenciales de Hacienda: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información de los credenciales de Hacienda. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarCredencialesHacienda(int intIdEmpresa, string strCodigoUsuario, string strClave, string strNombreCertificado, string strPin, string strCertificado)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -943,15 +1006,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (BusinessException ex)
                 {
-                    _logger.LogError("Error al actualizar los credenciales de Hacienda: ", ex);
-                    throw new Exception("Se produjo un error actualizando los credenciales de Hacienda. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar los credenciales de Hacienda: ", ex);
+                    if (_config.EsModoDesarrollo) throw ex;
+                    else throw new Exception("Se produjo un error actualizando los credenciales de Hacienda. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public CatalogoReporte ObtenerCatalogoReporte(int intIdReporte)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -959,15 +1024,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la información del catalogo de reporte: ", ex);
-                    throw new Exception("Se produjo un error consultando la parametrización de la empresa. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la información del catalogo de reporte: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la parametrización de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public SucursalPorEmpresa ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -976,15 +1043,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la información de la sucursal: ", ex);
-                    throw new Exception("Se produjo un error al obtener la información de la sucursal. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la información de la sucursal: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al obtener la información de la sucursal. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AgregarSucursalPorEmpresa(SucursalPorEmpresa sucursal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -994,15 +1063,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar la sucursal: ", ex);
-                    throw new Exception("Se produjo un error adicionando la información de la sucursal. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar la sucursal: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error adicionando la información de la sucursal. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarSucursalPorEmpresa(SucursalPorEmpresa sucursal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1012,15 +1083,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar la sucursal: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar la sucursal: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información de la sucursal. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void EliminarRegistrosPorEmpresa(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1032,15 +1105,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al eliminar los registros de la empresa: ", ex);
-                    throw new Exception("Se produjo un error eliminando los registros de la empresa. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al eliminar los registros de la empresa: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error eliminando los registros de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public TerminalPorSucursal ObtenerTerminalPorSucursal(int intIdEmpresa, int intIdSucursal, int intIdTerminal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1049,15 +1124,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la información de la terminal: ", ex);
-                    throw new Exception("Se produjo un error al obtener la información de la terminal. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la información de la terminal: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al obtener la información de la terminal. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AgregarTerminalPorSucursal(TerminalPorSucursal terminal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1067,15 +1144,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar la terminal: ", ex);
-                    throw new Exception("Se produjo un error adicionando la información de la terminal. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar la terminal: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error adicionando la información de la terminal. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarTerminalPorSucursal(TerminalPorSucursal terminal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1085,15 +1164,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar la terminal: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la terminal. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar la terminal: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información de la terminal. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AgregarUsuario(Usuario usuario)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1115,15 +1196,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el usuario: ", ex);
-                    throw new Exception("Se produjo un error agregando la información del usuario. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la información del usuario. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarUsuario(Usuario usuario)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1149,20 +1232,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar el usuario: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del usuario. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información del usuario. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Usuario ActualizarClaveUsuario(int intIdUsuario, string strClave)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     Usuario usuario = usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdUsuario == intIdUsuario);
-                    if (usuario == null) throw new Exception("El usuario seleccionado para la actualización de la clave no existe.");
+                    if (usuario == null) throw new BusinessException("El usuario seleccionado para la actualización de la clave no existe.");
                     if (usuario.IdEmpresa == null || usuario.IdSucursal == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -1174,15 +1259,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar la contraseña del usuario: ", ex);
-                    throw new Exception("Se produjo un error actualizando la contraseña del usuario. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar la contraseña del usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la contraseña del usuario. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void EliminarUsuario(int intIdUsuario)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1199,7 +1286,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    _logger.LogError("Validación al eliminar el usuario: ", ex);
+                    if (_logger != null) _logger.LogError("Validación al eliminar el usuario: ", ex);
                     throw new BusinessException("No es posible eliminar el usuario seleccionado. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -1210,15 +1297,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al eliminar el usuario: ", ex);
-                    throw new Exception("Se produjo un error eliminando al usuario. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al eliminar el usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error eliminando al usuario. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Usuario ObtenerUsuario(int intIdUsuario)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1233,15 +1322,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el usuario: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del usuario. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del usuario. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaUsuario = new List<LlaveDescripcion>();
                 try
@@ -1259,15 +1350,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de usuarios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de usuarios. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de usuarios: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de usuarios. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AgregarVendedor(Vendedor vendedor)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1284,15 +1377,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el vendedor: ", ex);
-                    throw new Exception("Se produjo un error agregando la información del vendedor. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el vendedor: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarVendedor(Vendedor vendedor)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1309,15 +1404,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar el vendedor: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del vendedor. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el vendedor: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void EliminarVendedor(int intIdVendedor)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1331,7 +1428,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    _logger.LogError("Validación al eliminar el vendedor: ", ex);
+                    if (_logger != null) _logger.LogError("Validación al eliminar el vendedor: ", ex);
                     throw new BusinessException("No es posible eliminar el vendedor seleccionado. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -1342,15 +1439,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al eliminar el vendedor: ", ex);
-                    throw new Exception("Se produjo un error eliminando al vendedor. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al eliminar el vendedor: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error eliminando al vendedor. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Vendedor ObtenerVendedor(int intIdVendedor)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1365,15 +1464,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el vendedor: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del vendedor. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el vendedor: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Vendedor ObtenerVendedorPorDefecto(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1388,15 +1489,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el vendedor: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del vendedor. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el vendedor: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del vendedor. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoVendedores(int intIdEmpresa, string strNombre)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaVendedor = new List<LlaveDescripcion>();
                 try
@@ -1414,15 +1517,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de vendedores: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de vendedores. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de vendedores: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de vendedores. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Role ObtenerRole(int intIdRole)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1430,15 +1535,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el registro de role de usuario: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del role de acceso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el registro de role de usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del role de acceso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoRoles()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaRoles = new List<LlaveDescripcion>();
                 try
@@ -1453,15 +1560,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AgregarLinea(Linea linea)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1478,15 +1587,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar la línea de producto: ", ex);
-                    throw new Exception("Se produjo un error agregando la información de la línea. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar la línea de producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la información de la línea. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarLinea(Linea linea)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1510,15 +1621,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar la línea de producto: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información de la línea. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar la línea de producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información de la línea. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void EliminarLinea(int intIdLinea)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1532,7 +1645,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    _logger.LogError("Validación al agregar el parámetro contable: ", ex);
+                    if (_logger != null) _logger.LogError("Validación al agregar el parámetro contable: ", ex);
                     throw new BusinessException("No es posible eliminar la línea seleccionada. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -1543,15 +1656,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al eliminar la línea de producto: ", ex);
-                    throw new Exception("Se produjo un error eliminando la línea. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al eliminar la línea de producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error eliminando la línea. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Linea ObtenerLinea(int intIdLinea)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1560,15 +1675,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la línea de producto: ", ex);
-                    throw new Exception("Se produjo un error consultando la información de la línea. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la línea de producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información de la línea. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaLinea = new List<LlaveDescripcion>();
                 try
@@ -1586,8 +1703,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de líneas general: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de líneas. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de líneas general: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de líneas. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1615,7 +1733,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AgregarProducto(Producto producto)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1644,15 +1763,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el producto: ", ex);
-                    throw new Exception("Se produjo un error agregando la información del producto. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarProducto(Producto producto)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1681,15 +1802,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar el producto: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del producto. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarPrecioVentaProductos(int intIdEmpresa, int intIdLinea, string strCodigo, string strDescripcion, decimal decPorcentajeAumento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1722,15 +1845,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar el precio de venta del inventario: ", ex);
-                    throw new Exception("Se produjo un error actualizando el precio de venta del inventario. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el precio de venta del inventario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando el precio de venta del inventario. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void EliminarProducto(int intIdProducto)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1741,7 +1866,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    _logger.LogError("Validación al agregar el parámetro contable: ", ex);
+                    if (_logger != null) _logger.LogError("Validación al agregar el parámetro contable: ", ex);
                     throw new BusinessException("No es posible eliminar el producto seleccionado. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -1752,15 +1877,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al eliminar el producto: ", ex);
-                    throw new Exception("Se produjo un error eliminando el producto. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al eliminar el producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error eliminando el producto. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Producto ObtenerProducto(int intIdProducto, int intIdSucursal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1775,15 +1902,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el producto: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Producto ObtenerProductoEspecial(int intIdEmpresa, int intIdTipo)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1791,15 +1920,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el código de producto transitorio: ", ex);
-                    throw new Exception("Se produjo un error consultando el producto transitorio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el código de producto transitorio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el producto transitorio. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, int intIdSucursal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1814,15 +1945,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el producto: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo, int intIdSucursal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1837,107 +1970,157 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el producto: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del producto. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                try
+                using (var connection = dbContext.Database.GetDbConnection())
                 {
-                    List<ReporteInventario> listaReporte = new List<ReporteInventario>();
-                    var listaProductos = dbContext.ProductoRepository.Include("Linea.LineaPorSucursal").Where(x => x.IdEmpresa == intIdEmpresa && x.Linea.LineaPorSucursal.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal).Select(z => z.IdLinea).Contains(x.IdLinea) && new int[] { 1, 2, 3 }.Contains(x.Tipo));
-                    if (!bolIncluyeServicios)
-                        listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
-                    if (bolFiltraActivos)
-                        listaProductos = listaProductos.Where(x => x.Activo);
-                    if (bolFiltraConDescuento)
-                        listaProductos = listaProductos.Where(x => x.PorcDescuento > 0);
-                    if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
-                    if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
-                    if (!strCodigoProveedor.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
-                    if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
-                    if (bolFiltraExistencias)
-                        return listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).Count();
-                    else
-                        return listaProductos.Count();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
+                    connection.Open();
+                    using (var command = connection.CreateCommand())
+                    {
+                        int intTotal = 0;
+                        try
+                        {
+                            List<ReporteInventario> listaReporte = new List<ReporteInventario>();
+                            var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal);
+                            if (intIdLinea > 0)
+                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.IdLinea == intIdLinea);
+                            int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
+                            if (lstLineasPorSucursal.Length > 0)
+                            {
+                                string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
+                                string strUsaIndex = "";        
+                                if (!bolIncluyeServicios)
+                                    listaProductos += " AND p.Tipo = " + StaticTipoProducto.Producto;
+                                else
+                                    listaProductos += " AND p.Tipo IN(1, 2, 3)";
+                                if (bolFiltraActivos)
+                                    listaProductos += " AND p.Activo = true";
+                                if (bolFiltraConDescuento)
+                                    listaProductos += " AND p.PorcDescuento > 0";
+                                if (!strCodigo.Equals(string.Empty))
+                                {
+                                    strUsaIndex = "USE INDEX (empresa_codigo_idx)";
+                                    listaProductos += " AND LOCATE('" + strCodigo + "', p.Codigo) > 0";
+                                }
+                                if (!strCodigoProveedor.Equals(string.Empty))
+                                {
+                                    strUsaIndex = "USE INDEX (empresa_codigo_prov_idx)";
+                                    listaProductos += " AND LOCATE('" + strCodigoProveedor + "', p.CodigoProveedor) > 0";
+                                }
+                                if (!strDescripcion.Equals(string.Empty))
+                                {
+                                    strUsaIndex = "USE INDEX (descripcion_fulltext_idx)";
+                                    listaProductos += " AND LOCATE('" + strDescripcion + "', p.Descripcion) > 0";
+                                }
+                                if (bolFiltraExistencias)
+                                    listaProductos = "SELECT COUNT(*) FROM Producto p, ExistenciaPorSucursal e " + strUsaIndex + " WHERE p.IdProducto = e.IdProducto AND e.IdEmpresa = " + intIdEmpresa + " AND e.IdSucursal = " + intIdSucursal + " AND p.IdEmpresa = " + intIdEmpresa + " AND e.Cantidad > 0" + listaProductos;
+                                else
+                                    listaProductos = "SELECT COUNT(*) FROM Producto p " + strUsaIndex + " WHERE p.IdEmpresa = " + intIdEmpresa + listaProductos;
+                                listaProductos += ";";
+                                command.CommandText = listaProductos;
+                                string result = command.ExecuteScalar().ToString();
+                                if (result != null && result != "") intTotal = int.Parse(result);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            if (_logger != null) _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
+                            if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                            else throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
+                        }
+                        return intTotal;
+                    }
                 }
             }
         }
 
         public IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listaProducto = new List<ProductoDetalle>();
-                try
+                using (var connection = dbContext.Database.GetDbConnection())
                 {
-                    List<ProductoDetalle> listaReporte = new List<ProductoDetalle>();
-                    var listaProductos = dbContext.ProductoRepository.Include("Linea.LineaPorSucursal").Where(x => x.IdEmpresa == intIdEmpresa && x.Linea.LineaPorSucursal.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal).Select(z => z.IdLinea).Contains(x.IdLinea) && new int[] { 1, 2, 3 }.Contains(x.Tipo));
-                    if (!bolIncluyeServicios)
-                        listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
-                    if (bolFiltraActivos)
-                        listaProductos = listaProductos.Where(x => x.Activo);
-                    if (bolFiltraConDescuento)
-                        listaProductos = listaProductos.Where(x => x.PorcDescuento > 0);
-                    if (intIdLinea > 0)
-                        listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
-                    if (!strCodigo.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Codigo.Contains(strCodigo));
-                    if (!strCodigoProveedor.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.CodigoProveedor.Contains(strCodigoProveedor));
-                    if (!strDescripcion.Equals(string.Empty))
-                        listaProductos = listaProductos.Where(x => x.Descripcion.Contains(strDescripcion));
-                    if (bolFiltraExistencias)
+                    connection.Open();
+                    using (var command = connection.CreateCommand())
                     {
-                        var listado = listaProductos.Join(dbContext.ExistenciaPorSucursalRepository, x => x.IdProducto, y => y.IdProducto, (x, y) => new { x, y }).Where(x => x.y.IdEmpresa == intIdEmpresa && x.y.IdSucursal == intIdSucursal && x.y.Cantidad > 0).OrderBy(x => x.x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
-                        foreach (var value in listado)
+                        var listaProducto = new List<ProductoDetalle>();
+                        try
                         {
-                            LlaveDescripcionValor tipoImpuesto = TipoDeImpuesto.ObtenerParametro(value.x.IdImpuesto);
-                            decimal decUtilidad = value.x.PrecioCosto > 0 ? ((value.x.PrecioVenta1 / (1 + (tipoImpuesto.Valor / 100))) * 100 / value.x.PrecioCosto) - 100 : value.x.PrecioVenta1 > 0 ? 100 : 0;
-                            ProductoDetalle item = new ProductoDetalle(value.x.IdProducto, value.x.Codigo, value.x.CodigoProveedor, value.x.Descripcion, value.y.Cantidad, value.x.PrecioCosto, value.x.PrecioVenta1, value.x.Observacion, decUtilidad, value.x.Activo);
-                            listaProducto.Add(item);
+                            var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal);
+                            if (intIdLinea > 0)
+                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.IdLinea == intIdLinea);
+                            int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
+                            if (lstLineasPorSucursal.Length > 0)
+                            {
+                                string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
+                                string strUsaIndex = "";        
+                                if (!bolIncluyeServicios)
+                                    listaProductos += " AND p.Tipo = " + StaticTipoProducto.Producto;
+                                else
+                                    listaProductos += " AND p.Tipo IN(1, 2, 3)";
+                                if (bolFiltraActivos)
+                                    listaProductos += " AND p.Activo = true";
+                                if (bolFiltraConDescuento)
+                                    listaProductos += " AND p.PorcDescuento > 0";
+                                if (!strCodigo.Equals(string.Empty))
+                                {
+                                    strUsaIndex = "USE INDEX (empresa_codigo_idx)";
+                                    listaProductos += " AND LOCATE('" + strCodigo + "', p.Codigo) > 0";
+                                }
+                                if (!strCodigoProveedor.Equals(string.Empty))
+                                {
+                                    strUsaIndex = "USE INDEX (empresa_codigo_prov_idx)";
+                                    listaProductos += " AND LOCATE('" + strCodigoProveedor + "', p.CodigoProveedor) > 0";
+                                }
+                                if (!strDescripcion.Equals(string.Empty))
+                                {
+                                    strUsaIndex = "USE INDEX (descripcion_fulltext_idx)";
+                                    listaProductos += " AND LOCATE('" + strDescripcion + "', p.Descripcion) > 0";
+                                }
+                                if (bolFiltraExistencias)
+                                    listaProductos = "SELECT p.* FROM Producto p, ExistenciaPorSucursal e " + strUsaIndex + " WHERE p.IdProducto = e.IdProducto AND e.IdEmpresa = " + intIdEmpresa + " AND e.IdSucursal = " + intIdSucursal + " AND p.IdEmpresa = " + intIdEmpresa + " AND e.Cantidad > 0" + listaProductos;
+                                else
+                                    listaProductos = "SELECT p.* FROM Producto p " + strUsaIndex + " WHERE p.IdEmpresa = " + intIdEmpresa + listaProductos;
+                                listaProductos += " ORDER BY p.Codigo LIMIT " + cantRec + " OFFSET " + ((numPagina - 1) * cantRec) + ";";
+                                var listado = dbContext.ProductoRepository.FromSqlRaw(listaProductos).ToList();
+                                foreach (var value in listado)
+                                {
+                                    LlaveDescripcionValor tipoImpuesto = TipoDeImpuesto.ObtenerParametro(value.IdImpuesto);
+                                    var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
+                                    decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
+                                    decimal decUtilidad = value.PrecioCosto > 0 ? (value.PrecioVenta1 / (1 + (tipoImpuesto.Valor / 100)) * 100 / value.PrecioCosto) - 100 : value.PrecioVenta1 > 0 ? 100 : 0;
+                                    ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, decUtilidad, value.Activo);
+                                    listaProducto.Add(item);
+                                }
+                            }
                         }
-                    }
-                    else
-                    {
-                        var listado = listaProductos.OrderBy(x => x.Codigo).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
-                        foreach (var value in listado)
+                        catch (Exception ex)
                         {
-                            LlaveDescripcionValor tipoImpuesto = TipoDeImpuesto.ObtenerParametro(value.IdImpuesto);
-                            var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
-                            decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
-                            decimal decUtilidad = value.PrecioCosto > 0 ? ((value.PrecioVenta1 / (1 + (tipoImpuesto.Valor / 100))) * 100 / value.PrecioCosto) - 100 : value.PrecioVenta1 > 0 ? 100 : 0;
-                            ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, decUtilidad, value.Activo);
-                            listaProducto.Add(item);
+                            if (_logger != null) _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
+                            if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                            else throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
                         }
+                        return listaProducto;
                     }
-                    return listaProducto;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerTotalMovimientosPorProducto(int intIdProducto, int intIdSucursal, string strFechaInicial, string strFechaFinal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                 DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
@@ -1948,15 +2131,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int intIdSucursal, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                 DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
@@ -1970,8 +2155,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1993,7 +2179,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2010,15 +2197,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el registro de banco adquiriente: ", ex);
-                    throw new Exception("Se produjo un error agregando la información del banco adquiriente. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el registro de banco adquiriente: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la información del banco adquiriente. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarBancoAdquiriente(BancoAdquiriente bancoAdquiriente)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2035,15 +2224,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar el registro de banco adquiriente: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del banco adquiriente. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el registro de banco adquiriente: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información del banco adquiriente. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void EliminarBancoAdquiriente(int intIdBanco)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2056,7 +2247,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    _logger.LogError("Validación al agregar el parámetro contable: ", ex);
+                    if (_logger != null) _logger.LogError("Validación al agregar el parámetro contable: ", ex);
                     throw new BusinessException("No es posible eliminar el banco adquiriente seleccionado. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -2067,15 +2258,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al eliminar registro de banco adquiriente: ", ex);
-                    throw new Exception("Se produjo un error eliminando el banco adquiriente. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al eliminar registro de banco adquiriente: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error eliminando el banco adquiriente. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public BancoAdquiriente ObtenerBancoAdquiriente(int intIdBanco)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2083,15 +2276,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el registro de banco adquiriente: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del banco adquiriente. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el registro de banco adquiriente: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del banco adquiriente. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaBancoAdquiriente = new List<LlaveDescripcion>();
                 try
@@ -2108,8 +2303,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de registros de banco adquiriente: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de bancos adquirientes. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de banco adquiriente: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de bancos adquirientes. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -2121,12 +2317,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public string AgregarAjusteInventario(AjusteInventario ajusteInventario)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     ajusteInventario.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
+                    MovimientoProducto movimiento = null;
+                    List<MovimientoProducto> listadoMovimientos = new();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ajusteInventario.IdEmpresa && x.IdSucursal == ajusteInventario.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -2136,7 +2335,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
                         if (producto == null)
-                            throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                            throw new BusinessException("El producto asignado al detalle de la devolución no existe.");
                         if (producto.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
@@ -2156,7 +2355,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             };
                             dbContext.ExistenciaPorSucursalRepository.Add(nuevoRegistro);
                         }
-                        MovimientoProducto movimiento = new MovimientoProducto
+                        movimiento = new MovimientoProducto
                         {
                             IdProducto = producto.IdProducto,
                             IdSucursal = ajusteInventario.IdSucursal,
@@ -2166,10 +2365,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
                             PrecioCosto = detalleAjuste.PrecioCosto
                         };
-                        producto.MovimientoProducto = new List<MovimientoProducto>();
-                        producto.MovimientoProducto.Add(movimiento);
+                        listadoMovimientos.Add(movimiento);
+                        dbContext.MovimientoProductoRepository.Add(movimiento);
                     }
                     dbContext.Commit();
+                    if (listadoMovimientos.Count > 0)
+                    {
+                        foreach (MovimientoProducto elm in listadoMovimientos)
+                        {
+                            elm.Origen = "Registro de ajuste de inventario nro. " + ajusteInventario.IdAjuste;
+                            dbContext.NotificarModificacion(elm);
+                        }
+                        dbContext.Commit();
+                    }
                 }
                 catch (BusinessException ex)
                 {
@@ -2179,8 +2387,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el registro de ajuste de inventario: ", ex);
-                    throw new Exception("Se produjo un error guardando la información del ajuste de inventario. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el registro de ajuste de inventario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error guardando la información del ajuste de inventario. Por favor consulte con su proveedor.");
                 }
                 return ajusteInventario.IdAjuste.ToString();
             }
@@ -2188,7 +2397,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario, string strMotivoAnulacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2208,7 +2418,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
                         if (producto == null)
-                            throw new Exception("El producto asignado al detalle de la devolución no existe.");
+                            throw new BusinessException("El producto asignado al detalle de la devolución no existe.");
                         if (producto.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
@@ -2222,12 +2432,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = ajusteInventario.IdSucursal,
                             Fecha = Validador.ObtenerFechaHoraCostaRica(),
                             Tipo = detalleAjuste.Cantidad < 0 ? StaticTipoMovimientoProducto.Entrada : StaticTipoMovimientoProducto.Salida,
-                            Origen = "Registro de reversión de ajuste de inventario",
+                            Origen = "Registro de reversión de ajuste de inventario nro. " + ajusteInventario.IdAjuste,
                             Cantidad = detalleAjuste.Cantidad < 0 ? detalleAjuste.Cantidad * -1 : detalleAjuste.Cantidad,
                             PrecioCosto = detalleAjuste.PrecioCosto
                         };
-                        producto.MovimientoProducto = new List<MovimientoProducto>();
-                        producto.MovimientoProducto.Add(movimiento);
+                        dbContext.MovimientoProductoRepository.Add(movimiento);
                     }
                     dbContext.Commit();
                 }
@@ -2239,15 +2448,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al anular el registro de ajuste de inventario: ", ex);
-                    throw new Exception("Se produjo un error anulando el ajuste de inventario. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al anular el registro de ajuste de inventario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error anulando el ajuste de inventario. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public AjusteInventario ObtenerAjusteInventario(int intIdAjusteInventario)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2256,36 +2467,45 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el registro de facturación: ", ex);
-                    throw new Exception("Se produjo un error consultando la información de la factura. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el registro de facturación: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información de la factura. Por favor consulte con su proveedor.");
                 }
             }
         }
 
-        public int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion)
+        public int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion, string strFechaFinal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
-                    var listaAjusteInventario = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    var listado = dbContext.AjusteInventarioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (intIdAjusteInventario > 0)
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
+                        listado = listado.Where(x => !x.Nulo && x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
-                        listaAjusteInventario = listaAjusteInventario.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
-                    return listaAjusteInventario.Count();
+                        listado = listado.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.Descripcion.Contains(strDescripcion));
+                    if (strFechaFinal != "")
+                    {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
+                    }
+                    return listado.Count();
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el total del listado de registros de facturación: ", ex);
-                    throw new Exception("Se produjo un error consultando el total del listado de facturas. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el total del listado de registros de facturación: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el total del listado de facturas. Por favor consulte con su proveedor.");
                 }
             }
         }
 
-        public IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion)
+        public IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion, string strFechaFinal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaAjustes = new List<AjusteInventarioDetalle>();
                 try
@@ -2295,6 +2515,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.IdAjuste == intIdAjusteInventario);
                     else if (!strDescripcion.Equals(string.Empty))
                         listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
+                    if (strFechaFinal != "")
+                    {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
+                    }
                     listado = listado.OrderByDescending(x => x.IdAjuste).Skip((numPagina - 1) * cantRec).Take(cantRec);
                     foreach (var ajuste in listado)
                     {
@@ -2305,8 +2530,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de registros de facturación: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de facturas. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de facturación: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de facturas. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -2318,7 +2544,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public IList<LlaveDescripcion> ObtenerListadoCatalogoReportes()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaCatalogoReporte = new List<LlaveDescripcion>();
                 try
@@ -2333,15 +2560,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de reportes: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de reportes. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de reportes: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de reportes. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoProvincias()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaProvincia = new List<LlaveDescripcion>();
                 try
@@ -2356,15 +2585,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de provincias: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de provincias. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de provincias: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de provincias. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaCanton = new List<LlaveDescripcion>();
                 try
@@ -2379,15 +2610,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cantones: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cantones. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cantones: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de cantones. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaDistrito = new List<LlaveDescripcion>();
                 try
@@ -2402,15 +2635,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de distritos: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de distritos. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de distritos: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de distritos. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaBarrio = new List<LlaveDescripcion>();
                 try
@@ -2425,8 +2660,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de barrios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de barrios: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -2450,14 +2686,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error al obtener el listado de tipos de precio: ", ex);
-                throw new Exception("Se produjo un error consultando el listado de tipos de precio. Por favor consulte con su proveedor.");
+                if (_logger != null) _logger.LogError("Error al obtener el listado de tipos de precio: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                else throw new Exception("Se produjo un error consultando el listado de tipos de precio. Por favor consulte con su proveedor.");
             }
         }
 
         public int ObtenerTotalListaClasificacionProducto(string strDescripcion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2470,15 +2708,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de barrios: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de barrios: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<ClasificacionProducto> ObtenerListadoClasificacionProducto(int numPagina, int cantRec, string strDescripcion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2491,15 +2731,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de clasificaciones de producto: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de clasificaciones de producto. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de clasificaciones de producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de clasificaciones de producto. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public ClasificacionProducto ObtenerClasificacionProducto(string strCodigo)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2508,15 +2750,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la clasificación del producto: ", ex);
-                    throw new Exception("Se produjo un error consultando la clasificación del producto. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la clasificación del producto: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la clasificación del producto. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AgregarPuntoDeServicio(PuntoDeServicio puntoDeServicio)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2526,15 +2770,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el punto de servicio: ", ex);
-                    throw new Exception("Se produjo un error agragando la información del punto de servicio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el punto de servicio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agragando la información del punto de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarPuntoDeServicio(PuntoDeServicio puntoDeServicio)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2544,15 +2790,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar el punto de servicio: ", ex);
-                    throw new Exception("Se produjo un error actualizando la información del punto de servicio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar el punto de servicio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información del punto de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void EliminarPuntoDeServicio(int intIdPunto)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2564,7 +2812,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    _logger.LogError("Validación al eliminar el punto de servicio: ", ex);
+                    if (_logger != null) _logger.LogError("Validación al eliminar el punto de servicio: ", ex);
                     throw new BusinessException("No es posible eliminar el punto de servicio seleccionado. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -2575,15 +2823,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al eliminar el punto de servicio: ", ex);
-                    throw new Exception("Se produjo un error eliminando al punto de servicio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al eliminar el punto de servicio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error eliminando al punto de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public PuntoDeServicio ObtenerPuntoDeServicio(int intIdPunto)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2592,15 +2842,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la entidad PuntoDeServicio: ", ex);
-                    throw new Exception("Se produjo un error consultando el punto  de servicio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la entidad PuntoDeServicio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el punto  de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaPuntos = new List<LlaveDescripcion>();
                 try
@@ -2619,15 +2871,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de puntos de servicio: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de puntos de servicio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de puntos de servicio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de puntos de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         private string GenerarRegistroAutenticacion(int intIdEmpresa, string strCodigoUsuario, int intRole)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 string strGuid = Guid.NewGuid().ToString();
                 DateTime fechaRegistro = Validador.ObtenerFechaHoraCostaRica();
@@ -2646,7 +2900,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    if (_logger != null) _logger.LogError("Error al generar registro de autenticación: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando al generar el registro de autenticación. Por favor consulte con su proveedor.");
                 }
                 string strTokenEncriptado = Encriptador.EncriptarDatos(strGuid);
                 return strTokenEncriptado;
@@ -2655,7 +2911,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void ValidarRegistroAutenticacion(string strToken, int intRole, int intHoras)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2679,15 +2936,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al validar el registro de autenticación: ", ex);
-                    throw ex;
+                    if (_logger != null) _logger.LogError("Error al validar el registro de autenticación: ", ex);
+                    throw;
                 }
             }
         }
 
         public void EliminarRegistroAutenticacionInvalidos()
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2697,21 +2955,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al validar el registro de autenticación: ", ex);
+                    if (_logger != null) _logger.LogError("Error al validar el registro de autenticación: ", ex);
                 }
             }
         }
 
         public List<LlaveDescripcion> ObtenerListadoActividadEconomica(string strServicioURL, string strIdentificacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
                 try
                 {
                     string strInformacionContribuyente = ComprobanteElectronicoService.ObtenerInformacionContribuyente(strServicioURL, strIdentificacion);
                     JObject datosJO = JObject.Parse(strInformacionContribuyente);
-                    if (datosJO.Property("actividades") == null) throw new Exception("La respuesta del servicio de consulta de informacion del contribuyente no posee una entrada para 'actividades'");
+                    if (datosJO.Property("actividades") == null) throw new BusinessException("La respuesta del servicio de consulta de informacion del contribuyente no posee una entrada para 'actividades'");
                     JArray actividades = JArray.Parse(datosJO.Property("actividades").Value.ToString());
                     foreach (JObject item in actividades)
                     {
@@ -2719,17 +2978,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listado;
                 }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al consultar el listado de actividades económicas del contribuyente: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de actividades económicas del contribuyente. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al consultar el listado de actividades económicas del contribuyente: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de actividades económicas del contribuyente. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void IniciarRestablecerClaveUsuario(string strServicioWebURL, string strIdentificacion, string strCodigoUsuario)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2740,7 +3005,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
                     string strToken = GenerarRegistroAutenticacion(empresa.IdEmpresa, usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
                     JArray archivosJArray = new JArray();
-                    servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\n" + strServicioWebURL + "reset?id=" + strToken.Replace("/", "~") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false, archivosJArray);
+                    _servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\n" + strServicioWebURL + "reset?id=" + strToken.Replace("/", "~") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false, archivosJArray);
                 }
                 catch (BusinessException ex)
                 {
@@ -2748,15 +3013,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al iniciar el proceso de restablecimiento de la clave del usuario: ", ex);
-                    throw new Exception("Se produjo un error al iniciar el proceso de restablecimiento de la clave del usuario. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al iniciar el proceso de restablecimiento de la clave del usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al iniciar el proceso de restablecimiento de la clave del usuario. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void RestablecerClaveUsuario(string strToken, string strClave)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -2781,8 +3048,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al restablecer la clave del usuario: ", ex);
-                    throw new Exception("Se produjo un error al restablecer la clave del usuario. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al restablecer la clave del usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al restablecer la clave del usuario. Por favor consulte con su proveedor.");
                 }
             }
         }

@@ -108,6 +108,7 @@ Partial Class FrmOrdenServicio
         Me._lblSubTotal_5 = New System.Windows.Forms.Label()
         Me.txtMontoAdelanto = New System.Windows.Forms.TextBox()
         Me.Label15 = New System.Windows.Forms.Label()
+        Me.btnEnviar = New System.Windows.Forms.Button()
         CType(Me.grdDetalleOrdenServicio, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -853,7 +854,6 @@ Partial Class FrmOrdenServicio
         Me.btnGenerarPDF.TabStop = False
         Me.btnGenerarPDF.Text = "A&brir PDF"
         Me.btnGenerarPDF.UseVisualStyleBackColor = False
-        Me.btnGenerarPDF.Visible = False
         '
         'cboTipoMoneda
         '
@@ -1169,12 +1169,27 @@ Partial Class FrmOrdenServicio
         Me.Label15.Text = "Adelanto:"
         Me.Label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'btnEnviar
+        '
+        Me.btnEnviar.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnEnviar.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnEnviar.Enabled = False
+        Me.btnEnviar.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnEnviar.Location = New System.Drawing.Point(392, 8)
+        Me.btnEnviar.Name = "btnEnviar"
+        Me.btnEnviar.Size = New System.Drawing.Size(64, 21)
+        Me.btnEnviar.TabIndex = 215
+        Me.btnEnviar.TabStop = False
+        Me.btnEnviar.Text = "&Enviar"
+        Me.btnEnviar.UseVisualStyleBackColor = False
+        '
         'FrmOrdenServicio
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(822, 654)
+        Me.Controls.Add(Me.btnEnviar)
         Me.Controls.Add(Me.txtMontoAdelanto)
         Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.txtDescuento)
@@ -1331,4 +1346,5 @@ Partial Class FrmOrdenServicio
     Public WithEvents _lblSubTotal_5 As Label
     Public WithEvents txtMontoAdelanto As TextBox
     Public WithEvents Label15 As Label
+    Public WithEvents btnEnviar As Button
 End Class

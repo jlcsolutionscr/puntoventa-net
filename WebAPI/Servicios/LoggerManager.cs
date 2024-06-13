@@ -8,6 +8,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public interface ILoggerManager
     {
         void LogError(string message, Exception ex);
+        void Debug(string message);
     }
 
     public class LoggerManager : ILoggerManager
@@ -37,6 +38,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public void LogError(string message, Exception ex)
         {
             _logger.Error(message, ex);
+        }
+
+        public void Debug(string message)
+        {
+            _logger.Debug(message);
         }
     }
 }

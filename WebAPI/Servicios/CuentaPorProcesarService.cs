@@ -44,25 +44,29 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class CuentaPorProcesarService : ICuentaPorProcesarService
     {
         private readonly ILoggerManager _logger;
-        private static IServiceScopeFactory serviceScopeFactory;
+        private static IServiceScopeFactory? _serviceScopeFactory;
+        private static IConfiguracionGeneral? _config;
 
-        public CuentaPorProcesarService(ILoggerManager logger, IServiceScopeFactory pServiceScopeFactory)
+        public CuentaPorProcesarService(ILoggerManager logger, IServiceScopeFactory pServiceScopeFactory, IConfiguracionGeneral config)
         {
             try
             {
                 _logger = logger;
-                serviceScopeFactory = pServiceScopeFactory;
+                _serviceScopeFactory = pServiceScopeFactory;
+                _config = config;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error al inicializar el servicio: ", ex);
-                throw new Exception("Se produjo un error al inicializar el servicio de Cuentas por Cobrar. Por favor consulte con su proveedor.");
+                if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                else throw new Exception("Se produjo un error al inicializar el servicio de Cuentas por Cobrar. Por favor consulte con su proveedor.");
             }
         }
 
         public CuentaPorCobrar ObtenerCuentaPorCobrar(int intIdCxC)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -70,15 +74,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al inicializar el servicio: ", ex);
-                    throw new Exception("Se produjo un error al obtener la Cuenta por Cobrar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al obtener la Cuenta por Cobrar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerTotalListaCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, string strReferencia, string strNombrePropietario)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -96,15 +102,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public List<CuentaPorProcesar> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, int numPagina, int cantRec, string strReferencia, string strNombrePropietario)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaCuentas = new List<CuentaPorProcesar>();
                 try
@@ -136,15 +144,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public List<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdCuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
@@ -159,15 +169,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de movimientos de cuentas por cobrar: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de movimientos de cuentas por cobrar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de movimientos de cuentas por cobrar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de movimientos de cuentas por cobrar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 movimiento.Fecha = Validador.ObtenerFechaHoraCostaRica();
                 decimal decTotalIngresosTarjeta = 0;
@@ -203,18 +215,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.MovimientoCuentaPorCobrarRepository.Add(movimiento);
                     CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(movimiento.IdCxC);
                     if (cxc == null)
-                        throw new Exception("La cuenta por cobrar asignada al movimiento no existe");
+                        throw new BusinessException("La cuenta por cobrar asignada al movimiento no existe");
                     cxc.Saldo -= movimiento.Monto;
                     dbContext.NotificarModificacion(cxc);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoCuentaPorCobrar)
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
-                            movimientoBanco = new MovimientoBanco();
-                            movimientoBanco.IdSucursal = movimiento.IdSucursal;
+                            movimientoBanco = new MovimientoBanco
+                            {
+                                IdSucursal = movimiento.IdSucursal
+                            };
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
                             if (cuentaBanco == null)
-                                throw new Exception("La cuenta bancaria asignada al movimiento no existe");
+                                throw new BusinessException("La cuenta bancaria asignada al movimiento no existe");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
                             movimientoBanco.IdUsuario = movimiento.IdUsuario;
                             movimientoBanco.Fecha = movimiento.Fecha;
@@ -231,7 +245,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             movimientoBanco.Numero = desglosePago.NroMovimiento;
                             movimientoBanco.Beneficiario = empresa.NombreEmpresa;
                             movimientoBanco.Monto = desglosePago.MontoLocal;
-                            IBancaService servicioAuxiliarBancario = new BancaService(_logger);
+                            IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
                             servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco, dbContext);
                         }
                     }
@@ -323,7 +337,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalCredito += detalleAsiento.Credito;
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.AgregarAsiento(asiento, dbContext);
                     }
                     dbContext.Commit();
@@ -351,20 +365,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al aplicar el movimiento de una cuenta por cobrar: ", ex);
-                    throw new Exception("Se produjo un error aplicando el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al aplicar el movimiento de una cuenta por cobrar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error aplicando el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.FirstOrDefault(x => x.IdMovCxC == intIdMovimiento);
-                    if (movimiento == null) throw new Exception("El movimiento de cuenta por cobrar no existe");
+                    if (movimiento == null) throw new BusinessException("El movimiento de cuenta por cobrar no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
@@ -376,13 +392,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
                     CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(movimiento.IdCxC);
-                    if (cxc == null)
-                        throw new Exception("La cuenta por cobrar asignada al movimiento no existe");
+                    if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada al movimiento no existe");
                     cxc.Saldo += movimiento.Monto;
                     dbContext.NotificarModificacion(cxc);
                     if (movimiento.IdAsiento > 0)
                     {
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.ReversarAsientoContable(movimiento.IdAsiento, dbContext);
                     }
                     dbContext.Commit();
@@ -395,15 +410,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al anular el movimiento de una cuenta por cobrar: ", ex);
-                    throw new Exception("Se produjo un error anulando el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al anular el movimiento de una cuenta por cobrar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error anulando el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public MovimientoCuentaPorCobrar ObtenerMovimientoCxC(int intIdMovimiento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -416,15 +433,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al obtener el movimiento de una cuenta por cobrar: ", ex);
-                    throw new Exception("Se produjo un error al obtener el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el movimiento de una cuenta por cobrar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al obtener el movimiento de la cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerCantidadCxCVencidas(int intIdPropietario, int intIdTipo)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -432,15 +451,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la cantidad de cuentas por cobrar vencidas de un cliente: ", ex);
-                    throw new Exception("Se produjo un error consultando la cantidad de cuentas por cobrar vencidas. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la cantidad de cuentas por cobrar vencidas de un cliente: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la cantidad de cuentas por cobrar vencidas. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public decimal ObtenerSaldoCuentasPorCobrar(int intIdPropietario, int intIdTipo)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -448,15 +469,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el saldo total de cuentas por cobrar activas de un cliente: ", ex);
-                    throw new Exception("Se produjo un error consultando el saldo acumulado de cuentas por cobrar vigentes. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el saldo total de cuentas por cobrar activas de un cliente: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el saldo acumulado de cuentas por cobrar vigentes. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public CuentaPorPagar ObtenerCuentaPorPagar(int intIdCxP)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -464,15 +487,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la cuenta por cobrar: ", ex);
-                    throw new Exception("Se produjo un error al obtener la cuenta por cobrar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la cuenta por cobrar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al obtener la cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, string strReferencia, string strNombrePropietario)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -490,15 +515,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public List<CuentaPorProcesar> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, int numPagina, int cantRec, string strReferencia, string strNombrePropietario)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaCuentas = new List<CuentaPorProcesar>();
                 try
@@ -529,15 +556,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas por cobrar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de cuenta por cobrar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public List<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdCuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
@@ -552,15 +581,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de movimientos de cuentas por pagar: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de movimientos de cuentas por pagar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de movimientos de cuentas por pagar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de movimientos de cuentas por pagar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 movimiento.Fecha = Validador.ObtenerFechaHoraCostaRica();
                 ParametroContable efectivoParam = null;
@@ -586,19 +617,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.IdMovBanco = 0;
                     dbContext.MovimientoCuentaPorPagarRepository.Add(movimiento);
                     CuentaPorPagar cxp = dbContext.CuentaPorPagarRepository.Find(movimiento.IdCxP);
-                    if (cxp == null)
-                        throw new Exception("La cuenta por Pagar asignada al movimiento no existe");
+                    if (cxp == null) throw new BusinessException("La cuenta por Pagar asignada al movimiento no existe");
                     cxp.Saldo -= movimiento.Monto;
                     dbContext.NotificarModificacion(cxp);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoCuentaPorPagar)
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
-                            movimientoBanco = new MovimientoBanco();
-                            movimientoBanco.IdSucursal = movimiento.IdSucursal;
+                            movimientoBanco = new MovimientoBanco
+                            {
+                                IdSucursal = movimiento.IdSucursal
+                            };
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
-                            if (cuentaBanco == null)
-                                throw new Exception("La cuenta bancaria asignada al movimiento no existe");
+                            if (cuentaBanco == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
                             movimientoBanco.IdUsuario = movimiento.IdUsuario;
                             movimientoBanco.Fecha = movimiento.Fecha;
@@ -615,7 +646,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             movimientoBanco.Numero = desglosePago.NroMovimiento;
                             movimientoBanco.Beneficiario = desglosePago.Beneficiario;
                             movimientoBanco.Monto = desglosePago.MontoLocal;
-                            IBancaService servicioAuxiliarBancario = new BancaService(_logger);
+                            IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
                             servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco, dbContext);
                         }
                     }
@@ -666,7 +697,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 asiento.TotalCredito += detalleAsiento.Credito;
                             }
                         }
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.AgregarAsiento(asiento, dbContext);
                     }
                     dbContext.Commit();
@@ -694,20 +725,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al aplicar el movimiento de una cuenta por pagar: ", ex);
-                    throw new Exception("Se produjo un error aplicando el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al aplicar el movimiento de una cuenta por pagar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error aplicando el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.FirstOrDefault(x => x.IdMovCxP == intIdMovimiento);
-                    if (movimiento == null) throw new Exception("El movimiento de cuenta por Pagar no existe");
+                    if (movimiento == null) throw new BusinessException("El movimiento de cuenta por Pagar no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
@@ -719,18 +752,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
                     CuentaPorPagar cxp = dbContext.CuentaPorPagarRepository.Find(movimiento.IdCxP);
-                    if (cxp == null)
-                        throw new Exception("La cuenta por Pagar asignada al movimiento no existe");
+                    if (cxp == null) throw new BusinessException("La cuenta por Pagar asignada al movimiento no existe");
                     cxp.Saldo += movimiento.Monto;
                     dbContext.NotificarModificacion(cxp);
                     if (movimiento.IdAsiento > 0)
                     {
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.ReversarAsientoContable(movimiento.IdAsiento, dbContext);
                     }
                     if (movimiento.IdMovBanco > 0)
                     {
-                        IBancaService servicioAuxiliarBancario = new BancaService(_logger);
+                        IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
                         servicioAuxiliarBancario.AnularMovimientoBanco(movimiento.IdMovBanco, intIdUsuario, "Anulación de registro de movimiento CxP " + movimiento.IdMovCxP, dbContext);
                     }
                     dbContext.Commit();
@@ -743,15 +775,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al anular el movimiento de una cuenta por pagar: ", ex);
-                    throw new Exception("Se produjo un error anulando el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al anular el movimiento de una cuenta por pagar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error anulando el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public MovimientoCuentaPorPagar ObtenerMovimientoCxP(int intIdMovimiento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -764,15 +798,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al obtener el movimiento de una cuenta por pagar: ", ex);
-                    throw new Exception("Se produjo un error al obtener el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el movimiento de una cuenta por pagar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al obtener el movimiento de la cuenta por pagar. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerCantidadCxPVencidas(int intIdPropietario, int intIdTipo)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -780,15 +816,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la cantidad de cuentas por pagar vencidas de un proveedor: ", ex);
-                    throw new Exception("Se produjo un error consultando la cantidad de cuentas por cobrar vencidas. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la cantidad de cuentas por pagar vencidas de un proveedor: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la cantidad de cuentas por cobrar vencidas. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public decimal ObtenerSaldoCuentasPorPagar(int intIdPropietario, int intIdTipo)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -796,15 +834,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el saldo total de cuentas por pagar activas de un proveedor: ", ex);
-                    throw new Exception("Se produjo un error al ejecutar la transacción. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el saldo total de cuentas por pagar activas de un proveedor: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al ejecutar la transacción. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public List<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaCuentas = new List<LlaveDescripcion>();
                 try
@@ -819,15 +859,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de apartados pendientes: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de apartados pendientes. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de apartados pendientes: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de apartados pendientes. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public List<EfectivoDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
@@ -842,15 +884,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de movimientos del apartado: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de movimientos del apartado. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de movimientos del apartado: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de movimientos del apartado. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AplicarMovimientoApartado(MovimientoApartado movimiento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 MovimientoBanco movimientoBanco = null;
                 try
@@ -865,19 +909,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.IdMovBanco = 0;
                     dbContext.MovimientoApartadoRepository.Add(movimiento);
                     Apartado apartado = dbContext.ApartadoRepository.Find(movimiento.IdApartado);
-                    if (apartado == null)
-                        throw new Exception("El registro de apartado asociado al movimiento no existe");
+                    if (apartado == null) throw new BusinessException("El registro de apartado asociado al movimiento no existe");
                     apartado.MontoAdelanto += movimiento.Monto;
                     dbContext.NotificarModificacion(apartado);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoApartado)
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
-                            movimientoBanco = new MovimientoBanco();
-                            movimientoBanco.IdSucursal = movimiento.IdSucursal;
+                            movimientoBanco = new MovimientoBanco
+                            {
+                                IdSucursal = movimiento.IdSucursal
+                            };
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
-                            if (cuentaBanco == null)
-                                throw new Exception("La cuenta bancaria asignada al movimiento no existe");
+                            if (cuentaBanco == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
                             movimientoBanco.IdUsuario = movimiento.IdUsuario;
                             movimientoBanco.Fecha = movimiento.Fecha;
@@ -894,7 +938,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             movimientoBanco.Numero = desglosePago.NroMovimiento;
                             movimientoBanco.Beneficiario = empresa.NombreEmpresa;
                             movimientoBanco.Monto = desglosePago.MontoLocal;
-                            IBancaService servicioAuxiliarBancario = new BancaService(_logger);
+                            IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
                             servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco, dbContext);
                         }
                     }
@@ -916,20 +960,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al aplicar el movimiento al registro de apartado: ", ex);
-                    throw new Exception("Se produjo un error aplicando el movimiento al registro de apartado. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al aplicar el movimiento al registro de apartado: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error aplicando el movimiento al registro de apartado. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     MovimientoApartado movimiento = dbContext.MovimientoApartadoRepository.FirstOrDefault(x => x.IdMovApartado == intIdMovimiento);
-                    if (movimiento == null) throw new Exception("El movimiento de cuenta por cobrar no existe");
+                    if (movimiento == null) throw new BusinessException("El movimiento de cuenta por cobrar no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
@@ -941,8 +987,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
                     Apartado apartado = dbContext.ApartadoRepository.Find(movimiento.IdApartado);
-                    if (apartado == null)
-                        throw new Exception("El registro de apartado asociado al movimiento no existe");
+                    if (apartado == null) throw new BusinessException("El registro de apartado asociado al movimiento no existe");
                     apartado.MontoAdelanto -= movimiento.Monto;
                     dbContext.NotificarModificacion(apartado);
                     dbContext.Commit();
@@ -955,15 +1000,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al anular el movimiento del registro de apartado: ", ex);
-                    throw new Exception("Se produjo un error anulando el movimiento del registro de apartado. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al anular el movimiento del registro de apartado: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error anulando el movimiento del registro de apartado. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public MovimientoApartado ObtenerMovimientoApartado(int intIdMovimiento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -973,15 +1020,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al obtener el movimiento del registro de apartado: ", ex);
-                    throw new Exception("Se produjo un error al obtener el movimiento del registro de apartado. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el movimiento del registro de apartado: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al obtener el movimiento del registro de apartado. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public List<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaCuentas = new List<LlaveDescripcion>();
                 try
@@ -996,15 +1045,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de ordenes de servicio pendientes: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de ordenes de servicio pendientes. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de ordenes de servicio pendientes: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de ordenes de servicio pendientes. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public List<EfectivoDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
@@ -1019,15 +1070,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de movimientos de la orden de servicio: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de movimientos de la orden de servicio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de movimientos de la orden de servicio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de movimientos de la orden de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AplicarMovimientoOrdenServicio(MovimientoOrdenServicio movimiento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 MovimientoBanco movimientoBanco = null;
                 try
@@ -1042,19 +1095,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.IdMovBanco = 0;
                     dbContext.MovimientoOrdenServicioRepository.Add(movimiento);
                     OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(movimiento.IdOrden);
-                    if (ordenServicio == null)
-                        throw new Exception("El registro de orden de servicio asociado al movimiento no existe");
+                    if (ordenServicio == null) throw new BusinessException("El registro de orden de servicio asociado al movimiento no existe");
                     ordenServicio.MontoAdelanto += movimiento.Monto;
                     dbContext.NotificarModificacion(ordenServicio);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoOrdenServicio)
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
                         {
-                            movimientoBanco = new MovimientoBanco();
-                            movimientoBanco.IdSucursal = movimiento.IdSucursal;
+                            movimientoBanco = new MovimientoBanco
+                            {
+                                IdSucursal = movimiento.IdSucursal
+                            };
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
-                            if (cuentaBanco == null)
-                                throw new Exception("La cuenta bancaria asignada al movimiento no existe");
+                            if (cuentaBanco == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
                             movimientoBanco.IdUsuario = movimiento.IdUsuario;
                             movimientoBanco.Fecha = movimiento.Fecha;
@@ -1071,7 +1124,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             movimientoBanco.Numero = desglosePago.NroMovimiento;
                             movimientoBanco.Beneficiario = empresa.NombreEmpresa;
                             movimientoBanco.Monto = desglosePago.MontoLocal;
-                            IBancaService servicioAuxiliarBancario = new BancaService(_logger);
+                            IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
                             servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco, dbContext);
                         }
                     }
@@ -1093,20 +1146,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al aplicar el movimiento a la orden de servicio: ", ex);
-                    throw new Exception("Se produjo un error aplicando el movimiento a la orden de servicio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al aplicar el movimiento a la orden de servicio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error aplicando el movimiento a la orden de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     MovimientoOrdenServicio movimiento = dbContext.MovimientoOrdenServicioRepository.FirstOrDefault(x => x.IdMovOrden == intIdMovimiento);
-                    if (movimiento == null) throw new Exception("El movimiento de cuenta por cobrar no existe");
+                    if (movimiento == null) throw new BusinessException("El movimiento de cuenta por cobrar no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
@@ -1118,8 +1173,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
                     OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(movimiento.IdOrden);
-                    if (ordenServicio == null)
-                        throw new Exception("El registro de apartado asociado al movimiento no existe");
+                    if (ordenServicio == null) throw new BusinessException("El registro de apartado asociado al movimiento no existe");
                     ordenServicio.MontoAdelanto -= movimiento.Monto;
                     dbContext.NotificarModificacion(ordenServicio);
                     dbContext.Commit();
@@ -1132,15 +1186,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al anular el movimiento del registro de orden de servicio: ", ex);
-                    throw new Exception("Se produjo un error anulando el movimiento del registro de orden de servicio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al anular el movimiento del registro de orden de servicio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error anulando el movimiento del registro de orden de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public MovimientoOrdenServicio ObtenerMovimientoOrdenServicio(int intIdMovimiento)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1150,8 +1206,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al obtener el movimiento del registro de orden de servicio: ", ex);
-                    throw new Exception("Se produjo un error al obtener el movimiento del registro de orden de servicio. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el movimiento del registro de orden de servicio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al obtener el movimiento del registro de orden de servicio. Por favor consulte con su proveedor.");
                 }
             }
         }

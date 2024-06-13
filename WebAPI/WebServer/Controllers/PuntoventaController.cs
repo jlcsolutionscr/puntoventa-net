@@ -20,12 +20,12 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static int intIdSucursal;
         private static decimal decTipoCambioDolar = 0;
 
-        public PuntoventaController(
+        public PuntoventaController
+        (
             IConfiguration configuration,
             IHostEnvironment environment,
             IMantenimientoService servicioMantenimiento,
-            IFacturacionService servicioFacturacion,
-            ICorreoService servicioCorreo
+            IFacturacionService servicioFacturacion
         )
         {
             _configuration = configuration;

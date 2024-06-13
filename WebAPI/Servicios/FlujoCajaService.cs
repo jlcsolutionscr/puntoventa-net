@@ -41,27 +41,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     public class FlujoCajaService : IFlujoCajaService
     {
         private readonly ILoggerManager _logger;
-        private static IServiceScopeFactory serviceScopeFactory;
+        private static IServiceScopeFactory? _serviceScopeFactory;
+        private static IConfiguracionGeneral? _config;
         private static CultureInfo provider = CultureInfo.InvariantCulture;
         private static string strFormat = "dd/MM/yyyy HH:mm:ss";
 
-        public FlujoCajaService(ILoggerManager logger, IServiceScopeFactory pServiceScopeFactory)
+        public FlujoCajaService(ILoggerManager logger, IServiceScopeFactory serviceScopeFactory, IConfiguracionGeneral config)
         {
             try
             {
                 _logger = logger;
-                serviceScopeFactory = pServiceScopeFactory;
+                _serviceScopeFactory = serviceScopeFactory;
+                _config = config;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error al inicializar el servicio: ", ex);
-                throw new Exception("Se produjo un error al inicializar el servicio de Egresos. Por favor consulte con su proveedor.");
+                if (_logger != null) _logger.LogError("Error al inicializar el servicio: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                else throw new Exception("Se produjo un error al inicializar el servicio de Egresos. Por favor consulte con su proveedor.");
             }
         }
 
         public void AgregarCuentaIngreso(CuentaIngreso cuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -78,15 +82,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar la cuenta de ingreso: ", ex);
-                    throw new Exception("Se produjo un error agregando la cuenta de ingreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar la cuenta de ingreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la cuenta de ingreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarCuentaIngreso(CuentaIngreso cuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -103,20 +109,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar la cuenta de ingreso: ", ex);
-                    throw new Exception("Se produjo un error actualizando la cuenta de ingreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar la cuenta de ingreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la cuenta de ingreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void EliminarCuentaIngreso(int intIdCuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     CuentaIngreso cuenta = dbContext.CuentaIngresoRepository.Find(intIdCuenta);
-                    if (cuenta == null) throw new Exception("La cuenta de ingreso por eliminar no existe.");
+                    if (cuenta == null) throw new BusinessException("La cuenta de ingreso por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.CuentaIngresoRepository.Remove(cuenta);
@@ -124,7 +132,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    _logger.LogError("Validación al eliminar la cuenta de ingreso: ", ex);
+                    if (_logger != null) _logger.LogError("Validación al eliminar la cuenta de ingreso: ", ex);
                     throw new BusinessException("No es posible eliminar la cuenta de ingreso seleccionada. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -135,15 +143,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al eliminar la cuenta de ingreso: ", ex);
-                    throw new Exception("Se produjo un error eliminando la cuenta de ingreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al eliminar la cuenta de ingreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error eliminando la cuenta de ingreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public CuentaIngreso ObtenerCuentaIngreso(int intIdCuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -151,15 +161,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la cuenta de ingreso: ", ex);
-                    throw new Exception("Se produjo un error consultando la cuenta de ingreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la cuenta de ingreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la cuenta de ingreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoCuentasIngreso(int intIdEmpresa, string strDescripcion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listadoCuentaIngreso = new List<LlaveDescripcion>();
                 try
@@ -177,15 +189,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas de ingresos: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuentas de ingresos. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas de ingresos: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de cuentas de ingresos. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public string AgregarIngreso(Ingreso ingreso)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 ParametroContable efectivo = null;
                 ParametroContable ingresoParam = null;
@@ -211,7 +225,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     CuentaIngreso cuentaIngreso = dbContext.CuentaIngresoRepository.Find(ingreso.IdCuenta);
                     if (cuentaIngreso == null)
-                        throw new Exception("La cuenta de ingreso asignada al registro no existe");
+                        throw new BusinessException("La cuenta de ingreso asignada al registro no existe");
                     ingreso.IdAsiento = 0;
                     ingreso.IdMovBanco = 0;
                     dbContext.IngresoRepository.Add(ingreso);
@@ -246,7 +260,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalCredito += detalleAsiento.Credito;
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.AgregarAsiento(asiento, dbContext);
                     }
                     dbContext.Commit();
@@ -267,8 +281,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el registro de ingreso: ", ex);
-                    throw new Exception("Se produjo un error agregando la información del ingreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el registro de ingreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la información del ingreso. Por favor consulte con su proveedor.");
                 }
                 return ingreso.IdIngreso.ToString();
             }
@@ -276,12 +291,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AnularIngreso(int intIdIngreso, int intIdUsuario, string strMotivoAnulacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     Ingreso ingreso = dbContext.IngresoRepository.Find(intIdIngreso);
-                    if (ingreso == null) throw new Exception("El ingreso por anular no existe");
+                    if (ingreso == null) throw new BusinessException("El ingreso por anular no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(ingreso.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ingreso.IdEmpresa && x.IdSucursal == ingreso.IdSucursal);
@@ -294,7 +310,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(ingreso);
                     if (ingreso.IdAsiento > 0)
                     {
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.ReversarAsientoContable(ingreso.IdAsiento, dbContext);
                     }
                     dbContext.Commit();
@@ -307,15 +323,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al anular el registro de ingreso: ", ex);
-                    throw new Exception("Se produjo un error anulando el ingreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al anular el registro de ingreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error anulando el ingreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Ingreso ObtenerIngreso(int intIdIngreso)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -324,15 +342,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el registro de ingreso: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del ingreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el registro de ingreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del ingreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerTotalListaIngresos(int intIdEmpresa, int intIdSucursal, int intIdIngreso, string strRecibidoDe, string strDetalle, string strFechaFinal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -350,15 +370,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el total del listado de registros de ingreso: ", ex);
-                    throw new Exception("Se produjo un error consultando el total del listado de ingresos. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el total del listado de registros de ingreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el total del listado de ingresos. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<EfectivoDetalle> ObtenerListadoIngresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdIngreso, string strRecibidoDe, string strDetalle, string strFechaFinal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listadoIngreso = new List<EfectivoDetalle>();
                 try
@@ -383,15 +405,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de registros de egreso: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de egresos. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de egreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de egresos. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AgregarCuentaEgreso(CuentaEgreso cuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -408,15 +432,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar la cuenta de egreso: ", ex);
-                    throw new Exception("Se produjo un error agregando la cuenta de egreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar la cuenta de egreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la cuenta de egreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void ActualizarCuentaEgreso(CuentaEgreso cuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -433,20 +459,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al actualizar la cuenta de egreso: ", ex);
-                    throw new Exception("Se produjo un error actualizando la cuenta de egreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al actualizar la cuenta de egreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la cuenta de egreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void EliminarCuentaEgreso(int intIdCuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     CuentaEgreso cuentaEgreso = dbContext.CuentaEgresoRepository.Find(intIdCuenta);
-                    if (cuentaEgreso == null) throw new Exception("La cuenta de egreso por eliminar no existe.");
+                    if (cuentaEgreso == null) throw new BusinessException("La cuenta de egreso por eliminar no existe.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuentaEgreso.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.CuentaEgresoRepository.Remove(cuentaEgreso);
@@ -454,7 +482,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (DbUpdateException ex)
                 {
-                    _logger.LogError("Validación al eliminar la cuenta de egreso: ", ex);
+                    if (_logger != null) _logger.LogError("Validación al eliminar la cuenta de egreso: ", ex);
                     throw new BusinessException("No es posible eliminar la cuenta de egreso seleccionada. Posee registros relacionados en el sistema.");
                 }
                 catch (BusinessException ex)
@@ -465,15 +493,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al eliminar la cuenta de egreso: ", ex);
-                    throw new Exception("Se produjo un error eliminando la cuenta de egreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al eliminar la cuenta de egreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error eliminando la cuenta de egreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public CuentaEgreso ObtenerCuentaEgreso(int intIdCuenta)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -481,15 +511,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener la cuenta de egreso: ", ex);
-                    throw new Exception("Se produjo un error consultando la cuenta de egreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener la cuenta de egreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la cuenta de egreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoCuentasEgreso(int intIdEmpresa, string strDescripcion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listadoCuentaEgreso = new List<LlaveDescripcion>();
                 try
@@ -507,15 +539,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cuentas de egresos: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cuentas de egresos. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cuentas de egresos: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de cuentas de egresos. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public string AgregarEgreso(Egreso egreso)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 ParametroContable efectivo = null;
                 ParametroContable egresoParam = null;
@@ -535,7 +569,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     CuentaEgreso cuentaEgreso = dbContext.CuentaEgresoRepository.Find(egreso.IdCuenta);
                     if (cuentaEgreso == null)
-                        throw new Exception("La cuenta de egreso asignada al registro no existe");
+                        throw new BusinessException("La cuenta de egreso asignada al registro no existe");
                     egreso.IdAsiento = 0;
                     egreso.IdMovBanco = 0;
                     dbContext.EgresoRepository.Add(egreso);
@@ -569,7 +603,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalCredito += detalleAsiento.Credito;
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.AgregarAsiento(asiento, dbContext);
                     }
                     dbContext.Commit();
@@ -591,20 +625,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al agregar el registro de egreso: ", ex);
-                    throw new Exception("Se produjo un error agregando la información del egreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al agregar el registro de egreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error agregando la información del egreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public void AnularEgreso(int intIdEgreso, int intIdUsuario, string strMotivoAnulacion)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
                     Egreso egreso = dbContext.EgresoRepository.Find(intIdEgreso);
-                    if (egreso == null) throw new Exception("El egreso por anular no existe");
+                    if (egreso == null) throw new BusinessException("El egreso por anular no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(egreso.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == egreso.IdEmpresa && x.IdSucursal == egreso.IdSucursal);
@@ -617,7 +653,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(egreso);
                     if (egreso.IdAsiento > 0)
                     {
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
                         servicioContabilidad.ReversarAsientoContable(egreso.IdAsiento, dbContext);
                     }
                     dbContext.Commit();
@@ -630,15 +666,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
-                    _logger.LogError("Error al anular el registro de egreso: ", ex);
-                    throw new Exception("Se produjo un error anulando el egreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al anular el registro de egreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error anulando el egreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public Egreso ObtenerEgreso(int intIdEgreso)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -647,15 +685,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el registro de egreso: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del egreso. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el registro de egreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del egreso. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle, string strFechaFinal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -674,15 +714,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el total del listado de registros de egreso: ", ex);
-                    throw new Exception("Se produjo un error consultando el total del listado de egresos. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el total del listado de registros de egreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el total del listado de egresos. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<EfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle, string strFechaFinal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listadoEgreso = new List<EfectivoDetalle>();
                 try
@@ -708,15 +750,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de registros de egreso: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de egresos. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de egreso: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de egresos. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public CierreCaja GenerarDatosCierreCaja(int intIdEmpresa, int intIdSucursal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                 try
@@ -760,6 +804,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.VentasCredito = 0;
                     cierre.ComprasCredito = 0;
                     cierre.RetiroEfectivo = 0;
+                    cierre.LiquidacionTarjeta = 0;
 
                     var facturas = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (facturas.Count > 0)
@@ -784,8 +829,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 cierre.VentasTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                if (banco != null)
+                                {
+                                    cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
+                                    cierre.ComisionTarjeta += dato.MontoLocal * banco.PorcentajeComision / 100;
+                                }
                                 listaMovimientos.Add(new DetalleMovimientoCierreCaja
                                 {
                                     IdReferencia = dato.ConsecFactura,
@@ -850,8 +898,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 cierre.AdelantosApartadoTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                if (banco != null)
+                                {
+                                    cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
+                                    cierre.ComisionTarjeta += dato.MontoLocal * banco.PorcentajeComision / 100;
+                                }
                                 listaMovimientos.Add(new DetalleMovimientoCierreCaja
                                 {
                                     IdReferencia = dato.ConsecApartado,
@@ -899,8 +950,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 cierre.AdelantosApartadoTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                if (banco != null)
+                                {
+                                    cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
+                                    cierre.ComisionTarjeta += dato.MontoLocal * banco.PorcentajeComision / 100;
+                                }
                                 listaMovimientos.Add(new DetalleMovimientoCierreCaja
                                 {
                                     IdReferencia = dato.IdMovApartado,
@@ -948,8 +1002,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 cierre.AdelantosOrdenTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                if (banco != null)
+                                {
+                                    cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
+                                    cierre.ComisionTarjeta += dato.MontoLocal * banco.PorcentajeComision / 100;
+                                }
                                 listaMovimientos.Add(new DetalleMovimientoCierreCaja
                                 {
                                     IdReferencia = dato.ConsecOrdenServicio,
@@ -997,8 +1054,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 cierre.AdelantosOrdenTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                if (banco != null)
+                                {
+                                    cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
+                                    cierre.ComisionTarjeta += dato.MontoLocal * banco.PorcentajeComision / 100;
+                                }
                                 listaMovimientos.Add(new DetalleMovimientoCierreCaja
                                 {
                                     IdReferencia = dato.IdMovOrden,
@@ -1046,8 +1106,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 cierre.PagosCxCTarjeta += dato.MontoLocal;
                                 BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
-                                cierre.RetencionTarjeta += (dato.MontoLocal * banco.PorcentajeRetencion / 100);
-                                cierre.ComisionTarjeta += (dato.MontoLocal * banco.PorcentajeComision / 100);
+                                if (banco != null)
+                                {
+                                    cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
+                                    cierre.ComisionTarjeta += dato.MontoLocal * banco.PorcentajeComision / 100;
+                                }
                                 listaMovimientos.Add(new DetalleMovimientoCierreCaja
                                 {
                                     IdReferencia = dato.IdMovCxC,
@@ -1209,15 +1272,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     sucursal.CierreEnEjecucion = false;
                     dbContext.Commit();
-                    _logger.LogError("Error al general el cierre diario: ", ex);
-                    throw new Exception("Se produjo un error generando la información del cierre diario. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al general el cierre diario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error generando la información del cierre diario. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public string GuardarDatosCierreCaja(CierreCaja cierre)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 using (var dbContextTransaction = dbContext.GetDatabaseTransaction())
                 {
@@ -1243,8 +1308,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     catch (Exception ex)
                     {
                         dbContextTransaction.Rollback();
-                        _logger.LogError("Error al actualizar el cierre diario: ", ex);
-                        throw new Exception("Se produjo un error actualizando la información del cierre diario. Por favor consulte con su proveedor.");
+                        if (_logger != null) _logger.LogError("Error al actualizar el cierre diario: ", ex);
+                        if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                        else throw new Exception("Se produjo un error actualizando la información del cierre diario. Por favor consulte con su proveedor.");
                     }
                 }
             }
@@ -1252,7 +1318,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AbortarCierreCaja(int intIdEmpresa, int intIdSucursal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1263,15 +1330,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al finalizar el cierre diario: ", ex);
-                    throw new Exception("Se produjo un error finalizando el proceso de cierre diario. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al finalizar el cierre diario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error finalizando el proceso de cierre diario. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public int ObtenerTotalListaCierreCaja(int intIdEmpresa, int intIdSucursal)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1279,15 +1348,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el total del listado de registros de cierres de efectivo: ", ex);
-                    throw new Exception("Se produjo un error consultando el total del listado de cierres de efectivo. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el total del listado de registros de cierres de efectivo: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el total del listado de cierres de efectivo. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public IList<LlaveDescripcion> ObtenerListadoCierreCaja(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 var listadoEgreso = new List<LlaveDescripcion>();
                 try
@@ -1303,15 +1374,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el listado de cierres de efectivo procesados: ", ex);
-                    throw new Exception("Se produjo un error consultando el listado de cierres de efectivo procesados. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de cierres de efectivo procesados: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de cierres de efectivo procesados. Por favor consulte con su proveedor.");
                 }
             }
         }
 
         public CierreCaja ObtenerCierreCaja(int intIdCierreCaja)
         {
-            using (var dbContext = serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -1320,8 +1393,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error al obtener el registro de cierre de caja: ", ex);
-                    throw new Exception("Se produjo un error consultando la información del cierre de caja. Por favor consulte con su proveedor.");
+                    if (_logger != null) _logger.LogError("Error al obtener el registro de cierre de caja: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del cierre de caja. Por favor consulte con su proveedor.");
                 }
             }
         }

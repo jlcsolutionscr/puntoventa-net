@@ -27,6 +27,8 @@ Partial Class FrmBusquedaTraslado
         Me.btnFirst = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtId = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.FechaFinal = New System.Windows.Forms.DateTimePicker()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -134,6 +136,24 @@ Partial Class FrmBusquedaTraslado
         Me.txtId.Size = New System.Drawing.Size(87, 20)
         Me.txtId.TabIndex = 0
         '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(146, 15)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(78, 13)
+        Me.Label3.TabIndex = 158
+        Me.Label3.Text = "Fecha máxima:"
+        '
+        'FechaFinal
+        '
+        Me.FechaFinal.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.FechaFinal.Location = New System.Drawing.Point(230, 12)
+        Me.FechaFinal.Name = "FechaFinal"
+        Me.FechaFinal.Size = New System.Drawing.Size(84, 20)
+        Me.FechaFinal.TabIndex = 157
+        Me.FechaFinal.Value = New Date(2013, 6, 9, 0, 0, 0, 0)
+        '
         'FrmBusquedaTraslado
         '
         Me.AcceptButton = Me.btnFiltrar
@@ -141,6 +161,8 @@ Partial Class FrmBusquedaTraslado
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(644, 387)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.FechaFinal)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtId)
         Me.Controls.Add(Me.lblPagina)
@@ -173,4 +195,6 @@ Partial Class FrmBusquedaTraslado
     Private WithEvents btnFirst As System.Windows.Forms.Button
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents txtId As System.Windows.Forms.TextBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents FechaFinal As DateTimePicker
 End Class

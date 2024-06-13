@@ -52,7 +52,7 @@ Public Class FrmBusquedaCompra
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCompras(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtRefFactura.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCompras(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtRefFactura.Text, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -64,7 +64,7 @@ Public Class FrmBusquedaCompra
 
     Private Async Function ValidarCantidadCompras() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaCompras(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intId, txtRefFactura.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaCompras(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intId, txtRefFactura.Text, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -101,6 +101,7 @@ Public Class FrmBusquedaCompra
                 AddHandler DirectCast(ctl, TextBox).Leave, AddressOf LeaveTexboxHandler
             End If
         Next
+        FechaFinal.Text = Date.Now.Day & "/" & Date.Now.Month & "/" & Date.Now.Year
     End Sub
 
     Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
