@@ -618,7 +618,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal cantidadExistente = existenciasLista.Sum(x => x.Cantidad);
                             decimal decPrecioCostoPromedio = producto.PrecioCosto;
                             if (cantidadExistente > 0)
-                                decPrecioCostoPromedio = ((cantidadExistente * producto.PrecioCosto) - (detalleCompra.Cantidad * detalleCompra.PrecioCosto)) / (cantidadExistente);
+                                decPrecioCostoPromedio = ((cantidadExistente * producto.PrecioCosto) - (detalleCompra.Cantidad * detalleCompra.PrecioCosto)) / cantidadExistente;
                             existencias.Cantidad -= detalleCompra.Cantidad;
                             dbContext.NotificarModificacion(existencias);
                             MovimientoProducto movimiento = new MovimientoProducto

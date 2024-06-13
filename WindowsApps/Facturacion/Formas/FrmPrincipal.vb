@@ -21,7 +21,6 @@ Public Class FrmPrincipal
     Public dgvInteger As DataGridViewCellStyle
     Public lstListaReportes As New List(Of String)
     Public listaEmpresas As New List(Of LlaveDescripcion)
-    Public listaProductos As New List(Of ProductoDetalle)
     Public decTipoCambioDolar As Decimal
     Public strCodigoUsuario As String
     Public strContrasena As String
@@ -36,6 +35,7 @@ Public Class FrmPrincipal
     Public productoImpuestoServicio As Producto
     Public bolDescargaFinalizada As Boolean = False
     Public decDescAutorizado As Decimal
+    Public listaProductos As New List(Of ProductoDetalle)
     'Parametros generales
     Private listaTipoIdentificacion As List(Of LlaveDescripcion)
     Private listaFormaPagoCliente As List(Of LlaveDescripcion)
@@ -48,6 +48,7 @@ Public Class FrmPrincipal
     Private listaSucursales As List(Of LlaveDescripcion)
     Private listaTipoPrecio As List(Of LlaveDescripcion)
     Private listaActividadEconomica As List(Of LlaveDescripcion)
+
 #End Region
 
 #Region "Métodos"
@@ -127,7 +128,6 @@ Public Class FrmPrincipal
     End Function
 
     Public Function ObtenerTarifaImpuesto(intIdTipo As Integer) As Decimal
-
         Dim tipo As LlaveDescripcionValor = listaTipoImpuesto.FirstOrDefault(Function(x) x.Id = intIdTipo)
         If tipo Is Nothing Then Return 0
         If tipo.Valor <> Nothing Then
@@ -676,14 +676,22 @@ Public Class FrmPrincipal
         For Each actividad As ActividadEconomicaEmpresa In empresa.ActividadEconomicaEmpresa
             listaActividadEconomica.Add(New LlaveDescripcion(actividad.CodigoActividad, actividad.Descripcion))
         Next
-        If empresaGlobal.AutoCompletaProducto Then
-            Dim intTotalRegistros As Integer = Await Puntoventa.ObtenerTotalListaProductos(empresa.IdEmpresa, equipoGlobal.IdSucursal, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
-            listaProductos = Await Puntoventa.ObtenerListadoProductos(empresa.IdEmpresa, equipoGlobal.IdSucursal, 1, intTotalRegistros, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
-        End If
         picLoader.Visible = False
         Dim formInicio As New FrmInicio()
         Dim bolAdministrador = usuarioGlobal.CodigoUsuario = "ADMIN"
         formInicio.ShowDialog()
+        If empresaGlobal.AutoCompletaProducto Then
+            picLoader.Visible = True
+            Dim intTotalRegistros As Integer = Await Puntoventa.ObtenerTotalListaProductos(empresaGlobal.IdEmpresa, equipoGlobal.IdSucursal, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
+            If intTotalRegistros > 0 Then
+                Dim intCantPaginas As Integer = Math.Ceiling(intTotalRegistros / 1000)
+                For intPagina As Integer = 1 To intCantPaginas
+                    Dim listado As List(Of ProductoDetalle) = Await Puntoventa.ObtenerListadoProductos(empresaGlobal.IdEmpresa, equipoGlobal.IdSucursal, intPagina, 1000, True, True, False, False, 0, "", "", "", usuarioGlobal.Token)
+                    listaProductos.AddRange(listado)
+                Next
+            End If
+            picLoader.Visible = False
+        End If
         mnuMenuPrincipal.Visible = True
         For Each reportePorEmpresa As ReportePorEmpresa In empresaGlobal.ReportePorEmpresa.OrderBy(Function(obj) obj.IdReporte)
             lstListaReportes.Add(reportePorEmpresa.CatalogoReporte.NombreReporte)

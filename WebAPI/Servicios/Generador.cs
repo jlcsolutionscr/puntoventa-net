@@ -35,9 +35,27 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             font = new XFont("Courier New", 10, XFontStyle.Bold, options);
             gfx.DrawString(datos.NombreEmpresa.ToUpper(), font, XBrushes.Black, new XRect(210, 85, 300, 15), XStringFormats.TopLeft);
             gfx.DrawString("IDENTIFICACION: " + datos.IdentificacionEmisor, font, XBrushes.Black, new XRect(210, 100, 200, 15), XStringFormats.TopLeft);
-            gfx.DrawString(datos.DireccionEmisor, font, XBrushes.Black, new XRect(210, 115, 200, 15), XStringFormats.TopLeft);
-            gfx.DrawString("CORREO: " + datos.CorreoElectronicoEmisor, font, XBrushes.Black, new XRect(210, 130, 200, 15), XStringFormats.TopLeft);
-            gfx.DrawString("TELEFONO: " + datos.TelefonoEmisor + (datos.FaxEmisor.Length > 0 ? " Fax: " + datos.FaxEmisor : ""), font, XBrushes.Black, new XRect(210, 145, 200, 15), XStringFormats.TopLeft);
+            
+            string[] direccionArray = datos.DireccionEmisor.Split(" ");
+            int intentos = 1;
+            string lineaDireccion = "";
+            if (direccionArray.Length > 0)
+            {
+                while (intentos <= 2)
+                {
+                    if (lineaDireccion.Length > 50 || direccionArray.Length == 0) {
+                        gfx.DrawString(lineaDireccion, font, XBrushes.Black, new XRect(210, 100 + (intentos * 15), 200, 15), XStringFormats.TopLeft);
+                        lineaDireccion = "";
+                        intentos++;
+                    } else {
+                        lineaDireccion += (lineaDireccion == "" ? "" : " ") + direccionArray[0];
+                        direccionArray = direccionArray.Skip(1).ToArray();
+                    }
+                }
+            }
+            
+            gfx.DrawString("CORREO: " + datos.CorreoElectronicoEmisor, font, XBrushes.Black, new XRect(210, 100 + (intentos * 15), 200, 15), XStringFormats.TopLeft);
+            gfx.DrawString("TELEFONO: " + datos.TelefonoEmisor + (datos.FaxEmisor.Length > 0 ? " Fax: " + datos.FaxEmisor : ""), font, XBrushes.Black, new XRect(210, 115 + (intentos * 15), 200, 15), XStringFormats.TopLeft);
             font = new XFont("Courier New", 12, XFontStyle.Bold, options);
             gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(210, 190, 200, 15), XStringFormats.TopLeft);
             font = new XFont("Arial", 8, XFontStyle.Regular, options);
@@ -120,7 +138,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
                 gfx.DrawString(strDescripcion, font, XBrushes.Black, new XRect(150, lineaPos, 280, 12), XStringFormats.TopLeft);
                 tf.DrawString(linea.PrecioUnitario, font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
                 tf.DrawString(linea.TotalLinea, font, XBrushes.Black, new XRect(500, lineaPos, 80, 12), XStringFormats.TopLeft);
-                if ((cantPaginas == 1 && cantLineasDetalle == 35) || (cantPaginas > 1 && cantLineasDetalle == 55))
+                if ((cantPaginas == 1 && cantLineasDetalle == 33) || (cantPaginas > 1 && cantLineasDetalle == 53))
                 {
                     cantPaginas += 1;
                     cantLineasDetalle = 0;
@@ -208,7 +226,12 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
                     lineaPos += 12;
                 }
             }
-
+            if (datos.EsDocumentoElectronico)
+            {
+                lineaPos += 24;
+                font = new XFont("Arial", 8, XFontStyle.Bold, options);
+                gfx.DrawString("AUTORIZADO MEDIANTE RESOLUCION DGT-R-48-2016 DEL 07-OCT-2016", font, XBrushes.Black, new XRect(20, lineaPos, 550, 12), XStringFormats.Center    );
+            }
             MemoryStream stream = new MemoryStream();
             document.Save(stream, false);
             byte[] bytes = stream.ToArray();

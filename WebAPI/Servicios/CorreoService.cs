@@ -117,13 +117,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 throw new Exception("El valor del campo 'Mensaje:' no debe ser nulo o estar en blanco.");
             }
-            SmtpClient smtpClient = new SmtpClient(smtpHost, smtpPort)
+            SmtpClient smtpClient = new SmtpClient(smtpHost)
             {
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false
+                UseDefaultCredentials = false,
+                Port = smtpPort,
+                EnableSsl = sslHost == "S"
             };
-            if (sslHost == "S")
-                smtpClient.EnableSsl = true;
             if (mailUserAddress != "" & mailUserPassword != "")
                 smtpClient.Credentials = new NetworkCredential(mailUserAddress, mailUserPassword);
             using (MailMessage message = new MailMessage())
