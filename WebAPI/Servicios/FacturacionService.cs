@@ -3076,7 +3076,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             EstructuraPDF datos = new EstructuraPDF
             {
                 PoweredByLogotipo = bytLogo,
-                EsDocumentoElectronico = true
+                EsDocumentoElectronico = factura.IdDocElectronico != null
             };
             if (empresa.Logotipo.Length > 0)
             {
@@ -3098,8 +3098,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.NombreComercial = empresa.NombreComercial;
             datos.PlazoCredito = factura.PlazoCredito > 0 ? factura.PlazoCredito.ToString() : "";
             datos.ConsecInterno = factura.ConsecFactura.ToString();
-            datos.Clave = factura.IdDocElectronico;
-            if (factura.IdDocElectronico != "") datos.Consecutivo = factura.IdDocElectronico.Substring(21, 20);
+            if (factura.IdDocElectronico != null)
+            {
+                datos.Clave = factura.IdDocElectronico;
+                datos.Consecutivo = factura.IdDocElectronico.Substring(21, 20);
+            }
             datos.CondicionVenta = CondicionDeVenta.ObtenerDescripcion(factura.IdCondicionVenta);
             datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
             if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
@@ -3143,7 +3146,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 };
                 datos.DetalleServicio.Add(detalle);
             };
-            if (factura.TextoAdicional != null) datos.OtrosTextos = factura.TextoAdicional;
+            if (factura.TextoAdicional != "") datos.OtrosTextos = factura.TextoAdicional;
+            if (empresa.LeyendaFactura != "") datos.LeyendaPiePagina = empresa.LeyendaFactura;
             datos.TotalGravado = factura.Gravado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExonerado = factura.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExento = factura.Excento.ToString("N2", CultureInfo.InvariantCulture);
@@ -3223,7 +3227,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 };
                 datos.DetalleServicio.Add(detalle);
             };
-            if (apartado.TextoAdicional != null) datos.OtrosTextos = apartado.TextoAdicional;
+            if (apartado.TextoAdicional != "") datos.OtrosTextos = apartado.TextoAdicional;
+            if (empresa.LeyendaApartado != "") datos.LeyendaPiePagina = empresa.LeyendaApartado;
             datos.TotalGravado = apartado.Gravado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExonerado = apartado.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExento = apartado.Excento.ToString("N2", CultureInfo.InvariantCulture);
@@ -3303,6 +3308,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 };
                 datos.DetalleServicio.Add(detalle);
             };
+            if (empresa.LeyendaOrdenServicio != "") datos.LeyendaPiePagina = empresa.LeyendaOrdenServicio;
             datos.TotalGravado = ordenServicio.Gravado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExonerado = ordenServicio.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExento = ordenServicio.Excento.ToString("N2", CultureInfo.InvariantCulture);
@@ -3383,6 +3389,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 datos.DetalleServicio.Add(detalle);
             };
             if (proforma.TextoAdicional != "") datos.OtrosTextos = proforma.TextoAdicional;
+            if (empresa.LeyendaProforma != "") datos.LeyendaPiePagina = empresa.LeyendaProforma;
             datos.TotalGravado = proforma.Gravado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExonerado = proforma.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExento = proforma.Excento.ToString("N2", CultureInfo.InvariantCulture);
