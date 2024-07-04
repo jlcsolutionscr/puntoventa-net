@@ -3151,7 +3151,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.TotalGravado = factura.Gravado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExonerado = factura.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExento = factura.Excento.ToString("N2", CultureInfo.InvariantCulture);
-            datos.Descuento = "0.00";
+            datos.Descuento = factura.Descuento.ToString("N2", CultureInfo.InvariantCulture);
             datos.Impuesto = factura.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalGeneral = (factura.Gravado + factura.Exonerado + factura.Excento + factura.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = factura.IdTipoMoneda == 1 ? "CRC" : "USD";
@@ -3232,7 +3232,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.TotalGravado = apartado.Gravado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExonerado = apartado.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExento = apartado.Excento.ToString("N2", CultureInfo.InvariantCulture);
-            datos.Descuento = "0.00";
+            datos.Descuento = apartado.Descuento.ToString("N2", CultureInfo.InvariantCulture);
             datos.Impuesto = apartado.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalGeneral = (apartado.Gravado + apartado.Exonerado + apartado.Excento + apartado.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = apartado.IdTipoMoneda == 1 ? "CRC" : "USD";
@@ -3312,7 +3312,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.TotalGravado = ordenServicio.Gravado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExonerado = ordenServicio.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExento = ordenServicio.Excento.ToString("N2", CultureInfo.InvariantCulture);
-            datos.Descuento = "0.00";
+            datos.Descuento = ordenServicio.Descuento.ToString("N2", CultureInfo.InvariantCulture);
             datos.Impuesto = ordenServicio.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalGeneral = (ordenServicio.Gravado + ordenServicio.Exonerado + ordenServicio.Excento + ordenServicio.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = ordenServicio.IdTipoMoneda == 1 ? "CRC" : "USD";
@@ -3393,7 +3393,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.TotalGravado = proforma.Gravado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExonerado = proforma.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExento = proforma.Excento.ToString("N2", CultureInfo.InvariantCulture);
-            datos.Descuento = "0.00";
+            datos.Descuento = proforma.Descuento.ToString("N2", CultureInfo.InvariantCulture);
             datos.Impuesto = proforma.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalGeneral = (proforma.Gravado + proforma.Exonerado + proforma.Excento + proforma.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = proforma.IdTipoMoneda == 1 ? "CRC" : "USD";
