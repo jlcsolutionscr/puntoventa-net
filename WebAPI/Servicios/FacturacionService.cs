@@ -1000,7 +1000,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    if (factura == null) throw new BusinessException("La registro de la factura no existe.");
+                    foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
+                    {
+                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        if (producto != null) detalleFactura.Producto = producto;
+                    }
                     foreach (DesglosePagoFactura desglosePago in factura.DesglosePagoFactura)
                     {
                         if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
@@ -2661,8 +2667,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico nuevoDocumento = null;
                     if (new int[] { (int)TipoDocumento.FacturaElectronica, (int)TipoDocumento.TiqueteElectronico }.Contains(documento.IdTipoDocumento))
                     {
-                        Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
+                        Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                         if (factura == null) throw new BusinessException("La registro origen del documento no existe.");
+                        foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
+                        {
+                            Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                            if (producto != null) detalleFactura.Producto = producto;
+                        }
                         if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
                             nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
                         else
@@ -2672,9 +2683,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     else if ((int)TipoDocumento.NotaCreditoElectronica == documento.IdTipoDocumento)
                     {
-                        Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
+                        Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (factura != null)
                         {
+                            foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
+                            {
+                                Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                                if (producto != null) detalleFactura.Producto = producto;
+                            }
                             nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
                             factura.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
                             dbContext.NotificarModificacion(factura);
@@ -2935,7 +2951,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    if (factura == null) throw new BusinessException("La registro de la factura no existe.");
+                    foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
+                    {
+                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        if (producto != null) detalleFactura.Producto = producto;
+                    }
                     Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, bytLogo);
@@ -3040,7 +3062,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     JArray jarrayObj = new JArray();
-                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    if (factura == null) throw new BusinessException("La registro de la factura no existe.");
+                    foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
+                    {
+                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        if (producto != null) detalleFactura.Producto = producto;
+                    }
                     Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CorreoNotificacion != "")
