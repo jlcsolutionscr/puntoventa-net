@@ -2978,15 +2978,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listado;
                 }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al consultar el listado de actividades económicas del contribuyente: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error consultando el listado de actividades económicas del contribuyente. Por favor consulte con su proveedor.");
+                    return listado;
                 }
             }
         }
