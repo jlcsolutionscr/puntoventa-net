@@ -11,7 +11,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string Codigo { get; set; }
         public string CodigoProveedor { get; set; }
         public string CodigoClasificacion { get; set; }
-        public int IdProveedor { get; set; }
         public string Descripcion { get; set; }
         public decimal PrecioCosto { get; set; }
         public decimal PrecioVenta1 { get; set; }
@@ -29,7 +28,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool Activo { get; set; }
         public decimal Existencias { get; set; }
         public Linea Linea { get; set; }
-        public Proveedor Proveedor { get; set; }
         public List<MovimientoProducto> MovimientoProducto { get; set; }
     }
 }

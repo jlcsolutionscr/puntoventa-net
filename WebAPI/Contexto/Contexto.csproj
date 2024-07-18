@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <NoWarn>8602,8604,8618</NoWarn>
     <RootNamespace>LeandroSoftware.ServicioWeb.Contexto</RootNamespace>
   </PropertyGroup>
 

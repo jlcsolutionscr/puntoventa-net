@@ -13,7 +13,6 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
             builder.Ignore(p => p.IndExistencia);
             builder.Ignore(p => p.Existencias);
             builder.HasOne(p => p.Linea).WithMany().HasForeignKey(p => p.IdLinea);
-            builder.HasOne(p => p.Proveedor).WithMany().HasForeignKey(p => p.IdProveedor);
             builder.HasMany(p => p.MovimientoProducto).WithOne().HasForeignKey(p => p.IdProducto);
         }
     }

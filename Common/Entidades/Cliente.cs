@@ -18,8 +18,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string CorreoElectronico { get; set; }
         public int? IdVendedor { get; set; }
         public int IdTipoPrecio { get; set; }
-        public bool AplicaTasaDiferenciada { get; set; }
-        public int IdImpuesto { get; set; }
         public int IdTipoExoneracion { get; set; }
         public string NumDocExoneracion { get; set; }
         public string NombreInstExoneracion { get; set; }
