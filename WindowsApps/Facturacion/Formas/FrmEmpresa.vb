@@ -95,7 +95,7 @@ Public Class FrmEmpresa
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
         cboActividadEconomica.ValueMember = "Id"
         cboActividadEconomica.DisplayMember = "Descripcion"
-        cboActividadEconomica.DataSource = Await Puntoventa.ObtenerListadoActividadEconomica(strIdentificacion, FrmPrincipal.usuarioGlobal.Token)
+        cboActividadEconomica.DataSource = Await Puntoventa.ObtenerListadoActividadEconomica(strIdentificacion)
         Dim comboSource As New Dictionary(Of Integer, String)()
         comboSource.Add(80, "80MM THERMAL RECEIPT PRINTER")
         comboSource.Add(52, "58MM THERMAL RECEIPT PRINTER")

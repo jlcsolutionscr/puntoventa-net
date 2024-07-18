@@ -9,7 +9,6 @@ Public Class FrmProducto
     Public intIdProducto As Integer
     Private datos As Producto
     Private bolReady As Boolean = False
-    Private proveedor As Proveedor
     Private decTasaImpuesto As Decimal
 #End Region
 
@@ -26,9 +25,6 @@ Public Class FrmProducto
             Return False
         ElseIf txtCodigoClasificacion.Text = "" Then
             pCampo = "Código Cabys"
-            Return False
-        ElseIf txtProveedor.Text = "" Then
-            pCampo = "Proveedor"
             Return False
         ElseIf txtDescripcion.Text = "" Then
             pCampo = "Descripción"
@@ -142,8 +138,6 @@ Public Class FrmProducto
                 txtCodigo.Text = datos.Codigo
                 txtCodigoProveedor.Text = datos.CodigoProveedor
                 txtCodigoClasificacion.Text = datos.CodigoClasificacion
-                proveedor = datos.Proveedor
-                txtProveedor.Text = proveedor.Nombre
                 txtDescripcion.Text = datos.Descripcion
                 txtPrecioCosto.Text = FormatoPrecio(datos.PrecioCosto, 2)
                 txtPrecioImpuesto1.Text = FormatoPrecio(datos.PrecioVenta1, 2)
@@ -210,7 +204,6 @@ Public Class FrmProducto
         datos.Codigo = txtCodigo.Text
         datos.CodigoProveedor = txtCodigoProveedor.Text
         datos.CodigoClasificacion = txtCodigoClasificacion.Text
-        datos.IdProveedor = proveedor.IdProveedor
         datos.Descripcion = txtDescripcion.Text
         datos.PrecioCosto = txtPrecioCosto.Text
         datos.PrecioVenta1 = txtPrecioImpuesto1.Text
@@ -245,21 +238,6 @@ Public Class FrmProducto
         End Try
         MessageBox.Show("Registro guardado satisfactoriamente", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Close()
-    End Sub
-
-    Private Async Sub btnBuscarProveedor_Click(sender As Object, e As EventArgs) Handles btnBuscarProveedor.Click
-        Dim formBusquedaProveedor As New FrmBusquedaProveedor()
-        FrmPrincipal.intBusqueda = 0
-        formBusquedaProveedor.ShowDialog()
-        If FrmPrincipal.intBusqueda > 0 Then
-            Try
-                proveedor = Await Puntoventa.ObtenerProveedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            txtProveedor.Text = proveedor.Nombre
-        End If
     End Sub
 
     Private Sub CmdImprimir_Click(sender As Object, e As EventArgs)

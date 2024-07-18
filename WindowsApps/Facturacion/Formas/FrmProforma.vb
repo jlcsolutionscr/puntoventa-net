@@ -163,9 +163,6 @@ Public Class FrmProforma
 
     Private Sub CargarLineaDetalleProforma(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
         Dim decTasaImpuesto As Decimal = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
-        If cliente.AplicaTasaDiferenciada Then
-            decTasaImpuesto = FrmPrincipal.ObtenerTarifaImpuesto(cliente.IdImpuesto)
-        End If
         Dim decPrecioGravado As Decimal = decPrecio
         If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 5)
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleProforma, producto.IdProducto)
@@ -222,21 +219,25 @@ Public Class FrmProforma
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
         For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
             Dim decTasaImpuesto As Decimal = dtbDetalleProforma.Rows(I).Item(8)
+            Dim decPrecio As Decimal = dtbDetalleProforma.Rows(I).Item(4)
+            Dim decCantidad As Decimal = dtbDetalleProforma.Rows(I).Item(3)
+            Dim decDescuentoLinea As Decimal = dtbDetalleProforma.Rows(I).Item(10)
             If decTasaImpuesto > 0 Then
-                Dim decImpuestoProducto As Decimal = dtbDetalleProforma.Rows(I).Item(4) * decTasaImpuesto / 100
+                Dim decImpuestoProducto As Decimal = decPrecio * decTasaImpuesto / 100
                 If intPorcentajeExoneracion > 0 Then
-                    Dim decGravadoPorcentual = dtbDetalleProforma.Rows(I).Item(4) * (1 - (intPorcentajeExoneracion / 100))
-                    decGravado += Math.Round(decGravadoPorcentual * dtbDetalleProforma.Rows(I).Item(3), 2)
-                    decExonerado += Math.Round((dtbDetalleProforma.Rows(I).Item(4) - decGravadoPorcentual) * dtbDetalleProforma.Rows(I).Item(3), 2)
-                    decImpuestoProducto = decGravadoPorcentual * decTasaImpuesto / 100
+                    Dim decTasaGravado = Math.Max(decTasaImpuesto - intPorcentajeExoneracion, 0)
+                    Dim decTasaExonerado = decTasaImpuesto - decTasaGravado
+                    decImpuestoProducto = decPrecio * decTasaGravado / 100
+                    decGravado += Math.Round(decPrecio * (decTasaGravado * 100 / decTasaImpuesto) / 100 * decCantidad, 2)
+                    decExonerado += Math.Round(decPrecio * (decTasaExonerado * 100 / decTasaImpuesto) / 100 * decCantidad, 2)
                 Else
-                    decGravado += Math.Round(dtbDetalleProforma.Rows(I).Item(3) * dtbDetalleProforma.Rows(I).Item(4), 2)
+                    decGravado += Math.Round(decCantidad * decPrecio, 2)
                 End If
-                decImpuesto += Math.Round(decImpuestoProducto * dtbDetalleProforma.Rows(I).Item(3), 2)
+                decImpuesto += Math.Round(decCantidad * decImpuestoProducto, 2)
             Else
-                decExcento += Math.Round(dtbDetalleProforma.Rows(I).Item(4) * dtbDetalleProforma.Rows(I).Item(3), 2)
+                decExcento += Math.Round(decCantidad * decPrecio, 2)
             End If
-            decDescuento += dtbDetalleProforma.Rows(I).Item(10) * dtbDetalleProforma.Rows(I).Item(3)
+            decDescuento += decDescuentoLinea * decCantidad
         Next
         decSubTotal = decGravado + decExcento + decExonerado
         decDescuento = Math.Round(decDescuento, 2)
@@ -256,7 +257,7 @@ Public Class FrmProforma
     End Sub
 
     Private Function ObtenerPrecioVentaPorCliente(cliente As Cliente, producto As Producto)
-        Dim decPrecioVenta As Decimal
+        Dim decPrecioVenta As Decimal = producto.PrecioVenta1
         If cliente IsNot Nothing Then
             If cliente.IdTipoPrecio = 1 Then
                 decPrecioVenta = producto.PrecioVenta1
@@ -268,17 +269,7 @@ Public Class FrmProforma
                 decPrecioVenta = producto.PrecioVenta4
             ElseIf cliente.IdTipoPrecio = 5 Then
                 decPrecioVenta = producto.PrecioVenta5
-            Else
-                decPrecioVenta = producto.PrecioVenta1
             End If
-        Else
-            decPrecioVenta = producto.PrecioVenta1
-        End If
-        If cliente.AplicaTasaDiferenciada Then
-            Dim decTasaImpuestoCliente = FrmPrincipal.ObtenerTarifaImpuesto(cliente.IdImpuesto)
-            Dim decTasaImpuestoProducto = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
-            decPrecioVenta = Math.Round(decPrecioVenta / (1 + (decTasaImpuestoProducto / 100)), 5)
-            decPrecioVenta = Math.Round(decPrecioVenta * (1 + (decTasaImpuestoCliente / 100)), 2)
         End If
         Return decPrecioVenta
     End Function
@@ -400,6 +391,7 @@ Public Class FrmProforma
                 .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
             }
             txtNombreCliente.Text = cliente.Nombre
+            txtPorcentajeExoneracion.Text = "0"
             If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
                 Try
                     vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
@@ -569,10 +561,6 @@ Public Class FrmProforma
                 txtNombreCliente.Text = cliente.Nombre
                 txtNombreCliente.ReadOnly = True
                 txtTelefono.Text = cliente.Telefono
-                If cliente.Vendedor IsNot Nothing Then
-                    vendedor = cliente.Vendedor
-                    txtVendedor.Text = vendedor.Nombre
-                End If
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 CargarTotales()
             Catch ex As Exception

@@ -87,6 +87,7 @@ Partial Class FrmProforma
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.btnEnviar = New System.Windows.Forms.Button()
+        Me.Label19 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleProforma, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -385,21 +386,22 @@ Partial Class FrmProforma
         Me.txtPorcentajeExoneracion.BackColor = System.Drawing.SystemColors.Window
         Me.txtPorcentajeExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPorcentajeExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(733, 117)
+        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(747, 117)
         Me.txtPorcentajeExoneracion.MaxLength = 0
         Me.txtPorcentajeExoneracion.Name = "txtPorcentajeExoneracion"
         Me.txtPorcentajeExoneracion.ReadOnly = True
         Me.txtPorcentajeExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPorcentajeExoneracion.Size = New System.Drawing.Size(39, 20)
+        Me.txtPorcentajeExoneracion.Size = New System.Drawing.Size(25, 20)
         Me.txtPorcentajeExoneracion.TabIndex = 159
         Me.txtPorcentajeExoneracion.TabStop = False
+        Me.txtPorcentajeExoneracion.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label8
         '
         Me.Label8.BackColor = System.Drawing.Color.Transparent
         Me.Label8.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label8.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label8.Location = New System.Drawing.Point(605, 117)
+        Me.Label8.Location = New System.Drawing.Point(619, 117)
         Me.Label8.Name = "Label8"
         Me.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label8.Size = New System.Drawing.Size(122, 19)
@@ -846,6 +848,19 @@ Partial Class FrmProforma
         Me.btnEnviar.Text = "&Enviar"
         Me.btnEnviar.UseVisualStyleBackColor = False
         '
+        'Label19
+        '
+        Me.Label19.BackColor = System.Drawing.Color.Transparent
+        Me.Label19.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label19.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label19.Location = New System.Drawing.Point(777, 118)
+        Me.Label19.Name = "Label19"
+        Me.Label19.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label19.Size = New System.Drawing.Size(20, 19)
+        Me.Label19.TabIndex = 215
+        Me.Label19.Text = "%"
+        Me.Label19.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'FrmProforma
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -853,6 +868,7 @@ Partial Class FrmProforma
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 493)
+        Me.Controls.Add(Me.Label19)
         Me.Controls.Add(Me.btnEnviar)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.Label6)
@@ -966,4 +982,5 @@ Partial Class FrmProforma
     Friend WithEvents cboSucursal As ComboBox
     Friend WithEvents Label6 As Label
     Public WithEvents btnEnviar As Button
+    Public WithEvents Label19 As Label
 End Class

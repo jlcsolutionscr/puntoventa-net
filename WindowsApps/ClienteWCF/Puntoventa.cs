@@ -10,12 +10,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System;
+using Newtonsoft.Json.Linq;
 
 namespace LeandroSoftware.ClienteWCF
 {
     public static class Puntoventa
     {
         private static string strServicioPuntoventaURL = ConfigurationManager.AppSettings["ServicioURL"];
+        private static string strServicioHaciendaURL = ConfigurationManager.AppSettings["ServicioHaciendaURL"];
         private static HttpClient httpClient = new HttpClient();
 
         public static string ObtenerIdentificadorEquipo()
@@ -354,13 +356,25 @@ namespace LeandroSoftware.ClienteWCF
             return decTipoCambioDolar;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoActividadEconomica(string strIdentificacion, string strToken)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoActividadEconomica(string strIdentificacion)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoActividadEconomica', Parametros: {Identificacion: '" + strIdentificacion + "'}}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioHaciendaURL + "?identificacion=" + strIdentificacion);
+            if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
+            {
+                string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
+                throw new Exception(strError);
+            }
+            if (httpResponse.StatusCode != HttpStatusCode.OK)
+                throw new Exception(httpResponse.ReasonPhrase);
+            string strInformacionContribuyente = await httpResponse.Content.ReadAsStringAsync();
+            JObject datosJO = JObject.Parse(strInformacionContribuyente);
+            if (datosJO.Property("actividades") == null) throw new Exception("La respuesta del servicio de consulta de informacion del contribuyente no posee una entrada para 'actividades'");
+            JArray actividades = JArray.Parse(datosJO.Property("actividades").Value.ToString());
             List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
+            foreach (JObject item in actividades)
+            {
+                listado.Add(new LlaveDescripcion(int.Parse(item.Property("codigo").Value.ToString()), item.Property("descripcion").Value.ToString()));
+            }
             return listado;
         }
 

@@ -125,6 +125,7 @@ Partial Class FrmFactura
         Me.Label17 = New System.Windows.Forms.Label()
         Me.cboActividadEconomica = New System.Windows.Forms.ComboBox()
         Me.Label18 = New System.Windows.Forms.Label()
+        Me.Label19 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleFactura, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -961,21 +962,22 @@ Partial Class FrmFactura
         Me.txtPorcentajeExoneracion.BackColor = System.Drawing.SystemColors.Window
         Me.txtPorcentajeExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPorcentajeExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(770, 118)
+        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(765, 118)
         Me.txtPorcentajeExoneracion.MaxLength = 0
         Me.txtPorcentajeExoneracion.Name = "txtPorcentajeExoneracion"
         Me.txtPorcentajeExoneracion.ReadOnly = True
         Me.txtPorcentajeExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPorcentajeExoneracion.Size = New System.Drawing.Size(39, 20)
+        Me.txtPorcentajeExoneracion.Size = New System.Drawing.Size(25, 20)
         Me.txtPorcentajeExoneracion.TabIndex = 14
         Me.txtPorcentajeExoneracion.TabStop = False
+        Me.txtPorcentajeExoneracion.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label8
         '
         Me.Label8.BackColor = System.Drawing.Color.Transparent
         Me.Label8.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label8.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label8.Location = New System.Drawing.Point(636, 118)
+        Me.Label8.Location = New System.Drawing.Point(631, 118)
         Me.Label8.Name = "Label8"
         Me.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label8.Size = New System.Drawing.Size(128, 19)
@@ -1254,6 +1256,19 @@ Partial Class FrmFactura
         Me.Label18.Text = "Actividad Econ:"
         Me.Label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'Label19
+        '
+        Me.Label19.BackColor = System.Drawing.Color.Transparent
+        Me.Label19.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label19.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label19.Location = New System.Drawing.Point(789, 118)
+        Me.Label19.Name = "Label19"
+        Me.Label19.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label19.Size = New System.Drawing.Size(20, 19)
+        Me.Label19.TabIndex = 214
+        Me.Label19.Text = "%"
+        Me.Label19.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'FrmFactura
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -1261,6 +1276,7 @@ Partial Class FrmFactura
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 642)
+        Me.Controls.Add(Me.Label19)
         Me.Controls.Add(Me.cboActividadEconomica)
         Me.Controls.Add(Me.Label18)
         Me.Controls.Add(Me.txtDescuento)
@@ -1412,4 +1428,5 @@ Partial Class FrmFactura
     Public WithEvents Label17 As Label
     Public WithEvents cboActividadEconomica As ComboBox
     Public WithEvents Label18 As Label
+    Public WithEvents Label19 As Label
 End Class

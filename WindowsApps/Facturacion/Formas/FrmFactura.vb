@@ -364,9 +364,6 @@ Public Class FrmFactura
 
     Private Sub CargarLineaDetalleFactura(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal, bolImpServicio As Boolean)
         Dim decTasaImpuesto As Decimal = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
-        If cliente.AplicaTasaDiferenciada Then
-            decTasaImpuesto = FrmPrincipal.ObtenerTarifaImpuesto(cliente.IdImpuesto)
-        End If
         Dim decPrecioGravado As Decimal = decPrecio
         If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 5)
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleFactura, producto.IdProducto)
@@ -453,22 +450,27 @@ Public Class FrmFactura
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
         For I As Short = 0 To dtbDetalleFactura.Rows.Count - 1
             Dim decTasaImpuesto As Decimal = dtbDetalleFactura.Rows(I).Item(9)
+            Dim decPrecio As Decimal = dtbDetalleFactura.Rows(I).Item(4)
+            Dim decPrecioCosto As Decimal = dtbDetalleFactura.Rows(I).Item(7)
+            Dim decCantidad As Decimal = dtbDetalleFactura.Rows(I).Item(3)
+            Dim decDescuentoLinea As Decimal = dtbDetalleFactura.Rows(I).Item(11)
             If decTasaImpuesto > 0 Then
-                Dim decImpuestoProducto As Decimal = dtbDetalleFactura.Rows(I).Item(4) * decTasaImpuesto / 100
+                Dim decImpuestoProducto As Decimal = decPrecio * decTasaImpuesto / 100
                 If intPorcentajeExoneracion > 0 Then
-                    Dim decGravadoPorcentual = dtbDetalleFactura.Rows(I).Item(4) * (1 - (intPorcentajeExoneracion / 100))
-                    decGravado += Math.Round(decGravadoPorcentual * dtbDetalleFactura.Rows(I).Item(3), 2)
-                    decExonerado += Math.Round((dtbDetalleFactura.Rows(I).Item(4) - decGravadoPorcentual) * dtbDetalleFactura.Rows(I).Item(3), 2)
-                    decImpuestoProducto = decGravadoPorcentual * decTasaImpuesto / 100
+                    Dim decTasaGravado = Math.Max(decTasaImpuesto - intPorcentajeExoneracion, 0)
+                    Dim decTasaExonerado = decTasaImpuesto - decTasaGravado
+                    decImpuestoProducto = decPrecio * decTasaGravado / 100
+                    decGravado += Math.Round(decPrecio * (decTasaGravado * 100 / decTasaImpuesto) / 100 * decCantidad, 2)
+                    decExonerado += Math.Round(decPrecio * (decTasaExonerado * 100 / decTasaImpuesto) / 100 * decCantidad, 2)
                 Else
-                    decGravado += Math.Round(dtbDetalleFactura.Rows(I).Item(3) * dtbDetalleFactura.Rows(I).Item(4), 2)
+                    decGravado += Math.Round(decCantidad * decPrecio, 2)
                 End If
-                decImpuesto += Math.Round(decImpuestoProducto * dtbDetalleFactura.Rows(I).Item(3), 2)
+                decImpuesto += Math.Round(decCantidad * decImpuestoProducto, 2)
             Else
-                decExcento += Math.Round(dtbDetalleFactura.Rows(I).Item(4) * dtbDetalleFactura.Rows(I).Item(3), 2)
+                decExcento += Math.Round(decCantidad * decPrecio, 2)
             End If
-            decTotalCosto += dtbDetalleFactura.Rows(I).Item(7) * dtbDetalleFactura.Rows(I).Item(3)
-            decDescuento += dtbDetalleFactura.Rows(I).Item(11) * dtbDetalleFactura.Rows(I).Item(3)
+            decDescuento += decDescuentoLinea * decCantidad
+            decTotalCosto += decPrecioCosto * decCantidad
         Next
         decSubTotal = decGravado + decExcento + decExonerado
         decDescuento = Math.Round(decDescuento, 2)
@@ -547,7 +549,7 @@ Public Class FrmFactura
     End Function
 
     Private Function ObtenerPrecioVentaPorCliente(cliente As Cliente, producto As Producto)
-        Dim decPrecioVenta As Decimal
+        Dim decPrecioVenta As Decimal = producto.PrecioVenta1
         If cliente IsNot Nothing Then
             If cliente.IdTipoPrecio = 1 Then
                 decPrecioVenta = producto.PrecioVenta1
@@ -559,17 +561,7 @@ Public Class FrmFactura
                 decPrecioVenta = producto.PrecioVenta4
             ElseIf cliente.IdTipoPrecio = 5 Then
                 decPrecioVenta = producto.PrecioVenta5
-            Else
-                decPrecioVenta = producto.PrecioVenta1
             End If
-        Else
-            decPrecioVenta = producto.PrecioVenta1
-        End If
-        If cliente.AplicaTasaDiferenciada Then
-            Dim decTasaImpuestoCliente = FrmPrincipal.ObtenerTarifaImpuesto(cliente.IdImpuesto)
-            Dim decTasaImpuestoProducto = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
-            decPrecioVenta = Math.Round(decPrecioVenta / (1 + (decTasaImpuestoProducto / 100)), 5)
-            decPrecioVenta = Math.Round(decPrecioVenta * (1 + (decTasaImpuestoCliente / 100)), 2)
         End If
         Return decPrecioVenta
     End Function
@@ -691,6 +683,7 @@ Public Class FrmFactura
                 .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
             }
             txtNombreCliente.Text = cliente.Nombre
+            txtPorcentajeExoneracion.Text = "0"
             If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
                 Try
                     vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
@@ -727,7 +720,7 @@ Public Class FrmFactura
         txtReferencia.Text = ""
         txtObservaciones.Text = ""
         cboTipoMoneda.Enabled = True
-        cboActividadEconomica.SelectedIndex = 0
+        If cboActividadEconomica.Items.Count > 0 Then cboActividadEconomica.SelectedIndex = 0
         cboCondicionVenta.Enabled = False
         cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
         txtPlazoCredito.Text = ""
@@ -1123,10 +1116,6 @@ Public Class FrmFactura
                 txtTelefono.Text = cliente.Telefono
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.PermiteCredito
-                If cliente.Vendedor IsNot Nothing Then
-                    vendedor = cliente.Vendedor
-                    txtVendedor.Text = vendedor.Nombre
-                End If
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 CargarTotales()
             Catch ex As Exception

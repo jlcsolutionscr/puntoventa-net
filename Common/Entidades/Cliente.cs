@@ -16,7 +16,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string Celular { get; set; }
         public string Fax { get; set; }
         public string CorreoElectronico { get; set; }
-        public int? IdVendedor { get; set; }
         public int IdTipoPrecio { get; set; }
         public int IdTipoExoneracion { get; set; }
         public string NumDocExoneracion { get; set; }
@@ -24,6 +23,5 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public DateTime FechaEmisionDoc { get; set; }
         public int PorcentajeExoneracion { get; set; }
         public bool PermiteCredito { get; set; }
-        public Vendedor Vendedor { get; set; }
     }
 }

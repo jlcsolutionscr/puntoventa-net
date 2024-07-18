@@ -20,15 +20,9 @@ Public Class FrmCliente
         cboIdTipoPrecio.ValueMember = "Id"
         cboIdTipoPrecio.DisplayMember = "Descripcion"
         cboIdTipoPrecio.DataSource = FrmPrincipal.ObtenerListadoTipoPrecio()
-        cboTipoImpuesto.ValueMember = "Id"
-        cboTipoImpuesto.DisplayMember = "Descripcion"
-        cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
         cboTipoExoneracion.ValueMember = "Id"
         cboTipoExoneracion.DisplayMember = "Descripcion"
         cboTipoExoneracion.DataSource = FrmPrincipal.ObtenerListadoTipoExoneracion()
-        cboVendedor.ValueMember = "Id"
-        cboVendedor.DisplayMember = "Descripcion"
-        cboVendedor.DataSource = Await Puntoventa.ObtenerListadoVendedores(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
     End Function
 #End Region
 
@@ -72,10 +66,7 @@ Public Class FrmCliente
                 txtFax.Text = datos.Fax
                 txtCorreoElectronico.Text = datos.CorreoElectronico
                 chkPermiteCredito.Checked = datos.PermiteCredito
-                cboVendedor.SelectedValue = datos.IdVendedor
                 cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
-                chkExonerado.Checked = datos.AplicaTasaDiferenciada
-                cboTipoImpuesto.SelectedValue = datos.IdImpuesto
                 cboTipoExoneracion.SelectedValue = datos.IdTipoExoneracion
                 txtNumDocExoneracion.Text = datos.NumDocExoneracion
                 txtNombreInstExoneracion.Text = datos.NombreInstExoneracion
@@ -83,7 +74,6 @@ Public Class FrmCliente
                 txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
             Else
                 datos = New Cliente
-                cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
                 cboTipoExoneracion.SelectedValue = StaticValoresPorDefecto.TipoExoneracion
                 txtPorcentajeExoneracion.Text = "0"
                 txtFechaExoneracion.Value = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
@@ -103,6 +93,12 @@ Public Class FrmCliente
             MessageBox.Show("Existen campos requeridos que no se fueron ingresados. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
+        If txtPorcentajeExoneracion.Text <> "" Then
+            If Integer.Parse(txtPorcentajeExoneracion.Text) > 13 Then
+                MessageBox.Show("El porcentaje de exoneración no puede ser mayor a 13%. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End If
+        End If
         btnCancelar.Focus()
         btnGuardar.Enabled = False
         If datos.IdCliente = 0 Then
@@ -118,10 +114,7 @@ Public Class FrmCliente
         datos.Fax = txtFax.Text
         datos.CorreoElectronico = txtCorreoElectronico.Text
         datos.PermiteCredito = chkPermiteCredito.Checked
-        datos.IdVendedor = cboVendedor.SelectedValue
         datos.IdTipoPrecio = cboIdTipoPrecio.SelectedValue
-        datos.AplicaTasaDiferenciada = chkExonerado.Checked
-        datos.IdImpuesto = cboTipoImpuesto.SelectedValue
         datos.IdTipoExoneracion = cboTipoExoneracion.SelectedValue
         datos.NumDocExoneracion = txtNumDocExoneracion.Text
         datos.NombreInstExoneracion = txtNombreInstExoneracion.Text
@@ -162,10 +155,7 @@ Public Class FrmCliente
                         txtCelular.Text = datos.Celular
                         txtFax.Text = datos.Fax
                         txtCorreoElectronico.Text = datos.CorreoElectronico
-                        cboVendedor.SelectedValue = datos.IdVendedor
                         cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
-                        chkExonerado.Checked = datos.AplicaTasaDiferenciada
-                        cboTipoImpuesto.SelectedValue = datos.IdImpuesto
                         cboTipoExoneracion.SelectedValue = datos.IdTipoExoneracion
                         txtNumDocExoneracion.Text = datos.NumDocExoneracion
                         txtNombreInstExoneracion.Text = datos.NombreInstExoneracion
@@ -187,15 +177,6 @@ Public Class FrmCliente
 
     Private Sub ValidaDigitos(sender As Object, e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono.KeyPress, txtCelular.KeyPress, txtFax.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
-    End Sub
-
-    Private Sub ChkExonerado_CheckedChanged(sender As Object, e As EventArgs) Handles chkExonerado.CheckedChanged
-        If chkExonerado.Checked Then
-            cboTipoImpuesto.Enabled = True
-        Else
-            cboTipoImpuesto.Enabled = False
-            cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
-        End If
     End Sub
 
     Private Sub txtPorcentajeExoneracion_TextChanged(sender As Object, e As KeyPressEventArgs) Handles txtPorcentajeExoneracion.KeyPress

@@ -23,7 +23,7 @@ Public Class FrmDescargaActualizacion
         If bolCancelaDescarga = False Then
             Try
                 bolDescargaCompleta = True
-                FrmPrincipal.bolDescargaFinalizada = True
+                FrmPrincipal.bolDescargaCancelada = True
                 procStartInfo.Arguments = "/i " + strMSIFilePath
                 procStartInfo.FileName = "msiexec"
                 Process.Start(procStartInfo)
@@ -53,7 +53,7 @@ Public Class FrmDescargaActualizacion
         If bolDescargaCompleta = False Then
             If MessageBox.Show("Esta seguro que desea cancelar la actualización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
                 bolCancelaDescarga = True
-                FrmPrincipal.bolDescargaFinalizada = True
+                FrmPrincipal.bolDescargaCancelada = True
                 DownloaderClient.CancelAsync()
                 FrmPrincipal.Close()
             Else

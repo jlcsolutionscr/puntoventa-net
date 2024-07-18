@@ -33,7 +33,7 @@ Public Class FrmPrincipal
     Public bolModificaPrecioVenta As Boolean = False
     Public productoTranstorio As Producto
     Public productoImpuestoServicio As Producto
-    Public bolDescargaFinalizada As Boolean = False
+    Public bolDescargaCancelada As Boolean = False
     Public decDescAutorizado As Decimal
     Public listaProductos As New List(Of ProductoDetalle)
     'Parametros generales
@@ -139,6 +139,12 @@ Public Class FrmPrincipal
 
     Public Function ObtenerFechaFormateada(fecha As Date) As Date
         Return FormatDateTime(fecha, DateFormat.ShortDate)
+    End Function
+
+    Public Function RequiereActualizacion(actual As String, servidor As String) As Boolean
+        Dim intVersionActual = Integer.Parse(actual.Replace(".", ""))
+        Dim intUltimaVersion = Integer.Parse(servidor.Replace(".", ""))
+        Return intVersionActual < intUltimaVersion
     End Function
 
     Public Sub ValidaNumero(ByVal e As KeyPressEventArgs, ByVal oText As TextBox, Optional ByVal pbConPuntoDec As Boolean = True, Optional ByVal pnNumDecimal As Integer = 2, Optional ByVal psSimbolo As String = ".", Optional ByVal bolNegativo As Boolean = False)
@@ -587,8 +593,8 @@ Public Class FrmPrincipal
             Close()
             Exit Sub
         End Try
-        Dim strVersionActualApp = My.Application.Info.Version.ToString()
-        Dim strUltimaVersionApp As String
+        Dim arrVersionActualApp As String = My.Application.Info.Version.ToString()
+        Dim strUltimaVersionApp As String = ""
         picLoader.Visible = True
         Try
             strUltimaVersionApp = Await Puntoventa.ObtenerUltimaVersionApp()
@@ -597,11 +603,14 @@ Public Class FrmPrincipal
             Close()
             Exit Sub
         End Try
-        If strVersionActualApp <> strUltimaVersionApp Then
+        If RequiereActualizacion(arrVersionActualApp, strUltimaVersionApp) Then
             picLoader.Visible = False
             Dim formDescarga As New FrmDescargaActualizacion()
             formDescarga.ShowDialog()
-            If bolDescargaFinalizada Then Application.Exit()
+            If bolDescargaCancelada Then
+                MessageBox.Show("Actualización cancelada por el usuario. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Application.Exit()
+            End If
         End If
         Dim strIdentificadoEquipoLocal = Puntoventa.ObtenerIdentificadorEquipo()
         If bolEsAdministrador Then

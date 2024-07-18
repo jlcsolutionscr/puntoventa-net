@@ -109,6 +109,7 @@ Partial Class FrmOrdenServicio
         Me.txtMontoAdelanto = New System.Windows.Forms.TextBox()
         Me.Label15 = New System.Windows.Forms.Label()
         Me.btnEnviar = New System.Windows.Forms.Button()
+        Me.Label19 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleOrdenServicio, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -919,7 +920,7 @@ Partial Class FrmOrdenServicio
         Me.Label12.BackColor = System.Drawing.Color.Transparent
         Me.Label12.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label12.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label12.Location = New System.Drawing.Point(640, 62)
+        Me.Label12.Location = New System.Drawing.Point(627, 62)
         Me.Label12.Name = "Label12"
         Me.Label12.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label12.Size = New System.Drawing.Size(125, 19)
@@ -932,16 +933,16 @@ Partial Class FrmOrdenServicio
         Me.txtPorcentajeExoneracion.AcceptsReturn = True
         Me.txtPorcentajeExoneracion.BackColor = System.Drawing.SystemColors.Window
         Me.txtPorcentajeExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtPorcentajeExoneracion.Enabled = False
         Me.txtPorcentajeExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(771, 63)
+        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(758, 61)
         Me.txtPorcentajeExoneracion.MaxLength = 0
         Me.txtPorcentajeExoneracion.Name = "txtPorcentajeExoneracion"
         Me.txtPorcentajeExoneracion.ReadOnly = True
         Me.txtPorcentajeExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPorcentajeExoneracion.Size = New System.Drawing.Size(39, 20)
+        Me.txtPorcentajeExoneracion.Size = New System.Drawing.Size(25, 20)
         Me.txtPorcentajeExoneracion.TabIndex = 7
         Me.txtPorcentajeExoneracion.TabStop = False
+        Me.txtPorcentajeExoneracion.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtFechaEntrega
         '
@@ -1183,12 +1184,26 @@ Partial Class FrmOrdenServicio
         Me.btnEnviar.Text = "&Enviar"
         Me.btnEnviar.UseVisualStyleBackColor = False
         '
+        'Label19
+        '
+        Me.Label19.BackColor = System.Drawing.Color.Transparent
+        Me.Label19.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label19.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label19.Location = New System.Drawing.Point(786, 62)
+        Me.Label19.Name = "Label19"
+        Me.Label19.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label19.Size = New System.Drawing.Size(20, 19)
+        Me.Label19.TabIndex = 216
+        Me.Label19.Text = "%"
+        Me.Label19.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'FrmOrdenServicio
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(822, 654)
+        Me.Controls.Add(Me.Label19)
         Me.Controls.Add(Me.btnEnviar)
         Me.Controls.Add(Me.txtMontoAdelanto)
         Me.Controls.Add(Me.Label15)
@@ -1347,4 +1362,5 @@ Partial Class FrmOrdenServicio
     Public WithEvents txtMontoAdelanto As TextBox
     Public WithEvents Label15 As Label
     Public WithEvents btnEnviar As Button
+    Public WithEvents Label19 As Label
 End Class
