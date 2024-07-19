@@ -51,6 +51,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static MovimientoOrdenServicio? movimientoOrdenServicio;
         private static MovimientoBanco? movimientoBanco;
         private static PuntoDeServicio? puntoDeServicio;
+        private static ReferenciasEntidad? referencias;
         private static int intIdEmpresa;
         private static int intIdSucursal;
         private static int intIdCuenta;
@@ -135,8 +136,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             {
                 case "GuardarDatosCierreCaja":
                     CierreCaja cierre = JsonConvert.DeserializeObject<CierreCaja>(strEntidad);
-                    string strIdCierre = _servicioFlujoCaja.GuardarDatosCierreCaja(cierre);
-                    strRespuesta = JsonConvert.SerializeObject(strIdCierre);
+                    referencias = _servicioFlujoCaja.GuardarDatosCierreCaja(cierre);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "ObtenerTipoCambioDolar":
                     strRespuesta = decTipoCambioDolar.ToString();
@@ -765,8 +766,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarMovimientoBanco":
                     movimientoBanco = JsonConvert.DeserializeObject<MovimientoBanco>(strEntidad);
-                    string strIdMov = _servicioBanca.AgregarMovimientoBanco(movimientoBanco);
-                    strRespuesta = JsonConvert.SerializeObject(strIdMov);
+                    referencias = _servicioBanca.AgregarMovimientoBanco(movimientoBanco);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "ObtenerMovimientoBanco":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdMovimiento").Value.ToString());
@@ -836,8 +837,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarEgreso":
                     egreso = JsonConvert.DeserializeObject<Egreso>(strEntidad);
-                    string strIdEgreso = _servicioFlujoCaja.AgregarEgreso(egreso);
-                    strRespuesta = JsonConvert.SerializeObject(strIdEgreso);
+                    referencias = _servicioFlujoCaja.AgregarEgreso(egreso);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "ObtenerEgreso":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdEgreso").Value.ToString());
@@ -870,8 +871,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarIngreso":
                     ingreso = JsonConvert.DeserializeObject<Ingreso>(strEntidad);
-                    string strIdIngreso = _servicioFlujoCaja.AgregarIngreso(ingreso);
-                    strRespuesta = JsonConvert.SerializeObject(strIdIngreso);
+                    referencias = _servicioFlujoCaja.AgregarIngreso(ingreso);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "ObtenerIngreso":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdIngreso").Value.ToString());
@@ -906,13 +907,13 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarFactura":
                     factura = JsonConvert.DeserializeObject<Factura>(strEntidad);
-                    string strIdFactura = _servicioFacturacion.AgregarFactura(factura);
-                    strRespuesta = JsonConvert.SerializeObject(strIdFactura);
+                    referencias = _servicioFacturacion.AgregarFactura(factura);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "AgregarFacturaCompra":
                     facturaCompra = JsonConvert.DeserializeObject<FacturaCompra>(strEntidad);
-                    string strIdFactCompra = _servicioFacturacion.AgregarFacturaCompra(facturaCompra);
-                    strRespuesta = JsonConvert.SerializeObject(strIdFactCompra);
+                    referencias = _servicioFacturacion.AgregarFacturaCompra(facturaCompra);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "ObtenerFactura":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
@@ -943,8 +944,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarDevolucionCliente":
                     devolucionCliente = JsonConvert.DeserializeObject<DevolucionCliente>(strEntidad);
-                    string strIdDevolucionCliente = _servicioFacturacion.AgregarDevolucionCliente(devolucionCliente);
-                    strRespuesta = JsonConvert.SerializeObject(strIdDevolucionCliente);
+                    referencias = _servicioFacturacion.AgregarDevolucionCliente(devolucionCliente);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "ObtenerDevolucionCliente":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdDevolucion").Value.ToString());
@@ -977,8 +978,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarCompra":
                     compra = JsonConvert.DeserializeObject<Compra>(strEntidad);
-                    string strIdCompra = _servicioCompra.AgregarCompra(compra);
-                    strRespuesta = JsonConvert.SerializeObject(strIdCompra);
+                    referencias = _servicioCompra.AgregarCompra(compra);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "ObtenerCompra":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdCompra").Value.ToString());
@@ -1013,8 +1014,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarProforma":
                     proforma = JsonConvert.DeserializeObject<Proforma>(strEntidad);
-                    string strIdProforma = _servicioFacturacion.AgregarProforma(proforma);
-                    strRespuesta = JsonConvert.SerializeObject(strIdProforma);
+                    referencias = _servicioFacturacion.AgregarProforma(proforma);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "ObtenerProforma":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());
@@ -1049,8 +1050,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarOrdenServicio":
                     ordenServicio = JsonConvert.DeserializeObject<OrdenServicio>(strEntidad);
-                    string strIdOrdenServicio = _servicioFacturacion.AgregarOrdenServicio(ordenServicio);
-                    strRespuesta = JsonConvert.SerializeObject(strIdOrdenServicio);
+                    referencias = _servicioFacturacion.AgregarOrdenServicio(ordenServicio);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "ObtenerOrdenServicio":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
@@ -1085,8 +1086,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarApartado":
                     apartado = JsonConvert.DeserializeObject<Apartado>(strEntidad);
-                    string strIdApartado = _servicioFacturacion.AgregarApartado(apartado);
-                    strRespuesta = JsonConvert.SerializeObject(strIdApartado);
+                    referencias = _servicioFacturacion.AgregarApartado(apartado);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "ObtenerApartado":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdApartado").Value.ToString());
@@ -1259,8 +1260,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarTraslado":
                     traslado = JsonConvert.DeserializeObject<Traslado>(strEntidad);
-                    string strIdTraslado = _servicioTraslado.AgregarTraslado(traslado);
-                    strRespuesta = JsonConvert.SerializeObject(strIdTraslado);
+                    referencias = _servicioTraslado.AgregarTraslado(traslado);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "ObtenerTraslado":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdTraslado").Value.ToString());
@@ -1307,8 +1308,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "AgregarAjusteInventario":
                     ajusteInventario = JsonConvert.DeserializeObject<AjusteInventario>(strEntidad);
-                    string strIdAjuste = _servicioMantenimiento.AgregarAjusteInventario(ajusteInventario);
-                    strRespuesta = JsonConvert.SerializeObject(strIdAjuste);
+                    referencias = _servicioMantenimiento.AgregarAjusteInventario(ajusteInventario);
+                    strRespuesta = JsonConvert.SerializeObject(referencias);
                     break;
                 case "ObtenerAjusteInventario":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdAjuste").Value.ToString());

@@ -27,24 +27,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Cliente ValidaIdentificacionCliente(int intIdEmpresa, string strIdentificacion);
         int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre);
         IList<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
-        string AgregarFactura(Factura factura);
-        string AgregarFacturaCompra(FacturaCompra facturaCompra);
+        ReferenciasEntidad AgregarFactura(Factura factura);
+        ReferenciasEntidad AgregarFacturaCompra(FacturaCompra facturaCompra);
         void AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion);
         Factura ObtenerFactura(int intIdFactura);
         int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
         IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
-        string AgregarProforma(Proforma proforma);
+        ReferenciasEntidad AgregarProforma(Proforma proforma);
         void ActualizarProforma(Proforma proforma);
         void AnularProforma(int intIdProforma, int intIdUsuario, string strMotivoAnulacion);
         Proforma ObtenerProforma(int intIdProforma);
         int ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdProforma, string strNombre, string strFechaFinal);
         IList<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdProforma, string strNombre, string strFechaFinal);
-        string AgregarApartado(Apartado apartado);
+        ReferenciasEntidad AgregarApartado(Apartado apartado);
         void AnularApartado(int intIdApartado, int intIdUsuario, string strMotivoAnulacion);
         Apartado ObtenerApartado(int intIdApartado);
         int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdApartado, string strNombre, string strFechaFinal);
         IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal);
-        string AgregarOrdenServicio(OrdenServicio ordenServicio);
+        ReferenciasEntidad AgregarOrdenServicio(OrdenServicio ordenServicio);
         void ActualizarOrdenServicio(OrdenServicio ordenServicio);
         void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivoAnulacion);
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
@@ -52,7 +52,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal);
         IList<ClsTiquete> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc);
         void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado);
-        string AgregarDevolucionCliente(DevolucionCliente devolucion);
+        ReferenciasEntidad AgregarDevolucionCliente(DevolucionCliente devolucion);
         void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion);
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
         int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, int intIdDevolucion, string strNombre, string strFechaFinal);
@@ -336,7 +336,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public string AgregarFactura(Factura factura)
+        public ReferenciasEntidad AgregarFactura(Factura factura)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -769,7 +769,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE));
                     }
-                    return "{Id: " + factura.IdFactura.ToString() + ", Consec: " + factura.ConsecFactura.ToString() + ", Ref: " + documentoFE != null ? documentoFE.ClaveNumerica : "null }";
+                    return new ReferenciasEntidad(factura.IdFactura.ToString(), factura.ConsecFactura.ToString(), documentoFE != null ? documentoFE.ClaveNumerica : "");
                 }
                 catch (BusinessException ex)
                 {
@@ -786,7 +786,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public string AgregarFacturaCompra(FacturaCompra facturaCompra)
+        public ReferenciasEntidad AgregarFacturaCompra(FacturaCompra facturaCompra)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -831,7 +831,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE));
                     }
-                    return "{Id: " + facturaCompra.IdFactCompra.ToString() + "}";
+                    return new ReferenciasEntidad(facturaCompra.IdFactCompra.ToString());
                 }
                 catch (BusinessException ex)
                 {
@@ -1115,7 +1115,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public string AgregarProforma(Proforma proforma)
+        public ReferenciasEntidad AgregarProforma(Proforma proforma)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1143,7 +1143,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     proforma.ConsecProforma = sucursal.ConsecProforma;
                     dbContext.ProformaRepository.Add(proforma);
                     dbContext.Commit();
-                    return "{Id: " + proforma.IdProforma.ToString() + ", Consec: " + proforma.ConsecProforma.ToString() + "}";
+                    return new ReferenciasEntidad(proforma.IdProforma.ToString(), proforma.ConsecProforma.ToString());
                 }
                 catch (BusinessException ex)
                 {
@@ -1318,7 +1318,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public string AgregarApartado(Apartado apartado)
+        public ReferenciasEntidad AgregarApartado(Apartado apartado)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1336,7 +1336,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     apartado.ConsecApartado = sucursal.ConsecApartado;
                     dbContext.ApartadoRepository.Add(apartado);
                     dbContext.Commit();
-                    return "{Id: " + apartado.IdApartado.ToString() + ", Consec: " + apartado.ConsecApartado.ToString() + "}";
+                    return new ReferenciasEntidad(apartado.IdApartado.ToString(), apartado.ConsecApartado.ToString());
                 }
                 catch (BusinessException ex)
                 {
@@ -1496,7 +1496,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public string AgregarOrdenServicio(OrdenServicio ordenServicio)
+        public ReferenciasEntidad AgregarOrdenServicio(OrdenServicio ordenServicio)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1518,7 +1518,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         AgregarTiqueteOrdenServicio(ordenServicio, ordenServicio.DetalleOrdenServicio);
                     }
                     dbContext.Commit();
-                    return "{Id: " + ordenServicio.IdOrden.ToString() + ", Consec: " + ordenServicio.ConsecOrdenServicio.ToString() + "}";
+                    return new ReferenciasEntidad(ordenServicio.IdOrden.ToString(), ordenServicio.ConsecOrdenServicio.ToString());
                 }
                 catch (BusinessException ex)
                 {
@@ -1881,7 +1881,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public string AgregarDevolucionCliente(DevolucionCliente devolucion)
+        public ReferenciasEntidad AgregarDevolucionCliente(DevolucionCliente devolucion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -2022,6 +2022,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC));
                     }
+                    return new ReferenciasEntidad(devolucion.IdDevolucion.ToString());
                 }
                 catch (BusinessException ex)
                 {
@@ -2035,7 +2036,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
                 }
-                return "{Id: " + devolucion.IdDevolucion.ToString() + "}";
             }
         }
 

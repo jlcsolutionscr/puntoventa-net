@@ -11,7 +11,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 {
     public interface ITrasladoService
     {
-        string AgregarTraslado(Traslado traslado);
+        ReferenciasEntidad AgregarTraslado(Traslado traslado);
         void AplicarTraslado(int intIdTraslado, int intIdUsuario);
         void AnularTraslado(int intIdTraslado, int intIdUsuario, string strMotivoAnulacion);
         Traslado ObtenerTraslado(int intIdTraslado);
@@ -42,7 +42,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public string AgregarTraslado(Traslado traslado)
+        public ReferenciasEntidad AgregarTraslado(Traslado traslado)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -66,6 +66,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.TrasladoRepository.Add(traslado);
                     dbContext.Commit();
+                    return new ReferenciasEntidad(traslado.IdTraslado.ToString());
                 }
                 catch (BusinessException ex)
                 {
@@ -78,7 +79,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al agregar el registro de devolución: ", ex);
                     throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
                 }
-                return "{Id: " + traslado.IdTraslado.ToString() + "}";
             }
         }
 
