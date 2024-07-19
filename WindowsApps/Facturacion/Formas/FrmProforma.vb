@@ -639,10 +639,9 @@ Public Class FrmProforma
                 proforma.DetalleProforma.Add(detalleProforma)
             Next
             Try
-                Dim strIdConsec As String = Await Puntoventa.AgregarProforma(proforma, FrmPrincipal.usuarioGlobal.Token)
-                Dim arrIdConsec = strIdConsec.Split("-")
-                proforma.IdProforma = arrIdConsec(0)
-                proforma.ConsecProforma = arrIdConsec(1)
+                Dim refenrencias As ReferenciasEntidad = Await Puntoventa.AgregarProforma(proforma, FrmPrincipal.usuarioGlobal.Token)
+                proforma.IdProforma = refenrencias.Id
+                proforma.ConsecProforma = refenrencias.Consec
                 txtIdProforma.Text = proforma.ConsecProforma
             Catch ex As Exception
                 txtIdProforma.Text = ""

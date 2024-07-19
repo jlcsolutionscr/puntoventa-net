@@ -826,9 +826,9 @@ Public Class FrmApartado
                 .Impuesto = decImpuesto,
                 .MontoAdelanto = decTotalPago,
                 .MontoPagado = decPagoCliente,
-                .Nulo = False
+                .Nulo = False,
+                .DetalleApartado = New List(Of DetalleApartado)
             }
-            apartado.DetalleApartado = New List(Of DetalleApartado)
             For I As Short = 0 To dtbDetalleApartado.Rows.Count - 1
                 detalleApartado = New DetalleApartado With {
                     .IdProducto = dtbDetalleApartado.Rows(I).Item(0),
@@ -855,10 +855,9 @@ Public Class FrmApartado
                 apartado.DesglosePagoApartado.Add(desglosePago)
             Next
             Try
-                Dim strIdConsec As String = Await Puntoventa.AgregarApartado(apartado, FrmPrincipal.usuarioGlobal.Token)
-                Dim arrIdConsec = strIdConsec.Split("-")
-                apartado.IdApartado = arrIdConsec(0)
-                apartado.ConsecApartado = arrIdConsec(1)
+                Dim referencias As ReferenciasEntidad = Await Puntoventa.AgregarApartado(apartado, FrmPrincipal.usuarioGlobal.Token)
+                apartado.IdApartado = referencias.Id
+                apartado.ConsecApartado = referencias.Consec
                 txtIdApartado.Text = apartado.ConsecApartado
             Catch ex As Exception
                 txtIdApartado.Text = ""
@@ -869,9 +868,10 @@ Public Class FrmApartado
             End Try
             If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
                 BtnImprimir_Click(btnImprimir, New EventArgs())
-                Dim formPagoFactura As New FrmPagoEfectivo()
-                formPagoFactura.decTotalEfectivo = decPagoEfectivo
-                formPagoFactura.decPagoCliente = decPagoCliente
+                Dim formPagoFactura As New FrmPagoEfectivo With {
+                    .decTotalEfectivo = decPagoEfectivo,
+                    .decPagoCliente = decPagoCliente
+                }
                 formPagoFactura.ShowDialog()
             Else
                 MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -893,7 +893,7 @@ Public Class FrmApartado
         btnBuscarCliente.Enabled = False
     End Sub
 
-    Private Async Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
+    Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdApartado.Text <> "" Then
             Try
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {

@@ -118,8 +118,8 @@ Public Class FrmCierreDeCaja
                     cierreCaja.DetalleEfectivoCierreCaja.Add(detalle)
                 End If
             Next
-            Dim strIdCierre As String = Await Puntoventa.GuardarDatosCierreCaja(cierreCaja, FrmPrincipal.usuarioGlobal.Token)
-            cierreCaja.IdCierre = strIdCierre
+            Dim referencias As ReferenciasEntidad = Await Puntoventa.GuardarDatosCierreCaja(cierreCaja, FrmPrincipal.usuarioGlobal.Token)
+            cierreCaja.IdCierre = referencias.Id
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub

@@ -4,6 +4,7 @@ Imports LeandroSoftware.ClienteWCF
 Imports System.Text.RegularExpressions
 Imports LeandroSoftware.Common.Constantes
 Imports System.Collections.Generic
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmFacturaCompra
 #Region "Variables"
@@ -400,7 +401,8 @@ Public Class FrmFacturaCompra
                 facturaCompra.DetalleFacturaCompra.Add(detalleFacturaCompra)
             Next
             Try
-                txtIdFactCompra.Text = Await Puntoventa.AgregarFacturaCompra(facturaCompra, FrmPrincipal.usuarioGlobal.Token)
+                Dim referencias As ReferenciasEntidad = Await Puntoventa.AgregarFacturaCompra(facturaCompra, FrmPrincipal.usuarioGlobal.Token)
+                txtIdFactCompra.Text = referencias.Id
             Catch ex As Exception
                 txtIdFactCompra.Text = ""
                 btnGuardar.Enabled = True

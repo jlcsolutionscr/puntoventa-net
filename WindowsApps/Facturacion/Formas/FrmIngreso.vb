@@ -1,6 +1,7 @@
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmIngreso
 #Region "Variables"
@@ -145,9 +146,11 @@ Public Class FrmIngreso
                 .Detalle = txtDetalle.Text,
                 .Monto = CDbl(txtMonto.Text),
                 .Nulo = False
-            }
+}
             Try
-                txtIdIngreso.Text = Await Puntoventa.AgregarIngreso(ingreso, FrmPrincipal.usuarioGlobal.Token)
+                Dim referencias As ReferenciasEntidad = Await Puntoventa.AgregarIngreso(ingreso, FrmPrincipal.usuarioGlobal.Token)
+                ingreso.IdIngreso = referencias.Id
+                txtIdIngreso.Text = ingreso.IdIngreso
             Catch ex As Exception
                 txtIdIngreso.Text = ""
                 btnGuardar.Enabled = True

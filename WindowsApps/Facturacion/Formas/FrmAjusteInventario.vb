@@ -268,9 +268,9 @@ Public Class FrmAjusteInventario
                 .IdSucursal = cboSucursal.SelectedValue,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .Fecha = Now(),
-                .Descripcion = txtDescAjuste.Text
+                .Descripcion = txtDescAjuste.Text,
+                .DetalleAjusteInventario = New List(Of DetalleAjusteInventario)
             }
-            ajusteInventario.DetalleAjusteInventario = New List(Of DetalleAjusteInventario)
             For I As Integer = 0 To dtbDetalleAjusteInventario.Rows.Count - 1
                 detalleAjusteInventario = New DetalleAjusteInventario With {
                     .IdProducto = dtbDetalleAjusteInventario.Rows(I).Item(0),
@@ -280,7 +280,9 @@ Public Class FrmAjusteInventario
                 ajusteInventario.DetalleAjusteInventario.Add(detalleAjusteInventario)
             Next
             Try
-                txtIdAjuste.Text = Await Puntoventa.AgregarAjusteInventario(ajusteInventario, FrmPrincipal.usuarioGlobal.Token)
+                Dim referencias As ReferenciasEntidad = Await Puntoventa.AgregarAjusteInventario(ajusteInventario, FrmPrincipal.usuarioGlobal.Token)
+                ajusteInventario.IdAjuste = referencias.Id
+                txtIdAjuste.Text = ajusteInventario.IdAjuste
             Catch ex As Exception
                 txtIdAjuste.Text = ""
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
