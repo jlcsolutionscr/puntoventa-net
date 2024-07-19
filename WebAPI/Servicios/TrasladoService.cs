@@ -78,7 +78,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al agregar el registro de devolución: ", ex);
                     throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
                 }
-                return traslado.IdTraslado.ToString();
+                return "{Id:" + traslado.IdTraslado.ToString() + "}";
             }
         }
 

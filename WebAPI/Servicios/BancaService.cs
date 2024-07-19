@@ -258,7 +258,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.MovimientoBancoRepository.Add(movimiento);
                 dbContext.NotificarModificacion(cuenta);
                 dbContext.Commit();
-                return movimiento.IdMov.ToString();
+                return "{Id:" + movimiento.IdMov.ToString() + "}";
             }
             catch (BusinessException ex)
             {

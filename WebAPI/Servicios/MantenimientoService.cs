@@ -33,7 +33,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoEmpresa();
         IList<LlaveDescripcion> ObtenerListadoSucursales(int intIdEmpresa);
         IList<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal);
-        string AgregarEmpresa(Empresa empresa);
+        void AgregarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
         void ValidarCredencialesHacienda(string strCodigoUsuario, string strClave);
@@ -694,7 +694,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public string AgregarEmpresa(Empresa empresa)
+        public void AgregarEmpresa(Empresa empresa)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -704,7 +704,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.Logotipo == null) empresa.Logotipo = new byte[0];
                     dbContext.EmpresaRepository.Add(empresa);
                     dbContext.Commit();
-                    return empresa.IdEmpresa.ToString();
                 }
                 catch (Exception ex)
                 {
@@ -2391,7 +2390,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error guardando la información del ajuste de inventario. Por favor consulte con su proveedor.");
                 }
-                return ajusteInventario.IdAjuste.ToString();
+                return "{Id:" + ajusteInventario.IdAjuste.ToString() + "}";
             }
         }
 

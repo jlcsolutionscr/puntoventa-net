@@ -31,6 +31,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static CuentaEgreso? cuentaEgreso;
         private static CuentaIngreso? cuentaIngreso;
         private static CuentaBanco? cuentaBanco;
+        private static FacturaCompra? facturaCompra;
         private static Vendedor? vendedor;
         private static Proforma? proforma;
         private static OrdenServicio? ordenServicio;
@@ -143,13 +144,15 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     strPin = parametrosJO.Property("PinCertificado").Value.ToString();
                     strCertificado = parametrosJO.Property("Certificado").Value.ToString();
                     byte[] bytCertificado = Convert.FromBase64String(strCertificado);
-                    credenciales = new CredencialesHacienda();
-                    credenciales.IdEmpresa = intIdEmpresa;
-                    credenciales.UsuarioHacienda = strUsuario;
-                    credenciales.ClaveHacienda = strClave;
-                    credenciales.NombreCertificado = strNombreCertificado;
-                    credenciales.PinCertificado = strPin;
-                    credenciales.Certificado = bytCertificado;
+                    credenciales = new CredencialesHacienda
+                    {
+                        IdEmpresa = intIdEmpresa,
+                        UsuarioHacienda = strUsuario,
+                        ClaveHacienda = strClave,
+                        NombreCertificado = strNombreCertificado,
+                        PinCertificado = strPin,
+                        Certificado = bytCertificado
+                    };
                     _servicioMantenimiento.AgregarCredencialesHacienda(credenciales);
                     break;
                 case "ActualizarCredencialesHacienda":
@@ -178,6 +181,10 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "ActualizarTerminalPorSucursal":
                     terminal = JsonConvert.DeserializeObject<TerminalPorSucursal>(strEntidad);
                     _servicioMantenimiento.ActualizarTerminalPorSucursal(terminal);
+                    break;
+                case "AgregarFacturaCompra":
+                    facturaCompra = JsonConvert.DeserializeObject<FacturaCompra>(strEntidad);
+                    _servicioFacturacion.AgregarFacturaCompra(facturaCompra);
                     break;
                 case "AgregarBancoAdquiriente":
                     bancoAdquiriente = JsonConvert.DeserializeObject<BancoAdquiriente>(strEntidad);

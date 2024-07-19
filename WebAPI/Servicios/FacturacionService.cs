@@ -28,7 +28,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre);
         IList<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
         string AgregarFactura(Factura factura);
-        string AgregarFacturaCompra(FacturaCompra facturaCompra);
+        void AgregarFacturaCompra(FacturaCompra facturaCompra);
         void AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion);
         Factura ObtenerFactura(int intIdFactura);
         int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
@@ -769,7 +769,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE));
                     }
-                    return factura.IdFactura.ToString() + "-" + factura.ConsecFactura.ToString();
+                    return "{Id:" + factura.IdFactura.ToString() + ", Consec: " + factura.ConsecFactura.ToString() + ", Ref:" + documentoFE != null ? documentoFE.ClaveNumerica : "null }";
                 }
                 catch (BusinessException ex)
                 {
@@ -786,7 +786,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public string AgregarFacturaCompra(FacturaCompra facturaCompra)
+        public void AgregarFacturaCompra(FacturaCompra facturaCompra)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -831,7 +831,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE));
                     }
-                    return facturaCompra.IdFactCompra.ToString();
                 }
                 catch (BusinessException ex)
                 {
@@ -1143,7 +1142,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     proforma.ConsecProforma = sucursal.ConsecProforma;
                     dbContext.ProformaRepository.Add(proforma);
                     dbContext.Commit();
-                    return proforma.IdProforma.ToString() + "-" + proforma.ConsecProforma.ToString();
+                    return "{Id:" + proforma.IdProforma.ToString() + ", Consec: " + proforma.ConsecProforma.ToString() + "}";
                 }
                 catch (BusinessException ex)
                 {
@@ -1336,7 +1335,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     apartado.ConsecApartado = sucursal.ConsecApartado;
                     dbContext.ApartadoRepository.Add(apartado);
                     dbContext.Commit();
-                    return apartado.IdApartado.ToString() + "-" + apartado.ConsecApartado.ToString();
+                    return "{Id:" + apartado.IdApartado.ToString() + ", Consec: " + apartado.ConsecApartado.ToString() + "}";
                 }
                 catch (BusinessException ex)
                 {
@@ -1518,7 +1517,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         AgregarTiqueteOrdenServicio(ordenServicio, ordenServicio.DetalleOrdenServicio);
                     }
                     dbContext.Commit();
-                    return ordenServicio.IdOrden.ToString() + "-" + ordenServicio.ConsecOrdenServicio.ToString();
+                    return "{Id:" + ordenServicio.IdOrden.ToString() + ", Consec: " + ordenServicio.ConsecOrdenServicio.ToString() + "}";
                 }
                 catch (BusinessException ex)
                 {
@@ -1961,8 +1960,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             MontoLocal = devolucion.Total,
                             TipoDeCambio = factura.TipoDeCambioDolar
                         };
-                        mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>();
-                        mov.DesglosePagoMovimientoCuentaPorCobrar.Add(desglosePagoMovimiento);
+                        mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>
+                        {
+                            desglosePagoMovimiento
+                        };
                         dbContext.MovimientoCuentaPorCobrarRepository.Add(mov);
                         cxc.Saldo -= devolucion.Total;
                         dbContext.NotificarModificacion(cxc);
@@ -2033,7 +2034,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
                 }
-                return devolucion.IdDevolucion.ToString();
+                return "{Id:" + devolucion.IdDevolucion.ToString() + "}";
             }
         }
 
