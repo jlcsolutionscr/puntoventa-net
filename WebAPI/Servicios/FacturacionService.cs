@@ -126,6 +126,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     bool existe = dbContext.ClienteRepository.AsNoTracking().FirstOrDefault(x => x.Identificacion == cliente.Identificacion && x.IdEmpresa == empresa.IdEmpresa) != null;
                     if (existe) throw new BusinessException("El cliente con identificación " + cliente.Identificacion + " ya se encuentra registrado en la empresa. Por favor verifique.");
+                    if (cliente.PorcentajeExoneracion > 0)
+                    {
+                        if (cliente.NombreInstExoneracion == "") throw new BusinessException("El nombre de la institución para la exoneración es requerido. Por favor verifique.");
+                        if (cliente.NumDocExoneracion == "") throw new BusinessException("El número de documento para la exoneración es requerido. Por favor verifique.");
+                    }
                     dbContext.ClienteRepository.Add(cliente);
                     dbContext.Commit();
                 }
@@ -164,6 +169,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     bool existe = dbContext.ClienteRepository.AsNoTracking().FirstOrDefault(x => x.Identificacion == cliente.Identificacion && x.IdEmpresa == empresa.IdEmpresa && x.IdCliente != cliente.IdCliente) != null;
                     if (existe) throw new BusinessException("El cliente con identificación " + cliente.Identificacion + " ya se encuentra registrado en la empresa. Por favor verifique.");
+                    if (cliente.PorcentajeExoneracion > 0)
+                    {
+                        if (cliente.NombreInstExoneracion == "") throw new BusinessException("El nombre de la institución para la exoneración es requerido. Por favor verifique.");
+                        if (cliente.NumDocExoneracion == "") throw new BusinessException("El número de documento para la exoneración es requerido. Por favor verifique.");
+                    }
                     dbContext.NotificarModificacion(cliente);
                     dbContext.Commit();
                 }
