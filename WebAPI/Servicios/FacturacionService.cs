@@ -130,6 +130,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (cliente.NombreInstExoneracion == "") throw new BusinessException("El nombre de la institución para la exoneración es requerido. Por favor verifique.");
                         if (cliente.NumDocExoneracion == "") throw new BusinessException("El número de documento para la exoneración es requerido. Por favor verifique.");
+                        if (cliente.PorcentajeExoneracion > 13) throw new BusinessException("El porcentaje de exoneración no puede ser mayor a 13%. Por favor verifique.");
                     }
                     dbContext.ClienteRepository.Add(cliente);
                     dbContext.Commit();
@@ -173,6 +174,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (cliente.NombreInstExoneracion == "") throw new BusinessException("El nombre de la institución para la exoneración es requerido. Por favor verifique.");
                         if (cliente.NumDocExoneracion == "") throw new BusinessException("El número de documento para la exoneración es requerido. Por favor verifique.");
+                        if (cliente.PorcentajeExoneracion > 13) throw new BusinessException("El porcentaje de exoneración no puede ser mayor a 13%. Por favor verifique.");
                     }
                     dbContext.NotificarModificacion(cliente);
                     dbContext.Commit();
