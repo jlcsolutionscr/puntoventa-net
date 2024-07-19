@@ -1600,7 +1600,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TipoDoc = NotaCreditoElectronicaInformacionReferenciaTipoDoc.Item01,
                 Numero = factura.IdDocElectronico,
                 FechaEmision = factura.Fecha,
-                Codigo = NotaCreditoElectronicaInformacionReferenciaCodigo.Item03,
+                Codigo = NotaCreditoElectronicaInformacionReferenciaCodigo.Item02,
                 Razon = "Ajuste de monto de factura electrónica por devolución de mercancía."
             };
             notaCreditoElectronica.InformacionReferencia = new NotaCreditoElectronicaInformacionReferencia[] { informacionReferencia };

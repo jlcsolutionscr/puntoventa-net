@@ -2495,10 +2495,6 @@
         Item02,
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-
-        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("04")]
         Item04,
 
