@@ -28,7 +28,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre);
         IList<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
         string AgregarFactura(Factura factura);
-        void AgregarFacturaCompra(FacturaCompra facturaCompra);
+        string AgregarFacturaCompra(FacturaCompra facturaCompra);
         void AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion);
         Factura ObtenerFactura(int intIdFactura);
         int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
@@ -786,7 +786,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AgregarFacturaCompra(FacturaCompra facturaCompra)
+        public string AgregarFacturaCompra(FacturaCompra facturaCompra)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -831,6 +831,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE));
                     }
+                    return "{Id:" + facturaCompra.IdFactCompra.ToString() + "}";
                 }
                 catch (BusinessException ex)
                 {

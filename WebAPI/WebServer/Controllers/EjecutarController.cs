@@ -31,7 +31,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static CuentaEgreso? cuentaEgreso;
         private static CuentaIngreso? cuentaIngreso;
         private static CuentaBanco? cuentaBanco;
-        private static FacturaCompra? facturaCompra;
         private static Vendedor? vendedor;
         private static Proforma? proforma;
         private static OrdenServicio? ordenServicio;
@@ -181,10 +180,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "ActualizarTerminalPorSucursal":
                     terminal = JsonConvert.DeserializeObject<TerminalPorSucursal>(strEntidad);
                     _servicioMantenimiento.ActualizarTerminalPorSucursal(terminal);
-                    break;
-                case "AgregarFacturaCompra":
-                    facturaCompra = JsonConvert.DeserializeObject<FacturaCompra>(strEntidad);
-                    _servicioFacturacion.AgregarFacturaCompra(facturaCompra);
                     break;
                 case "AgregarBancoAdquiriente":
                     bancoAdquiriente = JsonConvert.DeserializeObject<BancoAdquiriente>(strEntidad);
