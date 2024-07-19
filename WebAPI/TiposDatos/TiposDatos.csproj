@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>LeandroSoftware.ServicioWeb.TiposDatosHacienda</RootNamespace>
+    <NoWarn>8618</NoWarn>
   </PropertyGroup>
 
 </Project>
