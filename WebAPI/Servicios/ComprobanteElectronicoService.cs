@@ -157,6 +157,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             string strCorreoNotificacion = empresa.CorreoNotificacion;
             if (facturaCompra.CodigoActividad == 0) throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (facturaCompra.PorcentajeExoneracion > 13) throw new BusinessException("El porcentaje de exoneración no puede ser mayor al 13%");
             FacturaElectronicaCompra facturaElectronica = new FacturaElectronicaCompra
             {
                 Clave = "",
