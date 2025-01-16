@@ -11,7 +11,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         IList<POPEmail> ObtenerListadoMensaje(string strMailUserAddress, string strMailUserPassword);
         void EliminarMensaje(string strMailUserAddress, string strMailUserPassword, int intIdMensaje);
-        void SendEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray? strAttachments = null, bool isNotification = false);
+        void SendEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray strAttachments);
     }
 
     public class CorreoService : ICorreoService
@@ -21,10 +21,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         private int pop3Port;
         private string mailUserAddress;
         private string mailUserPassword;
-
-        private string mailNotificationAddress;
-        private string mailNotificationPassword;
-
         private string sslHost;
 
         public CorreoService(IConfiguration config)
@@ -33,8 +29,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             smtpPort = int.Parse(config.GetSection("appSettings").GetSection("smtpEmailPort").Value);
             mailUserAddress = config.GetSection("appSettings").GetSection("smtpEmailAccount").Value;
             mailUserPassword = config.GetSection("appSettings").GetSection("smtpEmailPass").Value;
-            mailNotificationAddress = config.GetSection("appSettings").GetSection("smtpNotificationAccount").Value;
-            mailNotificationPassword = config.GetSection("appSettings").GetSection("smtpNotificationPass").Value;
             sslHost = config.GetSection("appSettings").GetSection("smtpSSLHost").Value;
             pop3Port = int.Parse(config.GetSection("appSettings").GetSection("pop3EmailPort").Value);
         }
@@ -109,7 +103,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void SendEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray? strAttachments = null, bool isNotification = false)
+        public void SendEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray strAttachments)
         {
             if (emailTo == null || emailTo.Length == 0)
             {
@@ -129,16 +123,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Port = smtpPort,
                 EnableSsl = sslHost == "S"
             };
-            if (isNotification) {
-                if (mailNotificationAddress != "" & mailNotificationPassword != "")
-                    smtpClient.Credentials = new NetworkCredential(mailNotificationAddress, mailNotificationPassword);
-            } else {
-                if (mailUserAddress != "" & mailUserPassword != "")
-                    smtpClient.Credentials = new NetworkCredential(mailUserAddress, mailUserPassword);
-                }
+            if (mailUserAddress != "" & mailUserPassword != "")
+                smtpClient.Credentials = new NetworkCredential(mailUserAddress, mailUserPassword);
             using (MailMessage message = new MailMessage())
             {
-                message.From = new MailAddress(isNotification ? mailNotificationAddress : mailUserAddress);
+                message.From = new MailAddress(mailUserAddress);
                 message.Subject = subject;
                 message.SubjectEncoding = System.Text.Encoding.UTF8;
                 message.Body = body;
@@ -155,15 +144,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         message.CC.Add(emailCc);
                     }
                 }
-                if (strAttachments != null) {
-                    System.Net.Mail.Attachment attachment;
-                    foreach (JObject attachmentItem in strAttachments)
-                    {
-                        string strAttachmentName = attachmentItem.Property("nombre").Value.ToString();
-                        byte[] content = Convert.FromBase64String(attachmentItem.Property("contenido").Value.ToString());
-                        attachment = new System.Net.Mail.Attachment(new MemoryStream(content), strAttachmentName);
-                        message.Attachments.Add(attachment);
-                    }
+                System.Net.Mail.Attachment attachment;
+                foreach (JObject attachmentItem in strAttachments)
+                {
+                    string strAttachmentName = attachmentItem.Property("nombre").Value.ToString();
+                    byte[] content = Convert.FromBase64String(attachmentItem.Property("contenido").Value.ToString());
+                    attachment = new System.Net.Mail.Attachment(new MemoryStream(content), strAttachmentName);
+                    message.Attachments.Add(attachment);
                 }
                 smtpClient.Send(message);
             };
