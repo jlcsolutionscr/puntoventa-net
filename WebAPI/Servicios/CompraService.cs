@@ -18,7 +18,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Proveedor ObtenerProveedor(int intIdCuenta);
         int ObtenerTotalListaProveedores(int intIdEmpresa, string strNombre);
         IList<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
-        ReferenciasEntidad AgregarCompra(Compra compra);
+        string AgregarCompra(Compra compra);
         void ActualizarCompra(Compra compra);
         void AnularCompra(int intIdCompra, int intIdUsuario, string strMotivoAnulacion);
         Compra ObtenerCompra(int intIdCompra);
@@ -220,7 +220,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public ReferenciasEntidad AgregarCompra(Compra compra)
+        public string AgregarCompra(Compra compra)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -538,7 +538,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.NotificarModificacion(movimientoBanco);
                     }
                     dbContext.Commit();
-                    return new ReferenciasEntidad(compra.IdCompra.ToString());
+                    return compra.IdCompra.ToString();
                 }
                 catch (BusinessException ex)
                 {
