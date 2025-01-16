@@ -34,7 +34,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static Egreso? egreso;
         private static Ingreso? ingreso;
         private static Factura? factura;
-        private static FacturaCompra? facturaCompra;
         private static DevolucionCliente? devolucionCliente;
         private static Compra? compra;
         private static Proforma? proforma;
@@ -908,11 +907,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     factura = JsonConvert.DeserializeObject<Factura>(strEntidad);
                     string strIdFactura = _servicioFacturacion.AgregarFactura(factura);
                     strRespuesta = JsonConvert.SerializeObject(strIdFactura);
-                    break;
-                case "AgregarFacturaCompra":
-                    facturaCompra = JsonConvert.DeserializeObject<FacturaCompra>(strEntidad);
-                    string strIdFactCompra = _servicioFacturacion.AgregarFacturaCompra(facturaCompra);
-                    strRespuesta = JsonConvert.SerializeObject(strIdFactCompra);
                     break;
                 case "ObtenerFactura":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
