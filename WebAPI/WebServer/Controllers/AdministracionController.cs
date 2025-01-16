@@ -354,14 +354,15 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpPost("agregarempresa")]
-        public void AgregarEmpresa([FromBody] string strDatos)
+        public string AgregarEmpresa([FromBody] string strDatos)
         {
             try
             {
                 JObject parametrosJO = JObject.Parse(strDatos);
                 string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
                 Empresa empresa = JsonConvert.DeserializeObject<Empresa>(strEntidad);
-                _servicioMantenimiento.AgregarEmpresa(empresa);
+                string strIdEmpresa = _servicioMantenimiento.AgregarEmpresa(empresa);
+                return strIdEmpresa;
             }
             catch (Exception ex)
             {
