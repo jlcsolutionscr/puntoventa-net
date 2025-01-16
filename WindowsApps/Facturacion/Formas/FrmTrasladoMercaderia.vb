@@ -352,9 +352,9 @@ Public Class FrmTrasladoMercaderia
                 .IdSucursalDestino = cboIdSucursalDestino.SelectedValue,
                 .Fecha = FrmPrincipal.ObtenerFechaFormateada(Now()),
                 .Referencia = txtReferencia.Text,
-                .Total = decTotal,
-                .DetalleTraslado = New List(Of DetalleTraslado)
+                .Total = decTotal
             }
+            traslado.DetalleTraslado = New List(Of DetalleTraslado)
             For I As Short = 0 To dtbDetalleTraslado.Rows.Count - 1
                 detalleTraslado = New DetalleTraslado With {
                     .IdProducto = dtbDetalleTraslado.Rows(I).Item(0),
@@ -364,9 +364,7 @@ Public Class FrmTrasladoMercaderia
                 traslado.DetalleTraslado.Add(detalleTraslado)
             Next
             Try
-                Dim referencias As ReferenciasEntidad = Await Puntoventa.AgregarTraslado(traslado, FrmPrincipal.usuarioGlobal.Token)
-                traslado.IdTraslado = referencias.Id
-                txtIdTraslado.Text = traslado.IdTraslado
+                txtIdTraslado.Text = Await Puntoventa.AgregarTraslado(traslado, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 txtIdTraslado.Text = ""
                 btnGuardar.Enabled = True

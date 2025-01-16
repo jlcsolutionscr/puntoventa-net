@@ -1,6 +1,5 @@
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.ClienteWCF
-Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmMovimientoBanco
 #Region "Variables"
@@ -112,9 +111,8 @@ Public Class FrmMovimientoBanco
                 .Descripcion = txtDescripcion.Text
             }
             Try
-                Dim referencias As ReferenciasEntidad = Await Puntoventa.AgregarMovimientoBanco(movimiento, FrmPrincipal.usuarioGlobal.Token)
-                movimiento.IdMov = referencias.Id
-                txtIdMov.Text = movimiento.IdMov
+                Dim strId As String = Await Puntoventa.AgregarMovimientoBanco(movimiento, FrmPrincipal.usuarioGlobal.Token)
+                txtIdMov.Text = strId
             Catch ex As Exception
                 txtIdMov.Text = ""
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)

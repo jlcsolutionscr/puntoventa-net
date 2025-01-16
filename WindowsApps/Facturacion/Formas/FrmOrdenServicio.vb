@@ -902,9 +902,10 @@ Public Class FrmOrdenServicio
                 ordenServicio.DesglosePagoOrdenServicio.Add(desglosePago)
             Next
             Try
-                Dim referencias As ReferenciasEntidad = Await Puntoventa.AgregarOrdenServicio(ordenServicio, FrmPrincipal.usuarioGlobal.Token)
-                ordenServicio.IdOrden = referencias.Id
-                ordenServicio.ConsecOrdenServicio = referencias.Consec
+                Dim strIdConsec As String = Await Puntoventa.AgregarOrdenServicio(ordenServicio, FrmPrincipal.usuarioGlobal.Token)
+                Dim arrIdConsec = strIdConsec.Split("-")
+                ordenServicio.IdOrden = arrIdConsec(0)
+                ordenServicio.ConsecOrdenServicio = arrIdConsec(1)
                 txtIdOrdenServicio.Text = ordenServicio.ConsecOrdenServicio
             Catch ex As Exception
                 txtIdOrdenServicio.Text = ""

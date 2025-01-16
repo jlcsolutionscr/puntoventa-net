@@ -792,8 +792,7 @@ Public Class FrmCompra
                 compra.DesglosePagoCompra.Add(desglosePago)
             Next
             Try
-                Dim referencias As ReferenciasEntidad = Await Puntoventa.AgregarCompra(compra, FrmPrincipal.usuarioGlobal.Token)
-                compra.IdCompra = referencias.Id
+                compra.IdCompra = Await Puntoventa.AgregarCompra(compra, FrmPrincipal.usuarioGlobal.Token)
                 txtIdCompra.Text = compra.IdCompra
             Catch ex As Exception
                 txtIdCompra.Text = ""
