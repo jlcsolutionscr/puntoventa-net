@@ -2918,7 +2918,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         documentoElectronico.Respuesta = bytRespuestaXML;
                         dbContext.NotificarModificacion(documentoElectronico);
                         dbContext.Commit();
-                        if (documentoElectronico.IdTipoDocumento != (int)TipoDocumento.TiqueteElectronico && documentoElectronico.CorreoNotificacion != "") GenerarNotificacionDocumentoElectronico(dbContext, documentoElectronico, empresa, documentoElectronico.CorreoNotificacion, strCorreoNotificacionErrores, bytLogo);
+                        if (documentoElectronico.CorreoNotificacion != "") GenerarNotificacionDocumentoElectronico(dbContext, documentoElectronico, empresa, documentoElectronico.CorreoNotificacion, strCorreoNotificacionErrores, bytLogo);
                     }
                 }
             }
@@ -2937,7 +2937,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     if (strCorreoReceptor == "") throw new BusinessException("Se debe proveer una dirección de válida para el receptor del documento. Por favor verifique la información suministrada");
                     DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(intIdDocumento);
-                    if (documento == null && documento.IdTipoDocumento != (int)TipoDocumento.TiqueteElectronico)
+                    if (documento == null)
                     {
                         throw new BusinessException("El documento con ID " + intIdDocumento + " no se encuentra registrado en el sistema.");
                     }
@@ -3455,7 +3455,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 string strBody;
                 JArray jarrayObj = new JArray();
-                if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.TiqueteElectronico || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaDebitoElectronica)
+                if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaDebitoElectronica)
                 {
                     if (documentoElectronico.EstadoEnvio == "aceptado" && strCorreoReceptor != "")
                     {
@@ -3465,10 +3465,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica)
                         {
                             strTitle = "Factura electrónica de emisor " + empresa.NombreComercial;
-                        }
-                        else if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.TiqueteElectronico)
-                        {
-                            strTitle = "Tiquete electrónico de emisor " + empresa.NombreComercial;
                         }
                         else if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica)
                         {
@@ -3507,26 +3503,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         string strMensajeHacienda = xmlRespuesta.GetElementsByTagName("DetalleMensaje").Item(0).InnerText;
                         strBody = "Estimado cliente, le informamos que el documento electrónico con clave " + documentoElectronico.ClaveNumerica + " fue rechazado por el Ministerio de Hacienda con el siguiente mensaje:\n\n" + strMensajeHacienda + "\n\nPara mayor información consulte el documento en su plataforma de factura electrónica.";
                         _servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Rechazo de documento electrónico con clave " + documentoElectronico.ClaveNumerica, strBody, false, null, true);
-                    }
-                }
-                else
-                {
-                    if (documentoElectronico.EstadoEnvio == "rechazado")
-                    {
-                        strBody = "Estimado cliente, adjunto detalle del documento electrónico con clave " + documentoElectronico.ClaveNumerica + " el cual fue " + documentoElectronico.EstadoEnvio + ". Adjunto puede observar los archivos XML correspondientes al documento electrónico y la respuesta del Ministerio de Hacienda.";
-                        JObject jobDatosAdjuntos1 = new JObject
-                        {
-                            ["nombre"] = documentoElectronico.ClaveNumerica + ".xml",
-                            ["contenido"] = Convert.ToBase64String(documentoElectronico.DatosDocumento)
-                        };
-                        jarrayObj.Add(jobDatosAdjuntos1);
-                        JObject jobDatosAdjuntos2 = new JObject
-                        {
-                            ["nombre"] = "RespuestaHacienda.xml",
-                            ["contenido"] = Convert.ToBase64String(documentoElectronico.Respuesta)
-                        };
-                        jarrayObj.Add(jobDatosAdjuntos2);
-                        _servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Estado de documento electrónico enviado a aceptación", strBody, false, jarrayObj);
                     }
                 }
             }
