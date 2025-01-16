@@ -15,7 +15,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void EliminarCuentaIngreso(int intIdCuenta);
         CuentaIngreso ObtenerCuentaIngreso(int intIdCuenta);
         IList<LlaveDescripcion> ObtenerListadoCuentasIngreso(int intIdEmpresa, string strDescripcion);
-        ReferenciasEntidad AgregarIngreso(Ingreso ingreso);
+        string AgregarIngreso(Ingreso ingreso);
         void AnularIngreso(int intIdIngreso, int intIdUsuario, string strMotivoAnulacion);
         Ingreso ObtenerIngreso(int intIdIngreso);
         int ObtenerTotalListaIngresos(int intIdEmpresa, int intIdSucursal, int intIdIngreso, string strRecibidoDe, string strDetalle, string strFechaFinal);
@@ -25,13 +25,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void EliminarCuentaEgreso(int intIdCuenta);
         CuentaEgreso ObtenerCuentaEgreso(int intIdCuenta);
         IList<LlaveDescripcion> ObtenerListadoCuentasEgreso(int intIdEmpresa, string strDescripcion);
-        ReferenciasEntidad AgregarEgreso(Egreso egreso);
+        string AgregarEgreso(Egreso egreso);
         void AnularEgreso(int intIdEgreso, int intIdUsuario, string strMotivoAnulacion);
         Egreso ObtenerEgreso(int intIdEgreso);
         int ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle, string strFechaFinal);
         IList<EfectivoDetalle> ObtenerListadoEgresos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdEgreso, string strBeneficiario, string strDetalle, string strFechaFinal);
         CierreCaja GenerarDatosCierreCaja(int intIdEmpresa, int intIdSucursal);
-        ReferenciasEntidad GuardarDatosCierreCaja(CierreCaja cierre);
+        string GuardarDatosCierreCaja(CierreCaja cierre);
         void AbortarCierreCaja(int intIdEmpresa, int intIdSucursal);
         int ObtenerTotalListaCierreCaja(int intIdEmpresa, int intIdSucursal);
         IList<LlaveDescripcion> ObtenerListadoCierreCaja(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec);
@@ -196,7 +196,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public ReferenciasEntidad AgregarIngreso(Ingreso ingreso)
+        public string AgregarIngreso(Ingreso ingreso)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -272,7 +272,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.NotificarModificacion(asiento);
                     }
                     dbContext.Commit();
-                    return new ReferenciasEntidad(ingreso.IdIngreso.ToString());
                 }
                 catch (BusinessException ex)
                 {
@@ -286,6 +285,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información del ingreso. Por favor consulte con su proveedor.");
                 }
+                return "{Id: " + ingreso.IdIngreso.ToString() + "}";
             }
         }
 
@@ -546,7 +546,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public ReferenciasEntidad AgregarEgreso(Egreso egreso)
+        public string AgregarEgreso(Egreso egreso)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -615,7 +615,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.NotificarModificacion(asiento);
                     }
                     dbContext.Commit();
-                    return new ReferenciasEntidad(egreso.IdEgreso.ToString());
+                    return "{Id: " + egreso.IdEgreso.ToString() + "}";
                 }
                 catch (BusinessException ex)
                 {
@@ -1279,7 +1279,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public ReferenciasEntidad GuardarDatosCierreCaja(CierreCaja cierre)
+        public string GuardarDatosCierreCaja(CierreCaja cierre)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1299,7 +1299,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         sucursal.CierreEnEjecucion = false;
                         dbContext.Commit();
                         dbContextTransaction.Commit();
-                        return new ReferenciasEntidad(cierre.IdCierre.ToString());
+                        return "{Id: " + cierre.IdCierre.ToString() + "}";
                     }
                     catch (BusinessException ex)
                     {

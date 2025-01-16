@@ -538,7 +538,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.NotificarModificacion(movimientoBanco);
                     }
                     dbContext.Commit();
-                    return compra.IdCompra.ToString();
+                    return "{Id: " + compra.IdCompra.ToString() + "}";
                 }
                 catch (BusinessException ex)
                 {

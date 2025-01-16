@@ -85,36 +85,6 @@ namespace LeandroSoftware.Common.DatosComunes
         public decimal Saldo { get; set; }
     }
 
-    public class ReferenciasEntidad
-    {
-        public ReferenciasEntidad() { }
-
-        public ReferenciasEntidad(string id)
-        {
-            Id = id;
-            Consec = "";
-            Ref = "";
-        }
-
-        public ReferenciasEntidad(string id, string consec)
-        {
-            Id = id;
-            Consec = consec;
-            Ref = "";
-        }
-
-        public ReferenciasEntidad(string id, string consec, string reference)
-        {
-            Id = id;
-            Consec = consec;
-            Ref = reference;
-        }
-
-        public string Id { get; set; }
-        public string Consec { get; set; }
-        public string Ref { get; set; }
-    }
-
     public class DescripcionValor
     {
         public DescripcionValor() { }
