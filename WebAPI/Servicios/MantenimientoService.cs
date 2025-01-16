@@ -2390,7 +2390,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error guardando la información del ajuste de inventario. Por favor consulte con su proveedor.");
                 }
-                return "{Id: " + ajusteInventario.IdAjuste.ToString() + "}";
+                return "{Id:" + ajusteInventario.IdAjuste.ToString() + "}";
             }
         }
 

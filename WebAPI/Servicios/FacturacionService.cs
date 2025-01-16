@@ -769,7 +769,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE));
                     }
-                    return "{Id: " + factura.IdFactura.ToString() + ", Consec: " + factura.ConsecFactura.ToString() + ", Ref: " + documentoFE != null ? documentoFE.ClaveNumerica : "null }";
+                    return "{Id:" + factura.IdFactura.ToString() + ", Consec: " + factura.ConsecFactura.ToString() + ", Ref:" + documentoFE != null ? documentoFE.ClaveNumerica : "null }";
                 }
                 catch (BusinessException ex)
                 {
@@ -831,7 +831,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE));
                     }
-                    return "{Id: " + facturaCompra.IdFactCompra.ToString() + "}";
+                    return "{Id:" + facturaCompra.IdFactCompra.ToString() + "}";
                 }
                 catch (BusinessException ex)
                 {
@@ -1143,7 +1143,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     proforma.ConsecProforma = sucursal.ConsecProforma;
                     dbContext.ProformaRepository.Add(proforma);
                     dbContext.Commit();
-                    return "{Id: " + proforma.IdProforma.ToString() + ", Consec: " + proforma.ConsecProforma.ToString() + "}";
+                    return "{Id:" + proforma.IdProforma.ToString() + ", Consec: " + proforma.ConsecProforma.ToString() + "}";
                 }
                 catch (BusinessException ex)
                 {
@@ -1336,7 +1336,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     apartado.ConsecApartado = sucursal.ConsecApartado;
                     dbContext.ApartadoRepository.Add(apartado);
                     dbContext.Commit();
-                    return "{Id: " + apartado.IdApartado.ToString() + ", Consec: " + apartado.ConsecApartado.ToString() + "}";
+                    return "{Id:" + apartado.IdApartado.ToString() + ", Consec: " + apartado.ConsecApartado.ToString() + "}";
                 }
                 catch (BusinessException ex)
                 {
@@ -1518,7 +1518,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         AgregarTiqueteOrdenServicio(ordenServicio, ordenServicio.DetalleOrdenServicio);
                     }
                     dbContext.Commit();
-                    return "{Id: " + ordenServicio.IdOrden.ToString() + ", Consec: " + ordenServicio.ConsecOrdenServicio.ToString() + "}";
+                    return "{Id:" + ordenServicio.IdOrden.ToString() + ", Consec: " + ordenServicio.ConsecOrdenServicio.ToString() + "}";
                 }
                 catch (BusinessException ex)
                 {
@@ -2035,7 +2035,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
                 }
-                return "{Id: " + devolucion.IdDevolucion.ToString() + "}";
+                return "{Id:" + devolucion.IdDevolucion.ToString() + "}";
             }
         }
 

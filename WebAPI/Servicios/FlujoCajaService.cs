@@ -285,7 +285,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información del ingreso. Por favor consulte con su proveedor.");
                 }
-                return "{Id: " + ingreso.IdIngreso.ToString() + "}";
+                return "{Id:" + ingreso.IdIngreso.ToString() + "}";
             }
         }
 
@@ -615,7 +615,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.NotificarModificacion(asiento);
                     }
                     dbContext.Commit();
-                    return "{Id: " + egreso.IdEgreso.ToString() + "}";
+                    return "{Id:" + egreso.IdEgreso.ToString() + "}";
                 }
                 catch (BusinessException ex)
                 {
@@ -1299,7 +1299,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         sucursal.CierreEnEjecucion = false;
                         dbContext.Commit();
                         dbContextTransaction.Commit();
-                        return "{Id: " + cierre.IdCierre.ToString() + "}";
+                        return cierre.IdCierre.ToString();
                     }
                     catch (BusinessException ex)
                     {
