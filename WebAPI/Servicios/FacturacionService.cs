@@ -2939,9 +2939,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.Find(intIdDocumento);
                     if (documento == null && documento.IdTipoDocumento != (int)TipoDocumento.TiqueteElectronico)
                     {
-                        JArray emptyJArray = new JArray();
-                        string strBody = "El documento con ID " + intIdDocumento + " no se encuentra registrado.";
-                        _servicioCorreo.SendEmail(new string[] { _config.CorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false, emptyJArray, true);
+                        throw new BusinessException("El documento con ID " + intIdDocumento + " no se encuentra registrado en el sistema.");
                     }
                     else
                     {
