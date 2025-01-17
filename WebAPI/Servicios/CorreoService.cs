@@ -11,7 +11,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         IList<POPEmail> ObtenerListadoMensaje(string strMailUserAddress, string strMailUserPassword);
         void EliminarMensaje(string strMailUserAddress, string strMailUserPassword, int intIdMensaje);
-        void SendEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray? strAttachments = null, bool isNotification = false);
+         void SendErrorEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray? strAttachments = null);
+        void SendSupportEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray? strAttachments = null);
+        void SendNotificationEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray? strAttachments = null);
     }
 
     public class CorreoService : ICorreoService
@@ -19,11 +21,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         private string smtpHost;
         private int smtpPort;
         private int pop3Port;
-        private string mailUserAddress;
-        private string mailUserPassword;
-
         private string mailNotificationAddress;
         private string mailNotificationPassword;
+        private string mailErrorAddress;
+        private string mailErrorPassword;
+        private string mailSupportAddress;
+        private string mailSupportPassword;
 
         private string sslHost;
 
@@ -31,10 +34,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         {
             smtpHost = config.GetSection("appSettings").GetSection("smtpEmailHost").Value;
             smtpPort = int.Parse(config.GetSection("appSettings").GetSection("smtpEmailPort").Value);
-            mailUserAddress = config.GetSection("appSettings").GetSection("smtpEmailAccount").Value;
-            mailUserPassword = config.GetSection("appSettings").GetSection("smtpEmailPass").Value;
             mailNotificationAddress = config.GetSection("appSettings").GetSection("smtpNotificationAccount").Value;
             mailNotificationPassword = config.GetSection("appSettings").GetSection("smtpNotificationPass").Value;
+            mailErrorAddress = config.GetSection("appSettings").GetSection("smtpErrorAccount").Value;
+            mailErrorPassword = config.GetSection("appSettings").GetSection("smtpErrorPass").Value;
+            mailSupportAddress = config.GetSection("appSettings").GetSection("smtpSupportAccount").Value;
+            mailSupportPassword = config.GetSection("appSettings").GetSection("smtpSupportPass").Value;
             sslHost = config.GetSection("appSettings").GetSection("smtpSSLHost").Value;
             pop3Port = int.Parse(config.GetSection("appSettings").GetSection("pop3EmailPort").Value);
         }
@@ -109,7 +114,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void SendEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray? strAttachments = null, bool isNotification = false)
+        public void SendSupportEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray? strAttachments = null)
+        {
+            SendEmail(mailSupportAddress, mailSupportPassword, emailTo, ccTo, subject, body, isBodyHtml, strAttachments);
+        }
+
+        public void SendErrorEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray? strAttachments = null)
+        {
+            SendEmail(mailErrorAddress, mailErrorPassword, emailTo, ccTo, subject, body, isBodyHtml, strAttachments);
+        }
+
+        public void SendNotificationEmail(string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray? strAttachments = null)
+        {
+            SendEmail(mailNotificationAddress, mailNotificationPassword, emailTo, ccTo, subject, body, isBodyHtml, strAttachments);
+        }
+
+        private void SendEmail(string senderAccount, string senderPass, string[] emailTo, string[] ccTo, string subject, string body, bool isBodyHtml, JArray? strAttachments = null)
         {
             if (emailTo == null || emailTo.Length == 0)
             {
@@ -129,16 +149,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Port = smtpPort,
                 EnableSsl = sslHost == "S"
             };
-            if (isNotification) {
-                if (mailNotificationAddress != "" & mailNotificationPassword != "")
-                    smtpClient.Credentials = new NetworkCredential(mailNotificationAddress, mailNotificationPassword);
-            } else {
-                if (mailUserAddress != "" & mailUserPassword != "")
-                    smtpClient.Credentials = new NetworkCredential(mailUserAddress, mailUserPassword);
-                }
+            if (senderAccount != "" & senderPass != "")
+                    smtpClient.Credentials = new NetworkCredential(senderAccount, senderPass);
             using (MailMessage message = new MailMessage())
             {
-                message.From = new MailAddress(isNotification ? mailNotificationAddress : mailUserAddress);
+                message.From = new MailAddress(senderAccount);
                 message.Subject = subject;
                 message.SubjectEncoding = System.Text.Encoding.UTF8;
                 message.Body = body;

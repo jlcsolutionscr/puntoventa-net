@@ -2435,7 +2435,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     };
                     archivosJArray.Add(jobDatosAdjuntos1);
                     try {
-                        _servicioCorreo.SendEmail(new string[] { _config.CorreoNotificacionErrores }, new string[] { }, "Excepción en el procesamiento de documentos pendientes", "Adjunto el archivo con el detalle de los errores del procesamiento.", false, archivosJArray, true);
+                        _servicioCorreo.SendSupportEmail(new string[] { _config.CorreoNotificacionErrores }, new string[] { }, "Excepción en el procesamiento de documentos pendientes", "Adjunto el archivo con el detalle de los errores del procesamiento.", false, archivosJArray);
                     }
                     catch (Exception ex)
                     {
@@ -2521,7 +2521,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
                                 _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaIvaAcreditable, _configRecepcion.ClaveIvaAcreditable, correo.MessageNumber);
                                 try {
-                                    _servicioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message, false, null, true);
+                                    _servicioCorreo.SendErrorEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message, false, null);
                                 }
                                 catch (Exception emailEx)
                                 {
@@ -2560,7 +2560,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
                                 _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaGastoNoAcreditable, _configRecepcion.ClaveGastoNoAcreditable, correo.MessageNumber);
                                 try {
-                                    _servicioCorreo.SendEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message, false, null, true);
+                                    _servicioCorreo.SendErrorEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message, false, null);
                                 }
                                 catch (Exception emailEx)
                                 {
@@ -2587,7 +2587,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ["contenido"] = Convert.ToBase64String(bytes)
                     };
                     archivosJArray.Add(jobDatosAdjuntos1);
-                    _servicioCorreo.SendEmail(new string[] { _config.CorreoNotificacionErrores }, new string[] { }, "Detalle de errores del procesamiento de recepción de documentos electrónicos", "Adjunto el archivo con el detalle del procesamiento.", false, archivosJArray, true);
+                    _servicioCorreo.SendSupportEmail(new string[] { _config.CorreoNotificacionErrores }, new string[] { }, "Detalle de errores del procesamiento de recepción de documentos electrónicos", "Adjunto el archivo con el detalle del procesamiento.", false, archivosJArray);
                 }
             }
         }
@@ -2905,7 +2905,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (documentoElectronico == null)
                 {
                     string strBody = "El documento con clave " + mensaje.Clave + " no se encuentra registrado en los registros del cliente.";
-                    _servicioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false, null, true);
+                    _servicioCorreo.SendSupportEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al recibir respuesta de Hacienda.", strBody, false);
                 }
                 else
                 {
@@ -2924,7 +2924,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             catch (Exception ex)
             {
-                _servicioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Excepción en el procesamiento de la respuesta de hacienda para el comprobante con clave: " + mensaje.Clave, ex.Message, false, null, true);
+                _servicioCorreo.SendSupportEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Excepción en el procesamiento de la respuesta de hacienda para el comprobante con clave: " + mensaje.Clave, ex.Message, false);
             }
         }
 
@@ -3101,7 +3101,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(pdfAttactment)
                         };
                         jarrayObj.Add(jobDatosAdjuntos1);
-                        _servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Notificación de factura nro. " + intIdFactura + " en formato PDF", "Adunto encotrará el documento en formato PDF correspondiente a la factura número " + intIdFactura, false, jarrayObj);
+                        _servicioCorreo.SendNotificationEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Notificación de factura nro. " + intIdFactura + " en formato PDF", "Adunto encotrará el documento en formato PDF correspondiente a la factura número " + intIdFactura, false, jarrayObj);
                     }
                     else
                         throw new BusinessException("La empresa no cuenta con un correo para el envío de notificaciones. Por favor actualice su información");
@@ -3494,7 +3494,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ["contenido"] = Convert.ToBase64String(documentoElectronico.Respuesta)
                         };
                         jarrayObj.Add(jobDatosAdjuntos3);
-                        _servicioCorreo.SendEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
+                        _servicioCorreo.SendNotificationEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
                     }
                     else if (documentoElectronico.EstadoEnvio == "rechazado")
                     {
@@ -3502,14 +3502,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         xmlRespuesta.LoadXml(Encoding.UTF8.GetString(documentoElectronico.Respuesta));
                         string strMensajeHacienda = xmlRespuesta.GetElementsByTagName("DetalleMensaje").Item(0).InnerText;
                         strBody = "Estimado cliente, le informamos que el documento electrónico con clave " + documentoElectronico.ClaveNumerica + " fue rechazado por el Ministerio de Hacienda con el siguiente mensaje:\n\n" + strMensajeHacienda + "\n\nPara mayor información consulte el documento en su plataforma de factura electrónica.";
-                        _servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Rechazo de documento electrónico con clave " + documentoElectronico.ClaveNumerica, strBody, false, null, true);
+                        _servicioCorreo.SendErrorEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Rechazo de documento electrónico con clave " + documentoElectronico.ClaveNumerica, strBody, false);
                     }
                 }
             }
             catch (Exception ex)
             {
                 string strBody = "El documento con clave " + documentoElectronico.ClaveNumerica + " registrado en la empresa " + empresa.NombreEmpresa + " generó un error en el envío del PDF al remitente: " + strCorreoReceptor + " Error: " + ex.Message;
-                _servicioCorreo.SendEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false, null, true);
+                _servicioCorreo.SendSupportEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false);
             }
         }
 
@@ -3659,7 +3659,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ["contenido"] = Convert.ToBase64String(pdfAttactment)
                     };
                     jarrayObj.Add(jobDatosAdjuntos1);
-                    _servicioCorreo.SendEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
+                    _servicioCorreo.SendNotificationEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
                 }
                 catch (BusinessException ex)
                 {
@@ -3698,7 +3698,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ["contenido"] = Convert.ToBase64String(pdfAttactment)
                     };
                     jarrayObj.Add(jobDatosAdjuntos1);
-                    _servicioCorreo.SendEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
+                    _servicioCorreo.SendNotificationEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
                 }
                 catch (BusinessException ex)
                 {
