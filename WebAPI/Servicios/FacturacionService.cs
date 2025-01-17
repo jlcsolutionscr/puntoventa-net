@@ -2520,14 +2520,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                                 stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
                                 _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaIvaAcreditable, _configRecepcion.ClaveIvaAcreditable, correo.MessageNumber);
-                                try {
+                                /*try {
                                     _servicioCorreo.SendErrorEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message, false, null);
                                 }
                                 catch (Exception emailEx)
                                 {
                                     string strEmailError = emailEx.InnerException != null ? emailEx.InnerException.Message : emailEx.Message;
                                     stringBuilder.AppendLine("Error al notificar la recepción fallida del documento electrónico: " + strEmailError);
-                                }
+                                }*/
                             }
                             catch (Exception ex)
                             {
@@ -2559,14 +2559,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                                 stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
                                 _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaGastoNoAcreditable, _configRecepcion.ClaveGastoNoAcreditable, correo.MessageNumber);
-                                try {
+                                /*try {
                                     _servicioCorreo.SendErrorEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message, false, null);
                                 }
                                 catch (Exception emailEx)
                                 {
                                     string strEmailError = emailEx.InnerException != null ? emailEx.InnerException.Message : emailEx.Message;
                                     stringBuilder.AppendLine("Error al notificar la recepción fallida del documento electrónico: " + strEmailError);
-                                }
+                                }*/
                             }
                             catch (Exception ex)
                             {
