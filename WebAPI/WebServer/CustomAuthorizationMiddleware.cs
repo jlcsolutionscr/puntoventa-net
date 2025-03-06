@@ -21,6 +21,9 @@ namespace WebServer.Middlewares
         private Task BeginInvoke(HttpContext context, IHostEnvironment environment, IMantenimientoService servicioMantenimiento
         )
         {
+            if (environment.IsProduction() && !context.Request.IsHttps) {
+                throw new Exception("La petición no se encuentra en un protocolo seguro y no es posible procesar su solicitud");
+            }
             string[] strPath = context.Request.Path.ToString().Substring(1).Split('/');
             if (strPath.Length > 1)
             {
