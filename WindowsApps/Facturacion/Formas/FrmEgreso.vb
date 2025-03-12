@@ -1,7 +1,6 @@
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
-Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmEgreso
 #Region "Variables"
@@ -148,9 +147,7 @@ Public Class FrmEgreso
                 .Nulo = False
             }
             Try
-                Dim referencias As ReferenciasEntidad = Await Puntoventa.AgregarEgreso(egreso, FrmPrincipal.usuarioGlobal.Token)
-                egreso.IdEgreso = referencias.Id
-                txtIdEgreso.Text = egreso.IdEgreso
+                txtIdEgreso.Text = Await Puntoventa.AgregarEgreso(egreso, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 txtIdEgreso.Text = ""
                 btnGuardar.Enabled = True

@@ -354,14 +354,15 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpPost("agregarempresa")]
-        public void AgregarEmpresa([FromBody] string strDatos)
+        public string AgregarEmpresa([FromBody] string strDatos)
         {
             try
             {
                 JObject parametrosJO = JObject.Parse(strDatos);
                 string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
                 Empresa empresa = JsonConvert.DeserializeObject<Empresa>(strEntidad);
-                _servicioMantenimiento.AgregarEmpresa(empresa);
+                string strIdEmpresa = _servicioMantenimiento.AgregarEmpresa(empresa);
+                return strIdEmpresa;
             }
             catch (Exception ex)
             {
@@ -574,15 +575,14 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                                 ["contenido"] = Convert.ToBase64String(bytes)
                             };
                             jarrayObj.Add(jobDatosAdjuntos1);
-                            _servicioCorreo.SendEmail(new string[] { _strCorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
+                            _servicioCorreo.SendSupportEmail(new string[] { _strCorreoNotificacionErrores }, new string[] { }, "Archivo log con errores de procesamiento", "Adjunto archivo con errores de procesamiento anteriores a la fecha actual.", false, jarrayObj);
                         }
                         System.IO.File.Delete(str);
                     }
                 }
                 catch (Exception ex)
                 {
-                    JArray jarrayObj = new JArray();
-                    _servicioCorreo.SendEmail(new string[] { _strCorreoNotificacionErrores }, new string[] { }, "Error al enviar el historico de archivo con errores", "Se produjo el siguiente error: " + ex.Message, false, jarrayObj);
+                    _servicioCorreo.SendSupportEmail(new string[] { _strCorreoNotificacionErrores }, new string[] { }, "Error al enviar el historico de archivo con errores", "Se produjo el siguiente error: " + ex.Message, false, null);
                 }
                 _servicioMantenimiento.EliminarRegistroAutenticacionInvalidos();
             });

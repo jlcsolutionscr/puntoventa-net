@@ -33,7 +33,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoEmpresa();
         IList<LlaveDescripcion> ObtenerListadoSucursales(int intIdEmpresa);
         IList<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal);
-        void AgregarEmpresa(Empresa empresa);
+        string AgregarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
         void ActualizarEmpresa(Empresa empresa);
         void ValidarCredencialesHacienda(string strCodigoUsuario, string strClave);
@@ -99,7 +99,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         BancoAdquiriente ObtenerBancoAdquiriente(int intIdBanco);
         IList<LlaveDescripcion> ObtenerListadoBancoAdquiriente(int intIdEmpresa, string strDescripcion);
         // Métodos para administrar los ajustes de inventario
-        ReferenciasEntidad AgregarAjusteInventario(AjusteInventario ajusteInventario);
+        string AgregarAjusteInventario(AjusteInventario ajusteInventario);
         void AnularAjusteInventario(int intIdAjusteInventario, int intIdUsuario, string strMotivoAnulacion);
         AjusteInventario ObtenerAjusteInventario(int intIdAjusteInventario);
         int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion, string strFechaFinal);
@@ -694,7 +694,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AgregarEmpresa(Empresa empresa)
+        public string AgregarEmpresa(Empresa empresa)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -704,6 +704,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.Logotipo == null) empresa.Logotipo = new byte[0];
                     dbContext.EmpresaRepository.Add(empresa);
                     dbContext.Commit();
+                    return empresa.IdEmpresa.ToString();
                 }
                 catch (Exception ex)
                 {
@@ -2314,7 +2315,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return TipoDeMoneda.ObtenerListado();
         }
 
-        public ReferenciasEntidad AgregarAjusteInventario(AjusteInventario ajusteInventario)
+        public string AgregarAjusteInventario(AjusteInventario ajusteInventario)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -2377,7 +2378,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         dbContext.Commit();
                     }
-                    return new ReferenciasEntidad(ajusteInventario.IdAjuste.ToString());
                 }
                 catch (BusinessException ex)
                 {
@@ -2391,6 +2391,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error guardando la información del ajuste de inventario. Por favor consulte con su proveedor.");
                 }
+                return ajusteInventario.IdAjuste.ToString();
             }
         }
 
@@ -2998,8 +2999,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strCodigoUsuario.ToUpper());
                     if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
                     string strToken = GenerarRegistroAutenticacion(empresa.IdEmpresa, usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
-                    JArray archivosJArray = new JArray();
-                    _servicioCorreo.SendEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\n" + strServicioWebURL + "reset?id=" + strToken.Replace("/", "~") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false, archivosJArray);
+                    _servicioCorreo.SendNotificationEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\n" + strServicioWebURL + "reset?id=" + strToken.Replace("/", "~") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false);
                 }
                 catch (BusinessException ex)
                 {

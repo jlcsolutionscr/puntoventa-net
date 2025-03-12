@@ -1217,9 +1217,9 @@ Public Class FrmFactura
                 .NumDocExoneracion = cliente.NumDocExoneracion,
                 .NombreInstExoneracion = cliente.NombreInstExoneracion,
                 .FechaEmisionDoc = cliente.FechaEmisionDoc,
-                .PorcentajeExoneracion = cliente.PorcentajeExoneracion,
-                .DetalleFactura = New List(Of DetalleFactura)
+                .PorcentajeExoneracion = cliente.PorcentajeExoneracion
             }
+            factura.DetalleFactura = New List(Of DetalleFactura)
             For I As Short = 0 To dtbDetalleFactura.Rows.Count - 1
                 detalleFactura = New DetalleFactura With {
                     .IdProducto = dtbDetalleFactura.Rows(I).Item(0),
@@ -1247,10 +1247,10 @@ Public Class FrmFactura
                 factura.DesglosePagoFactura.Add(desglosePago)
             Next
             Try
-                Dim referencias As ReferenciasEntidad = Await Puntoventa.AgregarFactura(factura, FrmPrincipal.usuarioGlobal.Token)
-                factura.IdFactura = referencias.Id
-                factura.ConsecFactura = referencias.Consec
-                factura.IdDocElectronico = referencias.Ref
+                Dim strIdConsec As String = Await Puntoventa.AgregarFactura(factura, FrmPrincipal.usuarioGlobal.Token)
+                Dim arrIdConsec = strIdConsec.Split("-")
+                factura.IdFactura = arrIdConsec(0)
+                factura.ConsecFactura = arrIdConsec(1)
                 txtIdFactura.Text = factura.ConsecFactura
             Catch ex As Exception
                 txtIdFactura.Text = ""
@@ -1291,6 +1291,14 @@ Public Class FrmFactura
 
     Private Async Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdFactura.Text <> "" Then
+            If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
+                Try
+                    factura = Await Puntoventa.ObtenerFactura(factura.IdFactura, FrmPrincipal.usuarioGlobal.Token)
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+            End If
             Try
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                     .usuario = FrmPrincipal.usuarioGlobal,

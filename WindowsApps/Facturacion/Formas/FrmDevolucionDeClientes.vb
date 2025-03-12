@@ -2,7 +2,6 @@ Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.Common.Constantes
 Imports System.Collections.Generic
-Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmDevolucionDeClientes
 #Region "Variables"
@@ -379,9 +378,7 @@ Public Class FrmDevolucionDeClientes
                 End If
             Next
             Try
-                Dim referencias As ReferenciasEntidad = Await Puntoventa.AgregarDevolucionCliente(devolucion, FrmPrincipal.usuarioGlobal.Token)
-                devolucion.IdDevolucion = referencias.Id
-                txtIdDevolucion.Text = devolucion.IdDevolucion
+                txtIdDevolucion.Text = Await Puntoventa.AgregarDevolucionCliente(devolucion, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 txtIdDevolucion.Text = ""
                 btnGuardar.Enabled = True

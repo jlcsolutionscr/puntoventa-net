@@ -210,6 +210,25 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
+        private bool esCuentaMadre(int intIdCuenta)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    CatalogoContable cuenta = dbContext.CatalogoContableRepository.Find(intIdCuenta);
+                    return cuenta.IdCuentaGrupo == null;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al evaluar si la cuenta indicada es cuenta madre: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error verificando la cuenta contable. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
         public ParametroContable AgregarParametroContable(ParametroContable parametro)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");

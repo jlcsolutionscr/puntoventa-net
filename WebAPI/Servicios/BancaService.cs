@@ -16,8 +16,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         CuentaBanco ObtenerCuentaBanco(int intIdCuenta);
         IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion);
         IList<LlaveDescripcion> ObtenerListadoTipoMovimientoBanco();
-        ReferenciasEntidad AgregarMovimientoBanco(MovimientoBanco movimiento);
-        ReferenciasEntidad AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext);
+        string AgregarMovimientoBanco(MovimientoBanco movimiento);
+        string AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext);
         void ActualizarMovimientoBanco(MovimientoBanco movimiento);
         void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion, LeandroContext dbContext);
@@ -225,7 +225,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public ReferenciasEntidad AgregarMovimientoBanco(MovimientoBanco movimiento)
+        public string AgregarMovimientoBanco(MovimientoBanco movimiento)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -234,13 +234,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public ReferenciasEntidad AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext)
+        public string AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext)
         {
             return AdicionarMovimientoBanco(movimiento, dbContext);
         }
 
 
-        private ReferenciasEntidad AdicionarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext)
+        private string AdicionarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext)
         {
             try
             {
@@ -258,7 +258,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.MovimientoBancoRepository.Add(movimiento);
                 dbContext.NotificarModificacion(cuenta);
                 dbContext.Commit();
-                return new ReferenciasEntidad(movimiento.IdMov.ToString());
+                return movimiento.IdMov.ToString();
             }
             catch (BusinessException ex)
             {
