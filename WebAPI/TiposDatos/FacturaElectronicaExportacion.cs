@@ -2,9 +2,9 @@
 {
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    [System.Xml.Serialization.XmlRoot(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica", IsNullable = false)]
-    public partial class NotaCreditoElectronica
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    [System.Xml.Serialization.XmlRoot(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion", IsNullable = false)]
+    public partial class FacturaElectronicaExportacion
     {
 
         private string claveField;
@@ -12,8 +12,6 @@
         private string proveedorSistemasField;
 
         private string codigoActividadEmisorField;
-
-        private string codigoActividadReceptorField;
 
         private string numeroConsecutivoField;
 
@@ -23,21 +21,21 @@
 
         private ReceptorType receptorField;
 
-        private NotaCreditoElectronicaCondicionVenta condicionVentaField;
+        private FacturaElectronicaExportacionCondicionVenta condicionVentaField;
 
         private string condicionVentaOtrosField;
 
         private string plazoCreditoField;
 
-        private NotaCreditoElectronicaLineaDetalle[] detalleServicioField;
+        private FacturaElectronicaExportacionLineaDetalle[] detalleServicioField;
 
         private OtrosCargosType[] otrosCargosField;
 
-        private NotaCreditoElectronicaResumenFactura resumenFacturaField;
+        private FacturaElectronicaExportacionResumenFactura resumenFacturaField;
 
-        private NotaCreditoElectronicaInformacionReferencia[] informacionReferenciaField;
+        private FacturaElectronicaExportacionInformacionReferencia[] informacionReferenciaField;
 
-        private NotaCreditoElectronicaOtros otrosField;
+        private FacturaElectronicaExportacionOtros otrosField;
 
         private SignatureType signatureField;
 
@@ -60,13 +58,6 @@
         {
             get => codigoActividadEmisorField;
             set => codigoActividadEmisorField = value;
-        }
-
-        /// <remarks/>
-        public string CodigoActividadReceptor
-        {
-            get => codigoActividadReceptorField;
-            set => codigoActividadReceptorField = value;
         }
 
         /// <remarks/>
@@ -98,7 +89,7 @@
         }
 
         /// <remarks/>
-        public NotaCreditoElectronicaCondicionVenta CondicionVenta
+        public FacturaElectronicaExportacionCondicionVenta CondicionVenta
         {
             get => condicionVentaField;
             set => condicionVentaField = value;
@@ -121,7 +112,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayItem("LineaDetalle", IsNullable = false)]
-        public NotaCreditoElectronicaLineaDetalle[] DetalleServicio
+        public FacturaElectronicaExportacionLineaDetalle[] DetalleServicio
         {
             get => detalleServicioField;
             set => detalleServicioField = value;
@@ -136,7 +127,7 @@
         }
 
         /// <remarks/>
-        public NotaCreditoElectronicaResumenFactura ResumenFactura
+        public FacturaElectronicaExportacionResumenFactura ResumenFactura
         {
             get => resumenFacturaField;
             set => resumenFacturaField = value;
@@ -144,14 +135,14 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElement("InformacionReferencia")]
-        public NotaCreditoElectronicaInformacionReferencia[] InformacionReferencia
+        public FacturaElectronicaExportacionInformacionReferencia[] InformacionReferencia
         {
             get => informacionReferenciaField;
             set => informacionReferenciaField = value;
         }
 
         /// <remarks/>
-        public NotaCreditoElectronicaOtros Otros
+        public FacturaElectronicaExportacionOtros Otros
         {
             get => otrosField;
             set => otrosField = value;
@@ -168,8 +159,8 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public enum NotaCreditoElectronicaCondicionVenta
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public enum FacturaElectronicaExportacionCondicionVenta
     {
 
         /// <remarks/>
@@ -205,20 +196,8 @@
         Item08,
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("09")]
-        Item09,
-
-        /// <remarks/>
         [System.Xml.Serialization.XmlEnum("10")]
         Item10,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("11")]
-        Item11,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("12")]
-        Item12,
 
         /// <remarks/>
         [System.Xml.Serialization.XmlEnum("13")]
@@ -239,8 +218,8 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaLineaDetalle
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public partial class FacturaElectronicaExportacionLineaDetalle
     {
 
         private string numeroLineaField;
@@ -255,7 +234,7 @@
 
         private UnidadMedidaType unidadMedidaField;
 
-        private NotaCreditoElectronicaLineaDetalleTipoTransaccion tipoTransaccionField;
+        private FacturaElectronicaExportacionLineaDetalleTipoTransaccion tipoTransaccionField;
 
         private bool tipoTransaccionFieldSpecified;
 
@@ -269,7 +248,7 @@
 
         private string formaFarmaceuticaField;
 
-        private NotaCreditoElectronicaLineaDetalleLineaDetalleSurtido[] detalleSurtidoField;
+        private FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtido[] detalleSurtidoField;
 
         private decimal precioUnitarioField;
 
@@ -279,19 +258,7 @@
 
         private decimal subTotalField;
 
-        private NotaCreditoElectronicaLineaDetalleIVACobradoFabrica iVACobradoFabricaField;
-
-        private bool iVACobradoFabricaFieldSpecified;
-
-        private decimal baseImponibleField;
-
         private ImpuestoType[] impuestoField;
-
-        private decimal impuestoAsumidoEmisorFabricaField;
-
-        private bool impuestoAsumidoEmisorFabricaFieldSpecified;
-
-        private decimal impuestoNetoField;
 
         private decimal montoTotalLineaField;
 
@@ -340,7 +307,7 @@
         }
 
         /// <remarks/>
-        public NotaCreditoElectronicaLineaDetalleTipoTransaccion TipoTransaccion
+        public FacturaElectronicaExportacionLineaDetalleTipoTransaccion TipoTransaccion
         {
             get => tipoTransaccionField;
             set => tipoTransaccionField = value;
@@ -392,7 +359,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayItem("LineaDetalleSurtido", IsNullable = false)]
-        public NotaCreditoElectronicaLineaDetalleLineaDetalleSurtido[] DetalleSurtido
+        public FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtido[] DetalleSurtido
         {
             get => detalleSurtidoField;
             set => detalleSurtidoField = value;
@@ -428,55 +395,11 @@
         }
 
         /// <remarks/>
-        public NotaCreditoElectronicaLineaDetalleIVACobradoFabrica IVACobradoFabrica
-        {
-            get => iVACobradoFabricaField;
-            set => iVACobradoFabricaField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool IVACobradoFabricaSpecified
-        {
-            get => iVACobradoFabricaFieldSpecified;
-            set => iVACobradoFabricaFieldSpecified = value;
-        }
-
-        /// <remarks/>
-        public decimal BaseImponible
-        {
-            get => baseImponibleField;
-            set => baseImponibleField = value;
-        }
-
-        /// <remarks/>
         [System.Xml.Serialization.XmlElement("Impuesto")]
         public ImpuestoType[] Impuesto
         {
             get => impuestoField;
             set => impuestoField = value;
-        }
-
-        /// <remarks/>
-        public decimal ImpuestoAsumidoEmisorFabrica
-        {
-            get => impuestoAsumidoEmisorFabricaField;
-            set => impuestoAsumidoEmisorFabricaField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool ImpuestoAsumidoEmisorFabricaSpecified
-        {
-            get => impuestoAsumidoEmisorFabricaFieldSpecified;
-            set => impuestoAsumidoEmisorFabricaFieldSpecified = value;
-        }
-
-        /// <remarks/>
-        public decimal ImpuestoNeto
-        {
-            get => impuestoNetoField;
-            set => impuestoNetoField = value;
         }
 
         /// <remarks/>
@@ -489,8 +412,8 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public enum NotaCreditoElectronicaLineaDetalleTipoTransaccion
+    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public enum FacturaElectronicaExportacionLineaDetalleTipoTransaccion
     {
 
         /// <remarks/>
@@ -548,13 +471,13 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaLineaDetalleLineaDetalleSurtido
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public partial class FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtido
     {
 
         private string codigoCABYSSurtidoField;
 
-        private NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoCodigoComercialSurtido[] codigoComercialSurtidoField;
+        private FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtidoCodigoComercialSurtido[] codigoComercialSurtidoField;
 
         private decimal cantidadSurtidoField;
 
@@ -568,17 +491,11 @@
 
         private decimal montoTotalSurtidoField;
 
-        private NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoDescuentoSurtido[] descuentoSurtidoField;
+        private FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtidoDescuentoSurtido[] descuentoSurtidoField;
 
         private decimal subTotalSurtidoField;
 
-        private NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoIVACobradoFabricaSurtido iVACobradoFabricaSurtidoField;
-
-        private bool iVACobradoFabricaSurtidoFieldSpecified;
-
-        private decimal baseImponibleSurtidoField;
-
-        private NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoImpuestoSurtido[] impuestoSurtidoField;
+        private FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtidoImpuestoSurtido[] impuestoSurtidoField;
 
         /// <remarks/>
         public string CodigoCABYSSurtido
@@ -589,7 +506,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElement("CodigoComercialSurtido")]
-        public NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoCodigoComercialSurtido[] CodigoComercialSurtido
+        public FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtidoCodigoComercialSurtido[] CodigoComercialSurtido
         {
             get => codigoComercialSurtidoField;
             set => codigoComercialSurtidoField = value;
@@ -639,7 +556,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElement("DescuentoSurtido")]
-        public NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoDescuentoSurtido[] DescuentoSurtido
+        public FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtidoDescuentoSurtido[] DescuentoSurtido
         {
             get => descuentoSurtidoField;
             set => descuentoSurtidoField = value;
@@ -653,30 +570,8 @@
         }
 
         /// <remarks/>
-        public NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoIVACobradoFabricaSurtido IVACobradoFabricaSurtido
-        {
-            get => iVACobradoFabricaSurtidoField;
-            set => iVACobradoFabricaSurtidoField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool IVACobradoFabricaSurtidoSpecified
-        {
-            get => iVACobradoFabricaSurtidoFieldSpecified;
-            set => iVACobradoFabricaSurtidoFieldSpecified = value;
-        }
-
-        /// <remarks/>
-        public decimal BaseImponibleSurtido
-        {
-            get => baseImponibleSurtidoField;
-            set => baseImponibleSurtidoField = value;
-        }
-
-        /// <remarks/>
         [System.Xml.Serialization.XmlElement("ImpuestoSurtido")]
-        public NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoImpuestoSurtido[] ImpuestoSurtido
+        public FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtidoImpuestoSurtido[] ImpuestoSurtido
         {
             get => impuestoSurtidoField;
             set => impuestoSurtidoField = value;
@@ -685,16 +580,16 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoCodigoComercialSurtido
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public partial class FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtidoCodigoComercialSurtido
     {
 
-        private NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoCodigoComercialSurtidoTipoSurtido tipoSurtidoField;
+        private FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtidoCodigoComercialSurtidoTipoSurtido tipoSurtidoField;
 
         private string codigoSurtidoField;
 
         /// <remarks/>
-        public NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoCodigoComercialSurtidoTipoSurtido TipoSurtido
+        public FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtidoCodigoComercialSurtidoTipoSurtido TipoSurtido
         {
             get => tipoSurtidoField;
             set => tipoSurtidoField = value;
@@ -710,8 +605,8 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public enum NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoCodigoComercialSurtidoTipoSurtido
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public enum FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtidoCodigoComercialSurtidoTipoSurtido
     {
 
         /// <remarks/>
@@ -737,8 +632,8 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoDescuentoSurtido
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public partial class FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtidoDescuentoSurtido
     {
 
         private decimal montoDescuentoSurtidoField;
@@ -771,23 +666,8 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public enum NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoIVACobradoFabricaSurtido
-    {
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-    }
-
-    /// <remarks/>
-    [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoImpuestoSurtido
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public partial class FacturaElectronicaExportacionLineaDetalleLineaDetalleSurtidoImpuestoSurtido
     {
 
         private CodigoImpuestoType codigoImpuestoSurtidoField;
@@ -801,8 +681,6 @@
         private decimal tarifaSurtidoField;
 
         private bool tarifaSurtidoFieldSpecified;
-
-        private NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoImpuestoSurtidoDatosImpuestoEspecificoSurtido datosImpuestoEspecificoSurtidoField;
 
         private decimal montoImpuestoSurtidoField;
 
@@ -851,13 +729,6 @@
         }
 
         /// <remarks/>
-        public NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoImpuestoSurtidoDatosImpuestoEspecificoSurtido DatosImpuestoEspecificoSurtido
-        {
-            get => datosImpuestoEspecificoSurtidoField;
-            set => datosImpuestoEspecificoSurtidoField = value;
-        }
-
-        /// <remarks/>
         public decimal MontoImpuestoSurtido
         {
             get => montoImpuestoSurtidoField;
@@ -867,105 +738,8 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaLineaDetalleLineaDetalleSurtidoImpuestoSurtidoDatosImpuestoEspecificoSurtido
-    {
-
-        private decimal cantidadUnidadMedidaSurtidoField;
-
-        private decimal porcentajeSurtidoField;
-
-        private bool porcentajeSurtidoFieldSpecified;
-
-        private decimal proporcionSurtidoField;
-
-        private bool proporcionSurtidoFieldSpecified;
-
-        private decimal volumenUnidadConsumoSurtidoField;
-
-        private bool volumenUnidadConsumoSurtidoFieldSpecified;
-
-        private decimal impuestoUnidadSurtidoField;
-
-        /// <remarks/>
-        public decimal CantidadUnidadMedidaSurtido
-        {
-            get => cantidadUnidadMedidaSurtidoField;
-            set => cantidadUnidadMedidaSurtidoField = value;
-        }
-
-        /// <remarks/>
-        public decimal PorcentajeSurtido
-        {
-            get => porcentajeSurtidoField;
-            set => porcentajeSurtidoField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool PorcentajeSurtidoSpecified
-        {
-            get => porcentajeSurtidoFieldSpecified;
-            set => porcentajeSurtidoFieldSpecified = value;
-        }
-
-        /// <remarks/>
-        public decimal ProporcionSurtido
-        {
-            get => proporcionSurtidoField;
-            set => proporcionSurtidoField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool ProporcionSurtidoSpecified
-        {
-            get => proporcionSurtidoFieldSpecified;
-            set => proporcionSurtidoFieldSpecified = value;
-        }
-
-        /// <remarks/>
-        public decimal VolumenUnidadConsumoSurtido
-        {
-            get => volumenUnidadConsumoSurtidoField;
-            set => volumenUnidadConsumoSurtidoField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool VolumenUnidadConsumoSurtidoSpecified
-        {
-            get => volumenUnidadConsumoSurtidoFieldSpecified;
-            set => volumenUnidadConsumoSurtidoFieldSpecified = value;
-        }
-
-        /// <remarks/>
-        public decimal ImpuestoUnidadSurtido
-        {
-            get => impuestoUnidadSurtidoField;
-            set => impuestoUnidadSurtidoField = value;
-        }
-    }
-
-    /// <remarks/>
-    [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public enum NotaCreditoElectronicaLineaDetalleIVACobradoFabrica
-    {
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-    }
-
-    /// <remarks/>
-    [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaResumenFactura
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public partial class FacturaElectronicaExportacionResumenFactura
     {
 
         private CodigoMonedaType codigoTipoMonedaField;
@@ -978,14 +752,6 @@
 
         private bool totalServExentosFieldSpecified;
 
-        private decimal totalServExoneradoField;
-
-        private bool totalServExoneradoFieldSpecified;
-
-        private decimal totalServNoSujetoField;
-
-        private bool totalServNoSujetoFieldSpecified;
-
         private decimal totalMercanciasGravadasField;
 
         private bool totalMercanciasGravadasFieldSpecified;
@@ -993,14 +759,6 @@
         private decimal totalMercanciasExentasField;
 
         private bool totalMercanciasExentasFieldSpecified;
-
-        private decimal totalMercExoneradaField;
-
-        private bool totalMercExoneradaFieldSpecified;
-
-        private decimal totalMercNoSujetaField;
-
-        private bool totalMercNoSujetaFieldSpecified;
 
         private decimal totalGravadoField;
 
@@ -1010,14 +768,6 @@
 
         private bool totalExentoFieldSpecified;
 
-        private decimal totalExoneradoField;
-
-        private bool totalExoneradoFieldSpecified;
-
-        private decimal totalNoSujetoField;
-
-        private bool totalNoSujetoFieldSpecified;
-
         private decimal totalVentaField;
 
         private decimal totalDescuentosField;
@@ -1026,7 +776,7 @@
 
         private decimal totalVentaNetaField;
 
-        private NotaCreditoElectronicaResumenFacturaTotalDesgloseImpuesto[] totalDesgloseImpuestoField;
+        private FacturaElectronicaExportacionResumenFacturaTotalDesgloseImpuesto[] totalDesgloseImpuestoField;
 
         private decimal totalImpuestoField;
 
@@ -1036,15 +786,11 @@
 
         private bool totalImpAsumEmisorFabricaFieldSpecified;
 
-        private decimal totalIVADevueltoField;
-
-        private bool totalIVADevueltoFieldSpecified;
-
         private decimal totalOtrosCargosField;
 
         private bool totalOtrosCargosFieldSpecified;
 
-        private NotaCreditoElectronicaResumenFacturaMedioPago[] medioPagoField;
+        private FacturaElectronicaExportacionResumenFacturaMedioPago[] medioPagoField;
 
         private decimal totalComprobanteField;
 
@@ -1086,36 +832,6 @@
         }
 
         /// <remarks/>
-        public decimal TotalServExonerado
-        {
-            get => totalServExoneradoField;
-            set => totalServExoneradoField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalServExoneradoSpecified
-        {
-            get => totalServExoneradoFieldSpecified;
-            set => totalServExoneradoFieldSpecified = value;
-        }
-
-        /// <remarks/>
-        public decimal TotalServNoSujeto
-        {
-            get => totalServNoSujetoField;
-            set => totalServNoSujetoField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalServNoSujetoSpecified
-        {
-            get => totalServNoSujetoFieldSpecified;
-            set => totalServNoSujetoFieldSpecified = value;
-        }
-
-        /// <remarks/>
         public decimal TotalMercanciasGravadas
         {
             get => totalMercanciasGravadasField;
@@ -1143,36 +859,6 @@
         {
             get => totalMercanciasExentasFieldSpecified;
             set => totalMercanciasExentasFieldSpecified = value;
-        }
-
-        /// <remarks/>
-        public decimal TotalMercExonerada
-        {
-            get => totalMercExoneradaField;
-            set => totalMercExoneradaField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalMercExoneradaSpecified
-        {
-            get => totalMercExoneradaFieldSpecified;
-            set => totalMercExoneradaFieldSpecified = value;
-        }
-
-        /// <remarks/>
-        public decimal TotalMercNoSujeta
-        {
-            get => totalMercNoSujetaField;
-            set => totalMercNoSujetaField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalMercNoSujetaSpecified
-        {
-            get => totalMercNoSujetaFieldSpecified;
-            set => totalMercNoSujetaFieldSpecified = value;
         }
 
         /// <remarks/>
@@ -1206,36 +892,6 @@
         }
 
         /// <remarks/>
-        public decimal TotalExonerado
-        {
-            get => totalExoneradoField;
-            set => totalExoneradoField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalExoneradoSpecified
-        {
-            get => totalExoneradoFieldSpecified;
-            set => totalExoneradoFieldSpecified = value;
-        }
-
-        /// <remarks/>
-        public decimal TotalNoSujeto
-        {
-            get => totalNoSujetoField;
-            set => totalNoSujetoField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalNoSujetoSpecified
-        {
-            get => totalNoSujetoFieldSpecified;
-            set => totalNoSujetoFieldSpecified = value;
-        }
-
-        /// <remarks/>
         public decimal TotalVenta
         {
             get => totalVentaField;
@@ -1266,7 +922,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElement("TotalDesgloseImpuesto")]
-        public NotaCreditoElectronicaResumenFacturaTotalDesgloseImpuesto[] TotalDesgloseImpuesto
+        public FacturaElectronicaExportacionResumenFacturaTotalDesgloseImpuesto[] TotalDesgloseImpuesto
         {
             get => totalDesgloseImpuestoField;
             set => totalDesgloseImpuestoField = value;
@@ -1303,21 +959,6 @@
         }
 
         /// <remarks/>
-        public decimal TotalIVADevuelto
-        {
-            get => totalIVADevueltoField;
-            set => totalIVADevueltoField = value;
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnore()]
-        public bool TotalIVADevueltoSpecified
-        {
-            get => totalIVADevueltoFieldSpecified;
-            set => totalIVADevueltoFieldSpecified = value;
-        }
-
-        /// <remarks/>
         public decimal TotalOtrosCargos
         {
             get => totalOtrosCargosField;
@@ -1334,7 +975,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElement("MedioPago")]
-        public NotaCreditoElectronicaResumenFacturaMedioPago[] MedioPago
+        public FacturaElectronicaExportacionResumenFacturaMedioPago[] MedioPago
         {
             get => medioPagoField;
             set => medioPagoField = value;
@@ -1350,8 +991,8 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaResumenFacturaTotalDesgloseImpuesto
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public partial class FacturaElectronicaExportacionResumenFacturaTotalDesgloseImpuesto
     {
 
         private CodigoImpuestoType codigoField;
@@ -1394,11 +1035,11 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaResumenFacturaMedioPago
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public partial class FacturaElectronicaExportacionResumenFacturaMedioPago
     {
 
-        private NotaCreditoElectronicaResumenFacturaMedioPagoTipoMedioPago tipoMedioPagoField;
+        private FacturaElectronicaExportacionResumenFacturaMedioPagoTipoMedioPago tipoMedioPagoField;
 
         private bool tipoMedioPagoFieldSpecified;
 
@@ -1409,7 +1050,7 @@
         private bool totalMedioPagoFieldSpecified;
 
         /// <remarks/>
-        public NotaCreditoElectronicaResumenFacturaMedioPagoTipoMedioPago TipoMedioPago
+        public FacturaElectronicaExportacionResumenFacturaMedioPagoTipoMedioPago TipoMedioPago
         {
             get => tipoMedioPagoField;
             set => tipoMedioPagoField = value;
@@ -1448,8 +1089,8 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public enum NotaCreditoElectronicaResumenFacturaMedioPagoTipoMedioPago
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public enum FacturaElectronicaExportacionResumenFacturaMedioPagoTipoMedioPago
     {
 
         /// <remarks/>
@@ -1487,8 +1128,8 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaInformacionReferencia
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public partial class FacturaElectronicaExportacionInformacionReferencia
     {
 
         private TipoDocReferenciaType tipoDocIRField;
@@ -1567,17 +1208,17 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaOtros
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public partial class FacturaElectronicaExportacionOtros
     {
 
-        private NotaCreditoElectronicaOtrosOtroTexto[] otroTextoField;
+        private FacturaElectronicaExportacionOtrosOtroTexto[] otroTextoField;
 
-        private NotaCreditoElectronicaOtrosOtroContenido[] otroContenidoField;
+        private FacturaElectronicaExportacionOtrosOtroContenido[] otroContenidoField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElement("OtroTexto")]
-        public NotaCreditoElectronicaOtrosOtroTexto[] OtroTexto
+        public FacturaElectronicaExportacionOtrosOtroTexto[] OtroTexto
         {
             get => otroTextoField;
             set => otroTextoField = value;
@@ -1585,7 +1226,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElement("OtroContenido")]
-        public NotaCreditoElectronicaOtrosOtroContenido[] OtroContenido
+        public FacturaElectronicaExportacionOtrosOtroContenido[] OtroContenido
         {
             get => otroContenidoField;
             set => otroContenidoField = value;
@@ -1594,8 +1235,8 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaOtrosOtroTexto
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public partial class FacturaElectronicaExportacionOtrosOtroTexto
     {
 
         private string codigoField;
@@ -1621,8 +1262,8 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/notaCreditoElectronica")]
-    public partial class NotaCreditoElectronicaOtrosOtroContenido
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronicaExportacion")]
+    public partial class FacturaElectronicaExportacionOtrosOtroContenido
     {
 
         private string codigoField;

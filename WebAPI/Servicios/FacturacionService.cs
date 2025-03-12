@@ -737,7 +737,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!empresa.RegimenSimplificado)
                     {
                         if (factura.IdCliente > 1)
-                            documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, cliente, dbContext, decTipoDeCambio);
+                            throw new Exception("Testing Fact 4.4");
+                        //documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, cliente, dbContext, decTipoDeCambio);
                         else
                             documentoFE = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, cliente, dbContext, decTipoDeCambio);
                         factura.IdDocElectronico = documentoFE.ClaveNumerica;
@@ -788,6 +789,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public ReferenciasEntidad AgregarFacturaCompra(FacturaCompra facturaCompra)
         {
+            throw new Exception("Testing Fact 4.4");
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -825,12 +827,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (clasificacion == null) throw new BusinessException("El código " + detalle.Codigo + " asignado al detalle de la factura de compra no corresponde a un código CABYS válido.");
                     }
                     dbContext.FacturaCompraRepository.Add(facturaCompra);
-                    DocumentoElectronico documentoFE = ComprobanteElectronicoService.GenerarFacturaCompraElectronica(facturaCompra, empresa, dbContext, decTipoDeCambio);
+                    /*DocumentoElectronico documentoFE = ComprobanteElectronicoService.GenerarFacturaCompraElectronica(facturaCompra, empresa, dbContext, decTipoDeCambio);
                     dbContext.Commit();
                     if (documentoFE != null)
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE));
-                    }
+                    }*/
                     return new ReferenciasEntidad(facturaCompra.IdFactCompra.ToString());
                 }
                 catch (BusinessException ex)
@@ -850,6 +852,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion)
         {
+            throw new Exception("Testing Fact 4.4");
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -974,7 +977,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
                                 }
                             }
-                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, cliente, dbContext, decTipoDeCambio);
+                            //documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, cliente, dbContext, decTipoDeCambio);
                             factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
                         }
                     }
@@ -1883,6 +1886,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public ReferenciasEntidad AgregarDevolucionCliente(DevolucionCliente devolucion)
         {
+            throw new Exception("Testing Fact 4.4");
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -2007,7 +2011,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
                             }
                         }
-                        documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext, decTipoDeCambio);
+                        //documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext, decTipoDeCambio);
                         devolucion.IdDocElectronico = documentoNC.ClaveNumerica;
                     }
                     dbContext.DevolucionClienteRepository.Add(devolucion);
@@ -2150,8 +2154,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
                                 }
                             }
-                            documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, decTipoDeCambio);
-                            devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;
+                            /*documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, decTipoDeCambio);
+                            devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;*/
                         }
                     }
                     dbContext.NotificarModificacion(devolucion);
@@ -2443,6 +2447,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void GenerarMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intEstado, bool bolIvaAplicable)
         {
+            throw new Exception("Testing Fact 4.4");
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -2451,13 +2456,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == intIdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, intSucursal, intTerminal, intEstado, bolIvaAplicable);
+                    /*DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, intSucursal, intTerminal, intEstado, bolIvaAplicable);
                     dbContext.DocumentoElectronicoRepository.Add(documentoMR);
                     dbContext.Commit();
                     if (documentoMR != null)
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoMR));
-                    }
+                    }*/
                 }
                 catch (BusinessException ex)
                 {
@@ -2578,6 +2583,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         void ProcesarMensajeReceptor(LeandroContext dbContext, POPEmail correo, bool bolIvaAplicable)
         {
+            throw new Exception("Testing Fact 4.4");
             string strDatos = "";
             string strError = "";
             string strIdentificacion = "";
@@ -2646,17 +2652,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (empresa == null) throw new BusinessException("La identificación contenida en el archivo XML enviado: " + strIdentificacion + " no pertenece a ninguna empresa suscrita al servicio de facturación electrónica.");
             if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la solicitud no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
             if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación de la empresa que envía la solicitud ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-            DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, 1, 1, 0, bolIvaAplicable);
+            /*DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, 1, 1, 0, bolIvaAplicable);
             dbContext.DocumentoElectronicoRepository.Add(documentoMR);
             dbContext.Commit();
             if (documentoMR != null)
             {
                 Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoMR));
-            }
+            }*/
         }
 
         public void ReprocesarDocumentoElectronico(int intIdDocumento)
         {
+            throw new Exception("Testing Fact 4.4");
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -2682,10 +2689,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                             if (producto != null) detalleFactura.Producto = producto;
                         }
-                        if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
-                        else
-                            nuevoDocumento = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                        //if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
+                            //nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                        //else
+                        nuevoDocumento = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
                         factura.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(factura);
                     }
@@ -2699,7 +2706,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                                 if (producto != null) detalleFactura.Producto = producto;
                             }
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                            //nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
                             factura.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
                             dbContext.NotificarModificacion(factura);
                         }
@@ -2708,7 +2715,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                             if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                             factura = dbContext.FacturaRepository.AsNoTracking().Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                            //nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
                             devolucion.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                             dbContext.NotificarModificacion(devolucion);
                         }
@@ -2718,7 +2725,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                         Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                        nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, factura.TipoDeCambioDolar);
+                        //nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, factura.TipoDeCambioDolar);
                         devolucion.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(devolucion);
                     }
