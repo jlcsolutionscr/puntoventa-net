@@ -159,58 +159,6 @@
 
     /// <remarks/>
     [Serializable()]
-    [System.Xml.Serialization.XmlType(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/tiqueteElectronico")]
-    public partial class CodigoType
-    {
-
-        private CodigoTypeTipo tipoField;
-
-        private string codigoField;
-
-        /// <remarks/>
-        public CodigoTypeTipo Tipo
-        {
-            get => tipoField;
-            set => tipoField = value;
-        }
-
-        /// <remarks/>
-        public string Codigo
-        {
-            get => codigoField;
-            set => codigoField = value;
-        }
-    }
-
-    /// <remarks/>
-    [Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/tiqueteElectronico")]
-    public enum CodigoTypeTipo
-    {
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("01")]
-        Item01,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("02")]
-        Item02,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("03")]
-        Item03,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("04")]
-        Item04,
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlEnum("99")]
-        Item99,
-    }
-
-    /// <remarks/>
-    [Serializable()]
     [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/tiqueteElectronico")]
     public enum TiqueteElectronicoCondicionVenta
     {

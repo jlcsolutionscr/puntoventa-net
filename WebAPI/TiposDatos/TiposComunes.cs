@@ -779,6 +779,56 @@
 
     /// <remarks/>
     [Serializable()]
+    public partial class CodigoType
+    {
+
+        private CodigoTypeTipo tipoField;
+
+        private string codigoField;
+
+        /// <remarks/>
+        public CodigoTypeTipo Tipo
+        {
+            get => tipoField;
+            set => tipoField = value;
+        }
+
+        /// <remarks/>
+        public string Codigo
+        {
+            get => codigoField;
+            set => codigoField = value;
+        }
+    }
+
+    /// <remarks/>
+    [Serializable()]
+    public enum CodigoTypeTipo
+    {
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("01")]
+        Item01,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("02")]
+        Item02,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("03")]
+        Item03,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("04")]
+        Item04,
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlEnum("99")]
+        Item99,
+    }
+
+    /// <remarks/>
+    [Serializable()]
     public enum OtrosCargosTypeTipoDocumentoOC
     {
 
