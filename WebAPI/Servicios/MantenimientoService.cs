@@ -474,6 +474,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 empresa.ListadoTipoMoneda = ObtenerListadoTipoMoneda();
                 empresa.ListadoCondicionVenta = ObtenerListadoCondicionVenta();
                 empresa.ListadoTipoExoneracion = ObtenerListadoTipoExoneracion();
+                empresa.ListadoNombreInstExoneracion = ObtenerListadoNombreInstExoneracion();
                 empresa.ListadoTipoPrecio = ObtenerListadoTipodePrecio();
 
                 Usuario usuario = null;
@@ -489,7 +490,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     usuario = dbContext.UsuarioRepository.AsNoTracking().Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strCodigoUsuario.ToUpper());
                 }
-                if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
+                if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                 if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                 TerminalPorSucursal terminal = null;
                 SucursalPorEmpresa sucursal = null;
@@ -1719,6 +1720,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoTipoExoneracion()
         {
             return TipoDeExoneracion.ObtenerListado();
+        }
+
+        IList<LlaveDescripcion> ObtenerListadoNombreInstExoneracion()
+        {
+            return TipoDeNombreInstExoneracion.ObtenerListado();
         }
 
         IList<LlaveDescripcionValor> ObtenerListadoTipoImpuesto()

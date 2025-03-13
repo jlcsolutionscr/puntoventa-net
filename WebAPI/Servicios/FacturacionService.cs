@@ -128,8 +128,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (existe) throw new BusinessException("El cliente con identificación " + cliente.Identificacion + " ya se encuentra registrado en la empresa. Por favor verifique.");
                     if (cliente.PorcentajeExoneracion > 0)
                     {
-                        if (cliente.NombreInstExoneracion == "") throw new BusinessException("El nombre de la institución para la exoneración es requerido. Por favor verifique.");
                         if (cliente.NumDocExoneracion == "") throw new BusinessException("El número de documento para la exoneración es requerido. Por favor verifique.");
+                        if (cliente.ArticuloExoneracion == "") throw new BusinessException("El número de artículo para la exoneración es requerido. Por favor verifique.");
+                        if (cliente.IncisoExoneracion == "") throw new BusinessException("El número de inciso para la exoneración es requerido. Por favor verifique.");
                         if (cliente.PorcentajeExoneracion > 13) throw new BusinessException("El porcentaje de exoneración no puede ser mayor a 13%. Por favor verifique.");
                     }
                     dbContext.ClienteRepository.Add(cliente);
@@ -172,8 +173,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (existe) throw new BusinessException("El cliente con identificación " + cliente.Identificacion + " ya se encuentra registrado en la empresa. Por favor verifique.");
                     if (cliente.PorcentajeExoneracion > 0)
                     {
-                        if (cliente.NombreInstExoneracion == "") throw new BusinessException("El nombre de la institución para la exoneración es requerido. Por favor verifique.");
                         if (cliente.NumDocExoneracion == "") throw new BusinessException("El número de documento para la exoneración es requerido. Por favor verifique.");
+                        if (cliente.ArticuloExoneracion == "") throw new BusinessException("El número de artículo para la exoneración es requerido. Por favor verifique.");
+                        if (cliente.IncisoExoneracion == "") throw new BusinessException("El número de inciso para la exoneración es requerido. Por favor verifique.");
                         if (cliente.PorcentajeExoneracion > 13) throw new BusinessException("El porcentaje de exoneración no puede ser mayor a 13%. Por favor verifique.");
                     }
                     dbContext.NotificarModificacion(cliente);
@@ -737,8 +739,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!empresa.RegimenSimplificado)
                     {
                         if (factura.IdCliente > 1)
-                            throw new Exception("Testing Fact 4.4");
-                        //documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, cliente, dbContext, decTipoDeCambio);
+                            documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, cliente, dbContext, decTipoDeCambio);
                         else
                             documentoFE = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, cliente, dbContext, decTipoDeCambio);
                         factura.IdDocElectronico = documentoFE.ClaveNumerica;
@@ -2679,7 +2680,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void ReprocesarDocumentoElectronico(int intIdDocumento)
         {
-            throw new Exception("Testing Fact 4.4");
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -2689,9 +2689,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").FirstOrDefault(x => x.IdEmpresa == documento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (documento.Reprocesado) throw new BusinessException("El documento ya fue reprocesado y no puede procesarse nuevamente.");
-                    if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado && documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
+                    if (!new string[] { StaticEstadoDocumentoElectronico.Aceptado, StaticEstadoDocumentoElectronico.Rechazado }.Contains(documento.EstadoEnvio))
                     {
-                        throw new BusinessException("El documento electrónico por procesar no ha sido procesado. No se puede generar un nuevo documento por el momento");
+                        throw new BusinessException("El documento electrónico no ha recibido respuesta de Hacienda. No se puede generar un nuevo documento por el momento");
                     }
                     if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado) throw new BusinessException("El documento no posee un estado de rechazado por lo que no puede ser reenviado al Ministerio de Hacienda.");
                     if (documento.EsMensajeReceptor == "S") throw new BusinessException("No se puede reenviar documento recepcionados, solo documentos emitidos por el sistema.");
@@ -2705,15 +2705,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                             if (producto != null) detalleFactura.Producto = producto;
                         }
-                        //if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
-                            //nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
-                        //else
-                        nuevoDocumento = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                        if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                        else
+                            nuevoDocumento = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
                         factura.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(factura);
                     }
                     else if ((int)TipoDocumento.NotaCreditoElectronica == documento.IdTipoDocumento)
                     {
+                        throw new Exception("Nota crédito not implemented yet");
                         Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (factura != null)
                         {
@@ -2738,6 +2739,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     else if ((int)TipoDocumento.NotaDebitoElectronica == documento.IdTipoDocumento)
                     {
+                        throw new Exception("Nota débito not implemented yet");
                         DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                         Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
