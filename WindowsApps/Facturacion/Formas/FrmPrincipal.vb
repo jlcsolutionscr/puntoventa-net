@@ -45,6 +45,7 @@ Public Class FrmPrincipal
     Private listaTipoMoneda As List(Of LlaveDescripcion)
     Private listaCondicionVenta As List(Of LlaveDescripcion)
     Private listaTipoExoneracion As List(Of LlaveDescripcion)
+    Private listaNombreInstExoneracion As List(Of LlaveDescripcion)
     Private listaSucursales As List(Of LlaveDescripcion)
     Private listaTipoPrecio As List(Of LlaveDescripcion)
     Private listaActividadEconomica As List(Of LlaveDescripcion)
@@ -80,6 +81,10 @@ Public Class FrmPrincipal
         Return New List(Of LlaveDescripcion)(listaTipoExoneracion)
     End Function
 
+    Public Function ObtenerListadoNombreInstExoneracion() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaNombreInstExoneracion)
+    End Function
+
     Public Function ObtenerListadoTipoProducto() As List(Of LlaveDescripcion)
         Return New List(Of LlaveDescripcion)(listaTipoProducto)
     End Function
@@ -102,6 +107,15 @@ Public Class FrmPrincipal
 
     Public Function ObtenerDescripcionTipoExoneracion(intIdTipo As Integer) As String
         Dim tipo As LlaveDescripcion = listaTipoExoneracion.FirstOrDefault(Function(x) x.Id = intIdTipo)
+        If tipo.Descripcion <> Nothing Then
+            Return tipo.Descripcion
+        Else
+            Return ""
+        End If
+    End Function
+
+        Public Function ObtenerDescripcionNombreInstExoneracion(intIdTipo As Integer) As String
+        Dim tipo As LlaveDescripcion = listaNombreInstExoneracion.FirstOrDefault(Function(x) x.Id = intIdTipo)
         If tipo.Descripcion <> Nothing Then
             Return tipo.Descripcion
         Else
@@ -676,6 +690,7 @@ Public Class FrmPrincipal
         listaTipoMoneda = empresa.ListadoTipoMoneda
         listaCondicionVenta = empresa.ListadoCondicionVenta
         listaTipoExoneracion = empresa.ListadoTipoExoneracion
+        listaNombreInstExoneracion = empresa.ListadoNombreInstExoneracion
         listaTipoPrecio = empresa.ListadoTipoPrecio
         listaSucursales = New List(Of LlaveDescripcion)
         For Each sucursal As SucursalPorEmpresa In empresa.SucursalPorEmpresa
