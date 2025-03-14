@@ -384,11 +384,13 @@ Public Class FrmProforma
                 .IdCliente = 1,
                 .Nombre = "CLIENTE DE CONTADO",
                 .Telefono = "",
-                .IdTipoExoneracion = 1,
-                .PorcentajeExoneracion = 0,
-                .NombreInstExoneracion = "",
+                .IdTipoExoneracion = StaticValoresPorDefecto.TipoExoneracion,
+                .IdNombreInstExoneracion = StaticValoresPorDefecto.IdNombreInstExoneracion,
                 .NumDocExoneracion = "",
-                .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
+                .ArticuloExoneracion = "",
+                .IncisoExoneracion = "",
+                .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider),
+                .PorcentajeExoneracion = 0
             }
             txtNombreCliente.Text = cliente.Nombre
             txtPorcentajeExoneracion.Text = "0"
@@ -448,11 +450,13 @@ Public Class FrmProforma
             .IdCliente = 1,
             .Nombre = "CLIENTE DE CONTADO",
             .Telefono = "",
-            .IdTipoExoneracion = 1,
-            .PorcentajeExoneracion = 0,
-            .NombreInstExoneracion = "",
+            .IdTipoExoneracion = StaticValoresPorDefecto.TipoExoneracion,
+            .IdNombreInstExoneracion = StaticValoresPorDefecto.IdNombreInstExoneracion,
             .NumDocExoneracion = "",
-            .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
+            .ArticuloExoneracion = "",
+            .IncisoExoneracion = "",
+            .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider),
+            .PorcentajeExoneracion = 0
         }
         txtNombreCliente.Text = cliente.Nombre
         txtNombreCliente.ReadOnly = False

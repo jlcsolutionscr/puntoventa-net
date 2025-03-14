@@ -539,11 +539,13 @@ Public Class FrmApartado
                 .IdCliente = 1,
                 .Nombre = "CLIENTE DE CONTADO",
                 .Telefono = "",
-                .IdTipoExoneracion = 1,
-                .PorcentajeExoneracion = 0,
-                .NombreInstExoneracion = "",
+                .IdTipoExoneracion = StaticValoresPorDefecto.TipoExoneracion,
+                .IdNombreInstExoneracion = StaticValoresPorDefecto.IdNombreInstExoneracion,
                 .NumDocExoneracion = "",
-                .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
+                .ArticuloExoneracion = "",
+                .IncisoExoneracion = "",
+                .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider),
+                .PorcentajeExoneracion = 0
             }
             txtNombreCliente.Text = cliente.Nombre
             txtPorcentajeExoneracion.Text = "0"
@@ -618,11 +620,13 @@ Public Class FrmApartado
             .IdCliente = 1,
             .Nombre = "CLIENTE DE CONTADO",
             .Telefono = "",
-            .IdTipoExoneracion = 1,
-            .PorcentajeExoneracion = 0,
-            .NombreInstExoneracion = "",
+            .IdTipoExoneracion = StaticValoresPorDefecto.TipoExoneracion,
+            .IdNombreInstExoneracion = StaticValoresPorDefecto.IdNombreInstExoneracion,
             .NumDocExoneracion = "",
-            .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
+            .ArticuloExoneracion = "",
+            .IncisoExoneracion = "",
+            .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider),
+            .PorcentajeExoneracion = 0
         }
         txtNombreCliente.Text = cliente.Nombre
         txtNombreCliente.ReadOnly = False
@@ -893,7 +897,7 @@ Public Class FrmApartado
         btnBuscarCliente.Enabled = False
     End Sub
 
-    Private Async Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
+    Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdApartado.Text <> "" Then
             Try
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {

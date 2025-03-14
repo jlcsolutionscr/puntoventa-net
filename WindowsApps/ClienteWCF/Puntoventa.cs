@@ -378,30 +378,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoIdentificacion(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoTipoIdentificacion'}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
         public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoMovimientoBanco(string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoTipoMovimientoBanco'}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-        
-
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoModulos(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoModulos'}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")
@@ -459,79 +438,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoProducto(string strCodigoUsuario, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoTipoProducto', Parametros: {CodigoUsuario: '" + strCodigoUsuario + "'}}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoExoneracion(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoTipoExoneracion'}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<List<LlaveDescripcionValor>> ObtenerListadoTipoImpuesto(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoTipoImpuesto'}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcionValor> listado = new List<LlaveDescripcionValor>();
-            if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<LlaveDescripcionValor>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoEmpresa(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoFormaPagoEmpresa'}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoFormaPagoCliente(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoFormaPagoCliente'}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
         public static async Task<List<LlaveDescripcion>> ObtenerListadoRolesPorEmpresa(int intIdEmpresa, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoRolesPorEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoMoneda(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoTipoMoneda'}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoCondicionVenta(string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoCondicionVenta'}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")

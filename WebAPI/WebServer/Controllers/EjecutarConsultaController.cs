@@ -535,14 +535,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (listadoDistritos.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoDistritos);
                     break;
-                case "ObtenerListadoBarrios":
-                    intIdProvincia = int.Parse(parametrosJO.Property("IdProvincia").Value.ToString());
-                    intIdCanton = int.Parse(parametrosJO.Property("IdCanton").Value.ToString());
-                    intIdDistrito = int.Parse(parametrosJO.Property("IdDistrito").Value.ToString());
-                    IList<LlaveDescripcion> listadoBarrios = _servicioMantenimiento.ObtenerListadoBarrios(intIdProvincia, intIdCanton, intIdDistrito);
-                    if (listadoBarrios.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoBarrios);
-                    break;
                 case "ObtenerParametroImpuesto":
                     int intIdImpuesto = int.Parse(parametrosJO.Property("IdImpuesto").Value.ToString());
                     LlaveDescripcionValor parametroImpuesto = _servicioMantenimiento.ObtenerParametroImpuesto(intIdImpuesto);

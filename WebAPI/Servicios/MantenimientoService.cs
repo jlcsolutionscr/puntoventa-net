@@ -111,7 +111,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoProvincias();
         IList<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia);
         IList<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton);
-        IList<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito);
         int ObtenerTotalListaClasificacionProducto(string strDescripcion);
         IList<ClasificacionProducto> ObtenerListadoClasificacionProducto(int numPagina, int cantRec, string strDescripcion);
         ClasificacionProducto ObtenerClasificacionProducto(string strCodigo);
@@ -2644,31 +2643,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al obtener el listado de distritos: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de distritos. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public IList<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                var listaBarrio = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.BarrioRepository.Where(x => x.IdProvincia == intIdProvincia && x.IdCanton == intIdCanton && x.IdDistrito == intIdDistrito);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdBarrio, value.Descripcion);
-                        listaBarrio.Add(item);
-                    }
-                    return listaBarrio;
-                }
-                catch (Exception ex)
-                {
-                    if (_logger != null) _logger.LogError("Error al obtener el listado de barrios: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
                 }
             }
         }

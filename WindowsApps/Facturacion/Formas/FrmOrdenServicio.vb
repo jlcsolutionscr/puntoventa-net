@@ -579,11 +579,13 @@ Public Class FrmOrdenServicio
                 .IdCliente = 1,
                 .Nombre = "CLIENTE DE CONTADO",
                 .Telefono = "",
-                .IdTipoExoneracion = 1,
-                .PorcentajeExoneracion = 0,
-                .NombreInstExoneracion = "",
+                .IdTipoExoneracion = StaticValoresPorDefecto.TipoExoneracion,
+                .IdNombreInstExoneracion = StaticValoresPorDefecto.IdNombreInstExoneracion,
                 .NumDocExoneracion = "",
-                .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
+                .ArticuloExoneracion = "",
+                .IncisoExoneracion = "",
+                .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider),
+                .PorcentajeExoneracion = 0
             }
             txtNombreCliente.Text = cliente.Nombre
             txtPorcentajeExoneracion.Text = "0"
@@ -658,15 +660,17 @@ Public Class FrmOrdenServicio
         btnBuscaVendedor.Enabled = True
         btnBuscarCliente.Enabled = True
         cliente = New Cliente With {
-                .IdCliente = 1,
-                .Nombre = "CLIENTE DE CONTADO",
-                .Telefono = "",
-                .IdTipoExoneracion = 1,
-                .PorcentajeExoneracion = 0,
-                .NombreInstExoneracion = "",
-                .NumDocExoneracion = "",
-                .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
-            }
+            .IdCliente = 1,
+            .Nombre = "CLIENTE DE CONTADO",
+            .Telefono = "",
+            .IdTipoExoneracion = StaticValoresPorDefecto.TipoExoneracion,
+            .IdNombreInstExoneracion = StaticValoresPorDefecto.IdNombreInstExoneracion,
+            .NumDocExoneracion = "",
+            .ArticuloExoneracion = "",
+            .IncisoExoneracion = "",
+            .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider),
+            .PorcentajeExoneracion = 0
+        }
         txtNombreCliente.Text = cliente.Nombre
         txtNombreCliente.ReadOnly = False
         If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
@@ -1150,7 +1154,7 @@ Public Class FrmOrdenServicio
 
     Private Async Sub BtnEnviar_Click(sender As Object, e As EventArgs) Handles btnEnviar.Click
         If txtIdOrdenServicio.Text <> "" Then
-            Dim strCorreoReceptor = ""
+            Dim strCorreoReceptor As String
             If cliente.IdCliente > 1 Then
                 If MessageBox.Show("Desea utilizar la dirección(es) de correo electrónico registrada(s) en el cliente?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
                     strCorreoReceptor = cliente.CorreoElectronico

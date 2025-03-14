@@ -13,7 +13,7 @@ Public Class FrmCliente
 #End Region
 
 #Region "Métodos"
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboTipoIdentificacion.ValueMember = "Id"
         cboTipoIdentificacion.DisplayMember = "Descripcion"
         cboTipoIdentificacion.DataSource = FrmPrincipal.ObtenerListadoTipoIdentificacion()
@@ -23,7 +23,10 @@ Public Class FrmCliente
         cboTipoExoneracion.ValueMember = "Id"
         cboTipoExoneracion.DisplayMember = "Descripcion"
         cboTipoExoneracion.DataSource = FrmPrincipal.ObtenerListadoTipoExoneracion()
-    End Function
+        cboInstExoneracion.ValueMember = "Id"
+        cboInstExoneracion.DisplayMember = "Descripcion"
+        cboInstExoneracion.DataSource = FrmPrincipal.ObtenerListadoNombreInstExoneracion()
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -49,7 +52,7 @@ Public Class FrmCliente
     Private Async Sub FrmCliente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             If FrmPrincipal.bolModificaCliente Then chkPermiteCredito.Enabled = True
-            Await CargarCombos()
+            CargarCombos()
             If intIdCliente > 0 Then
                 datos = Await Puntoventa.ObtenerCliente(intIdCliente, FrmPrincipal.usuarioGlobal.Token)
                 If datos Is Nothing Then
@@ -68,13 +71,16 @@ Public Class FrmCliente
                 chkPermiteCredito.Checked = datos.PermiteCredito
                 cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
                 cboTipoExoneracion.SelectedValue = datos.IdTipoExoneracion
+                cboInstExoneracion.SelectedValue = datos.IdNombreInstExoneracion
                 txtNumDocExoneracion.Text = datos.NumDocExoneracion
-                txtNombreInstExoneracion.Text = datos.NombreInstExoneracion
+                txtArticulo.Text = datos.ArticuloExoneracion
+                txtInciso.Text = datos.IncisoExoneracion
                 txtFechaExoneracion.Value = datos.FechaEmisionDoc
                 txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
             Else
                 datos = New Cliente
                 cboTipoExoneracion.SelectedValue = StaticValoresPorDefecto.TipoExoneracion
+                cboInstExoneracion.SelectedValue = StaticValoresPorDefecto.IdNombreInstExoneracion
                 txtPorcentajeExoneracion.Text = "0"
                 txtFechaExoneracion.Value = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
             End If
@@ -116,8 +122,10 @@ Public Class FrmCliente
         datos.PermiteCredito = chkPermiteCredito.Checked
         datos.IdTipoPrecio = cboIdTipoPrecio.SelectedValue
         datos.IdTipoExoneracion = cboTipoExoneracion.SelectedValue
+        datos.IdNombreInstExoneracion = cboInstExoneracion.SelectedValue
         datos.NumDocExoneracion = txtNumDocExoneracion.Text
-        datos.NombreInstExoneracion = txtNombreInstExoneracion.Text
+        datos.ArticuloExoneracion = txtArticulo.Text
+        datos.IncisoExoneracion = txtInciso.Text
         datos.FechaEmisionDoc = txtFechaExoneracion.Value
         datos.PorcentajeExoneracion = txtPorcentajeExoneracion.Text
         Try
@@ -158,7 +166,9 @@ Public Class FrmCliente
                         cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
                         cboTipoExoneracion.SelectedValue = datos.IdTipoExoneracion
                         txtNumDocExoneracion.Text = datos.NumDocExoneracion
-                        txtNombreInstExoneracion.Text = datos.NombreInstExoneracion
+                        txtArticulo.Text = datos.ArticuloExoneracion
+                        txtInciso.Text = datos.IncisoExoneracion
+                        cboInstExoneracion.SelectedValue = datos.IdNombreInstExoneracion
                         txtFechaExoneracion.Text = datos.FechaEmisionDoc.ToString()
                         txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
                     Else

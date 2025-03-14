@@ -40,6 +40,7 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly int MonedaDelSistema = 1;
         public static readonly int TasaImpuesto = 8;
         public static readonly int TipoExoneracion = 1;
+        public static readonly int IdNombreInstExoneracion = 1;
     };
 
     public static class StaticTipoCuentaPorCobrar

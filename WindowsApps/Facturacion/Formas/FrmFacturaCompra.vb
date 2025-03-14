@@ -153,7 +153,7 @@ Public Class FrmFacturaCompra
         txtTotal.Text = FormatNumber(decTotal, 2)
     End Sub
 
-    Private Async Function CargarListadoBarrios(IdProvincia As Integer, IdCanton As Integer, IdDistrito As Integer) As Task
+    Private Async Function CargarListadoDistritos(IdProvincia As Integer, IdCanton As Integer) As Task
         bolInicializado = False
         cboCanton.ValueMember = "Id"
         cboCanton.DisplayMember = "Descripcion"
@@ -161,9 +161,6 @@ Public Class FrmFacturaCompra
         cboDistrito.ValueMember = "Id"
         cboDistrito.DisplayMember = "Descripcion"
         cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(IdProvincia, IdCanton, FrmPrincipal.usuarioGlobal.Token)
-        cboBarrio.ValueMember = "Id"
-        cboBarrio.DisplayMember = "Descripcion"
-        cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(IdProvincia, IdCanton, IdDistrito, FrmPrincipal.usuarioGlobal.Token)
         bolInicializado = True
     End Function
 
@@ -180,6 +177,9 @@ Public Class FrmFacturaCompra
         cboTipoExoneracion.ValueMember = "Id"
         cboTipoExoneracion.DisplayMember = "Descripcion"
         cboTipoExoneracion.DataSource = FrmPrincipal.ObtenerListadoTipoExoneracion()
+        cboInstExoneracion.ValueMember = "Id"
+        cboInstExoneracion.DisplayMember = "Descripcion"
+        cboInstExoneracion.DataSource = FrmPrincipal.ObtenerListadoNombreInstExoneracion()
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
         cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
@@ -218,7 +218,7 @@ Public Class FrmFacturaCompra
         Try
             txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
             Await CargarCombos()
-            Await CargarListadoBarrios(1, 1, 1)
+            Await CargarListadoDistritos(1, 1)
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
             grdDetalleProforma.DataSource = dtbDetalleProforma
@@ -242,7 +242,7 @@ Public Class FrmFacturaCompra
     Private Async Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
         If bolInicializado Then
             bolInicializado = False
-            Await CargarListadoBarrios(cboProvincia.SelectedValue, 1, 1)
+            Await CargarListadoDistritos(cboProvincia.SelectedValue, 1)
             bolInicializado = True
         End If
     End Sub
@@ -251,14 +251,7 @@ Public Class FrmFacturaCompra
         If bolInicializado Then
             bolInicializado = False
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
             bolInicializado = True
-        End If
-    End Sub
-
-    Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
-        If bolInicializado Then
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
         End If
     End Sub
 
@@ -273,10 +266,12 @@ Public Class FrmFacturaCompra
         txtCorreoElectronico.Text = ""
         cboActividadEconomica.SelectedIndex = 0
         cboTipoIdentificacion.SelectedIndex = 0
-        Await CargarListadoBarrios(1, 1, 1)
-        cboTipoExoneracion.SelectedIndex = 0
+        Await CargarListadoDistritos(1, 1)
+        cboTipoExoneracion.SelectedIndex = StaticValoresPorDefecto.TipoExoneracion
+        cboInstExoneracion.SelectedIndex = StaticValoresPorDefecto.IdNombreInstExoneracion
         txtNumDocExoneracion.Text = ""
-        txtNombreInstExoneracion.Text = ""
+        txtArticulo.Text = ""
+        txtInciso.Text = ""
         txtFechaExoneracion.Text = "01/01/2019"
         txtPorcentajeExoneracion.Text = "0"
         dtbDetalleProforma.Rows.Clear()
@@ -370,12 +365,13 @@ Public Class FrmFacturaCompra
                 .IdProvinciaEmisor = cboProvincia.SelectedValue,
                 .IdCantonEmisor = cboCanton.SelectedValue,
                 .IdDistritoEmisor = cboDistrito.SelectedValue,
-                .IdBarrioEmisor = cboBarrio.SelectedValue,
                 .DireccionEmisor = txtDireccion.Text,
                 .CorreoElectronicoEmisor = txtCorreoElectronico.Text,
                 .IdTipoExoneracion = cboTipoExoneracion.SelectedValue,
+                .IdNombreInstExoneracion = cboInstExoneracion.SelectedValue,
                 .NumDocExoneracion = txtNumDocExoneracion.Text,
-                .NombreInstExoneracion = txtNombreInstExoneracion.Text,
+                .ArticuloExoneracion = txtArticulo.Text,
+                .IncisoExoneracion = txtInciso.Text,
                 .FechaEmisionDoc = txtFechaExoneracion.Value,
                 .PorcentajeExoneracion = txtPorcentajeExoneracion.Text,
                 .TextoAdicional = txtTextoAdicional.Text,
