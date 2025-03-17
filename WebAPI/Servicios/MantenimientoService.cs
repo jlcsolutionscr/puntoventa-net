@@ -122,9 +122,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion);
         void ValidarRegistroAutenticacion(string strToken, int intRole, int intHoras);
         void EliminarRegistroAutenticacionInvalidos();
+        decimal ObtenerTipoCambioVenta(string fechaConsulta);
         List<LlaveDescripcion> ObtenerListadoActividadEconomica(string strServicioURL, string strIdentificacion);
         void IniciarRestablecerClaveUsuario(string strServicioWebURL, string strIdentificacion, string strCodigoUsuario);
         void RestablecerClaveUsuario(string strToken, string strClave);
+        void AgregarTipoCambioDolar(string strFecha, string strTipoCambio);
     }
 
     public class MantenimientoService : IMantenimientoService
@@ -2960,6 +2962,32 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
+        public decimal ObtenerTipoCambioVenta(string fechaConsulta)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    TipoDeCambioDolar tipoDeCambio = null;
+                    tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(fechaConsulta);
+                    if (tipoDeCambio == null)
+                    {
+                        return 0;
+                    }
+                    else
+                    {
+                        return tipoDeCambio.ValorTipoCambio;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error al obtener el tipo de cambio de venta: ", ex);
+                    throw new Exception("Se produjo un error consultando el tipo de cambio de venta del dolar para la fecha actual. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
         public List<LlaveDescripcion> ObtenerListadoActividadEconomica(string strServicioURL, string strIdentificacion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
@@ -3010,6 +3038,34 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al iniciar el proceso de restablecimiento de la clave del usuario: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al iniciar el proceso de restablecimiento de la clave del usuario. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public void AgregarTipoCambioDolar(string strFecha, string strTipoCambio)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    TipoDeCambioDolar tipoDeCambio = new TipoDeCambioDolar
+                    {
+                        FechaTipoCambio = strFecha,
+                        ValorTipoCambio = decimal.Parse(strTipoCambio)
+                    };
+                    dbContext.TipoDeCambioDolarRepository.Add(tipoDeCambio);
+                    dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al restablecer la clave del usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al restablecer la clave del usuario. Por favor consulte con su proveedor.");
                 }
             }
         }

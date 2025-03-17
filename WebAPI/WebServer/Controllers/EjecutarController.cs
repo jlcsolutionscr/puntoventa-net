@@ -55,7 +55,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static string strFechaInicial;
         private static string strFechaFinal;
         private static byte[] bytLogo;
-        private static decimal decTipoCambioDolar = 0;
 
         public EjecutarController(
             IHostEnvironment environment,
@@ -78,7 +77,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _servicioTraslado = servicioTraslado;
             _servicioCuentaPorProcesar = servicioCuentaPorProcesar;
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
-            if (decTipoCambioDolar == 0) decTipoCambioDolar = 1;
         }
 
 
@@ -112,6 +110,11 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
             switch (strNombreMetodo)
             {
+                case "AgregarTipoCambioDolar":
+                    strFechaInicial = parametrosJO.Property("Fecha").Value.ToString();
+                    string strTipoCambio = parametrosJO.Property("Valor").Value.ToString();
+                    _servicioMantenimiento.AgregarTipoCambioDolar(strFechaInicial, strTipoCambio);
+                    break;
                 case "ActualizarParametroDelSistema":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdParametro").Value.ToString());
                     string strValor = parametrosJO.Property("Valor").Value.ToString();

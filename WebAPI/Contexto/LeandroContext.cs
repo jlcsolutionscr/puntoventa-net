@@ -96,6 +96,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         public DbSet<SucursalPorEmpresa> SucursalPorEmpresaRepository { get; set; }
         public DbSet<TerminalPorSucursal> TerminalPorSucursalRepository { get; set; }
+        public DbSet<TipoDeCambioDolar> TipoDeCambioDolarRepository { get; set; }
         public DbSet<TipoCuentaContable> TipoCuentaContableRepository { get; set; }
         public DbSet<TipoMovimientoBanco> TipoMovimientoBancoRepository { get; set; }
         public DbSet<TipoParametroContable> TipoParametroContableRepository { get; set; }

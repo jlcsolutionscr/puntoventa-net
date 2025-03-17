@@ -65,7 +65,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static int intNumeroPagina;
         private static int intFilasPorPagina;
         private static int intTotalLista;
-        private static decimal decTipoCambioDolar = 0;
         private static string strLogoPath;
         private static string strClave;
         private static bool bolIncluyeServicios;
@@ -111,7 +110,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _servicioCuentaPorProcesar = servicioCuentaPorProcesar;
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
             strConsultaInformacionContribuyenteURL = configuration.GetSection("appSettings").GetSection("strConsultaContribuyenteURL").Value;
-            if (decTipoCambioDolar == 0) decTipoCambioDolar = 1;
         }
 
         [HttpPost("ejecutarconsulta")]
@@ -133,13 +131,15 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             string strRespuesta = "";
             switch (strNombreMetodo)
             {
+                case "ObtenerTipoCambioDolar":
+                    strFechaInicial = parametrosJO.Property("Fecha").Value.ToString();
+                    strRespuesta = _servicioMantenimiento.ObtenerTipoCambioVenta(strFechaInicial).ToString();
+                    strRespuesta = JsonConvert.SerializeObject(strRespuesta);
+                    break;
                 case "GuardarDatosCierreCaja":
                     CierreCaja cierre = JsonConvert.DeserializeObject<CierreCaja>(strEntidad);
                     string strIdCierre = _servicioFlujoCaja.GuardarDatosCierreCaja(cierre);
                     strRespuesta = JsonConvert.SerializeObject(strIdCierre);
-                    break;
-                case "ObtenerTipoCambioDolar":
-                    strRespuesta = decTipoCambioDolar.ToString();
                     break;
                 case "ObtenerListadoActividadEconomica":
                     strIdentificacion = parametrosJO.Property("Identificacion").Value.ToString();

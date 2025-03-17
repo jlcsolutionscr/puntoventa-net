@@ -18,7 +18,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static Empresa? empresa;
         private static int intIdEmpresa;
         private static int intIdSucursal;
-        private static decimal decTipoCambioDolar = 0;
 
         public PuntoventaController
         (
@@ -32,7 +31,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _environment = environment;
             _servicioMantenimiento = servicioMantenimiento;
             _servicioFacturacion = servicioFacturacion;
-            if (decTipoCambioDolar == 0) decTipoCambioDolar = 1;
         }
 
         [HttpGet("obtenerultimaversionapp")]
