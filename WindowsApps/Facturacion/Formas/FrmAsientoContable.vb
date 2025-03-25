@@ -100,8 +100,8 @@ Public Class FrmAsientoContable
         dblTotalDebito = 0
         dblTotalCredito = 0
         For I As Short = 0 To dtbDetalleAsiento.Rows.Count - 1
-            dblTotalDebito = dblTotalDebito + CDbl(grdDetalleAsiento.Rows(I).Cells(4).Value)
-            dblTotalCredito = dblTotalCredito + CDbl(grdDetalleAsiento.Rows(I).Cells(5).Value)
+            dblTotalDebito = dblTotalDebito + Decimal.Parse(grdDetalleAsiento.Rows(I).Cells(4).Value)
+            dblTotalCredito = dblTotalCredito + Decimal.Parse(grdDetalleAsiento.Rows(I).Cells(5).Value)
         Next
         txtTotalDebito.Text = FormatNumber(dblTotalDebito, 2)
         txtTotalCredito.Text = FormatNumber(dblTotalCredito, 2)
@@ -209,14 +209,14 @@ Public Class FrmAsientoContable
                 detalleAsiento = New DetalleAsiento With {
                     .Linea = I + 1,
                     .IdCuenta = dtbDetalleAsiento.Rows(I).Item(0),
-                    .Debito = CDbl(dtbDetalleAsiento.Rows(I).Item(4)),
-                    .Credito = CDbl(dtbDetalleAsiento.Rows(I).Item(5))
+                    .Debito = Decimal.Parse(dtbDetalleAsiento.Rows(I).Item(4)),
+                    .Credito = Decimal.Parse(dtbDetalleAsiento.Rows(I).Item(5))
                 }
                 asientoDiario.DetalleAsiento.Add(detalleAsiento)
-                If CDbl(dtbDetalleAsiento.Rows(I).Item(4)) > 0 Then
-                    asientoDiario.TotalDebito += CDbl(dtbDetalleAsiento.Rows(I).Item(4))
+                If Decimal.Parse(dtbDetalleAsiento.Rows(I).Item(4)) > 0 Then
+                    asientoDiario.TotalDebito += Decimal.Parse(dtbDetalleAsiento.Rows(I).Item(4))
                 Else
-                    asientoDiario.TotalCredito += CDbl(dtbDetalleAsiento.Rows(I).Item(5))
+                    asientoDiario.TotalCredito += Decimal.Parse(dtbDetalleAsiento.Rows(I).Item(5))
                 End If
             Next
             Try
@@ -249,7 +249,7 @@ Public Class FrmAsientoContable
 
     Private Sub CmdInsertar_Click(sender As Object, e As EventArgs) Handles cmdInsertar.Click
         If cboCuentaContable.SelectedValue <> Nothing And txtDebito.Text <> "" And txtCredito.Text <> "" Then
-            If CDbl(txtDebito.Text) > 0 And CDbl(txtCredito.Text) > 0 Then
+            If Decimal.Parse(txtDebito.Text) > 0 And Decimal.Parse(txtCredito.Text) > 0 Then
                 MessageBox.Show("Debe ingresar el monto de la línea del asiento contable.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If

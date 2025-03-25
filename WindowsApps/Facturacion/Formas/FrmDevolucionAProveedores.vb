@@ -313,7 +313,7 @@ Public Class FrmDevolucionAProveedores
     End Sub
 
     Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
-        If proveedor Is Nothing Or txtFecha.Text = "" Or compra Is Nothing Or CDbl(txtTotal.Text) = 0 Then
+        If proveedor Is Nothing Or txtFecha.Text = "" Or compra Is Nothing Or Decimal.Parse(txtTotal.Text) = 0 Then
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
@@ -327,7 +327,7 @@ Public Class FrmDevolucionAProveedores
                 .Fecha = Now(),
                 .Excento = decExcento,
                 .Gravado = decGravado,
-                .Impuesto = CDbl(txtImpuesto.Text)
+                .Impuesto = Decimal.Parse(txtImpuesto.Text)
             }
             devolucion.DetalleDevolucionProveedor = New List(Of DetalleDevolucionProveedor)
             For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
@@ -379,9 +379,9 @@ Public Class FrmDevolucionAProveedores
                 If dtbDetalleDevolucion.Rows(I).Item(7) > 0 Then
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                         .strDescripcion = dtbDetalleDevolucion.Rows(I).Item(1) + "-" + dtbDetalleDevolucion.Rows(I).Item(2),
-                        .strCantidad = CDbl(dtbDetalleDevolucion.Rows(I).Item(7)),
+                        .strCantidad = Decimal.Parse(dtbDetalleDevolucion.Rows(I).Item(7)),
                         .strPrecio = FormatNumber(dtbDetalleDevolucion.Rows(I).Item(4), 2),
-                        .strTotalLinea = FormatNumber(CDbl(dtbDetalleDevolucion.Rows(I).Item(7)) * CDbl(dtbDetalleDevolucion.Rows(I).Item(4)), 2)
+                        .strTotalLinea = FormatNumber(Decimal.Parse(dtbDetalleDevolucion.Rows(I).Item(7)) * Decimal.Parse(dtbDetalleDevolucion.Rows(I).Item(4)), 2)
                     }
                     arrDetalleDevolucion.Add(detalleComprobante)
                 End If

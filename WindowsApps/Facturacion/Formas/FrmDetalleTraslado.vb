@@ -87,7 +87,7 @@ Public Class FrmDetalleTraslado
     Private Sub CargarTotales()
         dblTotal = 0
         For I As Short = 0 To dtbDetalleTraslado.Rows.Count - 1
-            dblTotal = dblTotal + CDbl(dtbDetalleTraslado.Rows(I).Item(5))
+            dblTotal = dblTotal + Decimal.Parse(dtbDetalleTraslado.Rows(I).Item(5))
         Next
         txtTotal.Text = FormatNumber(dblTotal, 2)
     End Sub

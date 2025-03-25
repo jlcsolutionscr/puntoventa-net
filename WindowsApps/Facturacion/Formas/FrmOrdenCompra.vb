@@ -370,7 +370,7 @@ Public Class FrmOrdenCompra
     Private Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         btnImprimir.Focus()
         btnGuardar.Enabled = False
-        If proveedor Is Nothing Or txtFecha.Text = "" Or CDbl(txtTotal.Text) = 0 Then
+        If proveedor Is Nothing Or txtFecha.Text = "" Or Decimal.Parse(txtTotal.Text) = 0 Then
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
@@ -387,8 +387,8 @@ Public Class FrmOrdenCompra
         ordenCompra.NoDocumento = txtReferencia.Text
         ordenCompra.Excento = decExcento
         ordenCompra.Gravado = decGravado
-        ordenCompra.Descuento = CDbl(txtDescuento.Text)
-        ordenCompra.Impuesto = CDbl(txtImpuesto.Text)
+        ordenCompra.Descuento = Decimal.Parse(txtDescuento.Text)
+        ordenCompra.Impuesto = Decimal.Parse(txtImpuesto.Text)
         If txtIdOrdenCompra.Text <> "" Then
             ordenCompra.DetalleOrdenCompra.Clear()
         End If
@@ -485,9 +485,9 @@ Public Class FrmOrdenCompra
             txtDescuento.Text = FormatNumber(0, 2)
         Else
             If InStr(txtDescuento.Text, "%") Then
-                txtDescuento.Text = CDbl(Mid(txtDescuento.Text, 1, Len(txtDescuento.Text) - 1)) / 100 * CDbl(txtSubTotal.Text)
+                txtDescuento.Text = Decimal.Parse(Mid(txtDescuento.Text, 1, Len(txtDescuento.Text) - 1)) / 100 * Decimal.Parse(txtSubTotal.Text)
             End If
-            If CDbl(txtDescuento.Text) > CDbl(txtSubTotal.Text) Then
+            If Decimal.Parse(txtDescuento.Text) > Decimal.Parse(txtSubTotal.Text) Then
                 MessageBox.Show("El descuento debe ser menor al SubTotal. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 txtDescuento.Text = 0
             End If

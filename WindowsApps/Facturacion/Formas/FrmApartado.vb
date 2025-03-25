@@ -323,9 +323,6 @@ Public Class FrmApartado
             MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
-        Dim decMontoPago, decTipoCambio As Decimal
-        decMontoPago = CDbl(txtMontoPago.Text)
-        decTipoCambio = CDbl(txtTipoCambio.Text)
         dtrRowDesglosePago = dtbDesglosePago.NewRow
         dtrRowDesglosePago.Item(0) = cboFormaPago.SelectedValue
         dtrRowDesglosePago.Item(1) = cboFormaPago.Text
@@ -334,8 +331,8 @@ Public Class FrmApartado
         dtrRowDesglosePago.Item(4) = txtTipoTarjeta.Text
         dtrRowDesglosePago.Item(5) = txtAutorizacion.Text
         dtrRowDesglosePago.Item(6) = cboTipoMoneda.SelectedValue
-        dtrRowDesglosePago.Item(7) = decMontoPago
-        dtrRowDesglosePago.Item(8) = decTipoCambio
+        dtrRowDesglosePago.Item(7) = Decimal.Parse(txtMontoPago.Text)
+        dtrRowDesglosePago.Item(8) = Decimal.Parse(txtTipoCambio.Text)
         dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
         grdDesglosePago.Refresh()
     End Sub
@@ -391,8 +388,8 @@ Public Class FrmApartado
         decTotalPago = 0
         decPagoEfectivo = 0
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
-            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
-            decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
+            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = Decimal.Parse(dtbDesglosePago.Rows(I).Item(7))
+            decTotalPago = decTotalPago + Decimal.Parse(dtbDesglosePago.Rows(I).Item(7))
         Next
         decSaldoPorPagar = decTotal - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
@@ -564,7 +561,7 @@ Public Class FrmApartado
             Await CargarListaBancoAdquiriente()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar(cboTipoMoneda.SelectedValue)
             bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -577,7 +574,7 @@ Public Class FrmApartado
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+        txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar(cboTipoMoneda.SelectedValue)
         cboTipoMoneda.Enabled = True
         txtTelefono.Text = ""
         txtDocumento.Text = ""
@@ -639,7 +636,6 @@ Public Class FrmApartado
             vendedor = Nothing
             txtVendedor.Text = ""
         End If
-        txtTipoCambio.Text = "1"
         txtMontoPago.Text = ""
         txtCodigo.Focus()
     End Sub
@@ -682,7 +678,7 @@ Public Class FrmApartado
                 txtNombreCliente.Text = apartado.NombreCliente
                 txtFecha.Text = apartado.Fecha
                 cboTipoMoneda.SelectedValue = apartado.IdTipoMoneda
-                txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+                txtTipoCambio.Text = apartado.TipoDeCambioDolar
                 txtTelefono.Text = apartado.Telefono
                 txtDocumento.Text = apartado.TextoAdicional
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
@@ -808,11 +804,15 @@ Public Class FrmApartado
             End If
             btnImprimir.Focus()
             btnGuardar.Enabled = False
+            If cboTipoMoneda.SelectedValue = 2 Then
+                txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar(cboTipoMoneda.SelectedValue)
+            End If
             apartado = New Apartado With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
+                .TipoDeCambioDolar = Decimal.Parse(txtTipoCambio.Text),
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
                 .Fecha = Now(),
@@ -829,8 +829,8 @@ Public Class FrmApartado
                 .Nulo = False
             }
             apartado.DetalleApartado = New List(Of DetalleApartado)
-            For I As Short = 0 To dtbDetalleApartado.Rows.Count - 1
-                detalleApartado = New DetalleApartado With {
+                For I As Short = 0 To dtbDetalleApartado.Rows.Count - 1
+                    detalleApartado = New DetalleApartado With {
                     .IdProducto = dtbDetalleApartado.Rows(I).Item(0),
                     .Descripcion = dtbDetalleApartado.Rows(I).Item(2),
                     .Cantidad = dtbDetalleApartado.Rows(I).Item(3),
@@ -839,10 +839,10 @@ Public Class FrmApartado
                     .PorcentajeIVA = dtbDetalleApartado.Rows(I).Item(8),
                     .PorcDescuento = dtbDetalleApartado.Rows(I).Item(9)
                 }
-                apartado.DetalleApartado.Add(detalleApartado)
-            Next
-            apartado.DesglosePagoApartado = New List(Of DesglosePagoApartado)
-            For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
+                    apartado.DetalleApartado.Add(detalleApartado)
+                Next
+                apartado.DesglosePagoApartado = New List(Of DesglosePagoApartado)
+                For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoApartado With {
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
                     .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(2),
@@ -850,34 +850,34 @@ Public Class FrmApartado
                     .NroMovimiento = dtbDesglosePago.Rows(I).Item(5),
                     .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(6),
                     .MontoLocal = dtbDesglosePago.Rows(I).Item(7),
-                    .TipoDeCambio = dtbDesglosePago.Rows(I).Item(8)
+                    .TipoDeCambio = Decimal.Parse(txtTipoCambio.Text)
                 }
                 apartado.DesglosePagoApartado.Add(desglosePago)
-            Next
-            Try
-                Dim strIdConsec As String = Await Puntoventa.AgregarApartado(apartado, FrmPrincipal.usuarioGlobal.Token)
-                Dim arrIdConsec = strIdConsec.Split("-")
-                apartado.IdApartado = arrIdConsec(0)
-                apartado.ConsecApartado = arrIdConsec(1)
-                txtIdApartado.Text = apartado.ConsecApartado
-            Catch ex As Exception
-                txtIdApartado.Text = ""
-                btnGuardar.Enabled = True
-                btnGuardar.Focus()
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
-                BtnImprimir_Click(btnImprimir, New EventArgs())
-                Dim formPagoFactura As New FrmPagoEfectivo()
-                formPagoFactura.decTotalEfectivo = decPagoEfectivo
-                formPagoFactura.decPagoCliente = decPagoCliente
-                formPagoFactura.ShowDialog()
-            Else
-                MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Next
+                Try
+                    Dim strIdConsec As String = Await Puntoventa.AgregarApartado(apartado, FrmPrincipal.usuarioGlobal.Token)
+                    Dim arrIdConsec = strIdConsec.Split("-")
+                    apartado.IdApartado = arrIdConsec(0)
+                    apartado.ConsecApartado = arrIdConsec(1)
+                    txtIdApartado.Text = apartado.ConsecApartado
+                Catch ex As Exception
+                    txtIdApartado.Text = ""
+                    btnGuardar.Enabled = True
+                    btnGuardar.Focus()
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+                If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
+                    BtnImprimir_Click(btnImprimir, New EventArgs())
+                    Dim formPagoFactura As New FrmPagoEfectivo()
+                    formPagoFactura.decTotalEfectivo = decPagoEfectivo
+                    formPagoFactura.decPagoCliente = decPagoCliente
+                    formPagoFactura.ShowDialog()
+                Else
+                    MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                End If
             End If
-        End If
-        btnImprimir.Enabled = True
+            btnImprimir.Enabled = True
         btnGenerarPDF.Enabled = True
         btnImprimir.Focus()
         btnGuardar.Enabled = False
@@ -893,7 +893,7 @@ Public Class FrmApartado
         btnBuscarCliente.Enabled = False
     End Sub
 
-    Private Async Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
+    Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdApartado.Text <> "" Then
             Try
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
@@ -919,9 +919,9 @@ Public Class FrmApartado
                 For I As Short = 0 To dtbDetalleApartado.Rows.Count - 1
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                     .strDescripcion = dtbDetalleApartado.Rows(I).Item(1) + "-" + dtbDetalleApartado.Rows(I).Item(2),
-                    .strCantidad = CDbl(dtbDetalleApartado.Rows(I).Item(3)),
+                    .strCantidad = Decimal.Parse(dtbDetalleApartado.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleApartado.Rows(I).Item(4), 2),
-                    .strTotalLinea = FormatNumber(CDbl(dtbDetalleApartado.Rows(I).Item(3)) * CDbl(dtbDetalleApartado.Rows(I).Item(4)), 2),
+                    .strTotalLinea = FormatNumber(Decimal.Parse(dtbDetalleApartado.Rows(I).Item(3)) * Decimal.Parse(dtbDetalleApartado.Rows(I).Item(4)), 2),
                     .strExcento = IIf(dtbDetalleApartado.Rows(I).Item(7) = 0, "G", "E")
                 }
                     arrDetalleOrden.Add(detalleComprobante)
@@ -1037,9 +1037,9 @@ Public Class FrmApartado
         End If
     End Sub
 
-    Private Sub CboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedValueChanged
+    Private Async Sub CboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedValueChanged
         If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar(cboTipoMoneda.SelectedValue)
         End If
     End Sub
 
@@ -1068,7 +1068,7 @@ Public Class FrmApartado
     Private Sub Precio_KeyUp(sender As Object, e As KeyEventArgs) Handles txtPrecio.KeyUp
         If producto IsNot Nothing Then
             If txtPrecio.Text <> "" And e.KeyCode <> Keys.Tab And e.KeyCode <> Keys.Enter And e.KeyCode <> Keys.ShiftKey Then
-                decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2)
+                decPrecioVenta = Math.Round(Decimal.Parse(txtPrecio.Text), 2)
                 txtPorcDesc.Text = "0"
             End If
         End If
@@ -1139,7 +1139,7 @@ Public Class FrmApartado
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Dim bolPrecioAutorizado As Boolean = False
             If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
-            Dim decPorcDesc As Decimal = CDbl(txtPorcDesc.Text)
+            Dim decPorcDesc As Decimal = Decimal.Parse(txtPorcDesc.Text)
             If producto IsNot Nothing Then
                 decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
                 If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
@@ -1226,7 +1226,7 @@ Public Class FrmApartado
     Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
             If producto IsNot Nothing Then
-                If CDbl(txtPrecio.Text) > 0 Then
+                If Decimal.Parse(txtPrecio.Text) > 0 Then
                     BtnInsertar_Click(btnInsertar, New EventArgs())
                 Else
                     txtPrecio.Focus()
@@ -1246,7 +1246,7 @@ Public Class FrmApartado
     Private Sub TxtMontoPago_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
         If txtMontoPago.Text = "" Then
             txtMontoPago.Text = "0.00"
-        ElseIf CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+        ElseIf Decimal.Parse(txtMontoPago.Text) > decSaldoPorPagar Then
             MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         Else
@@ -1256,7 +1256,7 @@ Public Class FrmApartado
 
     Private Sub TxtMontoPago_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtMontoPago.PreviewKeyDown
         If e.KeyCode = Keys.Enter And txtIdApartado.Text = "" And txtMontoPago.Text <> "" Then
-            If CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+            If Decimal.Parse(txtMontoPago.Text) > decSaldoPorPagar Then
                 MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
             Else

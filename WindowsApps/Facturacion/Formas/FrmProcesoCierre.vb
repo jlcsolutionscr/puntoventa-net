@@ -67,7 +67,7 @@ Public Class FrmProcesoCierre
                 strFecha = "'" & DatePart(DateInterval.Year, FechaDia) & "/" & DatePart(DateInterval.Month, FechaDia) & "/" & DatePart(DateInterval.Day, FechaDia) & "'"
                 'objDatosLocal = FrmMenuPrincipal.objGenericoCN.ObtenerTabla("SELECT IdCxC, Plazo, Tasa, FechaProceso, Saldo, Tipo FROM CuentaPorCobrar WHERE Nulo = 0 AND Saldo > 0 And TipoPago = 2 And Tasa > 0 And FechaProceso = " & strFecha & " AND IdEmpresa = " & FrmMenuPrincipal.intEmpresa, "ProcesoCierre")
                 For Each objDataRow In objDatosLocal.Rows
-                    Monto = CDbl(objDataRow.Item(4)) * CDbl(objDataRow.Item(2)) / 100
+                    Monto = Decimal.Parse(objDataRow.Item(4)) * Decimal.Parse(objDataRow.Item(2)) / 100
                     If Monto > 0 Then
                         FechaCxC = FrmPrincipal.ObtenerFechaFormateada(Now())
                         FechaCxC = DateAdd(DateInterval.Month, 1, FechaCxC)

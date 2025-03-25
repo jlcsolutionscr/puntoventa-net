@@ -375,7 +375,7 @@ Public Class FrmAjusteInventario
 
     Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
-            If txtCantidad.Text <> "" And CDbl(txtPrecioCosto.Text) > 0 Then
+            If txtCantidad.Text <> "" And Decimal.Parse(txtPrecioCosto.Text) > 0 Then
                 BtnInsertar_Click(btnInsertar, New EventArgs())
             ElseIf txtCantidad.Text <> "" Then
                 txtPrecioCosto.Focus()

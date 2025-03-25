@@ -110,11 +110,11 @@ Partial Class FrmCompra
         Me.Label15 = New System.Windows.Forms.Label()
         Me.cboTipoMoneda = New System.Windows.Forms.ComboBox()
         Me.Label4 = New System.Windows.Forms.Label()
-        Me.txtTipoCambio = New System.Windows.Forms.TextBox()
-        Me.Label9 = New System.Windows.Forms.Label()
         Me.btnGenerarPDF = New System.Windows.Forms.Button()
         Me.txtObservaciones = New System.Windows.Forms.TextBox()
         Me._lblLabels_11 = New System.Windows.Forms.Label()
+        Me.Label9 = New System.Windows.Forms.Label()
+        Me.txtTipoCambio = New System.Windows.Forms.TextBox()
         CType(Me.grdDetalleCompra, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -996,6 +996,7 @@ Partial Class FrmCompra
         Me.cboTipoMoneda.BackColor = System.Drawing.SystemColors.Window
         Me.cboTipoMoneda.Cursor = System.Windows.Forms.Cursors.Default
         Me.cboTipoMoneda.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboTipoMoneda.Enabled = False
         Me.cboTipoMoneda.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboTipoMoneda.IntegralHeight = False
         Me.cboTipoMoneda.ItemHeight = 13
@@ -1004,11 +1005,13 @@ Partial Class FrmCompra
         Me.cboTipoMoneda.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.cboTipoMoneda.Size = New System.Drawing.Size(129, 21)
         Me.cboTipoMoneda.TabIndex = 191
+        Me.cboTipoMoneda.Visible = False
         '
         'Label4
         '
         Me.Label4.BackColor = System.Drawing.Color.Transparent
         Me.Label4.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label4.Enabled = False
         Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
         Me.Label4.Location = New System.Drawing.Point(432, 92)
         Me.Label4.Name = "Label4"
@@ -1017,35 +1020,7 @@ Partial Class FrmCompra
         Me.Label4.TabIndex = 194
         Me.Label4.Text = "Moneda:"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'txtTipoCambio
-        '
-        Me.txtTipoCambio.AcceptsReturn = True
-        Me.txtTipoCambio.BackColor = System.Drawing.SystemColors.Window
-        Me.txtTipoCambio.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtTipoCambio.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTipoCambio.Location = New System.Drawing.Point(739, 92)
-        Me.txtTipoCambio.MaxLength = 0
-        Me.txtTipoCambio.Name = "txtTipoCambio"
-        Me.txtTipoCambio.ReadOnly = True
-        Me.txtTipoCambio.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTipoCambio.Size = New System.Drawing.Size(73, 20)
-        Me.txtTipoCambio.TabIndex = 192
-        Me.txtTipoCambio.TabStop = False
-        Me.txtTipoCambio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label9
-        '
-        Me.Label9.BackColor = System.Drawing.Color.Transparent
-        Me.Label9.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label9.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label9.Location = New System.Drawing.Point(657, 92)
-        Me.Label9.Name = "Label9"
-        Me.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label9.Size = New System.Drawing.Size(76, 19)
-        Me.Label9.TabIndex = 193
-        Me.Label9.Text = "Tipo Cambio:"
-        Me.Label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.Label4.Visible = False
         '
         'btnGenerarPDF
         '
@@ -1090,12 +1065,45 @@ Partial Class FrmCompra
         Me._lblLabels_11.Text = "Observaciones:"
         Me._lblLabels_11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'Label9
+        '
+        Me.Label9.BackColor = System.Drawing.Color.Transparent
+        Me.Label9.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label9.Enabled = False
+        Me.Label9.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label9.Location = New System.Drawing.Point(657, 92)
+        Me.Label9.Name = "Label9"
+        Me.Label9.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label9.Size = New System.Drawing.Size(76, 19)
+        Me.Label9.TabIndex = 193
+        Me.Label9.Text = "Tipo Cambio:"
+        Me.Label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.Label9.Visible = False
+        '
+        'txtTipoCambio
+        '
+        Me.txtTipoCambio.AcceptsReturn = True
+        Me.txtTipoCambio.BackColor = System.Drawing.SystemColors.Window
+        Me.txtTipoCambio.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtTipoCambio.Enabled = False
+        Me.txtTipoCambio.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtTipoCambio.Location = New System.Drawing.Point(739, 92)
+        Me.txtTipoCambio.MaxLength = 0
+        Me.txtTipoCambio.Name = "txtTipoCambio"
+        Me.txtTipoCambio.ReadOnly = True
+        Me.txtTipoCambio.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtTipoCambio.Size = New System.Drawing.Size(73, 20)
+        Me.txtTipoCambio.TabIndex = 192
+        Me.txtTipoCambio.TabStop = False
+        Me.txtTipoCambio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtTipoCambio.Visible = False
+        '
         'FrmCompra
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(952, 634)
+        Me.ClientSize = New System.Drawing.Size(952, 633)
         Me.Controls.Add(Me.txtObservaciones)
         Me.Controls.Add(Me._lblLabels_11)
         Me.Controls.Add(Me.btnGenerarPDF)
@@ -1224,9 +1232,9 @@ Partial Class FrmCompra
     Public WithEvents Label15 As Label
     Public WithEvents cboTipoMoneda As ComboBox
     Public WithEvents Label4 As Label
-    Public WithEvents txtTipoCambio As TextBox
-    Public WithEvents Label9 As Label
     Public WithEvents btnGenerarPDF As Button
     Public WithEvents txtObservaciones As TextBox
     Public WithEvents _lblLabels_11 As Label
+    Public WithEvents Label9 As Label
+    Public WithEvents txtTipoCambio As TextBox
 End Class

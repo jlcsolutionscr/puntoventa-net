@@ -59,7 +59,7 @@ Public Class FrmMovimientoBanco
         If txtIdMov.Text <> "" And cboIdCuenta.SelectedValue <> Nothing And cboIdTipo.SelectedValue <> Nothing Then
             If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    Await Puntoventa.AnularMovimientoBanco(txtIdMov.Text, FrmPrincipal.usuarioGlobal.IdUsuario, "", FrmPrincipal.usuarioGlobal.Token)
+                    Await Puntoventa.ReversarMovimientoBanco(txtIdMov.Text, FrmPrincipal.usuarioGlobal.IdUsuario, "", FrmPrincipal.usuarioGlobal.Token)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -98,7 +98,7 @@ Public Class FrmMovimientoBanco
     End Sub
 
     Private Async Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
-        If txtNumero.Text <> "" And txtFecha.Text <> "" And cboIdCuenta.SelectedValue <> Nothing And cboIdTipo.SelectedValue <> Nothing And txtBeneficiario.Text <> "" And CDbl(txtMonto.Text) > 0 And txtDescripcion.Text <> "" Then
+        If txtNumero.Text <> "" And txtFecha.Text <> "" And cboIdCuenta.SelectedValue <> Nothing And cboIdTipo.SelectedValue <> Nothing And txtBeneficiario.Text <> "" And Decimal.Parse(txtMonto.Text) > 0 And txtDescripcion.Text <> "" Then
             movimiento = New MovimientoBanco With {
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdCuenta = cboIdCuenta.SelectedValue,
@@ -107,7 +107,7 @@ Public Class FrmMovimientoBanco
                 .IdTipo = cboIdTipo.SelectedValue,
                 .Numero = txtNumero.Text,
                 .Beneficiario = txtBeneficiario.Text,
-                .Monto = CDbl(txtMonto.Text),
+                .Monto = Decimal.Parse(txtMonto.Text),
                 .Descripcion = txtDescripcion.Text
             }
             Try

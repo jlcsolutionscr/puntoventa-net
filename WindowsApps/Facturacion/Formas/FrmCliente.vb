@@ -13,7 +13,7 @@ Public Class FrmCliente
 #End Region
 
 #Region "Métodos"
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboTipoIdentificacion.ValueMember = "Id"
         cboTipoIdentificacion.DisplayMember = "Descripcion"
         cboTipoIdentificacion.DataSource = FrmPrincipal.ObtenerListadoTipoIdentificacion()
@@ -23,7 +23,7 @@ Public Class FrmCliente
         cboTipoExoneracion.ValueMember = "Id"
         cboTipoExoneracion.DisplayMember = "Descripcion"
         cboTipoExoneracion.DataSource = FrmPrincipal.ObtenerListadoTipoExoneracion()
-    End Function
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -49,7 +49,7 @@ Public Class FrmCliente
     Private Async Sub FrmCliente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             If FrmPrincipal.bolModificaCliente Then chkPermiteCredito.Enabled = True
-            Await CargarCombos()
+            CargarCombos()
             If intIdCliente > 0 Then
                 datos = Await Puntoventa.ObtenerCliente(intIdCliente, FrmPrincipal.usuarioGlobal.Token)
                 If datos Is Nothing Then

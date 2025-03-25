@@ -6,6 +6,7 @@ Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.Common.Seguridad
 Imports System.Collections.Generic
 Imports System.Linq
+Imports System.Threading.Tasks
 
 Public Class FrmPrincipal
 #Region "Variables"
@@ -21,7 +22,6 @@ Public Class FrmPrincipal
     Public dgvInteger As DataGridViewCellStyle
     Public lstListaReportes As New List(Of String)
     Public listaEmpresas As New List(Of LlaveDescripcion)
-    Public decTipoCambioDolar As Decimal
     Public strCodigoUsuario As String
     Public strContrasena As String
     Public strIdEmpresa As String
@@ -48,6 +48,7 @@ Public Class FrmPrincipal
     Private listaSucursales As List(Of LlaveDescripcion)
     Private listaTipoPrecio As List(Of LlaveDescripcion)
     Private listaActividadEconomica As List(Of LlaveDescripcion)
+    Private tipoDeCambioDolar As LlaveDescripcionValor
 
 #End Region
 
@@ -213,6 +214,24 @@ Public Class FrmPrincipal
             End If
         End If
         Return True
+    End Function
+
+    Public Async Function ObtenerTipoDeCambioDolar(intTipoMoneda As Integer) As Task(Of Decimal)
+        If intTipoMoneda = 1 Then Return 1
+        Dim strFecha As String = Date.Now.ToString("dd/MM/yyyy")
+        Dim decTipoDeCambioDolar As Decimal = 0
+        If Not IsNothing(tipoDeCambioDolar) Then
+            If tipoDeCambioDolar.Descripcion = strFecha Then Return tipoDeCambioDolar.Valor
+        End If
+        If decTipoDeCambioDolar = 0 Then
+            decTipoDeCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(strFecha, usuarioGlobal.Token)
+        End If
+        If decTipoDeCambioDolar = 0 Then
+            decTipoDeCambioDolar = Decimal.Parse(Await Puntoventa.ObtenerTipoCambioDolarHacienda())
+            Await Puntoventa.AgregarTipoCambioDolar(strFecha, decTipoDeCambioDolar, usuarioGlobal.Token)
+        End If
+        tipoDeCambioDolar = New LlaveDescripcionValor(1, strFecha, decTipoDeCambioDolar)
+        Return decTipoDeCambioDolar
     End Function
 #End Region
 
@@ -667,7 +686,6 @@ Public Class FrmPrincipal
         usuarioGlobal = empresa.Usuario
         empresaGlobal = empresa
         equipoGlobal = empresa.EquipoRegistrado
-        decTipoCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(usuarioGlobal.Token)
         listaTipoIdentificacion = empresa.ListadoTipoIdentificacion
         listaFormaPagoCliente = empresa.ListadoFormaPagoCliente
         listaFormaPagoEmpresa = empresa.ListadoFormaPagoEmpresa

@@ -145,14 +145,14 @@ Public Class FrmConsultaCierreCaja
             txtTotalPagoCxP.Text = FormatNumber(cierreCaja.PagosCxPEfectivo + cierreCaja.PagosCxPBancos, 2)
             txtEgresosEfectivo20.Text = FormatNumber(cierreCaja.EgresosEfectivo, 2)
             txtTotalEgresos.Text = FormatNumber(cierreCaja.ComprasEfectivo + cierreCaja.PagosCxPEfectivo + cierreCaja.EgresosEfectivo, 2)
-            txtTotalEfectivo.Text = FormatNumber(CDbl(txtFondoInicio.Text) + CDbl(txtTotalIngresos.Text) - CDbl(txtTotalEgresos.Text), 2)
+            txtTotalEfectivo.Text = FormatNumber(Decimal.Parse(txtFondoInicio.Text) + Decimal.Parse(txtTotalIngresos.Text) - Decimal.Parse(txtTotalEgresos.Text), 2)
             txtTotalIngresosTarjeta.Text = FormatNumber(decTotalTarjeta, 2)
             txtRetiroEfectivo.Text = FormatNumber(cierreCaja.RetiroEfectivo, 2)
-            txtCierreEfectivoProx.Text = FormatNumber(CDbl(txtTotalEfectivo.Text) - CDbl(txtRetiroEfectivo.Text), 2)
+            txtCierreEfectivoProx.Text = FormatNumber(Decimal.Parse(txtTotalEfectivo.Text) - Decimal.Parse(txtRetiroEfectivo.Text), 2)
             txtObservaciones.Text = cierreCaja.Observaciones
             CargarDetalleEfectivo(cierreCaja)
             txtEfectivoCaja.Text = FormatNumber(decEfectivoEnCaja, 2)
-            txtSaldo.Text = FormatNumber(decEfectivoEnCaja - CDbl(txtTotalEfectivo.Text), 2)
+            txtSaldo.Text = FormatNumber(decEfectivoEnCaja - Decimal.Parse(txtTotalEfectivo.Text), 2)
             btnReporte.Focus()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -233,7 +233,7 @@ Public Class FrmConsultaCierreCaja
 
     Private Sub TextField_DoubleClick(sender As Object, e As EventArgs) Handles txtVentasEfectivo01.DoubleClick, txtVentasBancos03.DoubleClick, txtVentasTarjeta02.DoubleClick, txtVentasCredito04.DoubleClick, txtAdelantosApartadoEfectivo05.DoubleClick, txtAdelantosApartadoTarjeta06.DoubleClick, txtAdelantosApartadoBancos07.DoubleClick, txtAdelantosOrdenEfectivo08.DoubleClick, txtAdelantosOrdenTarjeta09.DoubleClick, txtAdelantosOrdenBancos10.DoubleClick, txtPagosCxCEfectivo11.DoubleClick, txtPagosCxCTarjeta12.DoubleClick, txtPagosCxCBancos13.DoubleClick, txtIngresosEfectivo14.DoubleClick, txtComprasEfectivo15.DoubleClick, txtComprasBancos16.DoubleClick, txtComprasCredito17.DoubleClick, txtPagosCxPEfectivo18.DoubleClick, txtPagosCxPBancos19.DoubleClick, txtEgresosEfectivo20.DoubleClick
         Dim current As TextBox = Controls(sender.Name)
-        If CDbl(current.Text) > 0 Then
+        If Decimal.Parse(current.Text) > 0 Then
             Dim intTipo As Integer = CInt(sender.Name.ToString().Substring(sender.Name.ToString().Length - 2))
             Dim detalle As List(Of DetalleMovimientoCierreCaja) = cierreCaja.DetalleMovimientoCierreCaja.Where(Function(x) x.Tipo = intTipo).ToList()
             Dim formDetalle As New FrmDetalleCierreCaja()
@@ -245,7 +245,7 @@ Public Class FrmConsultaCierreCaja
     Private Sub TxtDepositoBancario_Validated(sender As Object, e As EventArgs) Handles txtRetiroEfectivo.Validated
         If txtRetiroEfectivo.Text = "" Then txtRetiroEfectivo.Text = "0"
         txtRetiroEfectivo.Text = FormatNumber(txtRetiroEfectivo.Text, 2)
-        txtCierreEfectivoProx.Text = FormatNumber(CDbl(txtTotalEfectivo.Text) - CDbl(txtRetiroEfectivo.Text), 2)
+        txtCierreEfectivoProx.Text = FormatNumber(Decimal.Parse(txtTotalEfectivo.Text) - Decimal.Parse(txtRetiroEfectivo.Text), 2)
     End Sub
 #End Region
 End Class

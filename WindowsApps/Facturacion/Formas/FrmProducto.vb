@@ -95,8 +95,8 @@ Public Class FrmProducto
         If txtPrecioImpuesto3.Text <> "" Then txtPrecioVenta3.Text = FormatoPrecio(txtPrecioImpuesto3.Text / (1 + (decTasaImpuesto / 100)), 2)
         If txtPrecioImpuesto4.Text <> "" Then txtPrecioVenta4.Text = FormatoPrecio(txtPrecioImpuesto4.Text / (1 + (decTasaImpuesto / 100)), 2)
         If txtPrecioImpuesto5.Text <> "" Then txtPrecioVenta5.Text = FormatoPrecio(txtPrecioImpuesto5.Text / (1 + (decTasaImpuesto / 100)), 2)
-        If CDbl(txtPrecioCosto.Text) > 0 Then
-            txtPorcUtilidad.Text = (CDbl(txtPrecioVenta1.Text) / CDbl(txtPrecioCosto.Text) * 100) - 100
+        If Decimal.Parse(txtPrecioCosto.Text) > 0 Then
+            txtPorcUtilidad.Text = (Decimal.Parse(txtPrecioVenta1.Text) / Decimal.Parse(txtPrecioCosto.Text) * 100) - 100
         Else
             txtPorcUtilidad.Text = "100"
         End If
@@ -283,8 +283,8 @@ Public Class FrmProducto
         txtPrecioImpuesto4.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
         txtPrecioVenta5.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
         txtPrecioImpuesto5.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
-        If CDbl(txtPrecioCosto.Text) > 0 Then
-            txtPorcUtilidad.Text = (CDbl(txtPrecioVenta1.Text) / CDbl(txtPrecioCosto.Text) * 100) - 100
+        If Decimal.Parse(txtPrecioCosto.Text) > 0 Then
+            txtPorcUtilidad.Text = (Decimal.Parse(txtPrecioVenta1.Text) / Decimal.Parse(txtPrecioCosto.Text) * 100) - 100
         Else
             txtPorcUtilidad.Text = "100"
         End If
@@ -302,8 +302,8 @@ Public Class FrmProducto
         txtPrecioImpuesto4.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
         txtPrecioVenta5.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
         txtPrecioImpuesto5.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)
-        If CDbl(txtPrecioCosto.Text) > 0 Then
-            txtPorcUtilidad.Text = (CDbl(txtPrecioVenta1.Text) / CDbl(txtPrecioCosto.Text) * 100) - 100
+        If Decimal.Parse(txtPrecioCosto.Text) > 0 Then
+            txtPorcUtilidad.Text = (Decimal.Parse(txtPrecioVenta1.Text) / Decimal.Parse(txtPrecioCosto.Text) * 100) - 100
         Else
             txtPorcUtilidad.Text = "100"
         End If
@@ -377,16 +377,16 @@ Public Class FrmProducto
     End Sub
 
     Private Sub Utilidad_Validated(sender As Object, e As EventArgs) Handles txtPrecioCosto.Validated
-        If CDbl(txtPrecioCosto.Text) > 0 Then
-            txtPorcUtilidad.Text = (CDbl(txtPrecioVenta1.Text) / CDbl(txtPrecioCosto.Text) * 100) - 100
+        If Decimal.Parse(txtPrecioCosto.Text) > 0 Then
+            txtPorcUtilidad.Text = (Decimal.Parse(txtPrecioVenta1.Text) / Decimal.Parse(txtPrecioCosto.Text) * 100) - 100
         Else
             txtPorcUtilidad.Text = "100"
         End If
     End Sub
 
     Private Sub txtPorcUtilidad_Validated(sender As Object, e As EventArgs) Handles txtPorcUtilidad.Validated
-        Dim decPorc As Decimal = (CDbl(txtPorcUtilidad.Text) + 100) / 100
-        txtPrecioVenta1.Text = FormatoPrecio(decPorc * CDbl(txtPrecioCosto.Text), 2)
+        Dim decPorc As Decimal = (Decimal.Parse(txtPorcUtilidad.Text) + 100) / 100
+        txtPrecioVenta1.Text = FormatoPrecio(decPorc * Decimal.Parse(txtPrecioCosto.Text), 2)
         txtPrecioImpuesto1.Text = FormatoPrecio(txtPrecioVenta1.Text * (1 + (decTasaImpuesto / 100)), 2)
         txtPrecioVenta2.Text = FormatoPrecio(txtPrecioVenta1.Text, 2)
         txtPrecioImpuesto2.Text = FormatoPrecio(txtPrecioImpuesto1.Text, 2)

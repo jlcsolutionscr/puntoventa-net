@@ -303,7 +303,7 @@ Public Class FrmProforma
     Private Sub CargarCombos()
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
-        cboTipoMoneda.DataSource = FrmPrincipal.ObtenerListadoFormaPagoCliente()
+        cboTipoMoneda.DataSource = FrmPrincipal.ObtenerListadoTipoMoneda()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
         cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
@@ -405,7 +405,7 @@ Public Class FrmProforma
             txtCodigo.Focus()
             CargarCombos()
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar(cboTipoMoneda.SelectedValue)
             bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -419,7 +419,7 @@ Public Class FrmProforma
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         cboTipoMoneda.Enabled = True
-        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+        txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar(cboTipoMoneda.SelectedValue)
         txtTextoAdicional.Text = ""
         txtTelefono.Text = ""
         txtPorcentajeExoneracion.Text = "0"
@@ -504,12 +504,14 @@ Public Class FrmProforma
                 Exit Sub
             End Try
             If proforma IsNot Nothing Then
+                bolReady = False
                 txtIdProforma.Text = proforma.ConsecProforma
                 cliente = proforma.Cliente
                 txtNombreCliente.Text = proforma.NombreCliente
                 txtFecha.Text = proforma.Fecha
                 cboSucursal.SelectedValue = proforma.IdSucursal
                 cboTipoMoneda.SelectedValue = proforma.IdTipoMoneda
+                txtTipoCambio.Text = proforma.TipoDeCambioDolar
                 txtTextoAdicional.Text = proforma.TextoAdicional
                 txtTelefono.Text = proforma.Telefono
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
@@ -526,6 +528,7 @@ Public Class FrmProforma
                 btnBuscarCliente.Enabled = False
                 btnGuardar.Enabled = Not proforma.Aplicado
                 btnAnular.Enabled = Not proforma.Nulo And Not proforma.Aplicado And FrmPrincipal.bolAnularTransacciones
+                bolReady = True
             Else
                 MessageBox.Show("No existe registro de proforma asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
@@ -606,11 +609,15 @@ Public Class FrmProforma
         btnImprimir.Focus()
         btnGuardar.Enabled = False
         If txtIdProforma.Text = "" Then
+            If cboTipoMoneda.SelectedValue = 2 Then
+                txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar(cboTipoMoneda.SelectedValue)
+            End If
             proforma = New Proforma With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = cboSucursal.SelectedValue,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
+                .TipoDeCambioDolar = Decimal.Parse(txtTipoCambio.Text),
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
                 .Fecha = Now(),
@@ -657,7 +664,7 @@ Public Class FrmProforma
             proforma.Excento = decExcento
             proforma.Gravado = decGravado
             proforma.Descuento = decDescuento
-            proforma.Impuesto = CDbl(txtImpuesto.Text)
+            proforma.Impuesto = Decimal.Parse(txtImpuesto.Text)
             proforma.DetalleProforma.Clear()
             For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
                 detalleProforma = New DetalleProforma
@@ -782,15 +789,15 @@ Public Class FrmProforma
     Private Sub Precio_KeyUp(sender As Object, e As KeyEventArgs) Handles txtPrecio.KeyUp
         If producto IsNot Nothing Then
             If txtPrecio.Text <> "" And e.KeyCode <> Keys.Tab And e.KeyCode <> Keys.Enter And e.KeyCode <> Keys.ShiftKey Then
-                decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2)
+                decPrecioVenta = Math.Round(Decimal.Parse(txtPrecio.Text), 2)
                 txtPorcDesc.Text = "0"
             End If
         End If
     End Sub
 
-    Private Sub cboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
+    Private Async Sub cboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
         If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar(cboTipoMoneda.SelectedValue)
         End If
     End Sub
 
@@ -859,7 +866,7 @@ Public Class FrmProforma
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             Dim bolPrecioAutorizado As Boolean = False
             If txtPorcDesc.Text = "" Then txtPorcDesc.Text = "0"
-            Dim decPorcDesc As Decimal = CDbl(txtPorcDesc.Text)
+            Dim decPorcDesc As Decimal = Decimal.Parse(txtPorcDesc.Text)
             If producto IsNot Nothing Then
                 decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
                 If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
@@ -972,7 +979,7 @@ Public Class FrmProforma
     Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
             If producto IsNot Nothing Then
-                If CDbl(txtPrecio.Text) > 0 Then
+                If Decimal.Parse(txtPrecio.Text) > 0 Then
                     BtnInsertar_Click(btnInsertar, New EventArgs())
                 Else
                     txtPrecio.Focus()

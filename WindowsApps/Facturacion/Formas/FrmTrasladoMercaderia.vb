@@ -132,10 +132,10 @@ Public Class FrmTrasladoMercaderia
         decTotal = 0
         For I As Short = 0 To dtbDetalleTraslado.Rows.Count - 1
             If dtbDetalleTraslado.Rows(I).Item(6) > 0 Then
-                decGravado += CDbl(dtbDetalleTraslado.Rows(I).Item(5))
-                decImpuesto += CDbl(dtbDetalleTraslado.Rows(I).Item(5)) * dtbDetalleTraslado.Rows(I).Item(6) / 100
+                decGravado += Decimal.Parse(dtbDetalleTraslado.Rows(I).Item(5))
+                decImpuesto += Decimal.Parse(dtbDetalleTraslado.Rows(I).Item(5)) * dtbDetalleTraslado.Rows(I).Item(6) / 100
             Else
-                decExcento += CDbl(dtbDetalleTraslado.Rows(I).Item(5))
+                decExcento += Decimal.Parse(dtbDetalleTraslado.Rows(I).Item(5))
             End If
         Next
         decTotal = decGravado + decExcento + decImpuesto
@@ -338,7 +338,7 @@ Public Class FrmTrasladoMercaderia
             MessageBox.Show("Debe seleccionar la sucursal destino para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             cboIdSucursalDestino.Focus()
             Exit Sub
-        ElseIf CDbl(txtTotal.Text) = 0 Then
+        ElseIf Decimal.Parse(txtTotal.Text) = 0 Then
             MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
@@ -403,9 +403,9 @@ Public Class FrmTrasladoMercaderia
             For I As Short = 0 To dtbDetalleTraslado.Rows.Count - 1
                 detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                     .strDescripcion = dtbDetalleTraslado.Rows(I).Item(1) + "-" + dtbDetalleTraslado.Rows(I).Item(2),
-                    .strCantidad = CDbl(dtbDetalleTraslado.Rows(I).Item(3)),
+                    .strCantidad = Decimal.Parse(dtbDetalleTraslado.Rows(I).Item(3)),
                     .strPrecio = FormatNumber(dtbDetalleTraslado.Rows(I).Item(4), 2),
-                    .strTotalLinea = FormatNumber(CDbl(dtbDetalleTraslado.Rows(I).Item(3)) * CDbl(dtbDetalleTraslado.Rows(I).Item(4)), 2)
+                    .strTotalLinea = FormatNumber(Decimal.Parse(dtbDetalleTraslado.Rows(I).Item(3)) * Decimal.Parse(dtbDetalleTraslado.Rows(I).Item(4)), 2)
                 }
                 arrDetalleTraslado.Add(detalleComprobante)
             Next
@@ -480,7 +480,7 @@ Public Class FrmTrasladoMercaderia
 
     Private Sub TxtCantidad_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtCantidad.PreviewKeyDown
         If e.KeyCode = Keys.Enter Then
-            If txtCantidad.Text <> "" And CDbl(txtPrecioCosto.Text) > 0 Then
+            If txtCantidad.Text <> "" And Decimal.Parse(txtPrecioCosto.Text) > 0 Then
                 BtnInsertar_Click(btnInsertar, New EventArgs())
             ElseIf txtCantidad.Text <> "" Then
                 txtPrecioCosto.Focus()
@@ -490,7 +490,7 @@ Public Class FrmTrasladoMercaderia
 
     Private Sub txtCantidad_TextChanged(sender As Object, e As EventArgs) Handles txtCantidad.TextChanged
         If txtCantidad.Text <> "" Then
-            If CDbl(txtCantidad.Text) > producto.Existencias Then
+            If Decimal.Parse(txtCantidad.Text) > producto.Existencias Then
                 MessageBox.Show("La cantidad por trasladar no puede ser mayor a las existencias del producto.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 txtCantidad.Text = ""
             End If

@@ -143,7 +143,7 @@ Public Class FrmIngreso
                 .IdCuenta = cboCuentaIngreso.SelectedValue,
                 .RecibidoDe = txtRecibidoDe.Text,
                 .Detalle = txtDetalle.Text,
-                .Monto = CDbl(txtMonto.Text),
+                .Monto = Decimal.Parse(txtMonto.Text),
                 .Nulo = False
             }
             Try

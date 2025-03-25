@@ -345,7 +345,7 @@ Public Class FrmDevolucionDeClientes
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If cliente Is Nothing Or txtFecha.Text = "" Or factura Is Nothing Or CDbl(txtTotal.Text) = 0 Then
+        If cliente Is Nothing Or txtFecha.Text = "" Or factura Is Nothing Or Decimal.Parse(txtTotal.Text) = 0 Then
             MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
@@ -361,7 +361,7 @@ Public Class FrmDevolucionDeClientes
                 .Fecha = Now(),
                 .Excento = dblExcento,
                 .Gravado = decGravado,
-                .Impuesto = CDbl(txtImpuesto.Text)
+                .Impuesto = Decimal.Parse(txtImpuesto.Text)
             }
             devolucion.DetalleDevolucionCliente = New List(Of DetalleDevolucionCliente)
             For I As Short = 0 To dtbDetalleDevolucion.Rows.Count - 1
@@ -416,9 +416,9 @@ Public Class FrmDevolucionDeClientes
                 If dtbDetalleDevolucion.Rows(I).Item(8) > 0 Then
                     detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                         .strDescripcion = dtbDetalleDevolucion.Rows(I).Item(1) + "-" + dtbDetalleDevolucion.Rows(I).Item(2),
-                        .strCantidad = CDbl(dtbDetalleDevolucion.Rows(I).Item(8)),
+                        .strCantidad = Decimal.Parse(dtbDetalleDevolucion.Rows(I).Item(8)),
                         .strPrecio = FormatNumber(dtbDetalleDevolucion.Rows(I).Item(5), 2),
-                        .strTotalLinea = FormatNumber(CDbl(dtbDetalleDevolucion.Rows(I).Item(8)) * CDbl(dtbDetalleDevolucion.Rows(I).Item(5)), 2)
+                        .strTotalLinea = FormatNumber(Decimal.Parse(dtbDetalleDevolucion.Rows(I).Item(8)) * Decimal.Parse(dtbDetalleDevolucion.Rows(I).Item(5)), 2)
                     }
                     arrDetalleDevolucion.Add(detalleComprobante)
                 End If

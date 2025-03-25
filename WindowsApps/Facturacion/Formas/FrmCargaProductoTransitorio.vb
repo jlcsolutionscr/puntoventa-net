@@ -68,7 +68,7 @@ Public Class FrmCargaProductoTransitorio
     End Sub
 
     Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
-        If txtDescripcion.Text = "" Or CDbl(txtPrecioVenta1.Text) = 0 Or cboTipoImpuesto.SelectedValue Is Nothing Or txtCantidad.Text = "" Then
+        If txtDescripcion.Text = "" Or Decimal.Parse(txtPrecioVenta1.Text) = 0 Or cboTipoImpuesto.SelectedValue Is Nothing Or txtCantidad.Text = "" Then
             MessageBox.Show("Información incompleta. Por favor verifique. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If

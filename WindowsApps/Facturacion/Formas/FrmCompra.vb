@@ -342,9 +342,6 @@ Public Class FrmCompra
             MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
-        Dim decMontoPago, decTipoCambio As Decimal
-        decMontoPago = CDbl(txtMontoPago.Text)
-        decTipoCambio = CDbl(txtTipoCambio.Text)
         dtrRowDesglosePago = dtbDesglosePago.NewRow
         dtrRowDesglosePago.Item(0) = cboFormaPago.SelectedValue
         dtrRowDesglosePago.Item(1) = cboFormaPago.Text
@@ -352,8 +349,8 @@ Public Class FrmCompra
         dtrRowDesglosePago.Item(3) = cboCuentaBanco.Text
         dtrRowDesglosePago.Item(4) = txtReferencia.Text
         dtrRowDesglosePago.Item(5) = cboTipoMoneda.SelectedValue
-        dtrRowDesglosePago.Item(6) = decMontoPago
-        dtrRowDesglosePago.Item(7) = decTipoCambio
+        dtrRowDesglosePago.Item(6) = Decimal.Parse(txtMontoPago.Text)
+        dtrRowDesglosePago.Item(7) = Decimal.Parse(txtTipoCambio.Text)
         dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
         grdDesglosePago.Refresh()
     End Sub
@@ -374,11 +371,11 @@ Public Class FrmCompra
             End If
         Next
         decSubTotal = decGravado + decExcento
-        If decSubTotal > 0 Then decPorcDesc = CDbl(txtDescuento.Text) / decSubTotal
+        If decSubTotal > 0 Then decPorcDesc = Decimal.Parse(txtDescuento.Text) / decSubTotal
         If decGravado > 0 Then decImpuesto = Math.Round(decGravado - (decGravado * decPorcDesc), 2) * decTasaIva / 100
         decGravado = Math.Round(decGravado, 2)
         decExcento = Math.Round(decExcento, 2)
-        decTotal = Math.Round(decExcento + decGravado + decImpuesto - CDbl(txtDescuento.Text), 2)
+        decTotal = Math.Round(decExcento + decGravado + decImpuesto - Decimal.Parse(txtDescuento.Text), 2)
         txtSubTotal.Text = FormatNumber(decSubTotal, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
         txtTotal.Text = FormatNumber(decTotal, 2)
@@ -390,7 +387,7 @@ Public Class FrmCompra
     Private Sub CargarTotalesPago()
         decTotalPago = 0
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
-            decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(6))
+            decTotalPago = decTotalPago + Decimal.Parse(dtbDesglosePago.Rows(I).Item(6))
         Next
         decSaldoPorPagar = decTotal - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
@@ -521,7 +518,7 @@ Public Class FrmCompra
             Await CargarCombos()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar(cboTipoMoneda.SelectedValue)
             bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -529,13 +526,13 @@ Public Class FrmCompra
         End Try
     End Sub
 
-    Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+    Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdCompra.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+        txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar(cboTipoMoneda.SelectedValue)
         proveedor = Nothing
         txtProveedor.Text = ""
         txtFactura.Text = ""
@@ -746,6 +743,9 @@ Public Class FrmCompra
         End If
         If txtIdCompra.Text = "" Then
             btnGuardar.Enabled = False
+            If cboTipoMoneda.SelectedValue = 2 Then
+                txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar(cboTipoMoneda.SelectedValue)
+            End If
             compra = New Compra With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = cboSucursal.SelectedValue,
@@ -754,12 +754,13 @@ Public Class FrmCompra
                 .Fecha = Now(),
                 .NoDocumento = txtFactura.Text,
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
+                .TipoDeCambioDolar = Decimal.Parse(txtTipoCambio.Text),
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
                 .Excento = decExcento,
                 .Gravado = decGravado,
-                .Descuento = CDbl(txtDescuento.Text),
-                .Impuesto = CDbl(txtImpuesto.Text),
+                .Descuento = Decimal.Parse(txtDescuento.Text),
+                .Impuesto = Decimal.Parse(txtImpuesto.Text),
                 .IdOrdenCompra = txtIdOrdenCompra.Text,
                 .Observaciones = txtObservaciones.Text,
                 .Nulo = False
@@ -787,7 +788,7 @@ Public Class FrmCompra
                     .Beneficiario = txtProveedor.Text,
                     .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(5),
                     .MontoLocal = dtbDesglosePago.Rows(I).Item(6),
-                    .TipoDeCambio = dtbDesglosePago.Rows(I).Item(7)
+                    .TipoDeCambio = Decimal.Parse(txtTipoCambio.Text)
                 }
                 compra.DesglosePagoCompra.Add(desglosePago)
             Next
@@ -835,7 +836,7 @@ Public Class FrmCompra
             For I As Short = 0 To dtbDetalleCompra.Rows.Count - 1
                 detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                     .strDescripcion = dtbDetalleCompra.Rows(I).Item(2) + " - " + dtbDetalleCompra.Rows(I).Item(1) + " - " + dtbDetalleCompra.Rows(I).Item(3),
-                    .strCantidad = CDbl(dtbDetalleCompra.Rows(I).Item(4)),
+                    .strCantidad = Decimal.Parse(dtbDetalleCompra.Rows(I).Item(4)),
                     .strPrecio = FormatNumber(dtbDetalleCompra.Rows(I).Item(13), 2)
                 }
                 arrDetalleCompra.Add(detalleComprobante)
@@ -872,7 +873,7 @@ Public Class FrmCompra
             newFormReport.repReportViewer.LocalReport.DataSources.Clear()
             newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
             newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-            Dim stream As Stream = Assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptCompra.rdlc")
+            Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptCompra.rdlc")
             newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
             Dim parameters(1) As ReportParameter
             parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
@@ -941,9 +942,9 @@ Public Class FrmCompra
         End If
     End Sub
 
-    Private Sub CboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
+    Private Async Sub CboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
         If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar(cboTipoMoneda.SelectedValue)
         End If
     End Sub
 
@@ -994,9 +995,9 @@ Public Class FrmCompra
                 txtDescuento.Text = FormatNumber(0, 2)
             Else
                 If InStr(txtDescuento.Text, "%") Then
-                    txtDescuento.Text = CDbl(Mid(txtDescuento.Text, 1, Len(txtDescuento.Text) - 1)) / 100 * CDbl(txtSubTotal.Text)
+                    txtDescuento.Text = Decimal.Parse(Mid(txtDescuento.Text, 1, Len(txtDescuento.Text) - 1)) / 100 * Decimal.Parse(txtSubTotal.Text)
                 End If
-                If txtDescuento.Text > CDbl(txtSubTotal.Text) Then
+                If txtDescuento.Text > Decimal.Parse(txtSubTotal.Text) Then
                     MessageBox.Show("El descuento debe ser menor al SubTotal. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     txtDescuento.Text = 0
                 End If
@@ -1011,8 +1012,8 @@ Public Class FrmCompra
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Tab Then
             If txtImpuesto.Text = "" Then txtImpuesto.Text = "0"
             txtImpuesto.Text = FormatNumber(txtImpuesto.Text, 2)
-            txtTotal.Text = FormatNumber(CDbl(txtSubTotal.Text) + CDbl(txtImpuesto.Text) - CDbl(txtDescuento.Text), 2)
-            decTotal = CDbl(txtTotal.Text)
+            txtTotal.Text = FormatNumber(Decimal.Parse(txtSubTotal.Text) + Decimal.Parse(txtImpuesto.Text) - Decimal.Parse(txtDescuento.Text), 2)
+            decTotal = Decimal.Parse(txtTotal.Text)
             CargarTotalesPago()
         End If
     End Sub
@@ -1058,8 +1059,8 @@ Public Class FrmCompra
     Private Sub txtPrecioCosto_Validated(sender As Object, e As EventArgs) Handles txtPrecioCosto.Validated
         If txtPrecioCosto.Text = "" Then txtPrecioCosto.Text = "0.00"
         txtPrecioCosto.Text = FormatNumber(txtPrecioCosto.Text, 2)
-        If CDbl(txtPrecioCosto.Text) > 0 Then
-            decUtilidad = (decPrecioVenta * 100 / CDbl(txtPrecioCosto.Text)) - 100
+        If Decimal.Parse(txtPrecioCosto.Text) > 0 Then
+            decUtilidad = (decPrecioVenta * 100 / Decimal.Parse(txtPrecioCosto.Text)) - 100
             txtUtilidad.Text = FormatNumber(decUtilidad, 2)
         End If
     End Sub
@@ -1069,8 +1070,8 @@ Public Class FrmCompra
         If txtPrecioCosto.Text = "" Then txtPrecioCosto.Text = "0.00"
         txtPrecioVenta.Text = FormatNumber(txtPrecioVenta.Text, 2)
         decPrecioVenta = txtPrecioVenta.Text / (1 + (FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto) / 100))
-        If CDbl(txtPrecioVenta.Text) > 0 Then
-            decUtilidad = (decPrecioVenta * 100 / CDbl(txtPrecioCosto.Text)) - 100
+        If Decimal.Parse(txtPrecioVenta.Text) > 0 Then
+            decUtilidad = (decPrecioVenta * 100 / Decimal.Parse(txtPrecioCosto.Text)) - 100
             txtUtilidad.Text = FormatNumber(decUtilidad, 2)
         End If
     End Sub
@@ -1125,7 +1126,7 @@ Public Class FrmCompra
             If producto IsNot Nothing Then
                 If txtPrecioCosto.Text = "" Then txtPrecioCosto.Text = "0"
                 txtPrecioCosto.Text = FormatNumber(txtPrecioCosto.Text, 2)
-                txtUtilidad.Text = FormatNumber((producto.PrecioVenta1 * 100 / CDbl(txtPrecioCosto.Text)) - 100, 2)
+                txtUtilidad.Text = FormatNumber((producto.PrecioVenta1 * 100 / Decimal.Parse(txtPrecioCosto.Text)) - 100, 2)
                 BtnInsertar_Click(btnInsertar, New EventArgs())
             End If
         End If

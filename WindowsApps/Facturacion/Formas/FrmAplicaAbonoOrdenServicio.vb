@@ -113,7 +113,7 @@ Public Class FrmAplicaAbonoOrdenServicio
         grdDesglosePago.Columns.Add(dvcTipoCambio)
     End Sub
 
-    Private Sub CargarLineaDesglosePago()
+    Private Async Sub CargarLineaDesglosePago()
         Dim objPkDesglose(1) As Object
         objPkDesglose(0) = cboFormaPago.SelectedValue
         objPkDesglose(1) = cboTipoBanco.SelectedValue
@@ -121,9 +121,7 @@ Public Class FrmAplicaAbonoOrdenServicio
             MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
-        Dim decMontoPago, decTipoCambio As Decimal
-        decMontoPago = CDbl(txtMontoPago.Text)
-        decTipoCambio = IIf(ordenServicio.IdTipoMoneda = 1, 1, FrmPrincipal.decTipoCambioDolar)
+        Dim decTipoCambio As Decimal = Await FrmPrincipal.ObtenerTipoDeCambioDolar(ordenServicio.IdTipoMoneda)
         dtrRowDesglosePago = dtbDesglosePago.NewRow
         dtrRowDesglosePago.Item(0) = cboFormaPago.SelectedValue
         dtrRowDesglosePago.Item(1) = cboFormaPago.Text
@@ -132,7 +130,7 @@ Public Class FrmAplicaAbonoOrdenServicio
         dtrRowDesglosePago.Item(4) = txtTipoTarjeta.Text
         dtrRowDesglosePago.Item(5) = txtDocumento.Text
         dtrRowDesglosePago.Item(6) = ordenServicio.IdTipoMoneda
-        dtrRowDesglosePago.Item(7) = decMontoPago
+        dtrRowDesglosePago.Item(7) = Decimal.Parse(txtMontoPago.Text)
         dtrRowDesglosePago.Item(8) = decTipoCambio
         dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
         grdDesglosePago.Refresh()
@@ -142,8 +140,8 @@ Public Class FrmAplicaAbonoOrdenServicio
         decTotalPago = 0
         decPagoEfectivo = 0
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
-            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
-            decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
+            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = Decimal.Parse(dtbDesglosePago.Rows(I).Item(7))
+            decTotalPago = decTotalPago + Decimal.Parse(dtbDesglosePago.Rows(I).Item(7))
         Next
         decSaldoPorPagar = decTotal - decTotalPago
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
@@ -341,7 +339,7 @@ Public Class FrmAplicaAbonoOrdenServicio
             .strFechaAbono = txtFecha.Text,
             .strSaldoAnterior = txtSaldoActual.Text,
             .strTotalAbono = FormatNumber(decTotal, 2),
-            .strSaldoActual = FormatNumber(CDbl(txtSaldoActual.Text) - decTotal, 2),
+            .strSaldoActual = FormatNumber(Decimal.Parse(txtSaldoActual.Text) - decTotal, 2),
             .strPagoCon = FormatNumber(decPagoCliente, 2),
             .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
         }
