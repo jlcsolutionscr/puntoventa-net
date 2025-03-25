@@ -432,13 +432,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Referencia = factura.ConsecFactura.ToString(),
                             Fecha = factura.Fecha,
                             Tipo = StaticTipoCuentaPorCobrar.Clientes,
-                            Total = factura.Total - factura.MontoAdelanto,
-                            Saldo = factura.Total - factura.MontoAdelanto,
+                            Total = (factura.Total - factura.MontoAdelanto) * factura.TipoDeCambioDolar,
+                            Saldo = (factura.Total - factura.MontoAdelanto) * factura.TipoDeCambioDolar,
                             Nulo = false
                         };
                         dbContext.CuentaPorCobrarRepository.Add(cuentaPorCobrar);
                     }
-                    decTotalImpuesto += factura.Impuesto;
                     foreach (var detalleFactura in factura.DetalleFactura)
                     {
                         Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
@@ -480,9 +479,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (empresa.Contabiliza)
                         {
-                            decimal decTotalPorLinea = Math.Round(detalleFactura.PrecioVenta * detalleFactura.Cantidad, 2, MidpointRounding.AwayFromZero);
+                            decimal decTotalPorLinea = detalleFactura.PrecioVenta * detalleFactura.Cantidad * factura.TipoDeCambioDolar;
                             if (!detalleFactura.Excento)
+                            {
                                 decTotalPorLinea = Math.Round(decTotalPorLinea / (1 + (detalleFactura.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
+                                decTotalImpuesto += Math.Round((detalleFactura.PrecioVenta * detalleFactura.Cantidad * factura.TipoDeCambioDolar) - decTotalPorLinea, 2, MidpointRounding.AwayFromZero);
+                            }
                             if (producto.Tipo == StaticTipoProducto.Producto)
                             {
                                 decTotalIngresosMercancia += decTotalPorLinea;
@@ -530,18 +532,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             movimientoBanco.Numero = desglosePago.TipoTarjeta;
                             movimientoBanco.Beneficiario = empresa.NombreEmpresa;
-                            movimientoBanco.Monto = desglosePago.MontoLocal;
+                            movimientoBanco.Monto = desglosePago.MontoLocal * desglosePago.TipoDeCambio;
                             IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
                             servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco, dbContext);
                         }
                     }
                     if (empresa.Contabiliza)
                     {
-                        decimal decTotalDiff = decTotalIngresosMercancia + decTotalImpuesto + decTotalIngresosServicios - factura.Total;
+                        decimal decTotalDiff = (decTotalIngresosMercancia + decTotalImpuesto + decTotalIngresosServicios) - (factura.Total * factura.TipoDeCambioDolar);
                         if (decTotalDiff != 0)
                         {
                             if (decTotalDiff >= 1 || decTotalDiff <= -1)
-                                throw new BusinessException("La diferencia de ajuste sobrepasa el valor permitido.");
+                                throw new BusinessException("La diferencia de ajuste (factura.Total - factura.MontoAdelanto) * factura.TipoDeCambioDolarsobrepasa el valor permitido.");
                             if (decTotalIngresosMercancia > 0)
                                 decTotalIngresosMercancia -= decTotalDiff;
                             else
@@ -588,7 +590,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 Linea = intLineaDetalleAsiento,
                                 IdCuenta = cuentasPorCobrarClientesParam.IdCuenta,
-                                Debito = factura.Total,
+                                Debito = factura.Total * factura.TipoDeCambioDolar,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(cuentasPorCobrarClientesParam.IdCuenta).SaldoActual
                             };
                             asiento.DetalleAsiento.Add(detalleAsiento);
@@ -608,7 +610,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     {
                                         Linea = intLineaDetalleAsiento,
                                         IdCuenta = bancoParam.IdCuenta,
-                                        Debito = desglosePago.MontoLocal,
+                                        Debito = desglosePago.MontoLocal * desglosePago.TipoDeCambio,
                                         SaldoAnterior = dbContext.CatalogoContableRepository.Find(bancoParam.IdCuenta).SaldoActual
                                     };
                                     asiento.DetalleAsiento.Add(detalleAsiento);
@@ -621,7 +623,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     {
                                         Linea = intLineaDetalleAsiento,
                                         IdCuenta = efectivoParam.IdCuenta,
-                                        Debito = desglosePago.MontoLocal,
+                                        Debito = desglosePago.MontoLocal * desglosePago.TipoDeCambio,
                                         SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoParam.IdCuenta).SaldoActual
                                     };
                                     asiento.DetalleAsiento.Add(detalleAsiento);
@@ -629,10 +631,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                                 else if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
                                 {
+                                    decimal decMontoLocal = desglosePago.MontoLocal * desglosePago.TipoDeCambio;
                                     BancoAdquiriente bancoAdquiriente = dbContext.BancoAdquirienteRepository.Find(desglosePago.IdCuentaBanco);
-                                    decimal decTotalGastoComisionTarjeta = Math.Round(desglosePago.MontoLocal * (bancoAdquiriente.PorcentajeComision / 100), 2, MidpointRounding.AwayFromZero);
-                                    decimal decTotalImpuestoRetenido = Math.Round(desglosePago.MontoLocal * (bancoAdquiriente.PorcentajeRetencion / 100), 2, MidpointRounding.AwayFromZero);
-                                    decimal decTotalIngresosTarjeta = Math.Round(desglosePago.MontoLocal - decTotalGastoComisionTarjeta - decTotalImpuestoRetenido, 2, MidpointRounding.AwayFromZero);
+                                    decimal decTotalGastoComisionTarjeta = Math.Round(decMontoLocal * (bancoAdquiriente.PorcentajeComision / 100), 2, MidpointRounding.AwayFromZero);
+                                    decimal decTotalImpuestoRetenido = Math.Round(decMontoLocal * (bancoAdquiriente.PorcentajeRetencion / 100), 2, MidpointRounding.AwayFromZero);
+                                    decimal decTotalIngresosTarjeta = Math.Round(decMontoLocal - decTotalGastoComisionTarjeta - decTotalImpuestoRetenido, 2, MidpointRounding.AwayFromZero);
                                     intLineaDetalleAsiento += 1;
                                     detalleAsiento = new DetalleAsiento
                                     {
@@ -679,7 +682,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 Linea = intLineaDetalleAsiento,
                                 IdCuenta = otraCondicionVentaParam.IdCuenta,
-                                Debito = factura.Total,
+                                Debito = factura.Total * factura.TipoDeCambioDolar,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(otraCondicionVentaParam.IdCuenta).SaldoActual
                             };
                             asiento.DetalleAsiento.Add(detalleAsiento);
@@ -843,6 +846,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(factura);
                     foreach (var detalleFactura in factura.DetalleFactura)
                     {
+                        if (detalleFactura.CantDevuelto > 0)
+                            throw new BusinessException("La factura ya posee movimientos de devolución y no puede ser anulada.");
                         Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la devolución no existe.");
@@ -852,10 +857,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
                             if (existencias == null)
                                 throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
-                            decimal cantPorAnular = detalleFactura.Cantidad - detalleFactura.CantDevuelto;
-                            if (cantPorAnular > 0)
+                            if (detalleFactura.Cantidad > 0)
                             {
-                                existencias.Cantidad += cantPorAnular;
+                                existencias.Cantidad += detalleFactura.Cantidad;
                                 dbContext.NotificarModificacion(existencias);
                                 MovimientoProducto movimiento = new MovimientoProducto
                                 {
@@ -864,7 +868,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     Fecha = Validador.ObtenerFechaHoraCostaRica(),
                                     Tipo = StaticTipoMovimientoProducto.Entrada,
                                     Origen = "Anulación de registro de facturación " + factura.ConsecFactura,
-                                    Cantidad = cantPorAnular,
+                                    Cantidad = detalleFactura.Cantidad,
                                     PrecioCosto = detalleFactura.PrecioCosto
                                 };
                                 dbContext.MovimientoProductoRepository.Add(movimiento);
@@ -888,7 +892,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdCuenta = cuenta.IdCuenta,
                                     Beneficiario = factura.NombreCliente,
                                     Detalle = "Anulación de factura posterior a cierre de efectivo " + factura.ConsecFactura,
-                                    Monto = desglosePago.MontoLocal,
+                                    Monto = desglosePago.MontoLocal * desglosePago.TipoDeCambio,
                                     Nulo = false,
                                     Procesado = false
                                 };
@@ -910,7 +914,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (factura.IdMovBanco > 0)
                     {
                         IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
-                        servicioAuxiliarBancario.AnularMovimientoBanco(factura.IdMovBanco, intIdUsuario, "Anulación de registro de factura " + factura.ConsecFactura, dbContext);
+                        servicioAuxiliarBancario.ReversarMovimientoBanco(factura.IdMovBanco, intIdUsuario, "Anulación de registro de factura " + factura.ConsecFactura, dbContext);
                     }
                     if (factura.IdAsiento > 0)
                     {
@@ -1887,42 +1891,67 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
                     MovimientoCuentaPorCobrar mov = null;
+                    decimal decTotalDevolucion = devolucion.Total * factura.TipoDeCambioDolar;
                     if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
                     {
                         BancoAdquiriente cuentaBanco = dbContext.BancoAdquirienteRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa);
                         if (cuentaBanco == null) throw new BusinessException("La empresa no posee ningun banco adquiriente parametrizado");
                         CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
                         if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada a la factura de la devolución no existe");
-                        mov = new MovimientoCuentaPorCobrar
+                        decimal decMontoAbonoCxC = decTotalDevolucion > cxc.Saldo ? cxc.Saldo : decTotalDevolucion;
+                        if (decMontoAbonoCxC > 0)
                         {
-                            IdEmpresa = devolucion.IdEmpresa,
-                            IdUsuario = devolucion.IdUsuario,
-                            IdPropietario = factura.IdCliente,
-                            IdSucursal = devolucion.IdSucursal,
-                            Tipo = StaticTipoAbono.AbonoEfectivo,
-                            IdCxC = factura.IdCxC,
-                            Observaciones = "Abono por devolución de mercancía",
-                            Monto = devolucion.Total,
-                            SaldoActual = cxc.Saldo,
-                            Fecha = devolucion.Fecha
-                        };
-                        DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar
+                            mov = new MovimientoCuentaPorCobrar
+                            {
+                                IdEmpresa = devolucion.IdEmpresa,
+                                IdUsuario = devolucion.IdUsuario,
+                                IdPropietario = factura.IdCliente,
+                                IdSucursal = devolucion.IdSucursal,
+                                Tipo = StaticTipoAbono.AbonoEfectivo,
+                                IdCxC = factura.IdCxC,
+                                Observaciones = "Abono por devolución de mercancía",
+                                Monto = decMontoAbonoCxC,
+                                SaldoActual = cxc.Saldo,
+                                Fecha = devolucion.Fecha
+                            };
+                            DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar
+                            {
+                                IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario,
+                                IdCuentaBanco = cuentaBanco.IdBanco,
+                                TipoTarjeta = "",
+                                NroMovimiento = "",
+                                IdTipoMoneda = factura.IdTipoMoneda,
+                                MontoLocal = decMontoAbonoCxC,
+                                TipoDeCambio = 1
+                            };
+                            mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>
+                            {
+                                desglosePagoMovimiento
+                            };
+                            dbContext.MovimientoCuentaPorCobrarRepository.Add(mov);
+                            cxc.Saldo -= decTotalDevolucion;
+                            dbContext.NotificarModificacion(cxc);
+                        }
+                        decimal decMontoEgreso = decTotalDevolucion - decMontoAbonoCxC;
+                        if (decMontoEgreso > 0)
                         {
-                            IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario,
-                            IdCuentaBanco = cuentaBanco.IdBanco,
-                            TipoTarjeta = "",
-                            NroMovimiento = "",
-                            IdTipoMoneda = factura.IdTipoMoneda,
-                            MontoLocal = devolucion.Total,
-                            TipoDeCambio = factura.TipoDeCambioDolar
-                        };
-                        mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>
-                        {
-                            desglosePagoMovimiento
-                        };
-                        dbContext.MovimientoCuentaPorCobrarRepository.Add(mov);
-                        cxc.Saldo -= devolucion.Total;
-                        dbContext.NotificarModificacion(cxc);
+                            CuentaEgreso cuenta = dbContext.CuentaEgresoRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
+                            if (cuenta == null) throw new BusinessException("La empresa no posee ninguna cuenta de egresos parametrizada para devoluciones de clientes");
+                            Egreso egreso = new Egreso
+                            {
+                                IdEmpresa = devolucion.IdEmpresa,
+                                IdSucursal = devolucion.IdSucursal,
+                                IdUsuario = devolucion.IdUsuario,
+                                Fecha = devolucion.Fecha,
+                                IdCuenta = cuenta.IdCuenta,
+                                Beneficiario = factura.NombreCliente,
+                                Detalle = "Devolución de mercancías de factura " + factura.ConsecFactura,
+                                Monto = decMontoEgreso,
+                                Nulo = false,
+                                Procesado = false
+                            };
+                            dbContext.EgresoRepository.Add(egreso);
+                        }
                     }
                     else
                     {
@@ -1937,7 +1966,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdCuenta = cuenta.IdCuenta,
                             Beneficiario = factura.NombreCliente,
                             Detalle = "Devolución de mercancías de factura " + factura.ConsecFactura,
-                            Monto = devolucion.Total,
+                            Monto = decTotalDevolucion,
                             Nulo = false,
                             Procesado = false
                         };
@@ -2033,6 +2062,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             dbContext.MovimientoProductoRepository.Add(movimiento);
                         }
                     }
+                    decimal decTotalDevolucion = devolucion.Total * factura.TipoDeCambioDolar;
                     if (devolucion.IdMovimientoCxC > 0)
                     {
                         MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.FirstOrDefault(x => x.IdMovCxC == devolucion.IdMovimientoCxC);
@@ -2044,6 +2074,26 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         CuentaPorCobrar cuentaPorCobrar = dbContext.CuentaPorCobrarRepository.Find(movimiento.IdCxC);
                         cuentaPorCobrar.Saldo += movimiento.Monto;
                         dbContext.NotificarModificacion(cuentaPorCobrar);
+                        decimal decMontoIngreso = decTotalDevolucion - movimiento.Monto;
+                        if (decMontoIngreso > 0)
+                        {
+                            CuentaIngreso cuenta = dbContext.CuentaIngresoRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
+                            if (cuenta == null) throw new BusinessException("La empresa no posee ninguna cuenta de ingresos parametrizada para devoluciones de clientes");
+                            Ingreso ingreso = new Ingreso
+                            {
+                                IdEmpresa = devolucion.IdEmpresa,
+                                IdSucursal = devolucion.IdSucursal,
+                                IdUsuario = devolucion.IdUsuario,
+                                Fecha = fechaActual,
+                                IdCuenta = cuenta.IdCuenta,
+                                RecibidoDe = devolucion.Cliente.Nombre,
+                                Detalle = "Anulación de devolución de mercancías de factura " + factura.ConsecFactura,
+                                Monto = decMontoIngreso,
+                                Nulo = false,
+                                Procesado = false
+                            };
+                            dbContext.IngresoRepository.Add(ingreso);
+                        }
                     }
                     else
                     {
@@ -2058,7 +2108,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdCuenta = cuenta.IdCuenta,
                             RecibidoDe = devolucion.Cliente.Nombre,
                             Detalle = "Anulación de devolución de mercancías de factura " + factura.ConsecFactura,
-                            Monto = devolucion.Total,
+                            Monto = decTotalDevolucion,
                             Nulo = false,
                             Procesado = false
                         };
@@ -2171,7 +2221,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var devolucion in listado)
                     {
                         string strEstado = "Activa";
-                        FacturaDetalle item = new FacturaDetalle(devolucion.IdDevolucion, devolucion.IdDevolucion, devolucion.NombreCliente, devolucion.Cliente.Identificacion, devolucion.Fecha.ToString("dd/MM/yyyy"), devolucion.Gravado, 0, devolucion.Excento, devolucion.Impuesto, devolucion.Total, 0, strEstado, "", devolucion.Nulo);
+                        FacturaDetalle item = new FacturaDetalle(devolucion.IdDevolucion, devolucion.IdDevolucion, devolucion.NombreCliente, devolucion.Cliente.Identificacion, devolucion.Fecha.ToString("dd/MM/yyyy"), devolucion.Gravado * devolucion.Factura.TipoDeCambioDolar, 0, devolucion.Excento * devolucion.Factura.TipoDeCambioDolar, devolucion.Impuesto * devolucion.Factura.TipoDeCambioDolar, devolucion.Total * devolucion.Factura.TipoDeCambioDolar, 0, strEstado, "", devolucion.Nulo);
                         listaDevoluciones.Add(item);
                     }
                     return listaDevoluciones;
@@ -3131,7 +3181,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.Impuesto = factura.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalGeneral = (factura.Gravado + factura.Exonerado + factura.Excento + factura.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = factura.IdTipoMoneda == 1 ? "CRC" : "USD";
-            datos.TipoDeCambio = "1";
+            datos.TipoDeCambio = factura.TipoDeCambioDolar.ToString("N2", CultureInfo.InvariantCulture);
             return datos;
         }
 
@@ -3212,7 +3262,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.Impuesto = apartado.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalGeneral = (apartado.Gravado + apartado.Exonerado + apartado.Excento + apartado.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = apartado.IdTipoMoneda == 1 ? "CRC" : "USD";
-            datos.TipoDeCambio = "1";
             return datos;
         }
 
@@ -3292,7 +3341,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.Impuesto = ordenServicio.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalGeneral = (ordenServicio.Gravado + ordenServicio.Exonerado + ordenServicio.Excento + ordenServicio.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = ordenServicio.IdTipoMoneda == 1 ? "CRC" : "USD";
-            datos.TipoDeCambio = "1";
             return datos;
         }
 
@@ -3373,7 +3421,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.Impuesto = proforma.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalGeneral = (proforma.Gravado + proforma.Exonerado + proforma.Excento + proforma.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = proforma.IdTipoMoneda == 1 ? "CRC" : "USD";
-            datos.TipoDeCambio = "1";
             return datos;
         }
 

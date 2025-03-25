@@ -763,7 +763,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (movimiento.IdMovBanco > 0)
                     {
                         IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
-                        servicioAuxiliarBancario.AnularMovimientoBanco(movimiento.IdMovBanco, intIdUsuario, "Anulación de registro de movimiento CxP " + movimiento.IdMovCxP, dbContext);
+                        servicioAuxiliarBancario.ReversarMovimientoBanco(movimiento.IdMovBanco, intIdUsuario, "Anulación de registro de movimiento CxP " + movimiento.IdMovCxP, dbContext);
                     }
                     dbContext.Commit();
                 }

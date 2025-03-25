@@ -19,7 +19,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         int ObtenerTotalListaProveedores(int intIdEmpresa, string strNombre);
         IList<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
         string AgregarCompra(Compra compra);
-        void ActualizarCompra(Compra compra);
         void AnularCompra(int intIdCompra, int intIdUsuario, string strMotivoAnulacion);
         Compra ObtenerCompra(int intIdCompra);
         int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, int intIdCompra, string strRefFactura, string strNombre, string strFechaFinal);
@@ -229,6 +228,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decTotalImpuesto = 0;
                 decimal decSubTotalCompra = 0;
                 decimal decTotalInventario = 0;
+                decimal decTotalCompra = compra.Total * compra.TipoDeCambioDolar;
                 ParametroContable efectivoParam = null;
                 ParametroContable cuentasPorPagarProveedoresParam = null;
                 ParametroContable otraCondicionVentaParam = null;
@@ -241,7 +241,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 CuentaPorPagar cuentaPorPagar = null;
                 Asiento asiento = null;
                 MovimientoBanco movimientoBanco = null;
-                decimal decTipoDeCambio = 1;
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(compra.IdEmpresa);
@@ -269,7 +268,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     compra.IdCxP = 0;
                     compra.IdAsiento = 0;
                     compra.IdMovBanco = 0;
-                    compra.TipoDeCambioDolar = decTipoDeCambio;
                     dbContext.CompraRepository.Add(compra);
                     if (compra.IdCondicionVenta == StaticCondicionVenta.Credito)
                     {
@@ -283,17 +281,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Referencia = compra.NoDocumento,
                             Fecha = compra.Fecha,
                             Tipo = StaticTipoCuentaPorPagar.Proveedores,
-                            Total = compra.Total,
-                            Saldo = compra.Total,
+                            Total = decTotalCompra,
+                            Saldo = decTotalCompra,
                             Nulo = false
                         };
                         dbContext.CuentaPorPagarRepository.Add(cuentaPorPagar);
                     }
-                    decTotalImpuesto = compra.Impuesto;
-                    decSubTotalCompra = compra.Excento + compra.Gravado + compra.Descuento;
+                    decTotalImpuesto = compra.Impuesto * compra.TipoDeCambioDolar;
+                    decSubTotalCompra = (compra.Excento + compra.Gravado + compra.Descuento) * compra.TipoDeCambioDolar;
                     foreach (var detalleCompra in compra.DetalleCompra)
                     {
                         Producto producto = dbContext.ProductoRepository.Find(detalleCompra.IdProducto);
+                        decimal decPrecioCosto = detalleCompra.PrecioCosto * compra.TipoDeCambioDolar;
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la compra no existe.");
                         if (producto.Tipo != StaticTipoProducto.Producto && producto.Tipo != StaticTipoProducto.Transitorio)
@@ -301,7 +300,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
-                            decimal decPrecioVenta = Math.Round(detalleCompra.PrecioVenta * (1 + (detalleCompra.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
+                            decimal decPrecioVenta = Math.Round((detalleCompra.PrecioVenta * compra.TipoDeCambioDolar) * (1 + (detalleCompra.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
                             if (producto.PrecioVenta1 != decPrecioVenta)
                             {
                                 producto.PrecioVenta1 = decPrecioVenta;
@@ -311,12 +310,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal cantidadExistente = existenciasLista.Sum(x => x.Cantidad);
                             if (producto.PrecioCosto > 0 && cantidadExistente > 0)
                             {
-                                decimal decPrecioCostoPromedio = ((cantidadExistente * producto.PrecioCosto) + (detalleCompra.Cantidad * detalleCompra.PrecioCosto)) / (cantidadExistente + detalleCompra.Cantidad);
+                                decimal decPrecioCostoPromedio = ((cantidadExistente * producto.PrecioCosto) + (detalleCompra.Cantidad * decPrecioCosto)) / (cantidadExistente + detalleCompra.Cantidad);
                                 producto.PrecioCosto = decPrecioCostoPromedio;
                             }
                             else
                             {
-                                producto.PrecioCosto = detalleCompra.PrecioCosto;
+                                producto.PrecioCosto = decPrecioCosto;
                             }
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
                             if (existencias != null)
@@ -343,15 +342,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Tipo = StaticTipoMovimientoProducto.Entrada,
                                 Origen = "Registro de compra de mercancía de factura " + compra.NoDocumento,
                                 Cantidad = detalleCompra.Cantidad,
-                                PrecioCosto = detalleCompra.PrecioCosto
+                                PrecioCosto = decPrecioCosto
                             };
                             dbContext.MovimientoProductoRepository.Add(movimiento);
                             dbContext.NotificarModificacion(producto);
                         }
                         if (empresa.Contabiliza)
                         {
-                            decimal decTotalPorLinea = detalleCompra.PrecioCosto * detalleCompra.Cantidad;
-                            decTotalPorLinea = Math.Round(decTotalPorLinea - (compra.Descuento / decSubTotalCompra * decTotalPorLinea), 2, MidpointRounding.AwayFromZero);
+                            decimal decTotalPorLinea = decPrecioCosto * detalleCompra.Cantidad;
+                            decTotalPorLinea = Math.Round(decTotalPorLinea - ((compra.Descuento * compra.TipoDeCambioDolar) / decSubTotalCompra * decTotalPorLinea), 2, MidpointRounding.AwayFromZero);
                             decTotalInventario += decTotalPorLinea;
                             int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.IdLinea));
                             if (intExiste >= 0)
@@ -396,7 +395,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             movimientoBanco.Numero = desglosePago.NroMovimiento;
                             movimientoBanco.Beneficiario = dbContext.ProveedorRepository.Find(compra.IdProveedor).Nombre;
-                            movimientoBanco.Monto = desglosePago.MontoLocal;
+                            movimientoBanco.Monto = desglosePago.MontoLocal * desglosePago.TipoDeCambio;
                             IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
                             servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco, dbContext);
                         }
@@ -404,7 +403,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.Contabiliza)
                     {
                         DetalleAsiento detalleAsiento = null;
-                        decimal decTotalDiff = decTotalInventario + decTotalImpuesto - compra.Total;
+                        decimal decTotalDiff = decTotalInventario + decTotalImpuesto - decTotalCompra;
                         if (decTotalDiff != 0)
                         {
                             if (decTotalDiff >= 1 || decTotalDiff <= -1)
@@ -441,7 +440,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 Linea = intLineaDetalleAsiento,
                                 IdCuenta = cuentasPorPagarProveedoresParam.IdCuenta,
-                                Credito = compra.Total,
+                                Credito = decTotalCompra,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(cuentasPorPagarProveedoresParam.IdCuenta).SaldoActual
                             };
                             asiento.DetalleAsiento.Add(detalleAsiento);
@@ -458,7 +457,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     {
                                         Linea = intLineaDetalleAsiento,
                                         IdCuenta = efectivoParam.IdCuenta,
-                                        Credito = desglosePago.MontoLocal,
+                                        Credito = desglosePago.MontoLocal * desglosePago.TipoDeCambio,
                                         SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoParam.IdCuenta).SaldoActual
                                     };
                                     asiento.DetalleAsiento.Add(detalleAsiento);
@@ -474,7 +473,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     {
                                         Linea = intLineaDetalleAsiento,
                                         IdCuenta = bancoParam.IdCuenta,
-                                        Credito = desglosePago.MontoLocal,
+                                        Credito = desglosePago.MontoLocal * desglosePago.TipoDeCambio,
                                         SaldoAnterior = dbContext.CatalogoContableRepository.Find(bancoParam.IdCuenta).SaldoActual
                                     };
                                     asiento.DetalleAsiento.Add(detalleAsiento);
@@ -489,7 +488,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 Linea = intLineaDetalleAsiento,
                                 IdCuenta = otraCondicionVentaParam.IdCuenta,
-                                Credito = compra.Total,
+                                Credito = decTotalCompra,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(otraCondicionVentaParam.IdCuenta).SaldoActual
                             };
                             asiento.DetalleAsiento.Add(detalleAsiento);
@@ -555,36 +554,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarCompra(Compra compra)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(compra.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == compra.IdEmpresa && x.IdSucursal == compra.IdSucursal);
-                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    dbContext.NotificarModificacion(compra);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    dbContext.RollBack();
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    if (_logger != null) _logger.LogError("Error al actualizar el registro de compra: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error actualizando la información de la compra. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
         public void AnularCompra(int intIdCompra, int intIdUsuario, string strMotivoAnulacion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
@@ -608,6 +577,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleCompra.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la compra no existe.");
+                        decimal decPrecioCosto = detalleCompra.PrecioCosto * compra.TipoDeCambioDolar;
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
@@ -618,7 +588,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal cantidadExistente = existenciasLista.Sum(x => x.Cantidad);
                             decimal decPrecioCostoPromedio = producto.PrecioCosto;
                             if (cantidadExistente > 0)
-                                decPrecioCostoPromedio = ((cantidadExistente * producto.PrecioCosto) - (detalleCompra.Cantidad * detalleCompra.PrecioCosto)) / cantidadExistente;
+                                decPrecioCostoPromedio = ((cantidadExistente * producto.PrecioCosto) - (detalleCompra.Cantidad * decPrecioCosto)) / cantidadExistente;
                             existencias.Cantidad -= detalleCompra.Cantidad;
                             dbContext.NotificarModificacion(existencias);
                             MovimientoProducto movimiento = new MovimientoProducto
@@ -629,7 +599,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Tipo = StaticTipoMovimientoProducto.Salida,
                                 Origen = "Anulación registro de compra de mercancía de factura " + compra.NoDocumento,
                                 Cantidad = detalleCompra.Cantidad,
-                                PrecioCosto = detalleCompra.PrecioCosto
+                                PrecioCosto = decPrecioCosto
                             };
                             dbContext.MovimientoProductoRepository.Add(movimiento);
                             producto.PrecioCosto = decPrecioCostoPromedio;
@@ -655,7 +625,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (compra.IdMovBanco > 0)
                     {
                         IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
-                        servicioAuxiliarBancario.AnularMovimientoBanco(compra.IdMovBanco, intIdUsuario, "Anulación de registro de compra " + compra.IdCompra, dbContext);
+                        servicioAuxiliarBancario.ReversarMovimientoBanco(compra.IdMovBanco, intIdUsuario, "Anulación de registro de compra " + compra.IdCompra, dbContext);
                     }
                     dbContext.Commit();
                 }

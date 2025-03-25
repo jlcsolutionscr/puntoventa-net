@@ -3,8 +3,10 @@ using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
+using LeandroSoftware.ServicioWeb.Utilitario;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SixLabors.ImageSharp;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -19,8 +21,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarMovimientoBanco(MovimientoBanco movimiento);
         string AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext);
         void ActualizarMovimientoBanco(MovimientoBanco movimiento);
-        void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
-        void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion, LeandroContext dbContext);
+        void ReversarMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
+        void ReversarMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion, LeandroContext dbContext);
         MovimientoBanco ObtenerMovimientoBanco(int intIdMovimiento);
         int ObtenerTotalListaMovimientos(int intIdEmpresa, int intIdSucursal, string strDescripcion, string strFechaFinal);
         IList<EfectivoDetalle> ObtenerListadoMovimientos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, string strDescripcion, string strFechaFinal);
@@ -303,7 +305,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
+        public void ReversarMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -312,27 +314,44 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion, LeandroContext dbContext)
+        public void ReversarMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion, LeandroContext dbContext)
         {
             InvalidarMovimientoBanco(intIdMovimiento, intIdUsuario, strMotivoAnulacion, dbContext);
         }
 
+        // TODO Create a new movement instead of reverting
         private void InvalidarMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion, LeandroContext dbContext)
         {
             try
             {
-                MovimientoBanco movimiento = dbContext.MovimientoBancoRepository.Find(intIdMovimiento);
-                if (movimiento == null) throw new BusinessException("El movimiento por eliminar no existe.");
-                CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                if (cuenta == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe.");
-                Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
+                MovimientoBanco movimientoOrigen = dbContext.MovimientoBancoRepository.Find(intIdMovimiento);
+                if (movimientoOrigen == null) throw new BusinessException("El movimiento por eliminar no existe.");
+                CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(movimientoOrigen.IdCuenta);
+                if (cuentaBanco == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe.");
+                Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                movimiento.Nulo = true;
-                movimiento.IdAnuladoPor = intIdUsuario;
-                movimiento.MotivoAnulacion = strMotivoAnulacion;
-                dbContext.NotificarModificacion(movimiento);
-                cuenta.Saldo -= movimiento.Monto;
-                dbContext.NotificarModificacion(cuenta);
+                MovimientoBanco movimientoBanco = new MovimientoBanco
+                {
+                    IdSucursal = movimientoOrigen.IdSucursal,
+                    MotivoAnulacion = strMotivoAnulacion
+                };
+                movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
+                movimientoBanco.IdUsuario = intIdUsuario;
+                movimientoBanco.Fecha = Validador.ObtenerFechaHoraCostaRica();
+                if (movimientoOrigen.IdTipo == StaticTipoMovimientoBanco.ChequeEntrante)
+                {
+                    movimientoBanco.IdTipo = StaticTipoMovimientoBanco.ChequeSaliente;
+                    movimientoBanco.Descripcion = "Registro de reversión de cheque bancario para pago de factura. ";
+                }
+                else
+                {
+                    movimientoBanco.IdTipo = StaticTipoMovimientoBanco.DepositoSaliente;
+                    movimientoBanco.Descripcion = "Registro de reversión de depósito bancario para pago de factura. ";
+                }
+                movimientoBanco.Numero = movimientoOrigen.Numero;
+                movimientoBanco.Beneficiario = empresa.NombreEmpresa;
+                movimientoBanco.Monto = movimientoOrigen.Monto;
+                AdicionarMovimientoBanco(movimientoBanco, dbContext);
                 dbContext.Commit();
             }
             catch (BusinessException ex)

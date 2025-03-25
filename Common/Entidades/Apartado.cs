@@ -11,6 +11,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int ConsecApartado { get; set; }
         public int IdUsuario { get; set; }
         public int IdTipoMoneda { get; set; }
+        public decimal TipoDeCambioDolar { get; set; }
         public int IdCliente { get; set; }
         public string NombreCliente { get; set; }
         public DateTime Fecha { get; set; }

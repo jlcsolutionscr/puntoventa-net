@@ -415,11 +415,11 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
                     _servicioCuentaPorProcesar.AnularMovimientoOrdenServicio(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                     break;
-                case "AnularMovimientoBanco":
+                case "ReversarMovimientoBanco":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdMovimiento").Value.ToString());
                     intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                     strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
-                    _servicioBanca.AnularMovimientoBanco(intIdLlave1, intIdUsuario, strMotivoAnulacion);
+                    _servicioBanca.ReversarMovimientoBanco(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                     break;
                 case "AgregarPuntoDeServicio":
                     puntoDeServicio = JsonConvert.DeserializeObject<PuntoDeServicio>(strEntidad);

@@ -144,7 +144,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteDetalle> listaReporte = new List<ReporteDetalle>();
                     var detalleVentas = dbContext.ProformaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
-                        .Select(x => new { x.IdCliente, x.Nulo, x.ConsecProforma, x.Fecha, x.NombreCliente, x.Impuesto, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto });
+                        .Select(x => new { x.IdCliente, x.Nulo, x.ConsecProforma, x.Fecha, x.NombreCliente, x.Impuesto, x.TipoDeCambioDolar, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto });
                     foreach (var value in detalleVentas)
                     {
                         ReporteDetalle reporteLinea = new ReporteDetalle
@@ -153,8 +153,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Fecha = value.Fecha.ToString("dd/MM/yyyy"),
                             Nombre = value.NombreCliente,
                             NoDocumento = "",
-                            Impuesto = value.Impuesto,
-                            Total = value.Total
+                            Impuesto = value.Impuesto * value.TipoDeCambioDolar,
+                            Total = value.Total * value.TipoDeCambioDolar
                         };
                         listaReporte.Add(reporteLinea);
                     }
@@ -180,7 +180,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteDetalle> listaReporte = new List<ReporteDetalle>();
                     var detalleVentas = dbContext.ApartadoRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
-                        .Select(x => new { x.IdCliente, x.Nulo, x.ConsecApartado, x.Fecha, x.NombreCliente, x.Impuesto, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto });
+                        .Select(x => new { x.IdCliente, x.Nulo, x.ConsecApartado, x.Fecha, x.NombreCliente, x.Impuesto, x.TipoDeCambioDolar, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto });
                     foreach (var value in detalleVentas)
                     {
                         ReporteDetalle reporteLinea = new ReporteDetalle
@@ -189,8 +189,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Fecha = value.Fecha.ToString("dd/MM/yyyy"),
                             Nombre = value.NombreCliente,
                             NoDocumento = "",
-                            Impuesto = value.Impuesto,
-                            Total = value.Total
+                            Impuesto = value.Impuesto * value.TipoDeCambioDolar,
+                            Total = value.Total * value.TipoDeCambioDolar
                         };
                         listaReporte.Add(reporteLinea);
                     }
@@ -216,7 +216,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteDetalle> listaReporte = new List<ReporteDetalle>();
                     var detalleVentas = dbContext.OrdenServicioRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
-                        .Select(x => new { x.IdCliente, x.Nulo, x.ConsecOrdenServicio, x.Fecha, x.NombreCliente, x.Impuesto, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto });
+                        .Select(x => new { x.IdCliente, x.Nulo, x.ConsecOrdenServicio, x.Fecha, x.NombreCliente, x.Impuesto, x.TipoDeCambioDolar, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto });
                     foreach (var value in detalleVentas)
                     {
                         ReporteDetalle reporteLinea = new ReporteDetalle
@@ -225,8 +225,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Fecha = value.Fecha.ToString("dd/MM/yyyy"),
                             Nombre = value.NombreCliente,
                             NoDocumento = "",
-                            Impuesto = value.Impuesto,
-                            Total = value.Total
+                            Impuesto = value.Impuesto * value.TipoDeCambioDolar,
+                            Total = value.Total * value.TipoDeCambioDolar
                         };
                         listaReporte.Add(reporteLinea);
                     }
@@ -254,7 +254,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (intTipoPago == -1)
                     {
                         var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
-                            .Select(x => new { x.IdCliente, x.Nulo, x.IdCondicionVenta, x.ConsecFactura, x.Fecha, x.NombreCliente, x.Impuesto, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto });
+                            .Select(x => new { x.IdCliente, x.Nulo, x.IdCondicionVenta, x.ConsecFactura, x.Fecha, x.NombreCliente, x.Impuesto, x.TipoDeCambioDolar, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto });
                         if (intIdCliente > 0)
                             detalleVentas = detalleVentas.Where(x => x.IdCliente == intIdCliente);
                         foreach (var value in detalleVentas)
@@ -265,8 +265,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Fecha = value.Fecha.ToString("dd/MM/yyyy"),
                                 Nombre = value.NombreCliente,
                                 NoDocumento = "",
-                                Impuesto = value.Impuesto,
-                                Total = value.Total
+                                Impuesto = value.Impuesto * value.TipoDeCambioDolar,
+                                Total = value.Total * value.TipoDeCambioDolar
                             };
                             listaReporte.Add(reporteLinea);
                         }
@@ -277,7 +277,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito || !pagosEfectivo.Contains(intTipoPago))
                         {
                             var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
-                                .Select(x => new { x.IdCliente, x.Nulo, x.IdCondicionVenta, x.ConsecFactura, x.Fecha, x.NombreCliente, x.Impuesto, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto });
+                                .Select(x => new { x.IdCliente, x.Nulo, x.IdCondicionVenta, x.ConsecFactura, x.Fecha, x.NombreCliente, x.Impuesto, x.TipoDeCambioDolar, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito)
                                 detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Credito);
                             else
@@ -292,8 +292,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     Fecha = value.Fecha.ToString("dd/MM/yyyy"),
                                     Nombre = value.NombreCliente,
                                     NoDocumento = "",
-                                    Impuesto = value.Impuesto,
-                                    Total = value.Total
+                                    Impuesto = value.Impuesto * value.TipoDeCambioDolar,
+                                    Total = value.Total * value.TipoDeCambioDolar
                                 };
                                 listaReporte.Add(reporteLinea);
                             }
@@ -302,7 +302,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                                 .Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
-                                .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.ConsecFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.Impuesto, Total = z.y.MontoLocal, z.x.TotalCosto });
+                                .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.ConsecFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.Impuesto, z.x.TipoDeCambioDolar, Total = z.y.MontoLocal, z.x.TotalCosto });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.ContadoEfectivo)
                             {
                                 detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Contado && x.IdFormaPago == StaticFormaPago.Efectivo);
@@ -329,8 +329,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     Fecha = value.Fecha.ToString("dd/MM/yyyy"),
                                     Nombre = value.NombreCliente,
                                     NoDocumento = "",
-                                    Impuesto = value.Impuesto,
-                                    Total = value.Total
+                                    Impuesto = value.Impuesto * value.TipoDeCambioDolar,
+                                    Total = value.Total * value.TipoDeCambioDolar
                                 };
                                 listaReporte.Add(reporteLinea);
                             }
@@ -368,8 +368,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Fecha = value.Fecha.ToString("dd/MM/yyyy"),
                             Nombre = value.Factura.NombreCliente,
                             NoDocumento = "",
-                            Impuesto = value.Impuesto,
-                            Total = value.Total
+                            Impuesto = value.Impuesto * value.Factura.TipoDeCambioDolar,
+                            Total = value.Total * value.Factura.TipoDeCambioDolar
                         };
                         listaReporte.Add(reporteLinea);
                     }
@@ -395,7 +395,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteVentasPorVendedor> listaReporte = new List<ReporteVentasPorVendedor>();
                     var detalleVentas = dbContext.FacturaRepository.Include("Vendedor").Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == false)
-                        .Select(x => new { x.IdVendedor, x.Vendedor.Nombre, x.Nulo, x.ConsecFactura, x.Fecha, NombreCliente = x.Cliente.Nombre, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto, x.TotalCosto, x.Impuesto });
+                        .Select(x => new { x.IdVendedor, x.Vendedor.Nombre, x.Nulo, x.ConsecFactura, x.Fecha, NombreCliente = x.Cliente.Nombre, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto, x.TotalCosto, x.Impuesto, x.TipoDeCambioDolar });
                     if (intIdVendedor > 0)
                         detalleVentas = detalleVentas.Where(x => x.IdVendedor == intIdVendedor);
                     foreach (var value in detalleVentas)
@@ -407,7 +407,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Fecha = value.Fecha.ToString("dd/MM/yyyy"),
                             NombreCliente = value.NombreCliente,
                             NoDocumento = "",
-                            Total = value.Total
+                            Total = value.Total * value.TipoDeCambioDolar
                         };
                         listaReporte.Add(reporteLinea);
                     }
@@ -435,7 +435,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (intTipoPago == -1)
                     {
                         var detalleCompras = dbContext.CompraRepository.Include("Proveedor").Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
-                            .Select(x => new { x.IdProveedor, x.Nulo, x.IdCondicionVenta, x.IdCompra, x.Fecha, NombreProveedor = x.Proveedor.Nombre, x.NoDocumento, x.Impuesto, Total = x.Excento + x.Gravado + x.Impuesto });
+                            .Select(x => new { x.IdProveedor, x.Nulo, x.IdCondicionVenta, x.IdCompra, x.Fecha, NombreProveedor = x.Proveedor.Nombre, x.NoDocumento, x.Impuesto, x.TipoDeCambioDolar, Total = x.Excento + x.Gravado + x.Impuesto });
                         if (intIdProveedor > 0)
                             detalleCompras = detalleCompras.Where(x => x.IdProveedor == intIdProveedor);
                         foreach (var value in detalleCompras)
@@ -446,8 +446,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Fecha = value.Fecha.ToString("dd/MM/yyyy"),
                                 Nombre = value.NombreProveedor,
                                 NoDocumento = value.NoDocumento,
-                                Impuesto = value.Impuesto,
-                                Total = value.Total
+                                Impuesto = value.Impuesto * value.TipoDeCambioDolar,
+                                Total = value.Total * value.TipoDeCambioDolar
                             };
                             listaReporte.Add(reporteLinea);
                         }
@@ -458,7 +458,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito || !pagosEfectivo.Contains(intTipoPago))
                         {
                             var detalleCompras = dbContext.CompraRepository.Include("Proveedor").Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
-                                .Select(x => new { x.IdProveedor, x.Nulo, x.IdCondicionVenta, x.IdCompra, x.Fecha, NombreProveedor = x.Proveedor.Nombre, x.NoDocumento, x.Impuesto, Total = x.Excento + x.Gravado + x.Impuesto });
+                                .Select(x => new { x.IdProveedor, x.Nulo, x.IdCondicionVenta, x.IdCompra, x.Fecha, NombreProveedor = x.Proveedor.Nombre, x.NoDocumento, x.Impuesto, x.TipoDeCambioDolar, Total = x.Excento + x.Gravado + x.Impuesto });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito)
                                 detalleCompras = detalleCompras.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Credito);
                             else
@@ -473,8 +473,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     Fecha = value.Fecha.ToString("dd/MM/yyyy"),
                                     Nombre = value.NombreProveedor,
                                     NoDocumento = value.NoDocumento,
-                                    Impuesto = value.Impuesto,
-                                    Total = value.Total
+                                    Impuesto = value.Impuesto * value.TipoDeCambioDolar,
+                                    Total = value.Total * value.TipoDeCambioDolar
                                 };
                                 listaReporte.Add(reporteLinea);
                             }
@@ -483,7 +483,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             var detalleCompras = dbContext.CompraRepository.Include("Proveedor").Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                                 .Join(dbContext.DesglosePagoCompraRepository, x => x.IdCompra, y => y.IdCompra, (x, y) => new { x, y })
-                                .Select(z => new { z.x.IdProveedor, z.x.Nulo, z.y.IdFormaPago, z.x.IdCondicionVenta, z.x.IdCompra, z.x.Fecha, NombreProveedor = z.x.Proveedor.Nombre, z.x.NoDocumento, z.x.Impuesto, Total = z.y.MontoLocal });
+                                .Select(z => new { z.x.IdProveedor, z.x.Nulo, z.y.IdFormaPago, z.x.IdCondicionVenta, z.x.IdCompra, z.x.Fecha, NombreProveedor = z.x.Proveedor.Nombre, z.x.NoDocumento, z.x.Impuesto, z.x.TipoDeCambioDolar, Total = z.y.MontoLocal });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.ContadoEfectivo)
                             {
                                 detalleCompras = detalleCompras.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Contado && x.IdFormaPago == StaticFormaPago.Efectivo);
@@ -510,8 +510,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     Fecha = value.Fecha.ToString("dd/MM/yyyy"),
                                     Nombre = value.NombreProveedor,
                                     NoDocumento = value.NoDocumento,
-                                    Impuesto = value.Impuesto,
-                                    Total = value.Total
+                                    Impuesto = value.Impuesto * value.TipoDeCambioDolar,
+                                    Total = value.Total * value.TipoDeCambioDolar
                                 };
                                 listaReporte.Add(reporteLinea);
                             }
@@ -763,7 +763,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var grupoFacturas = dbContext.FacturaRepository.Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
                         .Where(s => s.x.IdEmpresa == intIdEmpresa && s.x.Nulo == false && s.x.Fecha >= datFechaInicial && s.x.Fecha <= datFechaFinal)
                         .GroupBy(x => x.y.IdFormaPago)
-                        .Select(sf => new { tipopago = sf.Key, total = sf.Sum(a => a.y.MontoLocal) });
+                        .Select(sf => new { tipopago = sf.Key, total = sf.Sum(a => a.y.MontoLocal * a.y.TipoDeCambio) });
                     foreach (var eachFactura in grupoFacturas)
                     {
                         string strTipo = "";
@@ -792,7 +792,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var abonosCxC = dbContext.MovimientoCuentaPorCobrarRepository.Join(dbContext.DesglosePagoMovimientoCuentaPorCobrarRepository, x => x.IdMovCxC, y => y.IdMovCxC, (x, y) => new { x, y })
                         .Where(s => s.x.IdEmpresa == intIdEmpresa && s.x.Nulo == false && s.x.Fecha >= datFechaInicial && s.x.Fecha <= datFechaFinal)
                         .GroupBy(x => x.y.IdFormaPago)
-                        .Select(sf => new { tipopago = sf.Key, total = sf.Sum(a => a.y.MontoLocal) });
+                        .Select(sf => new { tipopago = sf.Key, total = sf.Sum(a => a.y.MontoLocal * a.y.TipoDeCambio) });
                     foreach (var eachAbono in abonosCxC)
                     {
                         string strTipo = "";
@@ -817,7 +817,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var grupoCompras = dbContext.CompraRepository.Join(dbContext.DesglosePagoCompraRepository, x => x.IdCompra, y => y.IdCompra, (x, y) => new { x, y })
                         .Where(s => s.x.IdEmpresa == intIdEmpresa && s.x.Nulo == false && s.x.Fecha >= datFechaInicial && s.x.Fecha <= datFechaFinal)
                         .GroupBy(g => g.y.IdFormaPago)
-                        .Select(sf => new { tipopago = sf.Key, total = sf.Sum(a => a.y.MontoLocal) });
+                        .Select(sf => new { tipopago = sf.Key, total = sf.Sum(a => a.y.MontoLocal * a.y.TipoDeCambio) });
                     if (grupoCompras.Count() > 0)
                     {
                         foreach (var eachCompra in grupoCompras)
@@ -849,7 +849,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var abonosCxP = dbContext.MovimientoCuentaPorPagarRepository.Join(dbContext.DesglosePagoMovimientoCuentaPorPagarRepository, x => x.IdMovCxP, y => y.IdMovCxP, (x, y) => new { x, y })
                         .Where(s => s.x.IdEmpresa == intIdEmpresa && s.x.Nulo == false && s.x.Fecha >= datFechaInicial && s.x.Fecha <= datFechaFinal)
                         .GroupBy(x => x.y.IdFormaPago)
-                        .Select(sf => new { tipopago = sf.Key, total = sf.Sum(a => a.y.MontoLocal) });
+                        .Select(sf => new { tipopago = sf.Key, total = sf.Sum(a => a.y.MontoLocal * a.y.TipoDeCambio) });
                     foreach (var eachAbono in abonosCxP)
                     {
                         string strTipo = "";
@@ -973,7 +973,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         .Join(dbContext.ProductoRepository, x => x.y.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
                         .Join(dbContext.LineaRepository, x => x.y.IdLinea, y => y.IdLinea, (x, y) => new { x, y })
                         .GroupBy(x => x.y.Descripcion)
-                        .Select(sf => new { NombreLinea = sf.Key, Total = sf.Sum(z => (z.x.x.y.Cantidad - z.x.x.y.CantDevuelto) * z.x.x.y.PrecioVenta * (1 + (z.x.x.y.PorcentajeIVA / 100))) });
+                        .Select(sf => new { NombreLinea = sf.Key, Total = sf.Sum(z => (z.x.x.y.Cantidad - z.x.x.y.CantDevuelto) * z.x.x.y.PrecioVenta * z.x.x.x.TipoDeCambioDolar * (1 + (z.x.x.y.PorcentajeIVA / 100))) });
                     foreach (var value in ventasResumen)
                     {
                         DescripcionValor reporteLinea = new DescripcionValor
@@ -1011,7 +1011,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (intIdLinea > 0)
                         ventasDetalle = ventasDetalle.Where(x => x.y.IdLinea == intIdLinea);
                     var listado = ventasDetalle.GroupBy(x => new { NombreLinea = x.y.Descripcion, x.x.y.Codigo, x.x.x.y.Descripcion })
-                        .Select(sf => new { sf.Key.NombreLinea, sf.Key.Codigo, Cantidad = sf.Sum(z => z.x.x.y.Cantidad - z.x.x.y.CantDevuelto), sf.Key.Descripcion, Total = sf.Sum(z => (z.x.x.y.Cantidad - z.x.x.y.CantDevuelto) * z.x.x.y.PrecioVenta * (1 + (z.x.x.y.PorcentajeIVA / 100))) });
+                        .Select(sf => new { sf.Key.NombreLinea, sf.Key.Codigo, Cantidad = sf.Sum(z => z.x.x.y.Cantidad - z.x.x.y.CantDevuelto), sf.Key.Descripcion, Total = sf.Sum(z => (z.x.x.y.Cantidad - z.x.x.y.CantDevuelto) * z.x.x.y.PrecioVenta * z.x.x.x.TipoDeCambioDolar * (1 + (z.x.x.y.PorcentajeIVA / 100))) });
                     foreach (var value in listado)
                     {
                         ReporteGrupoLineaDetalle reporteLinea = new ReporteGrupoLineaDetalle
@@ -1337,7 +1337,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Detalle = value.Detalle,
                             Beneficiario = value.Beneficiario,
                             Monto = value.Monto,
-                            MontoEnLetras = Utilitario.Validador.NumeroALetras((double)value.Monto)
+                            MontoEnLetras = Validador.NumeroALetras((double)value.Monto)
                         };
                         listaReporte.Add(reporteLinea);
                     }
@@ -1370,7 +1370,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             RecibidoDe = value.RecibidoDe,
                             Detalle = value.Detalle,
                             Monto = value.Monto,
-                            MontoEnLetras = Utilitario.Validador.NumeroALetras((double)value.Monto)
+                            MontoEnLetras = Validador.NumeroALetras((double)value.Monto)
                         };
                         listaReporte.Add(reporteLinea);
                     }
