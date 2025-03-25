@@ -427,7 +427,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdEmpresa = factura.IdEmpresa,
                             IdSucursal = factura.IdSucursal,
                             IdUsuario = factura.IdUsuario,
-                            IdTipoMoneda = factura.IdTipoMoneda,
+                            IdTipoMoneda = 1,
                             IdPropietario = factura.IdCliente,
                             Referencia = factura.ConsecFactura.ToString(),
                             Fecha = factura.Fecha,

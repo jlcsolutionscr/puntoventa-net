@@ -276,7 +276,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdEmpresa = compra.IdEmpresa,
                             IdSucursal = compra.IdSucursal,
                             IdUsuario = compra.IdUsuario,
-                            IdTipoMoneda = compra.IdTipoMoneda,
+                            IdTipoMoneda = 1,
                             IdPropietario = compra.IdProveedor,
                             Referencia = compra.NoDocumento,
                             Fecha = compra.Fecha,
@@ -300,7 +300,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
-                            decimal decPrecioVenta = Math.Round((detalleCompra.PrecioVenta * compra.TipoDeCambioDolar) * (1 + (detalleCompra.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
+                            decimal decPrecioVenta = Math.Round(detalleCompra.PrecioVenta * compra.TipoDeCambioDolar * (1 + (detalleCompra.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
                             if (producto.PrecioVenta1 != decPrecioVenta)
                             {
                                 producto.PrecioVenta1 = decPrecioVenta;
@@ -350,7 +350,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (empresa.Contabiliza)
                         {
                             decimal decTotalPorLinea = decPrecioCosto * detalleCompra.Cantidad;
-                            decTotalPorLinea = Math.Round(decTotalPorLinea - ((compra.Descuento * compra.TipoDeCambioDolar) / decSubTotalCompra * decTotalPorLinea), 2, MidpointRounding.AwayFromZero);
+                            decTotalPorLinea = Math.Round(decTotalPorLinea - (compra.Descuento * compra.TipoDeCambioDolar / decSubTotalCompra * decTotalPorLinea), 2, MidpointRounding.AwayFromZero);
                             decTotalInventario += decTotalPorLinea;
                             int intExiste = dtbInventarios.Rows.IndexOf(dtbInventarios.Rows.Find(producto.IdLinea));
                             if (intExiste >= 0)

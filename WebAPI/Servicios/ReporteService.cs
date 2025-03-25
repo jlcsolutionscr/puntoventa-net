@@ -2002,7 +2002,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == false)
                         .GroupBy(x => new { Month = x.Fecha.Month, Year = x.Fecha.Year })
-                        .Select(x => new { Total = x.Sum(f => f.Excento + f.Gravado + f.Exonerado + f.Impuesto), Annio = x.Key.Year, Mes = x.Key.Month })
+                        .Select(x => new { Total = x.Sum(f => (f.Excento + f.Gravado + f.Exonerado + f.Impuesto) * f.TipoDeCambioDolar), Annio = x.Key.Year, Mes = x.Key.Month })
                         .OrderBy(x => x.Annio).ThenBy(x => x.Mes).ToList();
                     foreach (var value in detalleVentas)
                     {
