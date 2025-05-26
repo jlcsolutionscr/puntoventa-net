@@ -366,6 +366,16 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (listadoReporteVentasPorLineaDetalle.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoReporteVentasPorLineaDetalle);
                     break;
+                case "ObtenerReporteVentasProductoTransitorio":
+                intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                    intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdLinea").Value.ToString());
+                    strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
+                    strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
+                    IList<ReporteProductoTransitorio> listadoReporteVentasProductoTransitorio = _servicioReportes.ObtenerReporteVentasProductoTransitorio(intIdEmpresa, intIdSucursal, strFechaInicial, strFechaFinal);
+                    if (listadoReporteVentasProductoTransitorio.Count > 0)
+                        strRespuesta = JsonConvert.SerializeObject(listadoReporteVentasProductoTransitorio);
+                    break;
                 case "ObtenerReporteCierreDeCaja":
                     int intIdCierre = int.Parse(parametrosJO.Property("IdCierre").Value.ToString());
                     IList<DescripcionValor> listadoReporteCierreDeCaja = _servicioReportes.ObtenerReporteCierreDeCaja(intIdCierre);

@@ -34,7 +34,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteGrupoDetalle> ObtenerReporteDetalleIngreso(int intIdEmpresa, int intIdSucursal, int idCuentaIngreso, string strFechaInicial, string strFechaFinal);
         List<DescripcionValor> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<ReporteGrupoLineaDetalle> ObtenerReporteVentasPorLineaDetalle(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal);
-        List<ReporteProductoTransitorio> ObtenerReporteVentasProductoTransitorio(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal);
+        List<ReporteProductoTransitorio> ObtenerReporteVentasProductoTransitorio(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<DescripcionValor> ObtenerReporteCierreDeCaja(int intIdCierre);
         List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdSucursal, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion);
         List<ReporteMovimientosContables> ObtenerReporteMovimientosContables(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
@@ -1036,7 +1036,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteProductoTransitorio> ObtenerReporteVentasProductoTransitorio(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal)
+        public List<ReporteProductoTransitorio> ObtenerReporteVentasProductoTransitorio(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
