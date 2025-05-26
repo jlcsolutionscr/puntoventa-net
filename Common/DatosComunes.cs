@@ -117,6 +117,14 @@ namespace LeandroSoftware.Common.DatosComunes
         public decimal Total { get; set; }
     }
 
+    public class ReporteProductoTransitorio
+    {
+        public int IdFact { get; set; }
+        public string Fecha { get; set; }
+        public int IdProducto { get; set; }
+        public string Descripcion { get; set; }
+    }
+
     public class ReporteInventario
     {
         public ReporteInventario() { }

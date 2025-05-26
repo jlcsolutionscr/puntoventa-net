@@ -34,6 +34,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<ReporteGrupoDetalle> ObtenerReporteDetalleIngreso(int intIdEmpresa, int intIdSucursal, int idCuentaIngreso, string strFechaInicial, string strFechaFinal);
         List<DescripcionValor> ObtenerReporteVentasPorLineaResumen(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         List<ReporteGrupoLineaDetalle> ObtenerReporteVentasPorLineaDetalle(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal);
+        List<ReporteProductoTransitorio> ObtenerReporteVentasProductoTransitorio(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal);
         List<DescripcionValor> ObtenerReporteCierreDeCaja(int intIdCierre);
         List<ReporteInventario> ObtenerReporteInventario(int intIdEmpresa, int intIdSucursal, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolIncluyeServicios, int intIdLinea, string strCodigo, string strDescripcion);
         List<ReporteMovimientosContables> ObtenerReporteMovimientosContables(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
@@ -1031,6 +1032,40 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al procesar el reporte de Detalle de Ventas por Línea: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al ejecutar el reporte de ventas por línea detallado. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public List<ReporteProductoTransitorio> ObtenerReporteVentasProductoTransitorio(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
+                    DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                    List<ReporteProductoTransitorio> listaReporte = new List<ReporteProductoTransitorio>();
+                    var ventasDetalle = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
+                        .Join(dbContext.DetalleFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y });
+                    foreach (var value in ventasDetalle)
+                    {
+                        ReporteProductoTransitorio reporteLinea = new ReporteProductoTransitorio
+                        {
+                            IdFact = value.x.IdFactura,
+                            Fecha = value.x.Fecha.ToString("dd/MM/yyyy"),
+                            IdProducto = value.y.IdProducto,
+                            Descripcion = value.y.Descripcion,
+                        };
+                        listaReporte.Add(reporteLinea);
+                    }
+                    return listaReporte;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al procesar el reporte de detalle de ventas de producto transitorio: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al ejecutar el reporte detallado de ventas de producto transitorio. Por favor consulte con su proveedor.");
                 }
             }
         }
