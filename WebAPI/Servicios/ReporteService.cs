@@ -1047,15 +1047,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteProductoTransitorio> listaReporte = new List<ReporteProductoTransitorio>();
                     var ventasDetalle = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
-                        .Join(dbContext.DetalleFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y });
+                        .Join(dbContext.DetalleFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
+                        .Join(dbContext.ProductoRepository, x => x.y.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
+                        .Where(x => x.y.Tipo == 4);
                     foreach (var value in ventasDetalle)
                     {
                         ReporteProductoTransitorio reporteLinea = new ReporteProductoTransitorio
                         {
-                            IdFact = value.x.IdFactura,
-                            Fecha = value.x.Fecha.ToString("dd/MM/yyyy"),
+                            IdFact = value.x.x.IdFactura,
+                            Fecha = value.x.x.Fecha.ToString("dd/MM/yyyy"),
                             IdProducto = value.y.IdProducto,
-                            Descripcion = value.y.Descripcion,
+                            Descripcion = value.x.y.Descripcion
                         };
                         listaReporte.Add(reporteLinea);
                     }
