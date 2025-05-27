@@ -346,9 +346,9 @@ namespace LeandroSoftware.ClienteWCF
             return terminal;
         }
 
-        public static async Task<decimal> ObtenerTipoCambioDolar(string strToken)
+        public static async Task<decimal> ObtenerTipoCambioDolar(string strFecha, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTipoCambioDolar'}";
+            string strDatos = "{NombreMetodo: 'ObtenerTipoCambioDolar', Parametros: {Fecha: '" + strFecha + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             decimal decTipoCambioDolar = 0;
             if (respuesta != "")
@@ -356,19 +356,43 @@ namespace LeandroSoftware.ClienteWCF
             return decTipoCambioDolar;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoActividadEconomica(string strIdentificacion)
+        public static async Task AgregarTipoCambioDolar(string strFecha, decimal decValor, string strToken)
         {
-            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioHaciendaURL + "?identificacion=" + strIdentificacion);
+            string strDatos = "{NombreMetodo: 'AgregarTipoCambioDolar', Parametros: {Fecha: '" + strFecha + "', Valor: " + decValor + "}}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+        }
+
+        public static async Task<decimal> ObtenerTipoCambioDolarHacienda()
+        {
+            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioHaciendaURL + "/indicadores/tc/dolar");
             if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
             {
                 string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
-                throw new Exception(strError);
+                throw new Exception("Error al consultar la informacion del tipo de cambio del dolar en el Ministerio de Hacienda");
             }
             if (httpResponse.StatusCode != HttpStatusCode.OK)
-                throw new Exception(httpResponse.ReasonPhrase);
+                throw new Exception("Error al consultar la informacion del tipo de cambio del dolar en el Ministerio de Hacienda");
+            string strTipoDeCambio = await httpResponse.Content.ReadAsStringAsync();
+            JObject datosJO = JObject.Parse(strTipoDeCambio);
+            if (datosJO.Property("venta") == null) throw new Exception("Error al consultar el tipo de cambio de venta en el Ministerio de Hacienda");
+            JObject ventaJO = JObject.Parse(datosJO.Property("venta").Value.ToString());
+            if (ventaJO.Property("valor") == null) throw new Exception("Error al consultar el tipo de cambio de venta en el Ministerio de Hacienda");
+            decimal decTipoDeCambioDolar = decimal.Parse(ventaJO.Property("valor").Value.ToString());
+            return decTipoDeCambioDolar;
+        }
+
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoActividadEconomica(string strIdentificacion)
+        {
+            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioHaciendaURL + "/fe/ae?identificacion=" + strIdentificacion);
+            if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
+            {
+                throw new Exception("Error al consultar la informacion del contribuyente en el Ministerio de Hacienda");
+            }
+            if (httpResponse.StatusCode != HttpStatusCode.OK)
+                throw new Exception("Error al consultar la informacion del contribuyente en el Ministerio de Hacienda");
             string strInformacionContribuyente = await httpResponse.Content.ReadAsStringAsync();
             JObject datosJO = JObject.Parse(strInformacionContribuyente);
-            if (datosJO.Property("actividades") == null) throw new Exception("La respuesta del servicio de consulta de informacion del contribuyente no posee una entrada para 'actividades'");
+            if (datosJO.Property("actividades") == null) throw new Exception("Error al consultar la informacion del contribuyente en el Ministerio de Hacienda");
             JArray actividades = JArray.Parse(datosJO.Property("actividades").Value.ToString());
             List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             foreach (JObject item in actividades)
@@ -625,6 +649,16 @@ namespace LeandroSoftware.ClienteWCF
             List<DescripcionValor> listado = new List<DescripcionValor>();
             if (respuesta != "")
                 listado = JsonConvert.DeserializeObject<List<DescripcionValor>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<List<ReporteProductoTransitorio>> ObtenerReporteVentasProductoTransitorio(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerReporteVentasProductoTransitorio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<ReporteProductoTransitorio> listado = new List<ReporteProductoTransitorio>();
+            if (respuesta != "")
+                listado = JsonConvert.DeserializeObject<List<ReporteProductoTransitorio>>(respuesta);
             return listado;
         }
 

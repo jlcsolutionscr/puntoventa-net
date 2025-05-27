@@ -216,7 +216,7 @@ Public Class FrmFacturaCompra
 
     Private Async Sub FrmFacturaCompra_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
             Await CargarCombos()
             Await CargarListadoDistritos(1, 1)
             IniciaTablasDeDetalle()
@@ -257,7 +257,7 @@ Public Class FrmFacturaCompra
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdFactCompra.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
         txtIdentificacion.Text = ""
         txtDireccion.Text = ""
         txtNombre.Text = ""

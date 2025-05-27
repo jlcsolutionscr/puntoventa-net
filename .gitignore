@@ -1,6 +1,6 @@
 /packages/
 /padron/
-/Setup/Installer/
+/Setup/build/
 bin/
 obj/
 App_Data/

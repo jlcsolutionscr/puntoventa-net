@@ -364,7 +364,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 CuentaPorCobrar cuentaPorCobrar = null;
                 Asiento asiento = null;
                 MovimientoBanco movimientoBanco = null;
-                decimal decTipoDeCambio = 1;
                 try
                 {
                     if (factura.IdVendedor == 0) throw new BusinessException("La factura no posee el identificador del vendedor. Por favor verifique la información.");
@@ -411,20 +410,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     factura.IdCxC = 0;
                     factura.IdAsiento = 0;
                     factura.IdMovBanco = 0;
-                    if (factura.IdTipoMoneda == 2)
-                    {
-                        string criteria = factura.Fecha.ToString("dd/MM/yyyy");
-                        try
-                        {
-                            decimal decTipoCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(_config.ConsultaTipoDeCambioDolarURL, factura.Fecha);
-                            decTipoDeCambio = decTipoCambio;
-                        }
-                        catch (Exception)
-                        {
-                            throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
-                        }
-                    }
-                    factura.TipoDeCambioDolar = decTipoDeCambio;
                     Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
                     if (cliente == null) throw new BusinessException("El cliente asignado a la factura no existe.");
                     if (cliente.IdCliente > 1)
@@ -739,9 +724,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!empresa.RegimenSimplificado)
                     {
                         if (factura.IdCliente > 1)
-                            documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, cliente, dbContext, decTipoDeCambio);
+                            documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, cliente, dbContext);
                         else
-                            documentoFE = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, cliente, dbContext, decTipoDeCambio);
+                            documentoFE = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, cliente, dbContext);
                         factura.IdDocElectronico = documentoFE.ClaveNumerica;
                     }
                     dbContext.Commit();
@@ -794,7 +779,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                decimal decTipoDeCambio = 1;
                 try
                 {
                     facturaCompra.Fecha = Validador.ObtenerFechaHoraCostaRica();
@@ -808,20 +792,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == facturaCompra.IdEmpresa && x.IdSucursal == facturaCompra.IdSucursal && x.IdTerminal == facturaCompra.IdTerminal).FirstOrDefault();
                     if (terminal == null) throw new BusinessException("No se logró obtener la información de la terminal que envia la solicitud. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (facturaCompra.IdTipoMoneda == 2)
-                    {
-                        string criteria = facturaCompra.Fecha.ToString("dd/MM/yyyy");
-                        try
-                        {
-                            decimal decTipoCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(_config.ConsultaTipoDeCambioDolarURL, facturaCompra.Fecha);
-                            decTipoDeCambio = decTipoCambio;
-                        }
-                        catch (Exception)
-                        {
-                            throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
-                        }
-                    }
-                    facturaCompra.TipoDeCambioDolar = decTipoDeCambio;
                     foreach (var detalle in facturaCompra.DetalleFacturaCompra)
                     {
                         var clasificacion = dbContext.ClasificacionProductoRepository.Where(x => x.Id == detalle.Codigo).FirstOrDefault();
@@ -835,6 +805,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE));
                     }
                     return facturaCompra.IdFactCompra.ToString();*/
+                    return "";
                 }
                 catch (BusinessException ex)
                 {
@@ -963,22 +934,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                         {
-                            decimal decTipoDeCambio = 1;
-                            if (factura.IdTipoMoneda == 2)
-                            {
-                                DateTime fechaDocumento = Validador.ObtenerFechaHoraCostaRica();
-                                string criteria = fechaDocumento.ToString("dd/MM/yyyy");
-                                try
-                                {
-                                    decimal decTipoCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(_config.ConsultaTipoDeCambioDolarURL, fechaDocumento);
-                                    decTipoDeCambio = decTipoCambio;
-                                }
-                                catch (Exception)
-                                {
-                                    throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
-                                }
-                            }
-                            //documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, cliente, dbContext, decTipoDeCambio);
+                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, cliente, dbContext, decTipoDeCambio);
                             factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
                         }
                     }
@@ -1966,8 +1922,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             MontoLocal = devolucion.Total,
                             TipoDeCambio = factura.TipoDeCambioDolar
                         };
-                        mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>();
-                        mov.DesglosePagoMovimientoCuentaPorCobrar.Add(desglosePagoMovimiento);
+                        mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>
+                        {
+                            desglosePagoMovimiento
+                        };
                         dbContext.MovimientoCuentaPorCobrarRepository.Add(mov);
                         cxc.Saldo -= devolucion.Total;
                         dbContext.NotificarModificacion(cxc);
@@ -1995,22 +1953,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
                     {
                         Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
-                        decimal decTipoDeCambio = 1;
-                        if (factura.IdTipoMoneda == 2)
-                        {
-                            DateTime fechaDocumento = Validador.ObtenerFechaHoraCostaRica();
-                            string criteria = fechaDocumento.ToString("dd/MM/yyyy");
-                            try
-                            {
-                                decimal decTipoCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(_config.ConsultaTipoDeCambioDolarURL, fechaDocumento);
-                                decTipoDeCambio = decTipoCambio;
-                            }
-                            catch (Exception)
-                            {
-                                throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
-                            }
-                        }
-                        //documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext, decTipoDeCambio);
+                        documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext);
                         devolucion.IdDocElectronico = documentoNC.ClaveNumerica;
                     }
                     dbContext.DevolucionClienteRepository.Add(devolucion);
@@ -2139,23 +2082,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                         {
-                            decimal decTipoDeCambio = 1;
-                            if (factura.IdTipoMoneda == 2)
-                            {
-                                string criteria = devolucion.Fecha.ToString("dd/MM/yyyy");
-                                try
-                                {
-                                    decimal decTipoCambio = ComprobanteElectronicoService.ObtenerTipoCambioVenta(_config.ConsultaTipoDeCambioDolarURL, devolucion.Fecha);
-                                    decTipoDeCambio = decTipoCambio;
-                                }
-                                catch (Exception)
-                                {
-                                    throw new BusinessException("El tipo de cambio para la fecha '" + criteria + "' no ha sido actualizado. Por favor consulte con su proveedor.");
-                                }
-                            }
-                            /*documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, decTipoDeCambio);
-                            devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;*/
-                }
+                            documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext);
+                            devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;
+                        }
                     }
                     dbContext.NotificarModificacion(devolucion);
                     dbContext.Commit();
@@ -2706,9 +2635,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (producto != null) detalleFactura.Producto = producto;
                         }
                         if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, factura.Cliente, dbContext);
                         else
-                            nuevoDocumento = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                            nuevoDocumento = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, factura.Cliente, dbContext);
                         factura.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(factura);
                     }
@@ -2723,7 +2652,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                                 if (producto != null) detalleFactura.Producto = producto;
                             }
-                            //nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, factura.Cliente, dbContext);
                             factura.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
                             dbContext.NotificarModificacion(factura);
                         }
@@ -2732,7 +2661,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                             if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                             factura = dbContext.FacturaRepository.AsNoTracking().Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                            //nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, factura.Cliente, dbContext, factura.TipoDeCambioDolar);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, factura.Cliente, dbContext);
                             devolucion.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                             dbContext.NotificarModificacion(devolucion);
                         }
@@ -2743,7 +2672,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                         Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                        //nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext, factura.TipoDeCambioDolar);
+                        nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext);
                         devolucion.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(devolucion);
                     }

@@ -241,7 +241,7 @@ Public Class FrmOrdenCompra
         Try
             IniciaDetalleOrdenCompra()
             EstablecerPropiedadesDataGridView()
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             grdDetalleOrdenCompra.DataSource = dtbDetalleOrdenCompra
             txtCantidad.Text = "1"
@@ -259,7 +259,7 @@ Public Class FrmOrdenCompra
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdOrdenCompra.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
         proveedor = Nothing
         txtProveedor.Text = ""
         txtReferencia.Text = ""
@@ -381,7 +381,7 @@ Public Class FrmOrdenCompra
             }
         End If
         ordenCompra.IdProveedor = proveedor.IdProveedor
-        ordenCompra.Fecha = FrmPrincipal.ObtenerFechaFormateada(Now())
+        ordenCompra.Fecha = FrmPrincipal.ObtenerFechaFormateada()
         ordenCompra.IdCondicionVenta = cboIdCondicionVenta.SelectedValue
         ordenCompra.PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text)
         ordenCompra.NoDocumento = txtReferencia.Text

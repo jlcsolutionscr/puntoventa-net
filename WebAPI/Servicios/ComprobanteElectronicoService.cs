@@ -107,7 +107,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return objToken;
         }
 
-        public static decimal ObtenerTipoCambioVenta(string strServicioURL, DateTime fechaConsulta)
+        public static decimal ObtenerTipoCambioVenta(string strServicioURL)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpResponseMessage httpResponse = httpClient.GetAsync(strServicioURL).Result;
@@ -338,7 +338,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 codigoMonedaType = new FacturaElectronicaCompraCodigoMonedaType
                 {
                     CodigoMoneda = FacturaElectronicaCompraCodigoMonedaTypeCodigoMoneda.USD,
-                    TipoCambio = decTipoCambioDolar
+                    TipoCambio = facturaCompra.TipoDeCambioDolar
                 };
             }
             else if (facturaCompra.IdTipoMoneda == StaticTipoMoneda.Colones)
@@ -409,7 +409,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, facturaCompra.IdSucursal, facturaCompra.IdTerminal, TipoDocumento.FacturaElectronicaCompra, false, strCorreoNotificacion);
         }*/
 
-        public static DocumentoElectronico GenerarFacturaElectronica(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
+        public static DocumentoElectronico GenerarFacturaElectronica(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
             if (cliente.IdCliente > 1)
@@ -653,7 +653,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 codigoMonedaType = new CodigoMonedaType
                 {
                     CodigoMoneda = CodigoMonedaTypeCodigoMoneda.USD,
-                    TipoCambio = decTipoCambioDolar
+                    TipoCambio = factura.TipoDeCambioDolar
                 };
             }
             else if (factura.IdTipoMoneda == StaticTipoMoneda.Colones)
@@ -729,7 +729,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.FacturaElectronica, false, strCorreoNotificacion);
         }
 
-        public static DocumentoElectronico GeneraTiqueteElectronico(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
+        public static DocumentoElectronico GeneraTiqueteElectronico(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
             if (cliente.IdCliente > 1)
@@ -938,7 +938,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 codigoMonedaType = new CodigoMonedaType
                 {
                     CodigoMoneda = CodigoMonedaTypeCodigoMoneda.USD,
-                    TipoCambio = decTipoCambioDolar
+                    TipoCambio = factura.TipoDeCambioDolar
                 };
             }
             else if (factura.IdTipoMoneda == StaticTipoMoneda.Colones)
@@ -1261,7 +1261,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 codigoMonedaType = new NotaCreditoElectronicaCodigoMonedaType
                 {
                     CodigoMoneda = NotaCreditoElectronicaCodigoMonedaTypeCodigoMoneda.USD,
-                    TipoCambio = decTipoCambioDolar
+                    TipoCambio = factura.TipoDeCambioDolar
                 };
             }
             else if (factura.IdTipoMoneda == StaticTipoMoneda.Colones)
@@ -1346,7 +1346,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion);
         }
 
-        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
+        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
             if (cliente.IdCliente > 1)
@@ -1562,7 +1562,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 codigoMonedaType = new NotaCreditoElectronicaCodigoMonedaType
                 {
                     CodigoMoneda = NotaCreditoElectronicaCodigoMonedaTypeCodigoMoneda.USD,
-                    TipoCambio = decTipoCambioDolar
+                    TipoCambio = factura.TipoDeCambioDolar
                 };
             }
             else if (factura.IdTipoMoneda == StaticTipoMoneda.Colones)
@@ -1632,7 +1632,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion);
         }
 
-        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext, decimal decTipoCambioDolar)
+        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
             if (cliente.IdCliente > 1)
@@ -1848,7 +1848,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 codigoMonedaType = new NotaDebitoElectronicaCodigoMonedaType
                 {
                     CodigoMoneda = NotaDebitoElectronicaCodigoMonedaTypeCodigoMoneda.USD,
-                    TipoCambio = decTipoCambioDolar
+                    TipoCambio = factura.TipoDeCambioDolar
                 };
             }
             else if (factura.IdTipoMoneda == StaticTipoMoneda.Colones)

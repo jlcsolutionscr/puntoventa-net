@@ -221,7 +221,7 @@ Public Class FrmTrasladoMercaderia
         Try
             IniciaDetalleTraslado()
             EstablecerPropiedadesDataGridView()
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
             txtNombreSucursalOrigen.Text = FrmPrincipal.equipoGlobal.NombreSucursal
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             grdDetalleTraslado.DataSource = dtbDetalleTraslado
@@ -242,7 +242,7 @@ Public Class FrmTrasladoMercaderia
 
     Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdTraslado.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
         txtNombreSucursalOrigen.Text = FrmPrincipal.equipoGlobal.NombreSucursal
         txtReferencia.Text = ""
         dtbDetalleTraslado.Rows.Clear()
@@ -350,7 +350,7 @@ Public Class FrmTrasladoMercaderia
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdSucursalOrigen = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdSucursalDestino = cboIdSucursalDestino.SelectedValue,
-                .Fecha = FrmPrincipal.ObtenerFechaFormateada(Now()),
+                .Fecha = FrmPrincipal.ObtenerFechaFormateada(),
                 .Referencia = txtReferencia.Text,
                 .Total = decTotal
             }
