@@ -630,8 +630,8 @@ Public Class FrmPrincipal
             formDescarga.ShowDialog()
             If bolDescargaCancelada Then
                 MessageBox.Show("Actualización cancelada por el usuario. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Application.Exit()
             End If
+            Application.Exit()
         End If
         Dim strIdentificadoEquipoLocal = Puntoventa.ObtenerIdentificadorEquipo()
         If bolEsAdministrador Then
