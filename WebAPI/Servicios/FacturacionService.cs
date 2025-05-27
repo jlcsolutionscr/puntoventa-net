@@ -775,7 +775,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public string AgregarFacturaCompra(FacturaCompra facturaCompra)
         {
-            throw new Exception("Testing Fact 4.4");
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -824,7 +823,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion)
         {
-            throw new Exception("Testing Fact 4.4");
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -934,7 +932,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                         {
-                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, cliente, dbContext, decTipoDeCambio);
+                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, cliente, dbContext);
                             factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
                         }
                     }
@@ -2643,7 +2641,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     else if ((int)TipoDocumento.NotaCreditoElectronica == documento.IdTipoDocumento)
                     {
-                        throw new Exception("Nota crédito not implemented yet");
                         Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (factura != null)
                         {
@@ -2668,7 +2665,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     else if ((int)TipoDocumento.NotaDebitoElectronica == documento.IdTipoDocumento)
                     {
-                        throw new Exception("Nota débito not implemented yet");
                         DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                         Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);

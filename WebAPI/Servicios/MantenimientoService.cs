@@ -121,7 +121,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion);
         void ValidarRegistroAutenticacion(string strToken, int intRole, int intHoras);
         void EliminarRegistroAutenticacionInvalidos();
-        decimal ObtenerTipoCambioVenta(string fechaConsulta);
         List<LlaveDescripcion> ObtenerListadoActividadEconomica(string strServicioURL, string strIdentificacion);
         void IniciarRestablecerClaveUsuario(string strServicioWebURL, string strIdentificacion, string strCodigoUsuario);
         void RestablecerClaveUsuario(string strToken, string strClave);
@@ -2938,32 +2937,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al validar el registro de autenticación: ", ex);
-                }
-            }
-        }
-
-        public decimal ObtenerTipoCambioVenta(string fechaConsulta)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    TipoDeCambioDolar tipoDeCambio = null;
-                    tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(fechaConsulta);
-                    if (tipoDeCambio == null)
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        return tipoDeCambio.ValorTipoCambio;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error al obtener el tipo de cambio de venta: ", ex);
-                    throw new Exception("Se produjo un error consultando el tipo de cambio de venta del dolar para la fecha actual. Por favor consulte con su proveedor.");
                 }
             }
         }

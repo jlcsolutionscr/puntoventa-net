@@ -131,11 +131,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             string strRespuesta = "";
             switch (strNombreMetodo)
             {
-                case "ObtenerTipoCambioDolar":
-                    strFechaInicial = parametrosJO.Property("Fecha").Value.ToString();
-                    strRespuesta = _servicioMantenimiento.ObtenerTipoCambioVenta(strFechaInicial).ToString();
-                    strRespuesta = JsonConvert.SerializeObject(strRespuesta);
-                    break;
                 case "GuardarDatosCierreCaja":
                     CierreCaja cierre = JsonConvert.DeserializeObject<CierreCaja>(strEntidad);
                     string strIdCierre = _servicioFlujoCaja.GuardarDatosCierreCaja(cierre);
