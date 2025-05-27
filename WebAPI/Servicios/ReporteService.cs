@@ -1054,7 +1054,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         ReporteProductoTransitorio reporteLinea = new ReporteProductoTransitorio
                         {
-                            IdFact = value.x.x.IdFactura,
+                            IdFact = value.x.x.ConsecFactura,
                             Fecha = value.x.x.Fecha.ToString("dd/MM/yyyy"),
                             IdProducto = value.y.IdProducto,
                             Descripcion = value.x.y.Descripcion
