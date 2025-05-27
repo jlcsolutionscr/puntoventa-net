@@ -719,6 +719,16 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
+        public static async Task<List<ReporteProductoTransitorio>> ObtenerReporteVentasProductoTransitorio(int intIdEmpresa, int intIdSucursal, string strFechaInicial, string strFechaFinal, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerReporteVentasProductoTransitorio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<ReporteProductoTransitorio> listado = new List<ReporteProductoTransitorio>();
+            if (respuesta != "")
+                listado = JsonConvert.DeserializeObject<List<ReporteProductoTransitorio>>(respuesta);
+            return listado;
+        }
+
         public static async Task<List<ReporteGrupoLineaDetalle>> ObtenerReporteVentasPorLineaDetalle(int intIdEmpresa, int intIdSucursal, int intIdLinea, string strFechaInicial, string strFechaFinal, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerReporteVentasPorLineaDetalle', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdLinea: " + intIdLinea + ", FechaInicial: '" + strFechaInicial + "', FechaFinal: '" + strFechaFinal + "'}}";

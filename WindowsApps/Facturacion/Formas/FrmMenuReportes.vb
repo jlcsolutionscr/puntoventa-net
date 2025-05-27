@@ -794,6 +794,27 @@ Public Class FrmMenuReportes
                             newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                             newFormReport.ShowDialog()
                         End If
+                    Case "Detalle de ventas de producto transitorio"
+                        Dim datosReporte As List(Of ReporteProductoTransitorio)
+                        Try
+                            datosReporte = Await Puntoventa.ObtenerReporteVentasProductoTransitorio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, FechaInicio.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+                        Catch ex As Exception
+                            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            Exit Sub
+                        End Try
+                        Dim rds As ReportDataSource = New ReportDataSource("dstDatos", datosReporte)
+                        newFormReport.repReportViewer.LocalReport.DataSources.Clear()
+                        newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
+                        newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
+                        Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptProductoTransitorio.rdlc")
+                        newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
+                        Dim parameters(3) As ReportParameter
+                        parameters(0) = New ReportParameter("pUsuario", strUsuario)
+                        parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
+                        parameters(2) = New ReportParameter("pFecha", FechaFinal.Text)
+                        parameters(3) = New ReportParameter("pSucursal", cboSucursal.Text)
+                        newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
+                        newFormReport.ShowDialog()
                     Case "Documentos electrónicos emitidos"
                         Dim datosReporte As List(Of ReporteDocumentoElectronico)
                         Try
@@ -857,12 +878,11 @@ Public Class FrmMenuReportes
                         newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
                         Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptResumenComprobanteElectronico.rdlc")
                         newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
-                        Dim parameters(4) As ReportParameter
+                        Dim parameters(3) As ReportParameter
                         parameters(0) = New ReportParameter("pUsuario", strUsuario)
                         parameters(1) = New ReportParameter("pEmpresa", strEmpresa)
-                        parameters(2) = New ReportParameter("pFechaDesde", FechaInicio.Text)
-                        parameters(3) = New ReportParameter("pFechaHasta", FechaFinal.Text)
-                        parameters(4) = New ReportParameter("pSucursal", cboSucursal.Text)
+                        parameters(2) = New ReportParameter("pFecha", FechaInicio.Text)
+                        parameters(3) = New ReportParameter("pSucursal", cboSucursal.Text)
                         newFormReport.repReportViewer.LocalReport.SetParameters(parameters)
                         newFormReport.ShowDialog()
                 End Select

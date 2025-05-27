@@ -667,7 +667,11 @@ Public Class FrmPrincipal
         usuarioGlobal = empresa.Usuario
         empresaGlobal = empresa
         equipoGlobal = empresa.EquipoRegistrado
-        decTipoCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(usuarioGlobal.Token)
+        Try
+            decTipoCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(usuarioGlobal.Token)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
         listaTipoIdentificacion = empresa.ListadoTipoIdentificacion
         listaFormaPagoCliente = empresa.ListadoFormaPagoCliente
         listaFormaPagoEmpresa = empresa.ListadoFormaPagoEmpresa
