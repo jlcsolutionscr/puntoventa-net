@@ -23,7 +23,6 @@ Public Class FrmDescargaActualizacion
         If bolCancelaDescarga = False Then
             Try
                 bolDescargaCompleta = True
-                FrmPrincipal.bolDescargaCancelada = True
                 procStartInfo.Arguments = "/i " + strMSIFilePath
                 procStartInfo.FileName = "msiexec"
                 Process.Start(procStartInfo)

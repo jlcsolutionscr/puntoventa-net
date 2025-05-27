@@ -113,7 +113,7 @@ Public Class FrmAplicaAbonoOrdenServicio
         grdDesglosePago.Columns.Add(dvcTipoCambio)
     End Sub
 
-    Private Sub CargarLineaDesglosePago()
+    Private Async Sub CargarLineaDesglosePago()
         Dim objPkDesglose(1) As Object
         objPkDesglose(0) = cboFormaPago.SelectedValue
         objPkDesglose(1) = cboTipoBanco.SelectedValue
@@ -123,7 +123,7 @@ Public Class FrmAplicaAbonoOrdenServicio
         End If
         Dim decMontoPago, decTipoCambio As Decimal
         decMontoPago = CDbl(txtMontoPago.Text)
-        decTipoCambio = IIf(ordenServicio.IdTipoMoneda = 1, 1, FrmPrincipal.decTipoCambioDolar)
+        decTipoCambio = IIf(ordenServicio.IdTipoMoneda = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
         dtrRowDesglosePago = dtbDesglosePago.NewRow
         dtrRowDesglosePago.Item(0) = cboFormaPago.SelectedValue
         dtrRowDesglosePago.Item(1) = cboFormaPago.Text
@@ -204,7 +204,7 @@ Public Class FrmAplicaAbonoOrdenServicio
         Try
             IniciaDetalleMovimiento()
             EstablecerPropiedadesDataGridView()
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
             Await CargarCombos()
             decTotal = 0
             grdDesglosePago.DataSource = dtbDesglosePago

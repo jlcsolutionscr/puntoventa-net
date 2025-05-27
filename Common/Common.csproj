@@ -5,7 +5,7 @@
     <RootNamespace>LeandroSoftware.Common</RootNamespace>
 	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 	<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-	<Version>2.0.0</Version>
+	<Version>2.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +27,7 @@
 	<EmbeddedResource Include="PlantillaReportes\rptMovimientoBanco.rdlc" />
 	<EmbeddedResource Include="PlantillaReportes\rptResumenLineaDetalle.rdlc" />
 	<EmbeddedResource Include="PlantillaReportes\rptGrupoLineaDetalle.rdlc" />
+  <EmbeddedResource Include="PlantillaReportes\rptProductoTransitorio.rdlc" />
 	<EmbeddedResource Include="PlantillaReportes\rptGrupoDetalle.rdlc" />
 	<EmbeddedResource Include="PlantillaReportes\rptInventario.rdlc" />
 	<EmbeddedResource Include="PlantillaReportes\rptResumenComprobanteElectronico.rdlc" />

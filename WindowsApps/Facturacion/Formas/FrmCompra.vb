@@ -505,7 +505,7 @@ Public Class FrmCompra
         Try
             IniciaDetalleCompra()
             EstablecerPropiedadesDataGridView()
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
             txtIdOrdenCompra.Text = "0"
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             btnBusProd.Enabled = True
@@ -521,7 +521,7 @@ Public Class FrmCompra
             Await CargarCombos()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
             bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -529,13 +529,13 @@ Public Class FrmCompra
         End Try
     End Sub
 
-    Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+    Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdCompra.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
         proveedor = Nothing
         txtProveedor.Text = ""
         txtFactura.Text = ""
@@ -658,7 +658,7 @@ Public Class FrmCompra
                 txtIdCompra.Text = ""
                 proveedor = ordenCompra.Proveedor
                 txtProveedor.Text = proveedor.Nombre
-                txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+                txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
                 txtFactura.Text = ""
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 txtPlazoCredito.Text = ""
@@ -872,7 +872,7 @@ Public Class FrmCompra
             newFormReport.repReportViewer.LocalReport.DataSources.Clear()
             newFormReport.repReportViewer.LocalReport.DataSources.Add(rds)
             newFormReport.repReportViewer.ProcessingMode = ProcessingMode.Local
-            Dim stream As Stream = Assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptCompra.rdlc")
+            Dim stream As Stream = assembly.GetManifestResourceStream("LeandroSoftware.Common.PlantillaReportes.rptCompra.rdlc")
             newFormReport.repReportViewer.LocalReport.LoadReportDefinition(stream)
             Dim parameters(1) As ReportParameter
             parameters(0) = New ReportParameter("pUsuario", FrmPrincipal.usuarioGlobal.CodigoUsuario)
@@ -941,9 +941,9 @@ Public Class FrmCompra
         End If
     End Sub
 
-    Private Sub CboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
+    Private Async Sub CboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
         If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, FrmPrincipal.decTipoCambioDolar.ToString())
+            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
         End If
     End Sub
 

@@ -1,11 +1,12 @@
-Imports System.Threading
+Imports System.Collections.Generic
 Imports System.Configuration
+Imports System.Linq
+Imports System.Threading
+Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.DatosComunes
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.Common.Seguridad
-Imports System.Collections.Generic
-Imports System.Linq
 
 Public Class FrmPrincipal
 #Region "Variables"
@@ -21,7 +22,6 @@ Public Class FrmPrincipal
     Public dgvInteger As DataGridViewCellStyle
     Public lstListaReportes As New List(Of String)
     Public listaEmpresas As New List(Of LlaveDescripcion)
-    Public decTipoCambioDolar As Decimal
     Public strCodigoUsuario As String
     Public strContrasena As String
     Public strIdEmpresa As String
@@ -48,6 +48,7 @@ Public Class FrmPrincipal
     Private listaSucursales As List(Of LlaveDescripcion)
     Private listaTipoPrecio As List(Of LlaveDescripcion)
     Private listaActividadEconomica As List(Of LlaveDescripcion)
+    Private tipoDeCambioDolar As LlaveDescripcionValor
 
 #End Region
 
@@ -137,7 +138,10 @@ Public Class FrmPrincipal
         End If
     End Function
 
-    Public Function ObtenerFechaFormateada(fecha As Date) As Date
+    Public Function ObtenerFechaFormateada() As Date
+        Dim timeUtc As Date = Date.UtcNow()
+        Dim cstZone As TimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Central America Standard Time")
+        Dim fecha As Date = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone)
         Return FormatDateTime(fecha, DateFormat.ShortDate)
     End Function
 
@@ -213,6 +217,23 @@ Public Class FrmPrincipal
             End If
         End If
         Return True
+    End Function
+
+    Public Async Function ObtenerTipoDeCambioDolar() As Task(Of Decimal)
+        Dim strFecha As String = ObtenerFechaFormateada()
+        Dim decTipoDeCambioDolar As Decimal = 0
+        If Not IsNothing(tipoDeCambioDolar) Then
+            If tipoDeCambioDolar.Descripcion = strFecha Then Return tipoDeCambioDolar.Valor
+        End If
+        If decTipoDeCambioDolar = 0 Then
+            decTipoDeCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(strFecha, usuarioGlobal.Token)
+        End If
+        If decTipoDeCambioDolar = 0 Then
+            decTipoDeCambioDolar = Decimal.Parse(Await Puntoventa.ObtenerTipoCambioDolarHacienda())
+            Await Puntoventa.AgregarTipoCambioDolar(strFecha, decTipoDeCambioDolar, usuarioGlobal.Token)
+        End If
+        tipoDeCambioDolar = New LlaveDescripcionValor(1, strFecha, decTipoDeCambioDolar)
+        Return decTipoDeCambioDolar
     End Function
 #End Region
 
@@ -609,8 +630,8 @@ Public Class FrmPrincipal
             formDescarga.ShowDialog()
             If bolDescargaCancelada Then
                 MessageBox.Show("Actualización cancelada por el usuario. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Application.Exit()
             End If
+            Application.Exit()
         End If
         Dim strIdentificadoEquipoLocal = Puntoventa.ObtenerIdentificadorEquipo()
         If bolEsAdministrador Then
@@ -667,7 +688,6 @@ Public Class FrmPrincipal
         usuarioGlobal = empresa.Usuario
         empresaGlobal = empresa
         equipoGlobal = empresa.EquipoRegistrado
-        decTipoCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(usuarioGlobal.Token)
         listaTipoIdentificacion = empresa.ListadoTipoIdentificacion
         listaFormaPagoCliente = empresa.ListadoFormaPagoCliente
         listaFormaPagoEmpresa = empresa.ListadoFormaPagoEmpresa

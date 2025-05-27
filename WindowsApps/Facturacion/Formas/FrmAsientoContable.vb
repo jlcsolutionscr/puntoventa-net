@@ -137,7 +137,7 @@ Public Class FrmAsientoContable
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         txtIdAsiento.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
         txtDetalle.Text = ""
         txtDebito.Text = FormatNumber(0, 2)
         txtCredito.Text = FormatNumber(0, 2)
@@ -280,7 +280,7 @@ Public Class FrmAsientoContable
 
     Private Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
             CargarComboProducto()
             IniciaDetalleAsiento()
             EstablecerPropiedadesDataGridView()
