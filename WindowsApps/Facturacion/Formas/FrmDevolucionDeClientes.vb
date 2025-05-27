@@ -239,7 +239,7 @@ Public Class FrmDevolucionDeClientes
 
     Private Sub FrmDevolucionDeClientes_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
             IniciaDetalleDevolucion()
             EstablecerPropiedadesDataGridView()
             grdDetalleDevolucion.DataSource = dtbDetalleDevolucion
@@ -268,7 +268,7 @@ Public Class FrmDevolucionDeClientes
 
     Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdDevolucion.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
         cliente = Nothing
         factura = Nothing
         txtCliente.Text = ""

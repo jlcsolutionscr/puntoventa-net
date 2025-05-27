@@ -862,7 +862,7 @@ Public Class ModuloImpresion
             End While
             lineas.Add(New ClsLineaImpresion(2, strNombreComercial, 0, 100, 12, StringAlignment.Center, True))
             lineas.Add(New ClsLineaImpresion(1, "CIERRE DE EFECTIVO", 0, 100, 10, StringAlignment.Center, False))
-            lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFecha, 20, 66, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Center, False))
             lineas.Add(New ClsLineaImpresion(1, "Detalle de Ingresos", 0, 100, 10, StringAlignment.Center, False))
             For i As Integer = 0 To objImpresion.arrDetalleIngresos.Count - 1
                 lineas.Add(New ClsLineaImpresion(0, objImpresion.arrDetalleIngresos(i).strDescripcion, 0, 54, 10, StringAlignment.Near, False))

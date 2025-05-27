@@ -52,7 +52,7 @@ Public Class FrmIngreso
 
     Private Async Sub FrmIngreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
             Await CargarCombos()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -62,7 +62,7 @@ Public Class FrmIngreso
 
     Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdIngreso.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada(Now())
+        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
         cboCuentaIngreso.SelectedValue = 0
         txtRecibidoDe.Text = ""
         txtDetalle.Text = ""
