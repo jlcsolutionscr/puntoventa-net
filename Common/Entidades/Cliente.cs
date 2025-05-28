@@ -25,5 +25,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public DateTime FechaEmisionDoc { get; set; }
         public int PorcentajeExoneracion { get; set; }
         public bool PermiteCredito { get; set; }
+        public string CodigoActividad { get; set; }
     }
 }

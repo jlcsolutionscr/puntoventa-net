@@ -336,23 +336,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
         }
 
-        [HttpGet("obtenerlistadobarrios")]
-        public string ObtenerListadoBarrios(int idprovincia, int idcanton, int iddistrito)
-        {
-            try
-            {
-                IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)_servicioMantenimiento.ObtenerListadoBarrios(idprovincia, idcanton, iddistrito);
-                string strRespuesta = "";
-                if (listadoEmpresas.Count > 0)
-                    strRespuesta = JsonConvert.SerializeObject(listadoEmpresas);
-                return strRespuesta;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         [HttpPost("agregarempresa")]
         public string AgregarEmpresa([FromBody] string strDatos)
         {

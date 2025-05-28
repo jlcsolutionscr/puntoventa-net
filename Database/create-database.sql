@@ -115,7 +115,7 @@ DELIMITER ;
 
 CREATE TABLE `actividadeconomicaempresa` (
   `IdEmpresa` int NOT NULL,
-  `CodigoActividad` int NOT NULL,
+  `CodigoActividad` varchar(6) NOT NULL,
   `Descripcion` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
@@ -1080,7 +1080,7 @@ CREATE TABLE `factura` (
   `IdApartado` int NOT NULL,
   `Telefono` varchar(20) DEFAULT NULL,
   `MotivoAnulacion` varchar(100) DEFAULT NULL,
-  `CodigoActividad` int NOT NULL
+  `CodigoActividad` varchar(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
@@ -1123,7 +1123,7 @@ CREATE TABLE `facturacompra` (
   `Descuento` double NOT NULL,
   `Impuesto` double NOT NULL,
   `IdDocElectronico` varchar(50) DEFAULT NULL,
-  `CodigoActividad` int NOT NULL
+  `CodigoActividad` varchar(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------

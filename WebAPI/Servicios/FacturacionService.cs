@@ -1841,7 +1841,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public string AgregarDevolucionCliente(DevolucionCliente devolucion)
         {
-            throw new Exception("Testing Fact 4.4");
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -2379,7 +2378,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void GenerarMensajeReceptor(string strDatos, int intIdEmpresa, int intSucursal, int intTerminal, int intEstado, bool bolIvaAplicable)
         {
-            throw new Exception("Testing Fact 4.4");
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
@@ -2527,7 +2525,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         void ProcesarMensajeReceptor(LeandroContext dbContext, POPEmail correo, bool bolIvaAplicable)
         {
-            throw new Exception("Testing Fact 4.4");
             string strDatos = "";
             string strError = "";
             string strIdentificacion = "";

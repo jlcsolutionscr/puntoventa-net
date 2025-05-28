@@ -56,7 +56,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static int intIdCuenta;
         private static int intIdProvincia;
         private static int intIdCanton;
-        private static int intIdDistrito;
         private static int intIdCliente;
         private static int intIdProveedor;
         private static int intIdTipoPago;
