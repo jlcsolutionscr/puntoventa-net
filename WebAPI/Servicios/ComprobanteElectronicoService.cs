@@ -1891,7 +1891,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             NotaDebitoElectronicaInformacionReferencia informacionReferencia = new NotaDebitoElectronicaInformacionReferencia
             {
                 TipoDocIR = TipoDocReferenciaType.Item01,
-                Numero = factura.IdDocElectronicoRev,
+                Numero = factura.IdDocElectronico,
                 FechaEmisionIR = factura.Fecha,
                 Codigo = CodigoReferenciaType.Item01,
                 CodigoSpecified = true,
