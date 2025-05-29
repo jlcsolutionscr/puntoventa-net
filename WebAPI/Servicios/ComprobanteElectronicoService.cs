@@ -1612,7 +1612,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TipoDocIR = TipoDocReferenciaType.Item01,
                 Numero = factura.IdDocElectronico,
                 FechaEmisionIR = factura.Fecha,
-                Codigo = CodigoReferenciaType.Item02,
+                Codigo = CodigoReferenciaType.Item01,
                 Razon = "Ajuste de monto de factura electrónica por devolución de mercancía."
             };
             notaCreditoElectronica.InformacionReferencia = new NotaCreditoElectronicaInformacionReferencia[] { informacionReferencia };
@@ -1906,10 +1906,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             NotaDebitoElectronicaInformacionReferencia informacionReferencia = new NotaDebitoElectronicaInformacionReferencia
             {
                 TipoDocIR = TipoDocReferenciaType.Item01,
-                Numero = factura.IdDocElectronico,
+                Numero = factura.IdDocElectronicoRev,
                 FechaEmisionIR = factura.Fecha,
-                Codigo = CodigoReferenciaType.Item02,
-                Razon = "Anulación de devolucin de mercancía de factura electrónica con la respectiva clave númerica."
+                Codigo = CodigoReferenciaType.Item01,
+                Razon = "Anulación de devolución de mercancía de factura electrónica con la respectiva clave númerica."
             };
             notaDebitoElectronica.InformacionReferencia = new NotaDebitoElectronicaInformacionReferencia[] { informacionReferencia };
             XmlDocument documentoXml = new XmlDocument();
