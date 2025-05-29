@@ -127,7 +127,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public static DocumentoElectronico GenerarFacturaCompraElectronica(FacturaCompra facturaCompra, Empresa empresa, LeandroContext dbContext)
         {
             string strCorreoNotificacion = empresa.CorreoNotificacion;
-            if (facturaCompra.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el detalle de la factura de compra.");
+            if (facturaCompra.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura de compra.");
             if (facturaCompra.PorcentajeExoneracion > 13) throw new BusinessException("El porcentaje de exoneración no puede ser mayor al 13%");
             FacturaElectronicaCompra facturaElectronica = new FacturaElectronicaCompra
             {
@@ -414,7 +414,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (factura.CodigoActividad != "") throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad != "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura.");
             FacturaElectronica facturaElectronica = new FacturaElectronica
             {
                 Clave = "",
@@ -735,7 +735,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (factura.CodigoActividad != "") throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad != "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura.");
             TiqueteElectronico tiqueteElectronico = new TiqueteElectronico
             {
                 Clave = "",
@@ -1015,7 +1015,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (factura.CodigoActividad != "") throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad != "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura.");
             NotaCreditoElectronica notaCreditoElectronica = new NotaCreditoElectronica
             {
                 Clave = "",
@@ -1350,7 +1350,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (factura.CodigoActividad != "") throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad != "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura.");
             NotaCreditoElectronica notaCreditoElectronica = new NotaCreditoElectronica
             {
                 Clave = "",
@@ -1651,7 +1651,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     strCorreoNotificacion = cliente.CorreoElectronico;
                 }
             }
-            if (factura.CodigoActividad != "") throw new BusinessException("Debe ingresar el código de actividad económica en el mantenimiento de la empresa.");
+            if (factura.CodigoActividad != "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura.");
             NotaDebitoElectronica notaDebitoElectronica = new NotaDebitoElectronica
             {
                 Clave = "",

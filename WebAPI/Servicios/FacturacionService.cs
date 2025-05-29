@@ -343,7 +343,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                if (factura.Fecha != Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La fecha del registro de factura no coincide con la fecha del servidor. Por favor verifique la información");
+                if (factura.Fecha.ToShortDateString() != Validador.ObtenerFechaHoraCostaRica().ToShortDateString()) throw new BusinessException("La fecha del registro de factura (" + factura.Fecha.ToShortDateString() + ") no coincide con la fecha del servidor (" + Validador.ObtenerFechaHoraCostaRica().ToShortDateString() + "). Por favor verifique la información");
                 decimal decTotalIngresosMercancia = 0;
                 decimal decTotalIngresosServicios = 0;
                 decimal decTotalImpuesto = 0;
