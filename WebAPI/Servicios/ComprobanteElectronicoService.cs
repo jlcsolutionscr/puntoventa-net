@@ -771,23 +771,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             emisor.Ubicacion = ubicacionType;
             tiqueteElectronico.Emisor = emisor;
             tiqueteElectronico.CondicionVenta = (TiqueteElectronicoCondicionVenta)factura.IdCondicionVenta - 1;
-            if (tiqueteElectronico.CondicionVenta == TiqueteElectronicoCondicionVenta.Item02)
-            {
-                tiqueteElectronico.PlazoCredito = factura.PlazoCredito.ToString();
-            }
             List<TiqueteElectronicoResumenFacturaMedioPago> medioPagoList = new List<TiqueteElectronicoResumenFacturaMedioPago>();
-            if (tiqueteElectronico.CondicionVenta != TiqueteElectronicoCondicionVenta.Item01)
-            {
-                TiqueteElectronicoResumenFacturaMedioPago medioPago = new TiqueteElectronicoResumenFacturaMedioPago
-                {
-                    TipoMedioPago = TiqueteElectronicoResumenFacturaMedioPagoTipoMedioPago.Item99,
-                };
-                if (!medioPagoList.Contains(medioPago))
-                {
-                    medioPagoList.Add(medioPago);
-                }
-            }
-            else
+            if (tiqueteElectronico.CondicionVenta == TiqueteElectronicoCondicionVenta.Item01)
             {
                 foreach (DesglosePagoFactura desglose in factura.DesglosePagoFactura)
                 {
@@ -805,6 +790,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         medioPagoList.Add(medioPago);
                     }
                 }
+            }
+            else if (tiqueteElectronico.CondicionVenta == TiqueteElectronicoCondicionVenta.Item02)
+            {
+                tiqueteElectronico.PlazoCredito = factura.PlazoCredito.ToString();
+            }
+            else
+            {
+                throw new BusinessException("El sistema solo permite ventas de contado o crédito.");
             }
             List<TiqueteElectronicoLineaDetalle> detalleServicioList = new List<TiqueteElectronicoLineaDetalle>();
             List<OtrosCargosType> detalleOtrosCargosList = new List<OtrosCargosType>();
@@ -1076,23 +1069,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 notaCreditoElectronica.Receptor = receptor;
             }
             notaCreditoElectronica.CondicionVenta = (NotaCreditoElectronicaCondicionVenta)factura.IdCondicionVenta - 1;
-            if (notaCreditoElectronica.CondicionVenta == NotaCreditoElectronicaCondicionVenta.Item02)
-            {
-                notaCreditoElectronica.PlazoCredito = factura.PlazoCredito.ToString();
-            }
             List<NotaCreditoElectronicaResumenFacturaMedioPago> medioPagoList = new List<NotaCreditoElectronicaResumenFacturaMedioPago>();
-            if (notaCreditoElectronica.CondicionVenta != NotaCreditoElectronicaCondicionVenta.Item01)
-            {
-                NotaCreditoElectronicaResumenFacturaMedioPago medioPago = new NotaCreditoElectronicaResumenFacturaMedioPago
-                {
-                    TipoMedioPago = NotaCreditoElectronicaResumenFacturaMedioPagoTipoMedioPago.Item99
-                };
-                if (!medioPagoList.Contains(medioPago))
-                {
-                    medioPagoList.Add(medioPago);
-                }
-            }
-            else
+            if (notaCreditoElectronica.CondicionVenta == NotaCreditoElectronicaCondicionVenta.Item01)
             {
                 foreach (DesglosePagoFactura desglose in factura.DesglosePagoFactura)
                 {
@@ -1102,13 +1080,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     NotaCreditoElectronicaResumenFacturaMedioPago medioPago = new NotaCreditoElectronicaResumenFacturaMedioPago
                     {
-                        TipoMedioPago = (NotaCreditoElectronicaResumenFacturaMedioPagoTipoMedioPago)desglose.IdFormaPago - 1
+                        TipoMedioPago = (NotaCreditoElectronicaResumenFacturaMedioPagoTipoMedioPago)desglose.IdFormaPago - 1,
+                        TotalMedioPago = desglose.MontoLocal
                     };
                     if (!medioPagoList.Contains(medioPago))
                     {
                         medioPagoList.Add(medioPago);
                     }
                 }
+            }
+            else if (notaCreditoElectronica.CondicionVenta == NotaCreditoElectronicaCondicionVenta.Item02)
+            {
+                notaCreditoElectronica.PlazoCredito = factura.PlazoCredito.ToString();
+            }
+            else
+            {
+                throw new BusinessException("El sistema solo permite ventas de contado o crédito.");
             }
             List<NotaCreditoElectronicaLineaDetalle> detalleServicioList = new List<NotaCreditoElectronicaLineaDetalle>();
             List<OtrosCargosType> detalleOtrosCargosList = new List<OtrosCargosType>();
@@ -1414,12 +1401,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             List<NotaCreditoElectronicaResumenFacturaMedioPago> medioPagoList = new List<NotaCreditoElectronicaResumenFacturaMedioPago>();
             NotaCreditoElectronicaResumenFacturaMedioPago medioPago = new NotaCreditoElectronicaResumenFacturaMedioPago
             {
-                TipoMedioPago = NotaCreditoElectronicaResumenFacturaMedioPagoTipoMedioPago.Item99
+                TipoMedioPago = NotaCreditoElectronicaResumenFacturaMedioPagoTipoMedioPago.Item01
             };
-            if (!medioPagoList.Contains(medioPago))
-            {
-                medioPagoList.Add(medioPago);
-            }
             medioPagoList.Add(medioPago);
             List<NotaCreditoElectronicaLineaDetalle> detalleServicioList = new List<NotaCreditoElectronicaLineaDetalle>();
             List<OtrosCargosType> detalleOtrosCargosList = new List<OtrosCargosType>();
