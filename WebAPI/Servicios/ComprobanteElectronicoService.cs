@@ -161,7 +161,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Provincia = facturaCompra.IdProvinciaEmisor.ToString(),
                 Canton = facturaCompra.IdCantonEmisor.ToString("D2"),
                 Distrito = facturaCompra.IdDistritoEmisor.ToString("D2"),
-                Barrio = facturaCompra.IdBarrioEmisor.ToString("D2"),
                 OtrasSenas = facturaCompra.DireccionEmisor
             };
             emisor.Ubicacion = ubicacionType;
@@ -190,7 +189,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Provincia = empresa.IdProvincia.ToString(),
                 Canton = empresa.IdCanton.ToString("D2"),
                 Distrito = empresa.IdDistrito.ToString("D2"),
-                Barrio = empresa.IdBarrio.ToString("D2"),
                 OtrasSenas = empresa.Direccion
             };
             receptor.Ubicacion = ubicacionType;
@@ -1049,7 +1047,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Provincia = empresa.IdProvincia.ToString(),
                 Canton = empresa.IdCanton.ToString("D2"),
                 Distrito = empresa.IdDistrito.ToString("D2"),
-                Barrio = empresa.IdBarrio.ToString("D2"),
                 OtrasSenas = empresa.Direccion
             };
             emisor.Ubicacion = ubicacionType;
@@ -1384,7 +1381,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Provincia = empresa.IdProvincia.ToString(),
                 Canton = empresa.IdCanton.ToString("D2"),
                 Distrito = empresa.IdDistrito.ToString("D2"),
-                Barrio = empresa.IdBarrio.ToString("D2"),
                 OtrasSenas = empresa.Direccion
             };
             emisor.Ubicacion = ubicacionType;
@@ -1685,7 +1681,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Provincia = empresa.IdProvincia.ToString(),
                 Canton = empresa.IdCanton.ToString("D2"),
                 Distrito = empresa.IdDistrito.ToString("D2"),
-                Barrio = empresa.IdBarrio.ToString("D2"),
                 OtrasSenas = empresa.Direccion
             };
             emisor.Ubicacion = ubicacionType;
