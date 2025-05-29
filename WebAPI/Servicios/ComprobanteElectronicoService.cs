@@ -419,11 +419,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 Clave = "",
                 CodigoActividadEmisor = factura.CodigoActividad,
+                CodigoActividadReceptor = factura.CodigoActividadReceptor,
                 NumeroConsecutivo = "",
                 FechaEmision = factura.Fecha,
                 ProveedorSistemas = empresa.Identificacion
             };
-            if (cliente.CodigoActividad != "") facturaElectronica.CodigoActividadReceptor = cliente.CodigoActividad;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionEmisorType = new IdentificacionType
             {
@@ -942,11 +942,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 };
             }
             resumenFactura.CodigoTipoMoneda = codigoMonedaType;
-            /*if (factura.Descuento > 0)
-            {
-                resumenFactura.TotalDescuentos = Math.Round(factura.Descuento, 2, MidpointRounding.AwayFromZero);
-                resumenFactura.TotalDescuentosSpecified = true;
-            }*/
             resumenFactura.TotalMercanciasGravadas = Math.Round(decTotalMercanciasGravadas, 2, MidpointRounding.AwayFromZero);
             resumenFactura.TotalMercanciasGravadasSpecified = true;
             resumenFactura.TotalMercExonerada = Math.Round(decTotalMercanciasExoneradas, 2, MidpointRounding.AwayFromZero);
@@ -1025,11 +1020,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 Clave = "",
                 CodigoActividadEmisor = factura.CodigoActividad,
+                CodigoActividadReceptor = factura.CodigoActividadReceptor,
                 NumeroConsecutivo = "",
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica(),
                 ProveedorSistemas = empresa.Identificacion
             };
-            if (cliente.CodigoActividad != "") notaCreditoElectronica.CodigoActividadReceptor = cliente.CodigoActividad;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionEmisorType = new IdentificacionType
             {
@@ -1360,11 +1355,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 Clave = "",
                 CodigoActividadEmisor = factura.CodigoActividad,
+                CodigoActividadReceptor = factura.CodigoActividadReceptor,
                 NumeroConsecutivo = "",
                 FechaEmision = devolucion.Fecha,
                 ProveedorSistemas = empresa.Identificacion
             };
-            if (cliente.CodigoActividad != "") notaCreditoElectronica.CodigoActividadReceptor = cliente.CodigoActividad;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionEmisorType = new IdentificacionType
             {
@@ -1661,11 +1656,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 Clave = "",
                 CodigoActividadEmisor = factura.CodigoActividad,
+                CodigoActividadReceptor = factura.CodigoActividadReceptor,
                 NumeroConsecutivo = "",
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica(),
                 ProveedorSistemas = empresa.Identificacion
             };
-            if (cliente.CodigoActividad != "") notaDebitoElectronica.CodigoActividadReceptor = cliente.CodigoActividad;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionEmisorType = new IdentificacionType
             {
