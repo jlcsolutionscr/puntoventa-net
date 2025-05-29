@@ -110,11 +110,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
             switch (strNombreMetodo)
             {
-                case "AgregarTipoCambioDolar":
-                    strFechaInicial = parametrosJO.Property("Fecha").Value.ToString();
-                    string strTipoCambio = parametrosJO.Property("Valor").Value.ToString();
-                    _servicioMantenimiento.AgregarTipoCambioDolar(strFechaInicial, strTipoCambio);
-                    break;
                 case "ActualizarParametroDelSistema":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdParametro").Value.ToString());
                     string strValor = parametrosJO.Property("Valor").Value.ToString();

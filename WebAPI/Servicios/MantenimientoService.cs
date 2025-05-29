@@ -124,7 +124,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<LlaveDescripcion> ObtenerListadoActividadEconomica(string strServicioURL, string strIdentificacion);
         void IniciarRestablecerClaveUsuario(string strServicioWebURL, string strIdentificacion, string strCodigoUsuario);
         void RestablecerClaveUsuario(string strToken, string strClave);
-        void AgregarTipoCambioDolar(string strFecha, string strTipoCambio);
     }
 
     public class MantenimientoService : IMantenimientoService
@@ -2991,34 +2990,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al iniciar el proceso de restablecimiento de la clave del usuario: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al iniciar el proceso de restablecimiento de la clave del usuario. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public void AgregarTipoCambioDolar(string strFecha, string strTipoCambio)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    TipoDeCambioDolar tipoDeCambio = new TipoDeCambioDolar
-                    {
-                        FechaTipoCambio = strFecha,
-                        ValorTipoCambio = decimal.Parse(strTipoCambio)
-                    };
-                    dbContext.TipoDeCambioDolarRepository.Add(tipoDeCambio);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    if (_logger != null) _logger.LogError("Error al restablecer la clave del usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error al restablecer la clave del usuario. Por favor consulte con su proveedor.");
                 }
             }
         }
