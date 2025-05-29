@@ -1273,11 +1273,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 };
             }
             resumenFactura.CodigoTipoMoneda = codigoMonedaType;
-            /*if (factura.Descuento > 0)
-            {
-                resumenFactura.TotalDescuentos = Math.Round(factura.Descuento, 2, MidpointRounding.AwayFromZero);
-                resumenFactura.TotalDescuentosSpecified = true;
-            }*/
             resumenFactura.TotalMercanciasGravadas = Math.Round(decTotalMercanciasGravadas, 2, MidpointRounding.AwayFromZero);
             resumenFactura.TotalMercanciasGravadasSpecified = true;
             resumenFactura.TotalMercExonerada = Math.Round(decTotalMercanciasExoneradas, 2, MidpointRounding.AwayFromZero);
