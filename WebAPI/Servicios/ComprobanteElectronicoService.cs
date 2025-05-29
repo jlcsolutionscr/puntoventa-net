@@ -419,11 +419,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 Clave = "",
                 CodigoActividadEmisor = factura.CodigoActividad,
-                CodigoActividadReceptor = factura.CodigoActividadReceptor,
                 NumeroConsecutivo = "",
                 FechaEmision = factura.Fecha,
                 ProveedorSistemas = empresa.Identificacion
             };
+            if (factura.CodigoActividadReceptor != "") facturaElectronica.CodigoActividadReceptor = factura.CodigoActividadReceptor;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionEmisorType = new IdentificacionType
             {
@@ -1020,11 +1020,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 Clave = "",
                 CodigoActividadEmisor = factura.CodigoActividad,
-                CodigoActividadReceptor = factura.CodigoActividadReceptor,
                 NumeroConsecutivo = "",
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica(),
                 ProveedorSistemas = empresa.Identificacion
             };
+            if (factura.CodigoActividadReceptor != "") notaCreditoElectronica.CodigoActividadReceptor = factura.CodigoActividadReceptor;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionEmisorType = new IdentificacionType
             {
@@ -1355,11 +1355,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 Clave = "",
                 CodigoActividadEmisor = factura.CodigoActividad,
-                CodigoActividadReceptor = factura.CodigoActividadReceptor,
                 NumeroConsecutivo = "",
                 FechaEmision = devolucion.Fecha,
                 ProveedorSistemas = empresa.Identificacion
             };
+            if (factura.CodigoActividadReceptor != "") notaCreditoElectronica.CodigoActividadReceptor = factura.CodigoActividadReceptor;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionEmisorType = new IdentificacionType
             {
@@ -1656,11 +1656,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 Clave = "",
                 CodigoActividadEmisor = factura.CodigoActividad,
-                CodigoActividadReceptor = factura.CodigoActividadReceptor,
                 NumeroConsecutivo = "",
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica(),
                 ProveedorSistemas = empresa.Identificacion
             };
+            if (factura.CodigoActividadReceptor != "") notaDebitoElectronica.CodigoActividadReceptor = factura.CodigoActividadReceptor;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionEmisorType = new IdentificacionType
             {
