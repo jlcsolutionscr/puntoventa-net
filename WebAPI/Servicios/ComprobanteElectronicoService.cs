@@ -1303,6 +1303,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Numero = factura.IdDocElectronico,
                 FechaEmisionIR = factura.Fecha,
                 Codigo = CodigoReferenciaType.Item01,
+                CodigoSpecified = true,
                 Razon = "Anulación del documento factura electrónica con la respectiva clave númerica."
             };
             notaCreditoElectronica.InformacionReferencia = new NotaCreditoElectronicaInformacionReferencia[] { informacionReferencia };
@@ -1613,6 +1614,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Numero = factura.IdDocElectronico,
                 FechaEmisionIR = factura.Fecha,
                 Codigo = CodigoReferenciaType.Item01,
+                CodigoSpecified = true,
                 Razon = "Ajuste de monto de factura electrónica por devolución de mercancía."
             };
             notaCreditoElectronica.InformacionReferencia = new NotaCreditoElectronicaInformacionReferencia[] { informacionReferencia };
@@ -1909,6 +1911,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Numero = factura.IdDocElectronicoRev,
                 FechaEmisionIR = factura.Fecha,
                 Codigo = CodigoReferenciaType.Item01,
+                CodigoSpecified = true,
                 Razon = "Anulación de devolución de mercancía de factura electrónica con la respectiva clave númerica."
             };
             notaDebitoElectronica.InformacionReferencia = new NotaDebitoElectronicaInformacionReferencia[] { informacionReferencia };
