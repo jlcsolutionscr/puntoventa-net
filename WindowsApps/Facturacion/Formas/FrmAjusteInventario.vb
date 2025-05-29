@@ -186,7 +186,7 @@ Public Class FrmAjusteInventario
         Try
             IniciaDetalleAjusteInventario()
             EstablecerPropiedadesDataGridView()
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             btnBusProd.Enabled = True
             grdDetalleAjusteInventario.DataSource = dtbDetalleAjusteInventario
@@ -200,7 +200,7 @@ Public Class FrmAjusteInventario
 
     Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdAjuste.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+        txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         txtDescAjuste.Text = ""
         txtCodigo.Text = ""
         txtDescripcion.Text = ""
@@ -267,7 +267,7 @@ Public Class FrmAjusteInventario
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = cboSucursal.SelectedValue,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-                .Fecha = Now(),
+                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .Descripcion = txtDescAjuste.Text
             }
             ajusteInventario.DetalleAjusteInventario = New List(Of DetalleAjusteInventario)

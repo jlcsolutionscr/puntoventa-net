@@ -23,7 +23,6 @@ Public Class FrmOrdenServicio
     Private vendedor As Vendedor
     Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
-    Private provider As CultureInfo = CultureInfo.InvariantCulture
     'Impresion de tiquete
     Private comprobanteImpresion As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
@@ -563,7 +562,7 @@ Public Class FrmOrdenServicio
         Try
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             txtFechaEntrega.Value = Today()
             cboHoraEntrega.SelectedIndex = 0
@@ -575,18 +574,7 @@ Public Class FrmOrdenServicio
             txtSubTotal.Text = FormatNumber(0, 2)
             txtImpuesto.Text = FormatNumber(0, 2)
             txtTotal.Text = FormatNumber(0, 2)
-            cliente = New Cliente With {
-                .IdCliente = 1,
-                .Nombre = "CLIENTE DE CONTADO",
-                .Telefono = "",
-                .IdTipoExoneracion = StaticValoresPorDefecto.TipoExoneracion,
-                .IdNombreInstExoneracion = StaticValoresPorDefecto.IdNombreInstExoneracion,
-                .NumDocExoneracion = "",
-                .ArticuloExoneracion = "",
-                .IncisoExoneracion = "",
-                .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider),
-                .PorcentajeExoneracion = 0
-            }
+            cliente = FrmPrincipal.ObtenerClienteDeContado()
             txtNombreCliente.Text = cliente.Nombre
             txtPorcentajeExoneracion.Text = "0"
             If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
@@ -605,7 +593,8 @@ Public Class FrmOrdenServicio
             CargarCombos()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
+            txtTipoCambio.Text = 1
+            If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
             bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -615,10 +604,11 @@ Public Class FrmOrdenServicio
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdOrdenServicio.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+        txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
+        txtTipoCambio.Text = 1
+        If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
         cboTipoMoneda.Enabled = True
         txtFechaEntrega.Value = Today()
         cboHoraEntrega.SelectedIndex = 0
@@ -659,18 +649,7 @@ Public Class FrmOrdenServicio
         btnEnviar.Enabled = False
         btnBuscaVendedor.Enabled = True
         btnBuscarCliente.Enabled = True
-        cliente = New Cliente With {
-            .IdCliente = 1,
-            .Nombre = "CLIENTE DE CONTADO",
-            .Telefono = "",
-            .IdTipoExoneracion = StaticValoresPorDefecto.TipoExoneracion,
-            .IdNombreInstExoneracion = StaticValoresPorDefecto.IdNombreInstExoneracion,
-            .NumDocExoneracion = "",
-            .ArticuloExoneracion = "",
-            .IncisoExoneracion = "",
-            .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider),
-            .PorcentajeExoneracion = 0
-        }
+        cliente = FrmPrincipal.ObtenerClienteDeContado()
         txtNombreCliente.Text = cliente.Nombre
         txtNombreCliente.ReadOnly = False
         If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
@@ -727,7 +706,8 @@ Public Class FrmOrdenServicio
                 txtNombreCliente.Text = ordenServicio.NombreCliente
                 txtFecha.Text = ordenServicio.Fecha
                 cboTipoMoneda.SelectedValue = ordenServicio.IdTipoMoneda
-                txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
+                txtTipoCambio.Text = 1
+                If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
                 txtTelefono.Text = ordenServicio.Telefono
                 txtDireccion.Text = ordenServicio.Direccion
                 txtDescripcionOrden.Text = ordenServicio.Descripcion
@@ -862,7 +842,7 @@ Public Class FrmOrdenServicio
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
-                .Fecha = Now(),
+                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .IdVendedor = vendedor.IdVendedor,
                 .Telefono = txtTelefono.Text,
                 .Direccion = txtDireccion.Text,
@@ -1126,7 +1106,8 @@ Public Class FrmOrdenServicio
 
     Private Async Sub CboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
         If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
+            txtTipoCambio.Text = 1
+            If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
         End If
     End Sub
 

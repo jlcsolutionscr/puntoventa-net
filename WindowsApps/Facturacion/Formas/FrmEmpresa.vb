@@ -70,7 +70,7 @@ Public Class FrmEmpresa
             dgvActividadEconomica.Refresh()
         End If
     End Sub
-    Private Async Function CargarListadoBarrios(IdProvincia As Integer, IdCanton As Integer, IdDistrito As Integer) As Task
+    Private Async Function CargarListadoDistritos(IdProvincia As Integer, IdCanton As Integer) As Task
         Try
             cboCanton.ValueMember = "Id"
             cboCanton.DisplayMember = "Descripcion"
@@ -78,9 +78,6 @@ Public Class FrmEmpresa
             cboDistrito.ValueMember = "Id"
             cboDistrito.DisplayMember = "Descripcion"
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(IdProvincia, IdCanton, FrmPrincipal.usuarioGlobal.Token)
-            cboBarrio.ValueMember = "Id"
-            cboBarrio.DisplayMember = "Descripcion"
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(IdProvincia, IdCanton, IdDistrito, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -140,7 +137,7 @@ Public Class FrmEmpresa
                 Close()
                 Exit Sub
             End If
-            Await CargarListadoBarrios(datos.IdProvincia, datos.IdCanton, datos.IdDistrito)
+            Await CargarListadoDistritos(datos.IdProvincia, datos.IdCanton)
             txtIdEmpresa.Text = datos.IdEmpresa
             txtNombreEmpresa.Text = datos.NombreEmpresa
             txtNombreComercial.Text = datos.NombreComercial

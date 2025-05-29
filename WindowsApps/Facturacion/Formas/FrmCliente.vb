@@ -26,6 +26,8 @@ Public Class FrmCliente
         cboInstExoneracion.ValueMember = "Id"
         cboInstExoneracion.DisplayMember = "Descripcion"
         cboInstExoneracion.DataSource = FrmPrincipal.ObtenerListadoNombreInstExoneracion()
+        cboActividadEconomica.ValueMember = "Id"
+        cboActividadEconomica.DisplayMember = "Descripcion"
     End Sub
 #End Region
 
@@ -58,6 +60,7 @@ Public Class FrmCliente
                 If datos Is Nothing Then
                     Throw New Exception("El cliente seleccionado no existe")
                 End If
+                cboActividadEconomica.DataSource = Await Puntoventa.ObtenerListadoActividadEconomica(datos.Identificacion)
                 txtIdCliente.Text = datos.IdCliente
                 cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
                 txtIdentificacion.Text = datos.Identificacion
@@ -77,6 +80,11 @@ Public Class FrmCliente
                 txtInciso.Text = datos.IncisoExoneracion
                 txtFechaExoneracion.Value = datos.FechaEmisionDoc
                 txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
+                If datos.CodigoActividad.Length = 6 Then
+                    cboActividadEconomica.SelectedValue = Integer.Parse(datos.CodigoActividad)
+                Else
+                    cboActividadEconomica.SelectedIndex = -1
+                End If
             Else
                 datos = New Cliente
                 cboTipoExoneracion.SelectedValue = StaticValoresPorDefecto.TipoExoneracion
@@ -128,6 +136,7 @@ Public Class FrmCliente
         datos.IncisoExoneracion = txtInciso.Text
         datos.FechaEmisionDoc = txtFechaExoneracion.Value
         datos.PorcentajeExoneracion = txtPorcentajeExoneracion.Text
+        datos.CodigoActividad = IIf(cboActividadEconomica.SelectedValue <> Nothing, cboActividadEconomica.SelectedValue.ToString(), "")
         Try
             If datos.IdCliente = 0 Then
                 Await Puntoventa.AgregarCliente(datos, FrmPrincipal.usuarioGlobal.Token)
@@ -147,6 +156,7 @@ Public Class FrmCliente
     Private Async Sub Identificacion_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtIdentificacion.Validated
         Try
             If txtIdCliente.Text = "" And txtIdentificacion.Text <> "" Then
+                cboActividadEconomica.DataSource = Await Puntoventa.ObtenerListadoActividadEconomica(txtIdentificacion.Text)
                 Dim cliente As Cliente = Nothing
                 cliente = Await Puntoventa.ValidaIdentificacionCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
                 If cliente IsNot Nothing Then
@@ -171,13 +181,18 @@ Public Class FrmCliente
                         cboInstExoneracion.SelectedValue = datos.IdNombreInstExoneracion
                         txtFechaExoneracion.Text = datos.FechaEmisionDoc.ToString()
                         txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
+                        cboActividadEconomica.SelectedValue = datos.CodigoActividad
                     Else
                         MessageBox.Show("Cliente encontrado en el padrón electoral. Por favor complete la información faltante.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                         cboTipoIdentificacion.SelectedValue = 0
                         txtNombre.Text = cliente.Nombre
+                        cboActividadEconomica.SelectedIndex = 0
                     End If
-                ElseIf cboTipoIdentificacion.SelectedValue = 0 Then
-                    MessageBox.Show("No se encontró la identificación registrada en el sistema o en el padrón electoral. Por favor ingrese la información completa.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Else
+                    If cboTipoIdentificacion.SelectedValue = 0 Then
+                        MessageBox.Show("No se encontró la identificación registrada en el sistema o en el padrón electoral. Por favor ingrese la información requerida.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    End If
+                    cboActividadEconomica.SelectedIndex = 0
                 End If
             End If
         Catch ex As Exception

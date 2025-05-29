@@ -346,22 +346,6 @@ namespace LeandroSoftware.ClienteWCF
             return terminal;
         }
 
-        public static async Task<decimal> ObtenerTipoCambioDolar(string strFecha, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerTipoCambioDolar', Parametros: {Fecha: '" + strFecha + "'}}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            decimal decTipoCambioDolar = 0;
-            if (respuesta != "")
-                decTipoCambioDolar = JsonConvert.DeserializeObject<decimal>(respuesta);
-            return decTipoCambioDolar;
-        }
-
-        public static async Task AgregarTipoCambioDolar(string strFecha, decimal decValor, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'AgregarTipoCambioDolar', Parametros: {Fecha: '" + strFecha + "', Valor: " + decValor + "}}";
-            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
-        }
-
         public static async Task<decimal> ObtenerTipoCambioDolarHacienda()
         {
             HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioHaciendaURL + "/indicadores/tc/dolar");

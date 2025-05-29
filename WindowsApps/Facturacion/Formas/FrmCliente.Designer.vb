@@ -71,6 +71,8 @@ Partial Class FrmCliente
         Me.Label4 = New System.Windows.Forms.Label()
         Me.txtInciso = New System.Windows.Forms.TextBox()
         Me.Label5 = New System.Windows.Forms.Label()
+        Me.Label37 = New System.Windows.Forms.Label()
+        Me.cboActividadEconomica = New System.Windows.Forms.ComboBox()
         Me.SuspendLayout()
         '
         'txtFax
@@ -434,7 +436,7 @@ Partial Class FrmCliente
         Me.txtPorcentajeExoneracion.BackColor = System.Drawing.SystemColors.Window
         Me.txtPorcentajeExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPorcentajeExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(139, 417)
+        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(333, 391)
         Me.txtPorcentajeExoneracion.MaxLength = 2
         Me.txtPorcentajeExoneracion.Name = "txtPorcentajeExoneracion"
         Me.txtPorcentajeExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -446,7 +448,7 @@ Partial Class FrmCliente
         Me.Label14.BackColor = System.Drawing.Color.Transparent
         Me.Label14.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label14.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label14.Location = New System.Drawing.Point(67, 417)
+        Me.Label14.Location = New System.Drawing.Point(261, 391)
         Me.Label14.Name = "Label14"
         Me.Label14.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label14.Size = New System.Drawing.Size(66, 19)
@@ -598,12 +600,43 @@ Partial Class FrmCliente
         Me.Label5.Text = "Inciso"
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'Label37
+        '
+        Me.Label37.BackColor = System.Drawing.Color.Transparent
+        Me.Label37.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label37.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label37.Location = New System.Drawing.Point(10, 421)
+        Me.Label37.Name = "Label37"
+        Me.Label37.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label37.Size = New System.Drawing.Size(123, 17)
+        Me.Label37.TabIndex = 278
+        Me.Label37.Text = "Actividad Economica:"
+        Me.Label37.TextAlign = System.Drawing.ContentAlignment.TopRight
+        '
+        'cboActividadEconomica
+        '
+        Me.cboActividadEconomica.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cboActividadEconomica.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboActividadEconomica.BackColor = System.Drawing.SystemColors.Window
+        Me.cboActividadEconomica.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboActividadEconomica.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboActividadEconomica.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboActividadEconomica.IntegralHeight = False
+        Me.cboActividadEconomica.ItemHeight = 13
+        Me.cboActividadEconomica.Location = New System.Drawing.Point(139, 417)
+        Me.cboActividadEconomica.Name = "cboActividadEconomica"
+        Me.cboActividadEconomica.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboActividadEconomica.Size = New System.Drawing.Size(386, 21)
+        Me.cboActividadEconomica.TabIndex = 277
+        '
         'FrmCliente
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(539, 450)
+        Me.Controls.Add(Me.Label37)
+        Me.Controls.Add(Me.cboActividadEconomica)
         Me.Controls.Add(Me.txtInciso)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.txtArticulo)
@@ -684,4 +717,6 @@ Partial Class FrmCliente
     Public WithEvents Label4 As Label
     Public WithEvents txtInciso As TextBox
     Public WithEvents Label5 As Label
+    Public WithEvents Label37 As Label
+    Public WithEvents cboActividadEconomica As ComboBox
 End Class

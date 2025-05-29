@@ -216,7 +216,7 @@ Public Class FrmFacturaCompra
 
     Private Async Sub FrmFacturaCompra_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             Await CargarCombos()
             Await CargarListadoDistritos(1, 1)
             IniciaTablasDeDetalle()
@@ -257,7 +257,7 @@ Public Class FrmFacturaCompra
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdFactCompra.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+        txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         txtIdentificacion.Text = ""
         txtDireccion.Text = ""
         txtNombre.Text = ""
@@ -353,7 +353,7 @@ Public Class FrmFacturaCompra
                 .IdTerminal = FrmPrincipal.equipoGlobal.IdTerminal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdTipoMoneda = 1,
-                .Fecha = Now(),
+                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .CodigoActividad = cboActividadEconomica.SelectedValue,
                 .IdCondicionVenta = 1,
                 .PlazoCredito = 0,
