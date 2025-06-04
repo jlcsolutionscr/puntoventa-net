@@ -797,14 +797,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (clasificacion == null) throw new BusinessException("El código " + detalle.Codigo + " asignado al detalle de la factura de compra no corresponde a un código CABYS válido.");
                     }
                     dbContext.FacturaCompraRepository.Add(facturaCompra);
-                    /*DocumentoElectronico documentoFE = ComprobanteElectronicoService.GenerarFacturaCompraElectronica(facturaCompra, empresa, dbContext, decTipoDeCambio);
+                    DocumentoElectronico documentoFE = ComprobanteElectronicoService.GenerarFacturaCompraElectronica(facturaCompra, empresa, dbContext);
                     dbContext.Commit();
                     if (documentoFE != null)
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE));
                     }
-                    return facturaCompra.IdFactCompra.ToString();*/
-                    return "";
+                    return facturaCompra.IdFactCompra.ToString();
                 }
                 catch (BusinessException ex)
                 {
@@ -816,7 +815,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar el registro de facturación: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error guardando la información de la facturaCompra. Por favor consulte con su proveedor.");
+                    else throw new Exception("Se produjo un error guardando la información de la factura de compra. Por favor consulte con su proveedor.");
                 }
             }
         }
