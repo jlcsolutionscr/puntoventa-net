@@ -134,7 +134,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Clave = "",
                 CodigoActividadEmisor = facturaCompra.CodigoActividad,
                 NumeroConsecutivo = "",
-                FechaEmision = facturaCompra.Fecha
+                FechaEmision = facturaCompra.Fecha,
+                ProveedorSistemas = empresa.Identificacion
             };
             if (facturaCompra.CodigoActividadReceptor != "") facturaElectronica.CodigoActividadReceptor = facturaCompra.CodigoActividad;
             EmisorType emisor = new EmisorType();
