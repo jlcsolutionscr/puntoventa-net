@@ -1081,22 +1081,30 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     List<DescripcionValor> listaReporte = new List<DescripcionValor>();
                     var datosCierre = dbContext.CierreCajaRepository.Where(a => a.IdCierre == intIdCierre).FirstOrDefault();
+                    Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("RolePorEmpresa").Where(x => x.IdEmpresa == datosCierre.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     decimal decTotalIngresosEfectivo = datosCierre.AdelantosApartadoEfectivo + datosCierre.AdelantosOrdenEfectivo + datosCierre.VentasEfectivo + datosCierre.PagosCxCEfectivo + datosCierre.IngresosEfectivo;
                     decimal decTotalEgresosEfectivo = datosCierre.ComprasEfectivo + datosCierre.PagosCxPEfectivo + datosCierre.EgresosEfectivo;
                     decimal decTotalFondoCaja = datosCierre.FondoInicio + decTotalIngresosEfectivo - decTotalEgresosEfectivo;
                     DescripcionValor reporteLinea = new DescripcionValor("Fondo de inicio de caja", datosCierre.FondoInicio);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Adelantos apartados en efectivo", datosCierre.AdelantosApartadoEfectivo);
-                    listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Adelantos órdenes de servicio en efectivo", datosCierre.AdelantosOrdenEfectivo);
-                    listaReporte.Add(reporteLinea);
+                    if (empresa.RolePorEmpresa.Find(x => x.IdRole == 201) != null)
+                    {
+                        reporteLinea = new DescripcionValor("Adelantos órdenes de servicio en efectivo", datosCierre.AdelantosOrdenEfectivo);
+                        listaReporte.Add(reporteLinea);
+                    }
+                    if (empresa.RolePorEmpresa.Find(x => x.IdRole == 202) != null)
+                    {
+                        reporteLinea = new DescripcionValor("Adelantos apartados en efectivo", datosCierre.AdelantosApartadoEfectivo);
+                        listaReporte.Add(reporteLinea);
+                    }
                     reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios en efectivo", datosCierre.VentasEfectivo);
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Pagos a cuentas por cobrar en efectivo", datosCierre.PagosCxCEfectivo);
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Registro de ingresos en efectivo", datosCierre.IngresosEfectivo);
                     listaReporte.Add(reporteLinea);
-                    reporteLinea = new DescripcionValor("Total de ingresos en efectivo ", decTotalIngresosEfectivo);
+                    reporteLinea = new DescripcionValor("Total de ingresos en efectivo", decTotalIngresosEfectivo);
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Compras de bienes y/o servicios en efectivo", datosCierre.ComprasEfectivo);
                     listaReporte.Add(reporteLinea);
