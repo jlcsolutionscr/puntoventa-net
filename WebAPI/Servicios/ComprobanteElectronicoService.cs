@@ -132,12 +132,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             FacturaElectronicaCompra facturaElectronica = new FacturaElectronicaCompra
             {
                 Clave = "",
-                CodigoActividadEmisor = facturaCompra.CodigoActividad,
+                CodigoActividadEmisor = facturaCompra.CodigoActividadEmisor,
                 NumeroConsecutivo = "",
                 FechaEmision = facturaCompra.Fecha,
                 ProveedorSistemas = empresa.Identificacion
             };
-            if (facturaCompra.CodigoActividadReceptor != "") facturaElectronica.CodigoActividadReceptor = facturaCompra.CodigoActividad;
+            if (facturaCompra.CodigoActividad != "") facturaElectronica.CodigoActividadReceptor = facturaCompra.CodigoActividad;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionReceptorType = new IdentificacionType
             {
@@ -247,7 +247,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decimal decMontoExoneradoPorLinea = 0;
                     decimal decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalleFactura.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
                     decimal decMontoImpuestoNetoPorLinea = decMontoImpuestoPorLinea;
-                    int intCodigoTarifa = int.Parse(detalleFactura.PorcentajeIVA.ToString().Replace(",", ""));
+                    int intCodigoTarifa = detalleFactura.IdImpuesto;
                     if (impuestoResumen.ContainsKey(intCodigoTarifa))
                         impuestoResumen[intCodigoTarifa] = impuestoResumen[intCodigoTarifa] + decMontoImpuestoPorLinea;
                     else
@@ -380,7 +380,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             FacturaElectronicaCompraInformacionReferencia informacionReferencia = new FacturaElectronicaCompraInformacionReferencia
             {
                 TipoDocIR = TipoDocReferenciaType.Item01,
-                FechaEmisionIR = facturaCompra.Fecha
+                FechaEmisionIR = facturaCompra.Fecha,
+                Numero = facturaCompra.NumeroReferencia,
+                Codigo = CodigoReferenciaType.Item01,
+                Razon = "Emisión de factura de proveedor no emitida por el mismo"
             };
             facturaElectronica.InformacionReferencia = new FacturaElectronicaCompraInformacionReferencia[] { informacionReferencia };
             if (facturaCompra.TextoAdicional != "")
