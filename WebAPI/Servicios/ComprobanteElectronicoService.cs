@@ -372,6 +372,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             resumenFactura.TotalComprobante = Math.Round(resumenFactura.TotalVentaNeta + decTotalImpuestos, 2, MidpointRounding.AwayFromZero);
             facturaElectronica.ResumenFactura = resumenFactura;
+            FacturaElectronicaCompraInformacionReferencia informacionReferencia = new FacturaElectronicaCompraInformacionReferencia
+            {
+                TipoDocIR = TipoDocReferenciaType.Item01,
+                FechaEmisionIR = facturaCompra.Fecha
+            };
+            facturaElectronica.InformacionReferencia = new FacturaElectronicaCompraInformacionReferencia[] { informacionReferencia };
             if (facturaCompra.TextoAdicional != "")
             {
                 FacturaElectronicaCompraOtros otros = new FacturaElectronicaCompraOtros();
