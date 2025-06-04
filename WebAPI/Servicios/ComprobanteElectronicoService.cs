@@ -213,7 +213,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             decimal decTotalMercanciasExoneradas = 0;
             decimal decTotalServiciosExonerados = 0;
             decimal decTotalImpuestos = 0;
-            Dictionary <int,decimal> impuestoResumen = new Dictionary<int,decimal>();
+            Dictionary<int, decimal> impuestoResumen = new Dictionary<int,decimal>();
             foreach (DetalleFacturaCompra detalleFactura in facturaCompra.DetalleFacturaCompra)
             {
                 decimal decSubtotal = 0;
@@ -223,6 +223,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     CodigoCABYS = detalleFactura.Codigo,
                     Cantidad = detalleFactura.Cantidad
                 };
+                lineaDetalle.Cantidad = detalleFactura.Cantidad;
                 if (detalleFactura.UnidadMedida == "Und")
                     lineaDetalle.UnidadMedida = UnidadMedidaType.Unid;
                 else if (detalleFactura.UnidadMedida == "Sp")
@@ -234,23 +235,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 else
                     lineaDetalle.UnidadMedida = UnidadMedidaType.Os;
                 lineaDetalle.Detalle = detalleFactura.Descripcion;
-                decSubtotal = detalleFactura.PrecioVenta * detalleFactura.Cantidad;
                 lineaDetalle.PrecioUnitario = Math.Round(detalleFactura.PrecioVenta, 2, MidpointRounding.AwayFromZero);
+                decSubtotal = detalleFactura.PrecioVenta * detalleFactura.Cantidad;
                 lineaDetalle.MontoTotal = Math.Round(decSubtotal, 2, MidpointRounding.AwayFromZero);
                 lineaDetalle.SubTotal = lineaDetalle.MontoTotal;
+                lineaDetalle.BaseImponible = lineaDetalle.MontoTotal;
                 decimal decTotalPorLinea = 0;
-                decimal decMontoImpuestoPorLinea = 0;
                 if (detalleFactura.PorcentajeIVA > 0)
                 {
                     decimal decMontoGravadoPorLinea = lineaDetalle.SubTotal;
                     decimal decMontoExoneradoPorLinea = 0;
-                    decimal decMontoImpuestoNetoPorLinea = 0;
-                    decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalleFactura.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
-                    decMontoImpuestoNetoPorLinea = decMontoImpuestoPorLinea;
+                    decimal decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalleFactura.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
+                    decimal decMontoImpuestoNetoPorLinea = decMontoImpuestoPorLinea;
+                    int intCodigoTarifa = int.Parse(detalleFactura.PorcentajeIVA.ToString().Replace(",", ""));
+                    if (impuestoResumen.ContainsKey(intCodigoTarifa))
+                        impuestoResumen[intCodigoTarifa] = impuestoResumen[intCodigoTarifa] + decMontoImpuestoPorLinea;
+                    else
+                        impuestoResumen[intCodigoTarifa] = decMontoImpuestoPorLinea;
                     ImpuestoType impuestoType = new ImpuestoType
                     {
                         Codigo = CodigoImpuestoType.Item01,
-                        CodigoTarifaIVA = (CodigoTarifaIVAType)detalleFactura.IdImpuesto - 1,
+                        CodigoTarifaIVA = (CodigoTarifaIVAType)intCodigoTarifa - 1,
                         CodigoTarifaIVASpecified = true,
                         Tarifa = detalleFactura.PorcentajeIVA,
                         TarifaSpecified = true,
