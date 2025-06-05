@@ -379,10 +379,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             facturaElectronica.ResumenFactura = resumenFactura;
             FacturaElectronicaCompraInformacionReferencia informacionReferencia = new FacturaElectronicaCompraInformacionReferencia
             {
-                TipoDocIR = TipoDocReferenciaType.Item01,
+                TipoDocIR = TipoDocReferenciaType.Item14,
                 FechaEmisionIR = facturaCompra.Fecha,
                 Numero = facturaCompra.NumeroReferencia,
-                Codigo = CodigoReferenciaType.Item01,
+                Codigo = CodigoReferenciaType.Item04,
+                CodigoSpecified = true,
                 Razon = "Emisión de factura de proveedor no emitida por el mismo"
             };
             facturaElectronica.InformacionReferencia = new FacturaElectronicaCompraInformacionReferencia[] { informacionReferencia };
