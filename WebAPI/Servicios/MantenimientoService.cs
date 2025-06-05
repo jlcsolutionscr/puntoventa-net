@@ -161,7 +161,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaEquipoRegistrado = new List<EquipoRegistrado>();
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
@@ -342,7 +342,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     Usuario usuario = null;
@@ -464,7 +464,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                 empresa.ListadoTipoIdentificacion = ObtenerListadoTipoIdentificacion();
                 empresa.ListadoFormaPagoCliente = ObtenerListadoFormaPagoCliente();
                 empresa.ListadoFormaPagoEmpresa = ObtenerListadoFormaPagoEmpresa();
@@ -723,7 +723,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ActividadEconomicaEmpresa").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ActividadEconomicaEmpresa").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     return empresa;
                 }
