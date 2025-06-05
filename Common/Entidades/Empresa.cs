@@ -41,7 +41,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int Modalidad { get; set; }
         public Usuario Usuario { get; set; }
         public EquipoRegistrado EquipoRegistrado { get; set; }
-        public Barrio Barrio { get; set; }
+        public Distrito Distrito { get; set; }
         public PlanFacturacion PlanFacturacion { get; set; }
         public List<ReportePorEmpresa> ReportePorEmpresa { get; set; }
         public List<RolePorEmpresa> RolePorEmpresa { get; set; }

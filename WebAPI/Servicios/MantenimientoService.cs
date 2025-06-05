@@ -757,7 +757,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         throw new BusinessException(ex.Message);
                     }
                     Empresa noTracking = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                    empresa.Barrio = null;
+                    empresa.Distrito = null;
                     if (noTracking != null && noTracking.Logotipo != null) empresa.Logotipo = noTracking.Logotipo;
                     if (empresa.Logotipo == null) empresa.Logotipo = new byte[0];
                     List<ActividadEconomicaEmpresa> listadoDetalle = empresa.ActividadEconomicaEmpresa.ToList();

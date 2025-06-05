@@ -35,7 +35,6 @@ namespace LeandroSoftware.ServicioWeb.EstructuraDatos
         public string ProvinciaEmisor { get; set; }
         public string CantonEmisor { get; set; }
         public string DistritoEmisor { get; set; }
-        public string BarrioEmisor { get; set; }
         public string DireccionEmisor { get; set; }
         public string NombreReceptor { get; set; }
         public bool PoseeReceptor { get; set; }

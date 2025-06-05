@@ -3095,10 +3095,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
             datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
             datos.FaxEmisor = "";
-            datos.ProvinciaEmisor = empresa.Barrio.Distrito.Canton.Provincia.Descripcion;
-            datos.CantonEmisor = empresa.Barrio.Distrito.Canton.Descripcion;
-            datos.DistritoEmisor = empresa.Barrio.Distrito.Descripcion;
-            datos.BarrioEmisor = empresa.Barrio.Descripcion;
+            datos.ProvinciaEmisor = empresa.Distrito.Canton.Provincia.Descripcion;
+            datos.CantonEmisor = empresa.Distrito.Canton.Descripcion;
+            datos.DistritoEmisor = empresa.Distrito.Descripcion;
             datos.DireccionEmisor = empresa.Direccion;
             datos.NombreReceptor = factura.NombreCliente;
             if (factura.IdCliente > 1)
@@ -3176,10 +3175,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
             datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
             datos.FaxEmisor = "";
-            datos.ProvinciaEmisor = empresa.Barrio.Distrito.Canton.Provincia.Descripcion;
-            datos.CantonEmisor = empresa.Barrio.Distrito.Canton.Descripcion;
-            datos.DistritoEmisor = empresa.Barrio.Distrito.Descripcion;
-            datos.BarrioEmisor = empresa.Barrio.Descripcion;
+            datos.ProvinciaEmisor = empresa.Distrito.Canton.Provincia.Descripcion;
+            datos.CantonEmisor = empresa.Distrito.Canton.Descripcion;
+            datos.DistritoEmisor = empresa.Distrito.Descripcion;
             datos.DireccionEmisor = empresa.Direccion;
             datos.NombreReceptor = apartado.NombreCliente;
             if (apartado.IdCliente > 1)
@@ -3257,10 +3255,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
             datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
             datos.FaxEmisor = "";
-            datos.ProvinciaEmisor = empresa.Barrio.Distrito.Canton.Provincia.Descripcion;
-            datos.CantonEmisor = empresa.Barrio.Distrito.Canton.Descripcion;
-            datos.DistritoEmisor = empresa.Barrio.Distrito.Descripcion;
-            datos.BarrioEmisor = empresa.Barrio.Descripcion;
+            datos.ProvinciaEmisor = empresa.Distrito.Canton.Provincia.Descripcion;
+            datos.CantonEmisor = empresa.Distrito.Canton.Descripcion;
+            datos.DistritoEmisor = empresa.Distrito.Descripcion;
             datos.DireccionEmisor = empresa.Direccion;
             datos.NombreReceptor = ordenServicio.NombreCliente;
             if (ordenServicio.IdCliente > 1)
@@ -3337,10 +3334,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
             datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
             datos.FaxEmisor = "";
-            datos.ProvinciaEmisor = empresa.Barrio.Distrito.Canton.Provincia.Descripcion;
-            datos.CantonEmisor = empresa.Barrio.Distrito.Canton.Descripcion;
-            datos.DistritoEmisor = empresa.Barrio.Distrito.Descripcion;
-            datos.BarrioEmisor = empresa.Barrio.Descripcion;
+            datos.ProvinciaEmisor = empresa.Distrito.Canton.Provincia.Descripcion;
+            datos.CantonEmisor = empresa.Distrito.Canton.Descripcion;
+            datos.DistritoEmisor = empresa.Distrito.Descripcion;
             datos.DireccionEmisor = empresa.Direccion;
             datos.NombreReceptor = proforma.NombreCliente;
             if (proforma.IdCliente > 1)
@@ -3507,7 +3503,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
             datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
             datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
-            datos.BarrioEmisor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
             datos.DireccionEmisor = emisorNode["Ubicacion"]["OtrasSenas"].InnerText;
             string strExoneracionLeyenda = "";
             if (documentoXml.GetElementsByTagName("Receptor").Count > 0)

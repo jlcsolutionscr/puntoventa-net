@@ -23,7 +23,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<AjusteInventario> AjusteInventarioRepository { get; set; }
         public DbSet<Apartado> ApartadoRepository { get; set; }
         public DbSet<BancoAdquiriente> BancoAdquirienteRepository { get; set; }
-        public DbSet<Barrio> BarrioRepository { get; set; }
         public DbSet<CantFEMensualEmpresa> CantFEMensualEmpresaRepository { get; set; }
         public DbSet<Canton> CantonRepository { get; set; }
         public DbSet<CatalogoContable> CatalogoContableRepository { get; set; }
