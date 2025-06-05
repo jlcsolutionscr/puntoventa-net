@@ -136,7 +136,8 @@ Public Class FrmCliente
         datos.IncisoExoneracion = txtInciso.Text
         datos.FechaEmisionDoc = txtFechaExoneracion.Value
         datos.PorcentajeExoneracion = txtPorcentajeExoneracion.Text
-        datos.CodigoActividad = IIf(cboActividadEconomica.SelectedValue <> Nothing, cboActividadEconomica.SelectedValue.ToString(), "")
+        datos.CodigoActividad = ""
+        If cboActividadEconomica.SelectedValue <> Nothing Then datos.CodigoActividad = cboActividadEconomica.SelectedValue
         Try
             If datos.IdCliente = 0 Then
                 Await Puntoventa.AgregarCliente(datos, FrmPrincipal.usuarioGlobal.Token)

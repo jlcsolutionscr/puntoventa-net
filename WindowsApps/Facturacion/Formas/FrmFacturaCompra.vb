@@ -183,9 +183,11 @@ Public Class FrmFacturaCompra
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
         cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
-        cboActividadEconomica.ValueMember = "Id"
-        cboActividadEconomica.DisplayMember = "Descripcion"
-        cboActividadEconomica.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
+        cboActEconEmisor.ValueMember = "Id"
+        cboActEconEmisor.DisplayMember = "Descripcion"
+        cboActEconReceptor.ValueMember = "Id"
+        cboActEconReceptor.DisplayMember = "Descripcion"
+        cboActEconReceptor.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
         cboProvincia.ValueMember = "Id"
         cboProvincia.DisplayMember = "Descripcion"
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
@@ -264,7 +266,9 @@ Public Class FrmFacturaCompra
         txtNombreComercial.Text = ""
         txtTelefono.Text = ""
         txtCorreoElectronico.Text = ""
-        cboActividadEconomica.SelectedIndex = 0
+        cboActEconEmisor.DataSource = Nothing
+        cboActEconEmisor.SelectedValue = Nothing
+        cboActEconReceptor.SelectedIndex = 0
         cboTipoIdentificacion.SelectedIndex = 0
         Await CargarListadoDistritos(1, 1)
         cboTipoExoneracion.SelectedIndex = StaticValoresPorDefecto.TipoExoneracion
@@ -288,6 +292,7 @@ Public Class FrmFacturaCompra
         txtTextoAdicional.Text = ""
         decTotal = 0
         cboTipoIdentificacion.Focus()
+        btnGuardar.Enabled = True
     End Sub
 
     Private Async Sub txtIdentificacion_Validated(sender As Object, e As EventArgs) Handles txtIdentificacion.Validated
@@ -297,6 +302,7 @@ Public Class FrmFacturaCompra
                 txtNombre.Text = cliente.Nombre
             End If
         End If
+        cboActEconEmisor.DataSource = Await Puntoventa.ObtenerListadoActividadEconomica(txtIdentificacion.Text)
     End Sub
 
     Private Sub btnBuscarClasificacion_Click(sender As Object, e As EventArgs) Handles btnBuscarClasificacion.Click
@@ -335,6 +341,9 @@ Public Class FrmFacturaCompra
         If txtDireccion.Text = "" Then strCampo = "Dirección"
         If txtNombre.Text = "" Then strCampo = "Nombre"
         If txtCorreoElectronico.Text = "" Then strCampo = "Correo electrónico"
+        If txtNumeroReferencia.Text = "" Then strCampo = "Numero de referencia"
+        If cboActEconEmisor.SelectedValue = Nothing Then strCampo = "Actividad econ. del emisor"
+        If cboActEconReceptor.SelectedValue = Nothing Then strCampo = "Actividad econ. del receptor"
         If strCampo <> "" Then
             MessageBox.Show("El campo " & strCampo & " es requerido", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             btnGuardar.Enabled = True
@@ -354,7 +363,9 @@ Public Class FrmFacturaCompra
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdTipoMoneda = 1,
                 .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
-                .CodigoActividad = cboActividadEconomica.SelectedValue,
+                .CodigoActividadEmisor = cboActEconEmisor.SelectedValue,
+                .CodigoActividad = cboActEconReceptor.SelectedValue,
+                .NumeroReferencia = txtNumeroReferencia.Text,
                 .IdCondicionVenta = 1,
                 .PlazoCredito = 0,
                 .NombreEmisor = txtNombre.Text,

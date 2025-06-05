@@ -146,7 +146,6 @@ Public Class FrmEmpresa
             cboProvincia.SelectedValue = datos.IdProvincia
             cboCanton.SelectedValue = datos.IdCanton
             cboDistrito.SelectedValue = datos.IdDistrito
-            cboBarrio.SelectedValue = datos.IdBarrio
             txtDireccion.Text = datos.Direccion
             txtTelefono1.Text = datos.Telefono1
             txtTelefono2.Text = datos.Telefono2
@@ -222,7 +221,6 @@ Public Class FrmEmpresa
             cboProvincia.SelectedValue Is Nothing Or
             cboCanton.SelectedValue Is Nothing Or
             cboDistrito.SelectedValue Is Nothing Or
-            cboBarrio.SelectedValue Is Nothing Or
             txtDireccion.Text.Length = 0 Or
             txtTelefono1.Text.Length = 0 Or
             txtCorreoNotificacion.Text.Length = 0 Or
@@ -243,7 +241,6 @@ Public Class FrmEmpresa
         datos.IdProvincia = cboProvincia.SelectedValue
         datos.IdCanton = cboCanton.SelectedValue
         datos.IdDistrito = cboDistrito.SelectedValue
-        datos.IdBarrio = cboBarrio.SelectedValue
         datos.Direccion = txtDireccion.Text
         datos.Telefono1 = txtTelefono1.Text
         datos.Telefono2 = txtTelefono2.Text
@@ -254,7 +251,7 @@ Public Class FrmEmpresa
         datos.LeyendaProforma = txtLeyendaProforma.Text
         datos.PrecioVentaIncluyeIVA = chkPrecioVentaIncluyeIVA.Checked
         datos.MontoRedondeoDescuento = txtMontoRedondeoDescuento.Text
-        datos.Barrio = Nothing
+        datos.Distrito = Nothing
         datos.ActividadEconomicaEmpresa.Clear()
         For I As Short = 0 To dtbActividadEconomica.Rows.Count - 1
             Dim actividadEconomicaEmpresa As ActividadEconomicaEmpresa = New ActividadEconomicaEmpresa With {
@@ -370,7 +367,6 @@ Public Class FrmEmpresa
             bolInicializado = False
             cboCanton.DataSource = Await Puntoventa.ObtenerListadoCantones(cboProvincia.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, 1, 1, FrmPrincipal.usuarioGlobal.Token)
             bolInicializado = True
         End If
     End Sub
@@ -379,15 +375,6 @@ Public Class FrmEmpresa
         If bolInicializado Then
             bolInicializado = False
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
-            bolInicializado = True
-        End If
-    End Sub
-
-    Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
-        If bolInicializado Then
-            bolInicializado = False
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             bolInicializado = True
         End If
     End Sub
