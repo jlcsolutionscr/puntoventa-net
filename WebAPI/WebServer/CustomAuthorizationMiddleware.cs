@@ -32,7 +32,7 @@ namespace WebServer.Middlewares
                     bool modoMantenimiento = servicioMantenimiento.EnModoMantenimiento();
                     if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible procesar su solicitud.");
                 }
-                if (!new string[] { "obtenerultimarversionapp", "recibirrespuestahacienda", "iniciarrestablecerclaveusuario", "validarsesionrestablecerclaveusuario", "restablecerclaveusuario", "limpiarregistrosinvalidos", "obtenerultimaversionapp", "obtenerlistadotiqueteordenserviciopendiente", "cambiarestadoaimpresotiqueteordenservicio", "descargaractualizacion", "obtenerlistadoempresasadmin", "obtenerlistadoempresas", "validarcredenciales", "validarcredencialesweb", "validarcredencialesadmin", "obtenerlistadoterminalesdisponibles", "registrarterminal", "procesarpendientes" }.Contains(strPath[1]))
+                if (!new string[] { "obtenerultimarversionapp", "recibirrespuestahacienda", "generarnotificacionrestablecerclaveusuario", "restablecerclaveusuario", "limpiarregistrosinvalidos", "obtenerultimaversionapp", "obtenerlistadotiqueteordenserviciopendiente", "cambiarestadoaimpresotiqueteordenservicio", "descargaractualizacion", "obtenerlistadoempresasadmin", "obtenerlistadoempresas", "validarcredenciales", "validarcredencialesweb", "validarcredencialesadmin", "obtenerlistadoterminalesdisponibles", "registrarterminal", "procesarpendientes" }.Contains(strPath[1]))
                 {
                     var headers = context.Request.Headers;
                     string strToken = headers["Authorization"];

@@ -68,8 +68,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         {
             try
             {
-                string strClaveFormateada = clave.Replace(" ", "+");
-                Usuario usuarioEntity = _servicioMantenimiento.ValidarCredencialesAdmin(usuario, strClaveFormateada);
+                Usuario usuarioEntity = _servicioMantenimiento.ValidarCredencialesAdmin(usuario, clave);
                 string strRespuesta = "";
                 if (usuarioEntity != null)
                     strRespuesta = JsonConvert.SerializeObject(usuarioEntity);
