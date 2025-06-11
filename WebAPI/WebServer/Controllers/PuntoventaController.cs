@@ -125,17 +125,17 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _servicioMantenimiento.RegistrarTerminal(usuario, strClaveFormateada, id, sucursal, terminal, tipodispositivo, dispositivo);
         }
 
-        [HttpGet("iniciarrestablecerclaveusuario")]
-        public void IniciarRestablecerClaveUsuario(string identificacion, string usuario)
-        {
-            string strServicioWebURL = _configuration.GetSection("appSettings").GetSection("strServicioWebURL").Value;
-            _servicioMantenimiento.IniciarRestablecerClaveUsuario(strServicioWebURL, identificacion, usuario);
-        }
-
-        [HttpGet("validarsesionrestablecerclaveusuario")]
-        public void ValidarSesionRestablecerClaveUsuario(string session)
+        [HttpGet("validarregistroautenticacion")]
+        public void ValidarRegistroAutenticacion(string session)
         {
             _servicioMantenimiento.ValidarRegistroAutenticacion(session.Replace(" ", "+").Replace("~", "/"), StaticRolePorUsuario.USUARIO_SISTEMA, 1);
+        }
+
+        [HttpGet("generarnotificacionrestablecerclaveusuario")]
+        public void GenerarNotificacionRestablecerClaveUsuario(string identificacion, string usuario)
+        {
+            string strServicioWebURL = _configuration.GetSection("appSettings").GetSection("strServicioWebURL").Value;
+            _servicioMantenimiento.GenerarNotificacionRestablecerClaveUsuario(strServicioWebURL, identificacion, usuario);
         }
 
         [HttpGet("restablecerclaveusuario")]
