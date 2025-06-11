@@ -1120,6 +1120,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Monto de próximo inicio de caja", decTotalFondoCaja - datosCierre.RetiroEfectivo);
                     listaReporte.Add(reporteLinea);
+                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios en tarjeta", datosCierre.VentasTarjeta);
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios de crédito", datosCierre.VentasCredito);
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios mediante transferencia", datosCierre.VentasBancos);
+                    listaReporte.Add(reporteLinea);
                     return listaReporte;
                 }
                 catch (Exception ex)
