@@ -142,7 +142,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
                 gfx.DrawString(strDescripcion, font, XBrushes.Black, new XRect(150, lineaPos, 280, 12), XStringFormats.TopLeft);
                 tf.DrawString(linea.PrecioUnitario, font, XBrushes.Black, new XRect(420, lineaPos, 80, 12), XStringFormats.TopLeft);
                 tf.DrawString(linea.TotalLinea, font, XBrushes.Black, new XRect(500, lineaPos, 80, 12), XStringFormats.TopLeft);
-                if ((cantPaginas == 1 && cantLineasDetalle == 33) || (cantPaginas > 1 && cantLineasDetalle == 53))
+                if ((cantPaginas == 1 && cantLineasDetalle == 27) || (cantPaginas > 1 && cantLineasDetalle == 47))
                 {
                     cantPaginas += 1;
                     cantLineasDetalle = 0;
