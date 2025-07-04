@@ -248,10 +248,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decimal decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalleFactura.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
                     decimal decMontoImpuestoNetoPorLinea = decMontoImpuestoPorLinea;
                     int intCodigoTarifa = detalleFactura.IdImpuesto;
-                    if (impuestoResumen.ContainsKey(intCodigoTarifa))
-                        impuestoResumen[intCodigoTarifa] = impuestoResumen[intCodigoTarifa] + decMontoImpuestoPorLinea;
-                    else
-                        impuestoResumen[intCodigoTarifa] = decMontoImpuestoPorLinea;
                     ImpuestoType impuestoType = new ImpuestoType
                     {
                         Codigo = CodigoImpuestoType.Item01,
@@ -281,6 +277,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             MontoExoneracion = decMontoExoneracion
                         };
                         impuestoType.Exoneracion = exoneracionType;
+                    }
+                    if (decMontoImpuestoNetoPorLinea > 0)
+                    {
+                        if (impuestoResumen.ContainsKey(intCodigoTarifa))
+                            impuestoResumen[intCodigoTarifa] = impuestoResumen[intCodigoTarifa] + decMontoImpuestoPorLinea;
+                        else
+                            impuestoResumen[intCodigoTarifa] = decMontoImpuestoPorLinea;
                     }
                     lineaDetalle.ImpuestoNeto = decMontoImpuestoNetoPorLinea;
                     lineaDetalle.Impuesto = new ImpuestoType[] { impuestoType };
@@ -558,10 +561,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         decimal decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalleFactura.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
                         decimal decMontoImpuestoNetoPorLinea = decMontoImpuestoPorLinea;
                         int intCodigoTarifa = detalleFactura.Producto.IdImpuesto;
-                        if (impuestoResumen.ContainsKey(intCodigoTarifa))
-                            impuestoResumen[intCodigoTarifa] = impuestoResumen[intCodigoTarifa] + decMontoImpuestoPorLinea;
-                        else
-                            impuestoResumen[intCodigoTarifa] = decMontoImpuestoPorLinea;
                         ImpuestoType impuestoType = new ImpuestoType
                         {
                             Codigo = CodigoImpuestoType.Item01,
@@ -591,6 +590,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 MontoExoneracion = decMontoExoneracion
                             };
                             impuestoType.Exoneracion = exoneracionType;
+                        }
+                        if (decMontoImpuestoNetoPorLinea > 0)
+                        {
+                            if (impuestoResumen.ContainsKey(intCodigoTarifa))
+                                impuestoResumen[intCodigoTarifa] = impuestoResumen[intCodigoTarifa] + decMontoImpuestoPorLinea;
+                            else
+                                impuestoResumen[intCodigoTarifa] = decMontoImpuestoPorLinea;
                         }
                         lineaDetalle.ImpuestoNeto = decMontoImpuestoNetoPorLinea;
                         lineaDetalle.ImpuestoAsumidoEmisorFabrica = 0;
@@ -1155,10 +1161,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         decimal decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalleFactura.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
                         decimal decMontoImpuestoNetoPorLinea = decMontoImpuestoPorLinea;
                         int intCodigoTarifa = detalleFactura.Producto.IdImpuesto;
-                        if (impuestoResumen.ContainsKey(intCodigoTarifa))
-                            impuestoResumen[intCodigoTarifa] = impuestoResumen[intCodigoTarifa] + decMontoImpuestoPorLinea;
-                        else
-                            impuestoResumen[intCodigoTarifa] = decMontoImpuestoPorLinea;
                         ImpuestoType impuestoType = new ImpuestoType
                         {
                             Codigo = CodigoImpuestoType.Item01,
@@ -1188,6 +1190,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 MontoExoneracion = decMontoExoneracion
                             };
                             impuestoType.Exoneracion = exoneracionType;
+                        }
+                        if (decMontoImpuestoNetoPorLinea > 0)
+                        {
+                            if (impuestoResumen.ContainsKey(intCodigoTarifa))
+                                impuestoResumen[intCodigoTarifa] = impuestoResumen[intCodigoTarifa] + decMontoImpuestoPorLinea;
+                            else
+                                impuestoResumen[intCodigoTarifa] = decMontoImpuestoPorLinea;
                         }
                         lineaDetalle.ImpuestoNeto = decMontoImpuestoNetoPorLinea;
                         lineaDetalle.ImpuestoAsumidoEmisorFabrica = 0;
@@ -1462,10 +1471,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         decimal decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalle.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
                         decimal decMontoImpuestoNetoPorLinea = decMontoImpuestoPorLinea;
                         int intCodigoTarifa = detalle.Producto.IdImpuesto;
-                        if (impuestoResumen.ContainsKey(intCodigoTarifa))
-                            impuestoResumen[intCodigoTarifa] = impuestoResumen[intCodigoTarifa] + decMontoImpuestoPorLinea;
-                        else
-                            impuestoResumen[intCodigoTarifa] = decMontoImpuestoPorLinea;
                         ImpuestoType impuestoType = new ImpuestoType
                         {
                             Codigo = CodigoImpuestoType.Item01,
@@ -1495,6 +1500,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 MontoExoneracion = decMontoExoneracion
                             };
                             impuestoType.Exoneracion = exoneracionType;
+                        }
+                        if (decMontoImpuestoNetoPorLinea > 0)
+                        {
+                            if (impuestoResumen.ContainsKey(intCodigoTarifa))
+                                impuestoResumen[intCodigoTarifa] = impuestoResumen[intCodigoTarifa] + decMontoImpuestoPorLinea;
+                            else
+                                impuestoResumen[intCodigoTarifa] = decMontoImpuestoPorLinea;
                         }
                         lineaDetalle.ImpuestoNeto = decMontoImpuestoNetoPorLinea;
                         lineaDetalle.ImpuestoAsumidoEmisorFabrica = 0;
@@ -1759,10 +1771,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         decimal decMontoImpuestoPorLinea = Math.Round(decSubtotal * (detalle.PorcentajeIVA / 100), 2, MidpointRounding.AwayFromZero);
                         decimal decMontoImpuestoNetoPorLinea = decMontoImpuestoPorLinea;
                         int intCodigoTarifa = detalle.Producto.IdImpuesto;
-                        if (impuestoResumen.ContainsKey(intCodigoTarifa))
-                            impuestoResumen[intCodigoTarifa] = impuestoResumen[intCodigoTarifa] + decMontoImpuestoPorLinea;
-                        else
-                            impuestoResumen[intCodigoTarifa] = decMontoImpuestoPorLinea;
                         ImpuestoType impuestoType = new ImpuestoType
                         {
                             Codigo = CodigoImpuestoType.Item01,
@@ -1792,6 +1800,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 MontoExoneracion = decMontoExoneracion
                             };
                             impuestoType.Exoneracion = exoneracionType;
+                        }
+                        if (decMontoImpuestoNetoPorLinea > 0)
+                        {
+                            if (impuestoResumen.ContainsKey(intCodigoTarifa))
+                                impuestoResumen[intCodigoTarifa] = impuestoResumen[intCodigoTarifa] + decMontoImpuestoPorLinea;
+                            else
+                                impuestoResumen[intCodigoTarifa] = decMontoImpuestoPorLinea;
                         }
                         lineaDetalle.ImpuestoNeto = decMontoImpuestoNetoPorLinea;
                         lineaDetalle.ImpuestoAsumidoEmisorFabrica = 0;
