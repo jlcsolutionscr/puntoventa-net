@@ -1394,22 +1394,6 @@ CREATE TABLE `ordenservicio` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `padron`
---
-
-CREATE TABLE `padron` (
-  `Identificacion` varchar(9) NOT NULL,
-  `IdProvincia` int NOT NULL,
-  `IdCanton` int NOT NULL,
-  `IdDistrito` int NOT NULL,
-  `Nombre` varchar(100) NOT NULL,
-  `PrimerApellido` varchar(100) NOT NULL,
-  `SegundoApellido` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `parametrocontable`
 --
 
@@ -2355,12 +2339,6 @@ ALTER TABLE `ordenservicio`
   ADD KEY `IdVendedor` (`IdVendedor`),
   ADD KEY `orden_serv_fecha_ind` (`Fecha`),
   ADD KEY `orden_servicio_procesado_ind` (`Procesado`);
-
---
--- Indexes for table `padron`
---
-ALTER TABLE `padron`
-  ADD PRIMARY KEY (`Identificacion`);
 
 --
 -- Indexes for table `parametrocontable`

@@ -261,21 +261,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Cliente cliente = dbContext.ClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Identificacion == strIdentificacion).FirstOrDefault();
                     if (cliente != null)
                         return cliente;
-                    else
-                    {
-                        Padron persona = dbContext.PadronRepository.Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
-                        if (persona == null)
-                            return null;
-                        else
-                        {
-                            cliente = new Cliente
-                            {
-                                Identificacion = persona.Identificacion,
-                                Nombre = persona.Nombre + " " + persona.PrimerApellido + " " + persona.SegundoApellido
-                            };
-                            return cliente;
-                        }
-                    }
+                    return null;
                 }
                 catch (Exception ex)
                 {
