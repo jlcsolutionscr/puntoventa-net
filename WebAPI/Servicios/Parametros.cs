@@ -32,7 +32,9 @@ namespace LeandroSoftware.ServicioWeb.Parametros
             new LlaveDescripcion(3, "Cheque"),
             new LlaveDescripcion(4, "Transferencia – depósito bancario"),
             new LlaveDescripcion(5, "Recaudado por terceros"),
-            new LlaveDescripcion(6, "Otros")
+            new LlaveDescripcion(6, "Sinpe Móvil"),
+            new LlaveDescripcion(7, "Plataforma digital"),
+            new LlaveDescripcion(99, "Otros")
         };
 
         public static IList<LlaveDescripcion> ObtenerListado()
