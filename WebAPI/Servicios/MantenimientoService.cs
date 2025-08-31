@@ -19,7 +19,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<EquipoRegistrado> ObtenerListadoTerminalesDisponibles(string strCodigoUsuario, string strClave, string strIdentificacion, int intTipoDispositivo);
         IList<LlaveDescripcion> ObtenerListadoEmpresasAdministrador();
         IList<LlaveDescripcion> ObtenerListadoEmpresasPorTerminal(string strDispositivoId);
-        bool EnModoMantenimiento();
+        bool EnModoMantenimiento(string strToken);
         void RegistrarTerminal(string strCodigoUsuario, string strClave, string strIdentificacion, int intIdSucursal, int intIdTerminal, int intTipoDispositivo, string strDispositivoId);
         Usuario ValidarCredencialesAdmin(string strCodigoUsuario, string strClave);
         Empresa ValidarCredenciales(string strCodigoUsuario, string strClave, string id);
@@ -309,7 +309,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public bool EnModoMantenimiento()
+        public bool EnModoMantenimiento(string strToken)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -318,6 +318,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     ParametroSistema parametro = dbContext.ParametroSistemaRepository.FirstOrDefault(x => x.IdParametro == 5);
                     if (parametro == null) throw new BusinessException("El parámetro del modo mantenimiento no se encuentra registrado en el sistema.");
+                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strToken).FirstOrDefault();
+                    if (registro.CodigoUsuario == "ADMIN") return false;
                     if (parametro.Valor == "SI") return true;
                     return false;
                 }
@@ -2865,8 +2867,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    string strTokenDesencriptado = Encriptador.DesencriptarDatos(strToken);
-                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
+                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strToken).FirstOrDefault();
                     if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar su sesión.");
                     if (registro.Fecha < Validador.ObtenerFechaHoraCostaRica().AddHours(-1 * intHoras))
                     {
