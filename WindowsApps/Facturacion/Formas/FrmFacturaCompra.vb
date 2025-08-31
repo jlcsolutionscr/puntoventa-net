@@ -1,9 +1,10 @@
-Imports LeandroSoftware.Common.Dominio.Entidades
+Imports System.Collections.Generic
+Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
-Imports System.Text.RegularExpressions
 Imports LeandroSoftware.Common.Constantes
-Imports System.Collections.Generic
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
 
 Public Class FrmFacturaCompra
 #Region "Variables"
@@ -296,13 +297,9 @@ Public Class FrmFacturaCompra
     End Sub
 
     Private Async Sub txtIdentificacion_Validated(sender As Object, e As EventArgs) Handles txtIdentificacion.Validated
-        If cboTipoIdentificacion.SelectedValue = 0 Then
-            Dim cliente As Cliente = Await Puntoventa.ValidaIdentificacionCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
-            If cliente IsNot Nothing Then
-                txtNombre.Text = cliente.Nombre
-            End If
-        End If
-        cboActEconEmisor.DataSource = Await Puntoventa.ObtenerListadoActividadEconomica(txtIdentificacion.Text)
+        Dim contribuyente As ContribuyenteHacienda = Await Puntoventa.ObtenerInformacionContribuyente(txtIdentificacion.Text)
+        txtNombre.Text = contribuyente.Nombre
+        cboActEconEmisor.DataSource = contribuyente.ActividadesEconomicas
     End Sub
 
     Private Sub btnBuscarClasificacion_Click(sender As Object, e As EventArgs) Handles btnBuscarClasificacion.Click

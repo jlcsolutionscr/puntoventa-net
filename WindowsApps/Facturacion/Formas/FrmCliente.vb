@@ -1,9 +1,11 @@
-Imports System.Threading.Tasks
+Imports System.Collections.Generic
 Imports System.Globalization
-Imports LeandroSoftware.Common.Dominio.Entidades
-Imports LeandroSoftware.ClienteWCF
 Imports System.Text.RegularExpressions
+Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.Constantes
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
 
 Public Class FrmCliente
 #Region "Variables"
@@ -60,7 +62,8 @@ Public Class FrmCliente
                 If datos Is Nothing Then
                     Throw New Exception("El cliente seleccionado no existe")
                 End If
-                cboActividadEconomica.DataSource = Await Puntoventa.ObtenerListadoActividadEconomica(datos.Identificacion)
+                Dim contribuyente As ContribuyenteHacienda = Await Puntoventa.ObtenerInformacionContribuyente(datos.Identificacion)
+                If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas
                 txtIdCliente.Text = datos.IdCliente
                 cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
                 txtIdentificacion.Text = datos.Identificacion
@@ -80,10 +83,12 @@ Public Class FrmCliente
                 txtInciso.Text = datos.IncisoExoneracion
                 txtFechaExoneracion.Value = datos.FechaEmisionDoc
                 txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
-                If datos.CodigoActividad.Length = 6 Then
-                    cboActividadEconomica.SelectedValue = Integer.Parse(datos.CodigoActividad)
-                Else
-                    cboActividadEconomica.SelectedIndex = -1
+                If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
+                    If datos.CodigoActividad <> "" Then
+                        cboActividadEconomica.SelectedValue = Integer.Parse(datos.CodigoActividad)
+                    Else
+                        cboActividadEconomica.SelectedIndex = -1
+                    End If
                 End If
             Else
                 datos = New Cliente
@@ -157,43 +162,35 @@ Public Class FrmCliente
     Private Async Sub Identificacion_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtIdentificacion.Validated
         Try
             If txtIdCliente.Text = "" And txtIdentificacion.Text <> "" Then
-                cboActividadEconomica.DataSource = Await Puntoventa.ObtenerListadoActividadEconomica(txtIdentificacion.Text)
+                Dim contribuyente = Await Puntoventa.ObtenerInformacionContribuyente(txtIdentificacion.Text)
+                If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas
                 Dim cliente As Cliente = Nothing
                 cliente = Await Puntoventa.ValidaIdentificacionCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
                 If cliente IsNot Nothing Then
-                    If cliente.IdCliente > 0 Then
-                        MessageBox.Show("La identificación ingresada ya se encuentra registrada en la base de datos de clientes del sistema.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                        datos = cliente
-                        txtIdCliente.Text = datos.IdCliente
-                        cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
-                        txtIdentificacion.Text = datos.Identificacion
-                        txtDireccion.Text = datos.Direccion
-                        txtNombre.Text = datos.Nombre
-                        txtNombreComercial.Text = datos.NombreComercial
-                        txtTelefono.Text = datos.Telefono
-                        txtCelular.Text = datos.Celular
-                        txtFax.Text = datos.Fax
-                        txtCorreoElectronico.Text = datos.CorreoElectronico
-                        cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
-                        cboTipoExoneracion.SelectedValue = datos.IdTipoExoneracion
-                        txtNumDocExoneracion.Text = datos.NumDocExoneracion
-                        txtArticulo.Text = datos.ArticuloExoneracion
-                        txtInciso.Text = datos.IncisoExoneracion
-                        cboInstExoneracion.SelectedValue = datos.IdNombreInstExoneracion
-                        txtFechaExoneracion.Text = datos.FechaEmisionDoc.ToString()
-                        txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
-                        cboActividadEconomica.SelectedValue = datos.CodigoActividad
-                    Else
-                        MessageBox.Show("Cliente encontrado en el padrón electoral. Por favor complete la información faltante.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                        cboTipoIdentificacion.SelectedValue = 0
-                        txtNombre.Text = cliente.Nombre
-                        cboActividadEconomica.SelectedIndex = 0
-                    End If
+                    MessageBox.Show("La identificación ingresada ya se encuentra registrada en la base de datos de clientes del sistema.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    datos = cliente
+                    txtIdCliente.Text = datos.IdCliente
+                    cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
+                    txtIdentificacion.Text = datos.Identificacion
+                    txtDireccion.Text = datos.Direccion
+                    txtNombre.Text = datos.Nombre
+                    txtNombreComercial.Text = datos.NombreComercial
+                    txtTelefono.Text = datos.Telefono
+                    txtCelular.Text = datos.Celular
+                    txtFax.Text = datos.Fax
+                    txtCorreoElectronico.Text = datos.CorreoElectronico
+                    cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
+                    cboTipoExoneracion.SelectedValue = datos.IdTipoExoneracion
+                    txtNumDocExoneracion.Text = datos.NumDocExoneracion
+                    txtArticulo.Text = datos.ArticuloExoneracion
+                    txtInciso.Text = datos.IncisoExoneracion
+                    cboInstExoneracion.SelectedValue = datos.IdNombreInstExoneracion
+                    txtFechaExoneracion.Text = datos.FechaEmisionDoc.ToString()
+                    txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
+                    If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then cboActividadEconomica.SelectedValue = Integer.Parse(datos.CodigoActividad)
                 Else
-                    If cboTipoIdentificacion.SelectedValue = 0 Then
-                        MessageBox.Show("No se encontró la identificación registrada en el sistema o en el padrón electoral. Por favor ingrese la información requerida.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    End If
-                    cboActividadEconomica.SelectedIndex = 0
+                    txtNombre.Text = contribuyente.Nombre
+                    If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And cboActividadEconomica.Items.Count > 0 Then cboActividadEconomica.SelectedIndex = 0
                 End If
             End If
         Catch ex As Exception

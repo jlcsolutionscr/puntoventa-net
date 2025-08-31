@@ -1,8 +1,9 @@
-Imports System.Threading.Tasks
-Imports LeandroSoftware.Common.Dominio.Entidades
-Imports System.IO
-Imports LeandroSoftware.ClienteWCF
 Imports System.Collections.Generic
+Imports System.IO
+Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
 
 Public Class FrmEmpresa
 #Region "Variables"
@@ -92,7 +93,8 @@ Public Class FrmEmpresa
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
         cboActividadEconomica.ValueMember = "Id"
         cboActividadEconomica.DisplayMember = "Descripcion"
-        cboActividadEconomica.DataSource = Await Puntoventa.ObtenerListadoActividadEconomica(strIdentificacion)
+        Dim contribuyente As ContribuyenteHacienda = Await Puntoventa.ObtenerInformacionContribuyente(strIdentificacion)
+        cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas
         Dim comboSource As New Dictionary(Of Integer, String)()
         comboSource.Add(80, "80MM THERMAL RECEIPT PRINTER")
         comboSource.Add(52, "58MM THERMAL RECEIPT PRINTER")

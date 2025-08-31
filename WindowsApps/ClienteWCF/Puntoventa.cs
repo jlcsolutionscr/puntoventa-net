@@ -365,7 +365,7 @@ namespace LeandroSoftware.ClienteWCF
             return decTipoDeCambioDolar;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoActividadEconomica(string strIdentificacion)
+        public static async Task<ContribuyenteHacienda> ObtenerInformacionContribuyente(string strIdentificacion)
         {
             HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioHaciendaURL + "/fe/ae?identificacion=" + strIdentificacion);
             if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
@@ -377,13 +377,19 @@ namespace LeandroSoftware.ClienteWCF
             string strInformacionContribuyente = await httpResponse.Content.ReadAsStringAsync();
             JObject datosJO = JObject.Parse(strInformacionContribuyente);
             if (datosJO.Property("actividades") == null) throw new Exception("Error al consultar la informacion del contribuyente en el Ministerio de Hacienda");
+
             JArray actividades = JArray.Parse(datosJO.Property("actividades").Value.ToString());
             List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             foreach (JObject item in actividades)
             {
                 listado.Add(new LlaveDescripcion(int.Parse(item.Property("codigo").Value.ToString()), item.Property("descripcion").Value.ToString()));
             }
-            return listado;
+            ContribuyenteHacienda cliente = new ContribuyenteHacienda
+            {
+                Nombre = datosJO.Property("nombre").Value.ToString(),
+                ActividadesEconomicas = listado
+            };
+            return cliente;
         }
 
         public static async Task<List<LlaveDescripcion>> ObtenerListadoTipoMovimientoBanco(string strToken)
