@@ -202,7 +202,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             List<FacturaElectronicaCompraResumenFacturaMedioPago> medioPagoList = new List<FacturaElectronicaCompraResumenFacturaMedioPago>();
             FacturaElectronicaCompraResumenFacturaMedioPago medioPago = new FacturaElectronicaCompraResumenFacturaMedioPago
             {
-                TipoMedioPago = FacturaElectronicaCompraResumenFacturaMedioPagoTipoMedioPago.Item99    
+                TipoMedioPago = FacturaElectronicaCompraResumenFacturaMedioPagoTipoMedioPago.Item01,
+                TipoMedioPagoSpecified = true
             };
             medioPagoList.Add(medioPago);
             List<FacturaElectronicaCompraLineaDetalle> detalleServicioList = new List<FacturaElectronicaCompraLineaDetalle>();
@@ -1432,7 +1433,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             List<NotaCreditoElectronicaResumenFacturaMedioPago> medioPagoList = new List<NotaCreditoElectronicaResumenFacturaMedioPago>();
             NotaCreditoElectronicaResumenFacturaMedioPago medioPago = new NotaCreditoElectronicaResumenFacturaMedioPago
             {
-                TipoMedioPago = NotaCreditoElectronicaResumenFacturaMedioPagoTipoMedioPago.Item01
+                TipoMedioPago = NotaCreditoElectronicaResumenFacturaMedioPagoTipoMedioPago.Item01,
+                TotalMedioPago = devolucion.Total,
+                TipoMedioPagoSpecified = true,
+                TotalMedioPagoSpecified = true
             };
             medioPagoList.Add(medioPago);
             List<NotaCreditoElectronicaLineaDetalle> detalleServicioList = new List<NotaCreditoElectronicaLineaDetalle>();
@@ -1732,7 +1736,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             List<NotaDebitoElectronicaResumenFacturaMedioPago> medioPagoList = new List<NotaDebitoElectronicaResumenFacturaMedioPago>();
             NotaDebitoElectronicaResumenFacturaMedioPago medioPago = new NotaDebitoElectronicaResumenFacturaMedioPago
             {
-                TipoMedioPago = NotaDebitoElectronicaResumenFacturaMedioPagoTipoMedioPago.Item99
+                TipoMedioPago = NotaDebitoElectronicaResumenFacturaMedioPagoTipoMedioPago.Item01,
+                TotalMedioPago = devolucion.Total,
+                TipoMedioPagoSpecified = true,
+                TotalMedioPagoSpecified = true
             };
             medioPagoList.Add(medioPago);
             List<NotaDebitoElectronicaLineaDetalle> detalleServicioList = new List<NotaDebitoElectronicaLineaDetalle>();
