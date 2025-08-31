@@ -48,18 +48,18 @@ namespace WebServer.Middlewares
             string[] strPath = context.Request.Path.ToString().Substring(1).Split('/');
             if (strPath.Length > 1)
             {
-                var headers = context.Request.Headers;
-                string strToken = headers["Authorization"];
-                if (strToken == null) throw new Exception("La sessión del usuario no es válida. Debe reiniciar su sesión.");
-                strToken = strToken.Substring(7);
-                string strTokenDesencriptado = Encriptador.DesencriptarDatos(strToken);
                 if (strPath[0] == "puntoventa")
                 {
-                    bool modoMantenimiento = servicioMantenimiento.EnModoMantenimiento(strTokenDesencriptado);
+                    bool modoMantenimiento = servicioMantenimiento.EnModoMantenimiento();
                     if (modoMantenimiento) throw new Exception("El sistema se encuentra en modo mantenimiento y no es posible procesar su solicitud.");
                 }
                 if (!adminEndpoints.Contains(strPath[1]))
                 {
+                    var headers = context.Request.Headers;
+                    string strToken = headers["Authorization"];
+                    if (strToken == null) throw new Exception("La sessión del usuario no es válida. Debe reiniciar su sesión.");
+                    strToken = strToken.Substring(7);
+                    string strTokenDesencriptado = Encriptador.DesencriptarDatos(strToken);
                     servicioMantenimiento.ValidarRegistroAutenticacion(strTokenDesencriptado, StaticRolePorUsuario.USUARIO_SISTEMA, 12);
                 }
             }
