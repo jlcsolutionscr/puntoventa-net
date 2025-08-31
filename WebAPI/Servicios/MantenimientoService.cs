@@ -2174,7 +2174,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         IList<LlaveDescripcion> ObtenerListadoFormaPagoCliente()
         {
-            return FormaDePago.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.Id)).ToList();
+            return FormaDePago.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta, StaticFormaPago.SinpeMovil, StaticFormaPago.PlataformaDigital }.Contains(x.Id)).ToList();
         }
 
         IList<LlaveDescripcion> ObtenerListadoFormaPagoEmpresa()

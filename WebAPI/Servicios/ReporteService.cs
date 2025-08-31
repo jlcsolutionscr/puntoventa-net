@@ -66,6 +66,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         private static CultureInfo provider = CultureInfo.InvariantCulture;
         private static string strFormat = "dd/MM/yyyy HH:mm:ss";
         private static Assembly assembly = Assembly.LoadFrom(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Common.dll");
+         private static int[] formaPagoDigital = new int[] { StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.SinpeMovil, StaticFormaPago.PlataformaDigital };
 
         public ReporteService(ILoggerManager logger, IServiceScopeFactory serviceScopeFactory, ICorreoService servicioCorreo, IConfiguracionGeneral config)
         {
@@ -318,7 +319,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             else if (intTipoPago == StaticReporteCondicionVentaFormaPago.ContadoTransferenciaDepositoBancario)
                             {
-                                detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Contado && x.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario);
+                                detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Contado && formaPagoDigital.Contains(x.IdFormaPago));
                             }
                             if (intIdCliente > 0)
                                 detalleVentas = detalleVentas.Where(x => x.IdCliente == intIdCliente);
@@ -499,7 +500,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             else if (intTipoPago == StaticReporteCondicionVentaFormaPago.ContadoTransferenciaDepositoBancario)
                             {
-                                detalleCompras = detalleCompras.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Contado && x.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario);
+                                detalleCompras = detalleCompras.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Contado && formaPagoDigital.Contains(x.IdFormaPago));
                             }
                             if (intIdProveedor > 0)
                                 detalleCompras = detalleCompras.Where(x => x.IdProveedor == intIdProveedor);
@@ -772,7 +773,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             strTipo = " DE CONTADO";
                         else if (eachFactura.tipopago == StaticFormaPago.Cheque)
                             strTipo = " CON CHEQUE";
-                        else if (eachFactura.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
+                        else if (formaPagoDigital.Contains(eachFactura.tipopago))
                             strTipo = " CON DEPOSITO BANCARIO";
                         else if (eachFactura.tipopago == StaticFormaPago.Tarjeta)
                             strTipo = " CON TARJETA";
@@ -801,7 +802,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             strTipo = " DE CONTADO";
                         else if (eachAbono.tipopago == StaticFormaPago.Cheque)
                             strTipo = " CON CHEQUE";
-                        else if (eachAbono.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
+                        else if (formaPagoDigital.Contains(eachAbono.tipopago))
                             strTipo = " CON DEPOSITO BANCARIO";
                         else if (eachAbono.tipopago == StaticFormaPago.Tarjeta)
                             strTipo = " CON TARJETA";
@@ -828,7 +829,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 strTipo = " DE CONTADO";
                             else if (eachCompra.tipopago == StaticFormaPago.Cheque)
                                 strTipo = " CON CHEQUE";
-                            else if (eachCompra.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
+                            else if (formaPagoDigital.Contains(eachCompra.tipopago))
                                 strTipo = " CON DEPOSITO BANCARIO";
                             else if (eachCompra.tipopago == StaticFormaPago.Tarjeta)
                                 strTipo = " CON TARJETA";
@@ -858,7 +859,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             strTipo = " DE CONTADO";
                         else if (eachAbono.tipopago == StaticFormaPago.Cheque)
                             strTipo = " CON CHEQUE";
-                        else if (eachAbono.tipopago == StaticFormaPago.TransferenciaDepositoBancario)
+                        else if (formaPagoDigital.Contains(eachAbono.tipopago))
                             strTipo = " CON DEPOSITO BANCARIO";
                         else if (eachAbono.tipopago == StaticFormaPago.Tarjeta)
                             strTipo = " CON TARJETA";

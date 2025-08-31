@@ -87,6 +87,8 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly int Cheque = 3;
         public static readonly int TransferenciaDepositoBancario = 4;
         public static readonly int RacaudadoPorTerceros = 5;
+        public static readonly int SinpeMovil = 6;
+        public static readonly int PlataformaDigital = 7;
         public static readonly int Otros = 99;
     };
 

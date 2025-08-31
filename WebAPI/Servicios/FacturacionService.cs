@@ -494,7 +494,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     foreach (var desglosePago in factura.DesglosePagoFactura)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                        if (!new int[] { StaticFormaPago.Efectivo, StaticFormaPago.Tarjeta }.Contains(desglosePago.IdFormaPago))
                         {
                             movimientoBanco = new MovimientoBanco
                             {
@@ -586,23 +586,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             foreach (var desglosePago in factura.DesglosePagoFactura)
                             {
-                                if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
-                                {
-                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
-                                    if (bancoParam == null)
-                                        throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
-                                    intLineaDetalleAsiento += 1;
-                                    detalleAsiento = new DetalleAsiento
-                                    {
-                                        Linea = intLineaDetalleAsiento,
-                                        IdCuenta = bancoParam.IdCuenta,
-                                        Debito = desglosePago.MontoLocal,
-                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(bancoParam.IdCuenta).SaldoActual
-                                    };
-                                    asiento.DetalleAsiento.Add(detalleAsiento);
-                                    asiento.TotalDebito += detalleAsiento.Debito;
-                                }
-                                else if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
+                                if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
                                 {
                                     intLineaDetalleAsiento += 1;
                                     detalleAsiento = new DetalleAsiento
@@ -658,6 +642,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                         asiento.TotalDebito += detalleAsiento.Debito;
                                     }
                                 }
+                                else
+                                {
+                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                    if (bancoParam == null)
+                                        throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
+                                    intLineaDetalleAsiento += 1;
+                                    detalleAsiento = new DetalleAsiento
+                                    {
+                                        Linea = intLineaDetalleAsiento,
+                                        IdCuenta = bancoParam.IdCuenta,
+                                        Debito = desglosePago.MontoLocal,
+                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(bancoParam.IdCuenta).SaldoActual
+                                    };
+                                    asiento.DetalleAsiento.Add(detalleAsiento);
+                                    asiento.TotalDebito += detalleAsiento.Debito;
+                                }
+                                
                             }
                         }
                         else
