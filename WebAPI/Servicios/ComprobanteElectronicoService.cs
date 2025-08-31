@@ -503,7 +503,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     FacturaElectronicaResumenFacturaMedioPago medioPago = new FacturaElectronicaResumenFacturaMedioPago
                     {
                         TipoMedioPago = (FacturaElectronicaResumenFacturaMedioPagoTipoMedioPago)desglose.IdFormaPago - 1,
-                        TotalMedioPago = desglose.MontoLocal
+                        TotalMedioPago = desglose.MontoLocal,
+                        TipoMedioPagoSpecified = true,
+                        TotalMedioPagoSpecified = true
                     };
                     if (!medioPagoList.Contains(medioPago))
                     {
@@ -805,7 +807,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     TiqueteElectronicoResumenFacturaMedioPago medioPago = new TiqueteElectronicoResumenFacturaMedioPago
                     {
                         TipoMedioPago = (TiqueteElectronicoResumenFacturaMedioPagoTipoMedioPago)desglose.IdFormaPago - 1,
-                        TotalMedioPago = desglose.MontoLocal
+                        TotalMedioPago = desglose.MontoLocal,
+                        TipoMedioPagoSpecified = true,
+                        TotalMedioPagoSpecified = true
                     };
                     if (!medioPagoList.Contains(medioPago))
                     {
@@ -1103,7 +1107,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     NotaCreditoElectronicaResumenFacturaMedioPago medioPago = new NotaCreditoElectronicaResumenFacturaMedioPago
                     {
                         TipoMedioPago = (NotaCreditoElectronicaResumenFacturaMedioPagoTipoMedioPago)desglose.IdFormaPago - 1,
-                        TotalMedioPago = desglose.MontoLocal
+                        TotalMedioPago = desglose.MontoLocal,
+                        TipoMedioPagoSpecified = true,
+                        TotalMedioPagoSpecified = true
                     };
                     if (!medioPagoList.Contains(medioPago))
                     {
