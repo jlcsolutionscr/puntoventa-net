@@ -53,7 +53,7 @@ Public Class FrmProcesoCierre
             EvaluaEstado()
             REM FrmMenuPrincipal.FechaSistema = CDate(FrmMenuPrincipal.objGenericoCN.ObtenerValor("SELECT FechaDia FROM Calendario WHERE IdModulo = 1"))
             REM remFrmMenuPrincipal.StrFecha = DatePart(DateInterval.Year, FrmMenuPrincipal.FechaSistema) & "/" & DatePart(DateInterval.Month, FrmMenuPrincipal.FechaSistema) & "/" & DatePart(DateInterval.Day, FrmMenuPrincipal.FechaSistema)
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             CmdEjecutar.Enabled = True
             CmdEjecutar.Focus()
             CmdCambiarFecha.Enabled = False
@@ -69,13 +69,13 @@ Public Class FrmProcesoCierre
                 For Each objDataRow In objDatosLocal.Rows
                     Monto = CDbl(objDataRow.Item(4)) * CDbl(objDataRow.Item(2)) / 100
                     If Monto > 0 Then
-                        FechaCxC = FrmPrincipal.ObtenerFechaFormateada()
+                        FechaCxC = FrmPrincipal.ObtenerFechaCostaRica()
                         FechaCxC = DateAdd(DateInterval.Month, 1, FechaCxC)
                         strFecha = "'" & DatePart(DateInterval.Year, FechaCxC) & "/" & DatePart(DateInterval.Month, FechaCxC) & "/" & DatePart(DateInterval.Day, FechaCxC) & "'"
                         IdCxC = CShort(objDataRow.Item(0))
                         SQLString = "UPDATE CuentaPorCobrar SET FechaProceso = " & strFecha & ", Saldo = Saldo + " & Monto & " WHERE IdCxC = " & IdCxC
                         'FrmMenuPrincipal.objGenericoCN.EjecutarSQL(SQLString)
-                        SQLString = "INSERT INTO MovCuentaPorCobrar(IdMovCxC, IdUsuario, IdCxC, Tipo, Recibo, Fecha, Descripcion, Monto) VALUES(Null, " & FrmPrincipal.usuarioGlobal.IdUsuario & "," & IdCxC & ", 3,'0','" & FrmPrincipal.ObtenerFechaFormateada() & "','Aumento de saldo por concepto de interés periódico'," & Monto & ")"
+                        SQLString = "INSERT INTO MovCuentaPorCobrar(IdMovCxC, IdUsuario, IdCxC, Tipo, Recibo, Fecha, Descripcion, Monto) VALUES(Null, " & FrmPrincipal.usuarioGlobal.IdUsuario & "," & IdCxC & ", 3,'0','" & FrmPrincipal.ObtenerFechaCostaRica() & "','Aumento de saldo por concepto de interés periódico'," & Monto & ")"
                         'FrmMenuPrincipal.objGenericoCN.EjecutarSQL(SQLString)
                     End If
                 Next

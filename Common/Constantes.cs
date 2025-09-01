@@ -40,6 +40,7 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly int MonedaDelSistema = 1;
         public static readonly int TasaImpuesto = 8;
         public static readonly int TipoExoneracion = 1;
+        public static readonly int IdNombreInstExoneracion = 1;
     };
 
     public static class StaticTipoCuentaPorCobrar
@@ -86,6 +87,8 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly int Cheque = 3;
         public static readonly int TransferenciaDepositoBancario = 4;
         public static readonly int RacaudadoPorTerceros = 5;
+        public static readonly int SinpeMovil = 6;
+        public static readonly int PlataformaDigital = 7;
         public static readonly int Otros = 99;
     };
 

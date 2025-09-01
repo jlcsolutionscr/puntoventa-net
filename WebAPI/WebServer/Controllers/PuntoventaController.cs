@@ -88,8 +88,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("validarcredenciales")]
         public string ValidarCredenciales(string usuario, string clave, int idempresa, string dispositivo)
         {
-            string strClaveFormateada = clave.Replace(" ", "+");
-            empresa = _servicioMantenimiento.ValidarCredenciales(usuario, strClaveFormateada, idempresa, dispositivo);
+            empresa = _servicioMantenimiento.ValidarCredenciales(usuario, clave, idempresa, dispositivo);
             string strRespuesta = "";
             if (empresa != null)
                 strRespuesta = JsonConvert.SerializeObject(empresa);
@@ -99,8 +98,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("validarcredencialesweb")]
         public string ValidarCredencialesWeb(string usuario, string clave, string identificacion)
         {
-            string strClaveFormateada = clave.Replace(" ", "+");
-            Empresa empresa = _servicioMantenimiento.ValidarCredenciales(usuario, strClaveFormateada, identificacion);
+            Empresa empresa = _servicioMantenimiento.ValidarCredenciales(usuario, clave, identificacion);
             string strRespuesta = "";
             if (empresa != null)
                 strRespuesta = JsonConvert.SerializeObject(empresa);
@@ -110,8 +108,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("obtenerlistadoterminalesdisponibles")]
         public string ObtenerListadoTerminalesDisponibles(string usuario, string clave, string id, int tipodispositivo)
         {
-            string strClaveFormateada = clave.Replace(" ", "+");
-            IList<EquipoRegistrado> listadoSucursales = (List<EquipoRegistrado>)_servicioMantenimiento.ObtenerListadoTerminalesDisponibles(usuario, strClaveFormateada, id, tipodispositivo);
+            IList<EquipoRegistrado> listadoSucursales = (List<EquipoRegistrado>)_servicioMantenimiento.ObtenerListadoTerminalesDisponibles(usuario, clave, id, tipodispositivo);
             string strRespuesta = "";
             if (listadoSucursales.Count > 0)
                 strRespuesta = JsonConvert.SerializeObject(listadoSucursales);
@@ -121,8 +118,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("registrarterminal")]
         public void RegistrarTerminal(string usuario, string clave, string id, int sucursal, int terminal, int tipodispositivo, string dispositivo)
         {
-            string strClaveFormateada = clave.Replace(" ", "+");
-            _servicioMantenimiento.RegistrarTerminal(usuario, strClaveFormateada, id, sucursal, terminal, tipodispositivo, dispositivo);
+            _servicioMantenimiento.RegistrarTerminal(usuario, clave, id, sucursal, terminal, tipodispositivo, dispositivo);
         }
 
         [HttpGet("validarregistroautenticacion")]
@@ -141,7 +137,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("restablecerclaveusuario")]
         public void RestablecerClaveUsuario(string session, string clave)
         {
-            _servicioMantenimiento.RestablecerClaveUsuario(session.Replace(" ", "+").Replace("~", "/"), clave.Replace(" ", "+"));
+            _servicioMantenimiento.RestablecerClaveUsuario(session, clave);
         }
     }
 }

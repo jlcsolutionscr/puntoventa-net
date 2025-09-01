@@ -1,8 +1,9 @@
-Imports System.Threading.Tasks
-Imports LeandroSoftware.Common.Dominio.Entidades
-Imports System.IO
-Imports LeandroSoftware.ClienteWCF
 Imports System.Collections.Generic
+Imports System.IO
+Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
 
 Public Class FrmEmpresa
 #Region "Variables"
@@ -70,7 +71,7 @@ Public Class FrmEmpresa
             dgvActividadEconomica.Refresh()
         End If
     End Sub
-    Private Async Function CargarListadoBarrios(IdProvincia As Integer, IdCanton As Integer, IdDistrito As Integer) As Task
+    Private Async Function CargarListadoDistritos(IdProvincia As Integer, IdCanton As Integer) As Task
         Try
             cboCanton.ValueMember = "Id"
             cboCanton.DisplayMember = "Descripcion"
@@ -78,9 +79,6 @@ Public Class FrmEmpresa
             cboDistrito.ValueMember = "Id"
             cboDistrito.DisplayMember = "Descripcion"
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(IdProvincia, IdCanton, FrmPrincipal.usuarioGlobal.Token)
-            cboBarrio.ValueMember = "Id"
-            cboBarrio.DisplayMember = "Descripcion"
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(IdProvincia, IdCanton, IdDistrito, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -95,7 +93,8 @@ Public Class FrmEmpresa
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
         cboActividadEconomica.ValueMember = "Id"
         cboActividadEconomica.DisplayMember = "Descripcion"
-        cboActividadEconomica.DataSource = Await Puntoventa.ObtenerListadoActividadEconomica(strIdentificacion)
+        Dim contribuyente As ContribuyenteHacienda = Await Puntoventa.ObtenerInformacionContribuyente(strIdentificacion)
+        cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas
         Dim comboSource As New Dictionary(Of Integer, String)()
         comboSource.Add(80, "80MM THERMAL RECEIPT PRINTER")
         comboSource.Add(52, "58MM THERMAL RECEIPT PRINTER")
@@ -140,7 +139,7 @@ Public Class FrmEmpresa
                 Close()
                 Exit Sub
             End If
-            Await CargarListadoBarrios(datos.IdProvincia, datos.IdCanton, datos.IdDistrito)
+            Await CargarListadoDistritos(datos.IdProvincia, datos.IdCanton)
             txtIdEmpresa.Text = datos.IdEmpresa
             txtNombreEmpresa.Text = datos.NombreEmpresa
             txtNombreComercial.Text = datos.NombreComercial
@@ -149,7 +148,6 @@ Public Class FrmEmpresa
             cboProvincia.SelectedValue = datos.IdProvincia
             cboCanton.SelectedValue = datos.IdCanton
             cboDistrito.SelectedValue = datos.IdDistrito
-            cboBarrio.SelectedValue = datos.IdBarrio
             txtDireccion.Text = datos.Direccion
             txtTelefono1.Text = datos.Telefono1
             txtTelefono2.Text = datos.Telefono2
@@ -225,7 +223,6 @@ Public Class FrmEmpresa
             cboProvincia.SelectedValue Is Nothing Or
             cboCanton.SelectedValue Is Nothing Or
             cboDistrito.SelectedValue Is Nothing Or
-            cboBarrio.SelectedValue Is Nothing Or
             txtDireccion.Text.Length = 0 Or
             txtTelefono1.Text.Length = 0 Or
             txtCorreoNotificacion.Text.Length = 0 Or
@@ -246,7 +243,6 @@ Public Class FrmEmpresa
         datos.IdProvincia = cboProvincia.SelectedValue
         datos.IdCanton = cboCanton.SelectedValue
         datos.IdDistrito = cboDistrito.SelectedValue
-        datos.IdBarrio = cboBarrio.SelectedValue
         datos.Direccion = txtDireccion.Text
         datos.Telefono1 = txtTelefono1.Text
         datos.Telefono2 = txtTelefono2.Text
@@ -257,7 +253,7 @@ Public Class FrmEmpresa
         datos.LeyendaProforma = txtLeyendaProforma.Text
         datos.PrecioVentaIncluyeIVA = chkPrecioVentaIncluyeIVA.Checked
         datos.MontoRedondeoDescuento = txtMontoRedondeoDescuento.Text
-        datos.Barrio = Nothing
+        datos.Distrito = Nothing
         datos.ActividadEconomicaEmpresa.Clear()
         For I As Short = 0 To dtbActividadEconomica.Rows.Count - 1
             Dim actividadEconomicaEmpresa As ActividadEconomicaEmpresa = New ActividadEconomicaEmpresa With {
@@ -373,7 +369,6 @@ Public Class FrmEmpresa
             bolInicializado = False
             cboCanton.DataSource = Await Puntoventa.ObtenerListadoCantones(cboProvincia.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, 1, 1, FrmPrincipal.usuarioGlobal.Token)
             bolInicializado = True
         End If
     End Sub
@@ -382,15 +377,6 @@ Public Class FrmEmpresa
         If bolInicializado Then
             bolInicializado = False
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
-            bolInicializado = True
-        End If
-    End Sub
-
-    Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
-        If bolInicializado Then
-            bolInicializado = False
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             bolInicializado = True
         End If
     End Sub

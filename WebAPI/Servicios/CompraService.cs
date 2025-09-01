@@ -367,7 +367,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     foreach (var desglosePago in compra.DesglosePagoCompra)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario || desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                        if (StaticFormaPago.Efectivo != desglosePago.IdFormaPago)
                         {
                             movimientoBanco = new MovimientoBanco
                             {
@@ -384,14 +384,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 movimientoBanco.IdTipo = StaticTipoMovimientoBanco.ChequeSaliente;
                                 movimientoBanco.Descripcion = "Emisión de cheque por pago de compra de mercancía nro. ";
                             }
-                            else if (desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
-                            {
-                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.DepositoSaliente;
-                                movimientoBanco.Descripcion = "Registro de transferencia por pago de compra de mercancía nro. ";
-                            }
                             else if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
                                 movimientoBanco.IdTipo = StaticTipoMovimientoBanco.NotaDebito;
+                                movimientoBanco.Descripcion = "Registro de transferencia por pago de compra de mercancía nro. ";
+                            }
+                            else
+                            {
+                                movimientoBanco.IdTipo = StaticTipoMovimientoBanco.DepositoSaliente;
                                 movimientoBanco.Descripcion = "Registro de transferencia por pago de compra de mercancía nro. ";
                             }
                             movimientoBanco.Numero = desglosePago.NroMovimiento;
@@ -464,7 +464,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     asiento.DetalleAsiento.Add(detalleAsiento);
                                     asiento.TotalCredito += detalleAsiento.Credito;
                                 }
-                                else if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                                else if (desglosePago.IdFormaPago != StaticFormaPago.Tarjeta)
                                 {
                                     ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeBancos & x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                     if (bancoParam == null)

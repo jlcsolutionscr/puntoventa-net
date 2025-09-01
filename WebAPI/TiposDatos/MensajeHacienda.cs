@@ -139,7 +139,7 @@
     }
 
     /// <remarks/>
-    [System.Serializable()]
+    [Serializable()]
     [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/mensajeHacienda")]
     public enum MensajeHaciendaTipoIdentificacionEmisor
     {
@@ -162,7 +162,7 @@
     }
 
     /// <remarks/>
-    [System.Serializable()]
+    [Serializable()]
     [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/mensajeHacienda")]
     public enum MensajeHaciendaTipoIdentificacionReceptor
     {
@@ -189,7 +189,7 @@
     }
 
     /// <remarks/>
-    [System.Serializable()]
+    [Serializable()]
     [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/mensajeHacienda")]
     public enum MensajeHaciendaMensaje
     {

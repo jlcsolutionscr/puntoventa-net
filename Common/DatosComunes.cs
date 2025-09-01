@@ -578,4 +578,17 @@ namespace LeandroSoftware.Common.DatosComunes
         public IList<ClsLineaImpresion> Lineas { get; set; }
         public bool Impreso { get; set; }
     }
+
+    public class ContribuyenteHacienda
+    {
+        public ContribuyenteHacienda() { }
+
+        public ContribuyenteHacienda(string strNombre, IList<LlaveDescripcion> lstActividadesEconomicas)
+        {
+            Nombre = strNombre;
+            ActividadesEconomicas = lstActividadesEconomicas;
+        }
+        public string Nombre { get; set; }
+        public IList<LlaveDescripcion> ActividadesEconomicas { get; set; }
+    }
 }
