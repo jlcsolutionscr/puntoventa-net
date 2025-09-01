@@ -1161,6 +1161,7 @@
   <ItemGroup>
     <None Include="app.config">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="My Project\app.manifest" />
     <None Include="My Project\DataSources\LeandroSoftware.Core.TiposComunes.LlaveDescripcion.datasource" />
