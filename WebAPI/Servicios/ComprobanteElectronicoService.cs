@@ -433,15 +433,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
             }
             if (factura.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura.");
+            if (factura.CodigoActividadReceptor == "") throw new BusinessException("Debe ingresar el código de actividad económica del receptor.");
             FacturaElectronica facturaElectronica = new FacturaElectronica
             {
                 Clave = "",
                 CodigoActividadEmisor = factura.CodigoActividad,
                 NumeroConsecutivo = "",
                 FechaEmision = factura.Fecha,
-                ProveedorSistemas = empresa.Identificacion
+                ProveedorSistemas = empresa.Identificacion,
+                CodigoActividadReceptor = factura.CodigoActividadReceptor
             };
-            if (factura.CodigoActividadReceptor != "") facturaElectronica.CodigoActividadReceptor = factura.CodigoActividadReceptor;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionEmisorType = new IdentificacionType
             {
@@ -1034,15 +1035,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
             }
             if (factura.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura.");
+            if (factura.CodigoActividadReceptor == "") throw new BusinessException("Debe ingresar el código de actividad económica del receptor.");
             NotaCreditoElectronica notaCreditoElectronica = new NotaCreditoElectronica
             {
                 Clave = "",
                 CodigoActividadEmisor = factura.CodigoActividad,
                 NumeroConsecutivo = "",
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica(),
-                ProveedorSistemas = empresa.Identificacion
+                ProveedorSistemas = empresa.Identificacion,
+                CodigoActividadReceptor = factura.CodigoActividadReceptor
             };
-            if (factura.CodigoActividadReceptor != "") notaCreditoElectronica.CodigoActividadReceptor = factura.CodigoActividadReceptor;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionEmisorType = new IdentificacionType
             {
@@ -1368,15 +1370,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
             }
             if (factura.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura.");
+            if (factura.CodigoActividadReceptor == "") throw new BusinessException("Debe ingresar el código de actividad económica del receptor.");
             NotaCreditoElectronica notaCreditoElectronica = new NotaCreditoElectronica
             {
                 Clave = "",
                 CodigoActividadEmisor = factura.CodigoActividad,
                 NumeroConsecutivo = "",
                 FechaEmision = devolucion.Fecha,
-                ProveedorSistemas = empresa.Identificacion
+                ProveedorSistemas = empresa.Identificacion,
+                CodigoActividadReceptor = factura.CodigoActividadReceptor
             };
-            if (factura.CodigoActividadReceptor != "") notaCreditoElectronica.CodigoActividadReceptor = factura.CodigoActividadReceptor;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionEmisorType = new IdentificacionType
             {
@@ -1671,15 +1674,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
             }
             if (factura.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura.");
+            if (factura.CodigoActividadReceptor == "") throw new BusinessException("Debe ingresar el código de actividad económica del receptor.");
             NotaDebitoElectronica notaDebitoElectronica = new NotaDebitoElectronica
             {
                 Clave = "",
                 CodigoActividadEmisor = factura.CodigoActividad,
                 NumeroConsecutivo = "",
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica(),
-                ProveedorSistemas = empresa.Identificacion
+                ProveedorSistemas = empresa.Identificacion,
+                CodigoActividadReceptor = factura.CodigoActividadReceptor
             };
-            if (factura.CodigoActividadReceptor != "") notaDebitoElectronica.CodigoActividadReceptor = factura.CodigoActividadReceptor;
             EmisorType emisor = new EmisorType();
             IdentificacionType identificacionEmisorType = new IdentificacionType
             {
