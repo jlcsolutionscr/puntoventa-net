@@ -56,7 +56,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static int intIdCuenta;
         private static int intIdProvincia;
         private static int intIdCanton;
-        private static int intIdDistrito;
         private static int intIdCliente;
         private static int intIdProveedor;
         private static int intIdTipoPago;
@@ -131,11 +130,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             string strRespuesta = "";
             switch (strNombreMetodo)
             {
-                case "ObtenerTipoCambioDolar":
-                    strFechaInicial = parametrosJO.Property("Fecha").Value.ToString();
-                    strRespuesta = _servicioMantenimiento.ObtenerTipoCambioVenta(strFechaInicial).ToString();
-                    strRespuesta = JsonConvert.SerializeObject(strRespuesta);
-                    break;
                 case "GuardarDatosCierreCaja":
                     CierreCaja cierre = JsonConvert.DeserializeObject<CierreCaja>(strEntidad);
                     string strIdCierre = _servicioFlujoCaja.GuardarDatosCierreCaja(cierre);
@@ -543,14 +537,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     IList<LlaveDescripcion> listadoDistritos = _servicioMantenimiento.ObtenerListadoDistritos(intIdProvincia, intIdCanton);
                     if (listadoDistritos.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoDistritos);
-                    break;
-                case "ObtenerListadoBarrios":
-                    intIdProvincia = int.Parse(parametrosJO.Property("IdProvincia").Value.ToString());
-                    intIdCanton = int.Parse(parametrosJO.Property("IdCanton").Value.ToString());
-                    intIdDistrito = int.Parse(parametrosJO.Property("IdDistrito").Value.ToString());
-                    IList<LlaveDescripcion> listadoBarrios = _servicioMantenimiento.ObtenerListadoBarrios(intIdProvincia, intIdCanton, intIdDistrito);
-                    if (listadoBarrios.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoBarrios);
                     break;
                 case "ObtenerParametroImpuesto":
                     int intIdImpuesto = int.Parse(parametrosJO.Property("IdImpuesto").Value.ToString());

@@ -39,7 +39,7 @@ Public Class FrmMovimientoBanco
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         txtIdMov.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+        txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         txtNumero.Text = ""
         cboIdCuenta.Text = ""
         cboIdCuenta.SelectedValue = 0
@@ -103,7 +103,7 @@ Public Class FrmMovimientoBanco
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdCuenta = cboIdCuenta.SelectedValue,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-                .Fecha = FrmPrincipal.ObtenerFechaFormateada(),
+                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .IdTipo = cboIdTipo.SelectedValue,
                 .Numero = txtNumero.Text,
                 .Beneficiario = txtBeneficiario.Text,
@@ -136,7 +136,7 @@ Public Class FrmMovimientoBanco
 
     Private Sub FrmMantDebCred_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             CargarCombos()
             txtMonto.Text = FormatNumber(0, 2)
         Catch ex As Exception

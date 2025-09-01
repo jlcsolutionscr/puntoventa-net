@@ -220,7 +220,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(cxc);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoCuentaPorCobrar)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                        if (!new int[] { StaticFormaPago.Efectivo, StaticFormaPago.Tarjeta }.Contains(desglosePago.IdFormaPago))
                         {
                             movimientoBanco = new MovimientoBanco
                             {
@@ -314,7 +314,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     asiento.TotalDebito += detalleAsiento.Debito;
                                 }
                             }
-                            else if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                            else
                             {
                                 detalleAsiento = new DetalleAsiento();
                                 intLineaDetalleAsiento += 1;
@@ -622,7 +622,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(cxp);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoCuentaPorPagar)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                        if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
                         {
                             movimientoBanco = new MovimientoBanco
                             {
@@ -682,7 +682,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 asiento.DetalleAsiento.Add(detalleAsiento);
                                 asiento.TotalCredito += detalleAsiento.Credito;
                             }
-                            else if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                            else
                             {
                                 detalleAsiento = new DetalleAsiento();
                                 intLineaDetalleAsiento += 1;
@@ -914,7 +914,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(apartado);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoApartado)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                        if (!new int[] { StaticFormaPago.Efectivo, StaticFormaPago.Tarjeta }.Contains(desglosePago.IdFormaPago))
                         {
                             movimientoBanco = new MovimientoBanco
                             {
@@ -1100,7 +1100,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(ordenServicio);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoOrdenServicio)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                        if (!new int[] { StaticFormaPago.Efectivo, StaticFormaPago.Tarjeta }.Contains(desglosePago.IdFormaPago))
                         {
                             movimientoBanco = new MovimientoBanco
                             {

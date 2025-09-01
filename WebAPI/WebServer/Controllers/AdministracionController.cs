@@ -68,8 +68,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         {
             try
             {
-                string strClaveFormateada = clave.Replace(" ", "+");
-                Usuario usuarioEntity = _servicioMantenimiento.ValidarCredencialesAdmin(usuario, strClaveFormateada);
+                Usuario usuarioEntity = _servicioMantenimiento.ValidarCredencialesAdmin(usuario, clave);
                 string strRespuesta = "";
                 if (usuarioEntity != null)
                     strRespuesta = JsonConvert.SerializeObject(usuarioEntity);
@@ -325,23 +324,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             try
             {
                 IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)_servicioMantenimiento.ObtenerListadoDistritos(idprovincia, idcanton);
-                string strRespuesta = "";
-                if (listadoEmpresas.Count > 0)
-                    strRespuesta = JsonConvert.SerializeObject(listadoEmpresas);
-                return strRespuesta;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        [HttpGet("obtenerlistadobarrios")]
-        public string ObtenerListadoBarrios(int idprovincia, int idcanton, int iddistrito)
-        {
-            try
-            {
-                IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)_servicioMantenimiento.ObtenerListadoBarrios(idprovincia, idcanton, iddistrito);
                 string strRespuesta = "";
                 if (listadoEmpresas.Count > 0)
                     strRespuesta = JsonConvert.SerializeObject(listadoEmpresas);
