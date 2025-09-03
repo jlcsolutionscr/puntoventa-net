@@ -3423,6 +3423,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 string strBody = "El documento con clave " + documentoElectronico.ClaveNumerica + " registrado en la empresa " + empresa.NombreEmpresa + " generó un error en el envío del PDF al remitente: " + strCorreoReceptor + " Error: " + ex.Message;
                 _servicioCorreo.SendSupportEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false);
+                throw;
             }
         }
 
@@ -3475,7 +3476,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.Clave = documentoElectronico.ClaveNumerica;
             datos.CondicionVenta = CondicionDeVenta.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("CondicionVenta").Item(0).InnerText));
             datos.Fecha = documentoElectronico.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-            datos.MedioPago = FormaDePago.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
             XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
             datos.NombreEmisor = emisorNode["Nombre"] != null && emisorNode["Nombre"].ChildNodes.Count > 0 ? emisorNode["Nombre"].InnerText : "";
             datos.NombreComercialEmisor = emisorNode["NombreComercial"] != null && emisorNode["NombreComercial"].ChildNodes.Count > 0 ? emisorNode["NombreComercial"].InnerText : "";
@@ -3513,13 +3513,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
                     {
-                        if (strExoneracionLeyenda.Length == 0) strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText + "% del valor gravado.";
+                        if (strExoneracionLeyenda.Length == 0) strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["TarifaExonerada"].InnerText + "% del valor gravado.";
                     }
                 }
                 EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
                 {
                     Cantidad = lineaDetalle["Cantidad"].InnerText,
-                    Codigo = lineaDetalle["Codigo"].InnerText,
+                    Codigo = lineaDetalle["CodigoCABYS"].InnerText,
                     Detalle = lineaDetalle["Detalle"].InnerText,
                     PrecioUnitario = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["PrecioUnitario"].InnerText, CultureInfo.InvariantCulture)),
                     TotalLinea = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["MontoTotal"].InnerText, CultureInfo.InvariantCulture))
@@ -3534,6 +3534,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
             XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
+            datos.MedioPago = resumenFacturaNode["MedioPago"] != null ? FormaDePago.ObtenerDescripcion(int.Parse(resumenFacturaNode["MedioPago"].ChildNodes.Item(0).InnerText)) : "Sin especificar";
             datos.TotalGravado = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
             datos.TotalExonerado = resumenFacturaNode["TotalExonerado"] != null && resumenFacturaNode["TotalExonerado"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExonerado"].InnerText, CultureInfo.InvariantCulture)) : "0.00";
             datos.TotalExento = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExento"].InnerText, CultureInfo.InvariantCulture));
