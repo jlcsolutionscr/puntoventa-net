@@ -1121,6 +1121,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     listaReporte.Add(reporteLinea);
                     reporteLinea = new DescripcionValor("Monto de próximo inicio de caja", decTotalFondoCaja - datosCierre.RetiroEfectivo);
                     listaReporte.Add(reporteLinea);
+                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios en tarjeta", datosCierre.VentasTarjeta);
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios de crédito", datosCierre.VentasCredito);
+                    listaReporte.Add(reporteLinea);
+                    reporteLinea = new DescripcionValor("Ventas de bienes y/o servicios mediante transferencia", datosCierre.VentasBancos);
+                    listaReporte.Add(reporteLinea);
                     return listaReporte;
                 }
                 catch (Exception ex)
@@ -1630,7 +1636,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
                                 {
-                                    int porcentaje = int.Parse(lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText, CultureInfo.InvariantCulture);
+                                    int porcentaje = int.Parse(lineaDetalle["Impuesto"]["Exoneracion"]["TarifaExonerada"].InnerText, CultureInfo.InvariantCulture);
                                     decMontoPorLinea = decMontoPorLinea * (100 - porcentaje) / 100;
                                 }
                                 string strTarifa = lineaDetalle["Impuesto"]["Tarifa"].InnerText;
@@ -1808,7 +1814,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     {
                                         if (impuestoDetalle["Exoneracion"] != null)
                                         {
-                                            int porcentaje = int.Parse(impuestoDetalle["Exoneracion"]["PorcentajeExoneracion"].InnerText, CultureInfo.InvariantCulture);
+                                            int porcentaje = int.Parse(impuestoDetalle["Exoneracion"]["TarifaExonerada"].InnerText, CultureInfo.InvariantCulture);
                                             decMontoPorLinea = decMontoPorLinea * (100 - porcentaje) / 100;
                                         }
                                         string strTarifa = impuestoDetalle["Tarifa"].InnerText.Replace(" ", string.Empty);
