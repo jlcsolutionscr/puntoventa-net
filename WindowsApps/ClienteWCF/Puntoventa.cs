@@ -382,7 +382,7 @@ namespace LeandroSoftware.ClienteWCF
             List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             foreach (JObject item in actividades)
             {
-                listado.Add(new LlaveDescripcion(int.Parse(item.Property("codigo").Value.ToString()), item.Property("descripcion").Value.ToString()));
+                listado.Add(new LlaveDescripcion(int.Parse(item.Property("codigo").Value.ToString()), item.Property("codigo").Value.ToString() + " - " + item.Property("descripcion").Value.ToString()));
             }
             ContribuyenteHacienda cliente = new ContribuyenteHacienda
             {
