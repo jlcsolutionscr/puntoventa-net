@@ -2372,13 +2372,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == intIdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    /*DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, intSucursal, intTerminal, intEstado, bolIvaAplicable);
+                    DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, intSucursal, intTerminal, intEstado, bolIvaAplicable);
                     dbContext.DocumentoElectronicoRepository.Add(documentoMR);
                     dbContext.Commit();
                     if (documentoMR != null)
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoMR));
-                    }*/
+                    }
                 }
                 catch (BusinessException ex)
                 {
@@ -2579,13 +2579,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (empresa == null) throw new BusinessException("La identificación contenida en el archivo XML enviado: " + strIdentificacion + " no pertenece a ninguna empresa suscrita al servicio de facturación electrónica.");
             if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la solicitud no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
             if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación de la empresa que envía la solicitud ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-            /*DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, 1, 1, 0, bolIvaAplicable);
+            DocumentoElectronico documentoMR = ComprobanteElectronicoService.GeneraMensajeReceptor(strDatos, empresa, dbContext, 1, 1, 0, bolIvaAplicable);
             dbContext.DocumentoElectronicoRepository.Add(documentoMR);
             dbContext.Commit();
             if (documentoMR != null)
             {
                 Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoMR));
-            }*/
+            }
         }
 
         public void ReprocesarDocumentoElectronico(int intIdDocumento)
