@@ -172,6 +172,7 @@ Public Class FrmUsuario
         datos.Clave = strEncryptedPassword
         datos.PorcMaxDescuento = txtPorcMaxDescuento.Text
         datos.CorreoNotificacion = txtCorreoNotificacion.Text
+        datos.CorreoVerificado = True
         datos.PermiteRegistrarDispositivo = chkRegistraDispositivo.Checked
         datos.RolePorUsuario = New List(Of RolePorUsuario)
         For I As Short = 0 To dtbRolePorUsuario.Rows.Count - 1
