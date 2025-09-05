@@ -129,6 +129,7 @@ Public Class FrmUsuario
                 txtUsuario.Text = datos.CodigoUsuario
                 txtPassword.Text = strDecryptedPassword
                 txtPorcMaxDescuento.Text = datos.PorcMaxDescuento
+                txtCorreoNotificacion.Text = datos.CorreoNotificacion
                 chkRegistraDispositivo.Checked = datos.PermiteRegistrarDispositivo
                 cboSucursal.SelectedValue = datos.IdSucursal
                 CargarDetalleRole(datos)
@@ -170,6 +171,7 @@ Public Class FrmUsuario
         datos.CodigoUsuario = txtUsuario.Text
         datos.Clave = strEncryptedPassword
         datos.PorcMaxDescuento = txtPorcMaxDescuento.Text
+        datos.CorreoNotificacion = txtCorreoNotificacion.Text
         datos.PermiteRegistrarDispositivo = chkRegistraDispositivo.Checked
         datos.RolePorUsuario = New List(Of RolePorUsuario)
         For I As Short = 0 To dtbRolePorUsuario.Rows.Count - 1

@@ -1,9 +1,9 @@
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FrmUsuario
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -39,6 +39,8 @@ Partial Class FrmUsuario
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
+        Me.txtCorreoNotificacion = New System.Windows.Forms.TextBox()
+        Me.Label5 = New System.Windows.Forms.Label()
         CType(Me.dgvRoleXUsuario, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -127,7 +129,7 @@ Partial Class FrmUsuario
         'cboRole
         '
         Me.cboRole.FormattingEnabled = True
-        Me.cboRole.Location = New System.Drawing.Point(119, 117)
+        Me.cboRole.Location = New System.Drawing.Point(119, 143)
         Me.cboRole.Name = "cboRole"
         Me.cboRole.Size = New System.Drawing.Size(342, 21)
         Me.cboRole.TabIndex = 3
@@ -137,7 +139,7 @@ Partial Class FrmUsuario
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(13, 119)
+        Me.Label2.Location = New System.Drawing.Point(13, 145)
         Me.Label2.Name = "Label2"
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(99, 17)
@@ -153,7 +155,7 @@ Partial Class FrmUsuario
         Me.dgvRoleXUsuario.AllowUserToResizeRows = False
         Me.dgvRoleXUsuario.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvRoleXUsuario.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
-        Me.dgvRoleXUsuario.Location = New System.Drawing.Point(14, 144)
+        Me.dgvRoleXUsuario.Location = New System.Drawing.Point(14, 170)
         Me.dgvRoleXUsuario.MultiSelect = False
         Me.dgvRoleXUsuario.Name = "dgvRoleXUsuario"
         Me.dgvRoleXUsuario.ReadOnly = True
@@ -169,7 +171,7 @@ Partial Class FrmUsuario
         Me.btnInsertarRole.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnInsertarRole.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnInsertarRole.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnInsertarRole.Location = New System.Drawing.Point(13, 359)
+        Me.btnInsertarRole.Location = New System.Drawing.Point(13, 385)
         Me.btnInsertarRole.Name = "btnInsertarRole"
         Me.btnInsertarRole.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnInsertarRole.Size = New System.Drawing.Size(64, 21)
@@ -183,7 +185,7 @@ Partial Class FrmUsuario
         Me.btnEliminarRole.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnEliminarRole.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnEliminarRole.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnEliminarRole.Location = New System.Drawing.Point(79, 359)
+        Me.btnEliminarRole.Location = New System.Drawing.Point(79, 385)
         Me.btnEliminarRole.Name = "btnEliminarRole"
         Me.btnEliminarRole.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnEliminarRole.Size = New System.Drawing.Size(64, 21)
@@ -195,7 +197,7 @@ Partial Class FrmUsuario
         'chkRegistraDispositivo
         '
         Me.chkRegistraDispositivo.AutoSize = True
-        Me.chkRegistraDispositivo.Location = New System.Drawing.Point(313, 362)
+        Me.chkRegistraDispositivo.Location = New System.Drawing.Point(313, 388)
         Me.chkRegistraDispositivo.Name = "chkRegistraDispositivo"
         Me.chkRegistraDispositivo.Size = New System.Drawing.Size(153, 17)
         Me.chkRegistraDispositivo.TabIndex = 0
@@ -269,13 +271,41 @@ Partial Class FrmUsuario
         Me.cboSucursal.Size = New System.Drawing.Size(342, 21)
         Me.cboSucursal.TabIndex = 59
         '
+        'txtCorreoNotificacion
+        '
+        Me.txtCorreoNotificacion.AcceptsReturn = True
+        Me.txtCorreoNotificacion.BackColor = System.Drawing.SystemColors.Window
+        Me.txtCorreoNotificacion.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtCorreoNotificacion.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtCorreoNotificacion.Location = New System.Drawing.Point(119, 117)
+        Me.txtCorreoNotificacion.MaxLength = 0
+        Me.txtCorreoNotificacion.Name = "txtCorreoNotificacion"
+        Me.txtCorreoNotificacion.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtCorreoNotificacion.Size = New System.Drawing.Size(342, 20)
+        Me.txtCorreoNotificacion.TabIndex = 60
+        '
+        'Label5
+        '
+        Me.Label5.BackColor = System.Drawing.Color.Transparent
+        Me.Label5.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label5.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label5.Location = New System.Drawing.Point(4, 120)
+        Me.Label5.Name = "Label5"
+        Me.Label5.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label5.Size = New System.Drawing.Size(109, 17)
+        Me.Label5.TabIndex = 61
+        Me.Label5.Text = "Correo electrónico:"
+        Me.Label5.TextAlign = System.Drawing.ContentAlignment.TopRight
+        '
         'FrmUsuario
         '
         Me.AcceptButton = Me.btnInsertarRole
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(475, 394)
+        Me.ClientSize = New System.Drawing.Size(475, 414)
+        Me.Controls.Add(Me.txtCorreoNotificacion)
+        Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.txtPorcMaxDescuento)
@@ -299,9 +329,9 @@ Partial Class FrmUsuario
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(491, 433)
+        Me.MaximumSize = New System.Drawing.Size(491, 453)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(491, 433)
+        Me.MinimumSize = New System.Drawing.Size(491, 453)
         Me.Name = "FrmUsuario"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.ShowInTaskbar = False
@@ -326,4 +356,6 @@ Partial Class FrmUsuario
     Public WithEvents Label3 As Label
     Public WithEvents Label4 As Label
     Friend WithEvents cboSucursal As ComboBox
+    Public WithEvents txtCorreoNotificacion As TextBox
+    Public WithEvents Label5 As Label
 End Class
