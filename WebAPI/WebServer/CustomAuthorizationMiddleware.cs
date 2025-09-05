@@ -24,7 +24,8 @@ namespace WebServer.Middlewares
             "validarcredencialesadmin",
             "obtenerlistadoterminalesdisponibles",
             "registrarterminal",
-            "procesarpendientes"
+            "procesarpendientes",
+            "validarregistroautenticacion"
         };
         private readonly RequestDelegate _next;
 

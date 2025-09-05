@@ -176,7 +176,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
                     }
                     if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
-                    if (usuario.Clave != strClave.Replace(" ", "+")) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
+                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
                     if (!usuario.PermiteRegistrarDispositivo) throw new BusinessException("El usuario suministrado no esta autorizado para registrar el punto de venta. Por favor, pongase en contacto con su proveedor del servicio.");
                     var listado = dbContext.TerminalPorSucursalRepository.Include("SucursalPorEmpresa").Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdTipoDispositivo == intTipoDispositivo)
                         .OrderBy(x => x.IdSucursal).ThenBy(x => x.IdTerminal);
@@ -355,7 +355,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strCodigoUsuario.ToUpper());
                     }
                     if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
-                    if (usuario.Clave != strClave.Replace(" ", "+")) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
+                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
                     if (!usuario.PermiteRegistrarDispositivo) throw new BusinessException("El usuario suministrado no esta autorizado para registrar el punto de venta. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == intIdSucursal);
                     if (sucursal == null) throw new BusinessException("La sucursal donde desea registrar su punto de venta no existe. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -389,7 +389,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Usuario usuario = dbContext.UsuarioRepository.Where(x => x.CodigoUsuario == strCodigoUsuario.ToUpper()).FirstOrDefault();
                     if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
-                    if (usuario.Clave != strClave.Replace(" ", "+")) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
+                    if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
                     string strToken = GenerarRegistroAutenticacion(1, usuario.CodigoUsuario, StaticRolePorUsuario.ADMINISTRADOR);
                     usuario.Token = strToken;
                     return usuario;
@@ -490,7 +490,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     usuario = dbContext.UsuarioRepository.AsNoTracking().Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strCodigoUsuario.ToUpper());
                 }
                 if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
-                if (usuario.Clave != strClave.Replace(" ", "+")) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
+                if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                 TerminalPorSucursal terminal = null;
                 SucursalPorEmpresa sucursal = null;
                 if (strValorRegistro == "WebAPI" || strCodigoUsuario.ToUpper() == "ADMIN")
@@ -2933,7 +2933,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
             }
         }
-        public void GenerarNotificacionRestablecerClaveUsuario(string strServicioWebURL, string strIdentificacion, string strCodigoUsuario)
+        public void GenerarNotificacionRestablecerClaveUsuario(string strServicioWebURL, string strIdentificacion, string strCorreoNotificacion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -2943,10 +2943,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strCodigoUsuario.ToUpper());
+                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CorreoNotificacion.ToLower() == strCorreoNotificacion.ToLower());
                     if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
                     string strToken = GenerarRegistroAutenticacion(empresa.IdEmpresa, usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
-                    _servicioCorreo.SendNotificationEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\n" + strServicioWebURL + "reset?id=" + strToken.Replace("/", "~") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false);
+                    _servicioCorreo.SendNotificationEmail(new string[] { usuario.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\n" + strServicioWebURL + "reset?id=" + strToken.Replace("/", "~").Replace("+", "@") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false);
                 }
                 catch (BusinessException ex)
                 {
@@ -2968,7 +2968,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    string strTokenFormateado = strToken.Replace("~", "/").Replace(" ", "+");
+                    string strTokenFormateado = strToken;
                     string strTokenDesencriptado = Encriptador.DesencriptarDatos(strTokenFormateado);
                     RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
                     if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar el proceso de restablecimiento de su contraseña.");
@@ -2979,7 +2979,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == registro.CodigoUsuario.ToUpper());
                     if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
-                    usuario.Clave = strClave.Replace(" ", "+");
+                    usuario.Clave = strClave;
                     dbContext.NotificarModificacion(usuario);
                     dbContext.NotificarEliminacion(registro);
                     dbContext.Commit();

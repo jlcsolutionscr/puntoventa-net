@@ -11,6 +11,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool PermiteRegistrarDispositivo { get; set; }
         public int IdEmpresa { get; set; }
         public int IdSucursal { get; set; }
+        public string CorreoNotificacion { get; set; }
         public string Token;
 
         public List<RolePorUsuario> RolePorUsuario { get; set; }
