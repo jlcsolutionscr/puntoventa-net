@@ -126,7 +126,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         public void ValidarRegistroAutenticacion(string session)
         {
             string strTokenDesencriptado = Encriptador.DesencriptarDatos(session.Replace("@", "+").Replace("~", "/"));
-            _servicioMantenimiento.ValidarRegistroAutenticacion(strTokenDesencriptado, StaticRolePorUsuario.USUARIO_SISTEMA, 1);
+            _servicioMantenimiento.ValidarRegistroAutenticacion(strTokenDesencriptado, StaticRolePorUsuario.SOPORTE, 1);
         }
 
         [HttpGet("generarnotificacionrestablecerclaveusuario")]
