@@ -9,6 +9,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public string ComprobantesElectronicosURL { get; set; }
         public string ClientId { get; set; }
         public string ServicioTokenURL { get; set; }
+        public string ServicioWebURL { get; set; }
         public string CallbackURL { get; set; }
         public string CorreoNotificacionErrores { get; set; }
         public bool EsModoDesarrollo { get; set; }
@@ -22,6 +23,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             ComprobantesElectronicosURL = configuration.GetSection("appSettings").GetSection("strServicioComprobantesURL").Value;
             ClientId = configuration.GetSection("appSettings").GetSection("strClientId").Value;
             ServicioTokenURL = configuration.GetSection("appSettings").GetSection("strServicioTokenURL").Value;
+            ServicioWebURL = configuration.GetSection("appSettings").GetSection("strServicioWebURL").Value;
             CallbackURL = configuration.GetSection("appSettings").GetSection("strComprobantesCallbackURL").Value;
             CorreoNotificacionErrores = configuration.GetSection("appSettings").GetSection("strCorreoNotificacionErrores").Value;
             EsModoDesarrollo = configuration.GetSection("appSettings").GetSection("strEnvironment").Value == "development";
@@ -32,6 +34,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public string ComprobantesElectronicosURL { get; set; }
         public string ClientId { get; set; }
         public string ServicioTokenURL { get; set; }
+        public string ServicioWebURL { get; set; }
         public string CallbackURL { get; set; }
         public string CorreoNotificacionErrores { get; set; }
         public bool EsModoDesarrollo { get; set; }

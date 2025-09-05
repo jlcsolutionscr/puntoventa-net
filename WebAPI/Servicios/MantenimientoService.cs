@@ -122,8 +122,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ValidarRegistroAutenticacion(string strToken, int intRole, int intHoras);
         void EliminarRegistroAutenticacionInvalidos();
         List<LlaveDescripcion> ObtenerListadoActividadEconomica(string strServicioURL, string strIdentificacion);
-        void GenerarNotificacionRestablecerClaveUsuario(string strServicioWebURL, string strIdentificacion, string strCodigoUsuario);
+        void GenerarNotificacionRestablecerClaveUsuario(string strCorreoNotificacion);
         void RestablecerClaveUsuario(string strToken, string strClave);
+        void GenerarAutorizacionActualizacionCorreoUsuario(int intIdUsuario, string strCorreoNotificacion);
+        void AutorizarCorreoUsuario(string strToken);
     }
 
     public class MantenimientoService : IMantenimientoService
@@ -390,7 +392,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Usuario usuario = dbContext.UsuarioRepository.Where(x => x.CodigoUsuario == strCodigoUsuario.ToUpper()).FirstOrDefault();
                     if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
-                    string strToken = GenerarRegistroAutenticacion(1, usuario.CodigoUsuario, StaticRolePorUsuario.ADMINISTRADOR);
+                    string strToken = GenerarRegistroAutenticacion(dbContext, 1, usuario.CodigoUsuario, StaticRolePorUsuario.ADMINISTRADOR);
+                    dbContext.Commit();
                     usuario.Token = strToken;
                     return usuario;
                 }
@@ -417,7 +420,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa local = dbContext.EmpresaRepository.AsNoTracking().FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     if (local == null) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                     Empresa empresa = ObtenerEmpresaPorUsuario(strCodigoUsuario, strClave, local.IdEmpresa, "WebAPI");
-                    string strToken = GenerarRegistroAutenticacion(empresa.IdEmpresa, empresa.Usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
+                    string strToken = GenerarRegistroAutenticacion(dbContext, empresa.IdEmpresa, empresa.Usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
+                    dbContext.Commit();
                     empresa.Usuario.Token = strToken;
                     return empresa;
                 }
@@ -442,7 +446,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa empresa = ObtenerEmpresaPorUsuario(strCodigoUsuario, strClave, intIdEmpresa, strValorRegistro);
-                    string strToken = GenerarRegistroAutenticacion(empresa.IdEmpresa, empresa.Usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
+                    string strToken = GenerarRegistroAutenticacion(dbContext, empresa.IdEmpresa, empresa.Usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
+                    dbContext.Commit();
                     empresa.Usuario.Token = strToken;
                     return empresa;
                 }
@@ -2933,20 +2938,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
             }
         }
-        public void GenerarNotificacionRestablecerClaveUsuario(string strServicioWebURL, string strIdentificacion, string strCorreoNotificacion)
+        public void GenerarNotificacionRestablecerClaveUsuario(string strCorreoNotificacion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
+                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.CorreoNotificacion.ToLower() == strCorreoNotificacion.ToLower());
+                    if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
+                    if(!usuario.CorreoVerificado) throw new BusinessException("El usuario no ha verificado el correo electrónico suministrado y no se permite reestablecer la contraseña!");
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == usuario.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CorreoNotificacion.ToLower() == strCorreoNotificacion.ToLower());
-                    if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
-                    string strToken = GenerarRegistroAutenticacion(empresa.IdEmpresa, usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
-                    _servicioCorreo.SendNotificationEmail(new string[] { usuario.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\n" + strServicioWebURL + "reset?id=" + strToken.Replace("/", "~").Replace("+", "@") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false);
+                    string strToken = GenerarRegistroAutenticacion(dbContext, empresa.IdEmpresa, usuario.CodigoUsuario, StaticRolePorUsuario.SOPORTE);
+                    dbContext.Commit();
+                    _servicioCorreo.SendNotificationEmail(new string[] { usuario.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\n" + _config.ServicioWebURL + "reset?id=" + strToken.Replace("/", "~").Replace("+", "@") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false);
                 }
                 catch (BusinessException ex)
                 {
@@ -2970,7 +2977,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     string strTokenFormateado = strToken;
                     string strTokenDesencriptado = Encriptador.DesencriptarDatos(strTokenFormateado);
-                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
+                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.AsNoTracking().Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
                     if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar el proceso de restablecimiento de su contraseña.");
                     if (registro.Fecha < Validador.ObtenerFechaHoraCostaRica().AddHours(-1)) throw new BusinessException("La acceso para reestablecer la contraseña ya expiró. Debe reiniciar el proceso de restablecimiento de su contraseña.");
                     if (registro.Role != StaticRolePorUsuario.USUARIO_SISTEMA) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
@@ -2981,7 +2988,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
                     usuario.Clave = strClave;
                     dbContext.NotificarModificacion(usuario);
-                    dbContext.NotificarEliminacion(registro);
+                    List<RegistroAutenticacion> registrosPorUsuario = dbContext.RegistroAutenticacionRepository.Where(x => x.CodigoUsuario == usuario.CodigoUsuario).ToList();
+                    foreach (RegistroAutenticacion actual in registrosPorUsuario)
+                    {
+                        dbContext.NotificarEliminacion(actual);
+                    }
                     dbContext.Commit();
                 }
                 catch (BusinessException ex)
@@ -2996,35 +3007,103 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
             }
         }
-        
-        private string GenerarRegistroAutenticacion(int intIdEmpresa, string strCodigoUsuario, int intRole)
+
+        public void GenerarAutorizacionActualizacionCorreoUsuario(int intIdUsuario, string strCorreoNotificacion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                string strGuid = Guid.NewGuid().ToString();
-                DateTime fechaRegistro = Validador.ObtenerFechaHoraCostaRica();
-                RegistroAutenticacion registro = new RegistroAutenticacion
-                {
-                    IdEmpresa = intIdEmpresa,
-                    CodigoUsuario = strCodigoUsuario,
-                    Id = strGuid,
-                    Fecha = fechaRegistro,
-                    Role = intRole
-                };
                 try
                 {
-                    dbContext.RegistroAutenticacionRepository.Add(registro);
+                    Usuario correoExistente = dbContext.UsuarioRepository.AsNoTracking().FirstOrDefault(x => x.IdUsuario != intIdUsuario && x.CorreoNotificacion == strCorreoNotificacion);
+                    if (correoExistente != null) throw new BusinessException("El correo suministrado ya se encuentra registrado. Por favor verifique la información suministrada!");
+                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdUsuario == intIdUsuario);
+                    if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == usuario.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio!");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio!");
+                    usuario.CorreoNotificacion = strCorreoNotificacion;
+                    usuario.CorreoVerificado = false;
+                    dbContext.NotificarModificacion(usuario);
+                    string strToken = GenerarRegistroAutenticacion(dbContext, empresa.IdEmpresa, usuario.CodigoUsuario, StaticRolePorUsuario.SOPORTE);
                     dbContext.Commit();
+                    _servicioCorreo.SendNotificationEmail(new string[] { strCorreoNotificacion }, new string[] { }, "Solicitud para autorizar dirección de correo electronico", "Adjunto se adjunta el link para autorizar la dirección de correo electronico suministrado.\n\n" + _config.ServicioWebURL + "authorize?id=" + strToken.Replace("/", "~").Replace("+", "@") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false);
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
                 }
                 catch (Exception ex)
                 {
-                    if (_logger != null) _logger.LogError("Error al generar registro de autenticación: ", ex);
+                    if (_logger != null) _logger.LogError("Error en el proceso de actualización del correo de notificación del usuario: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error consultando al generar el registro de autenticación. Por favor consulte con su proveedor.");
+                    else throw new Exception("Se produjo un error en el proceso de actualización del correo de notificación del usuario. Por favor consulte con su proveedor.");
                 }
+            }
+        }
+        public void AutorizarCorreoUsuario(string strToken)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    string strTokenFormateado = strToken;
+                    string strTokenDesencriptado = Encriptador.DesencriptarDatos(strTokenFormateado);
+                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.AsNoTracking().Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
+                    if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar el proceso de restablecimiento de su contraseña.");
+                    if (registro.Fecha < Validador.ObtenerFechaHoraCostaRica().AddHours(-1)) throw new BusinessException("La acceso para reestablecer la contraseña ya expiró. Debe reiniciar el proceso de restablecimiento de su contraseña.");
+                    if (registro.Role != StaticRolePorUsuario.USUARIO_SISTEMA) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == registro.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == registro.CodigoUsuario.ToUpper());
+                    if (usuario == null) throw new BusinessException("Se produjo un error al autorizar el correo de notificación del usuario. Por favor verifique la información suministrada!");
+                    usuario.CorreoVerificado = true;
+                    dbContext.NotificarModificacion(usuario);
+                    List<RegistroAutenticacion> registrosPorUsuario = dbContext.RegistroAutenticacionRepository.Where(x => x.CodigoUsuario == usuario.CodigoUsuario && x.Role == StaticRolePorUsuario.SOPORTE).ToList();
+                    foreach (RegistroAutenticacion actual in registrosPorUsuario)
+                    {
+                        dbContext.NotificarEliminacion(actual);
+                    }
+                    dbContext.Commit();
+                }
+                catch (BusinessException ex)
+                {
+                    throw ex;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al autorizar el correo de notificación del usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al autorizar el correo de notificación del usuario. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+        
+        private string GenerarRegistroAutenticacion(LeandroContext dbContext, int intIdEmpresa, string strCodigoUsuario, int intRole)
+        {
+            string strGuid = Guid.NewGuid().ToString();
+            DateTime fechaRegistro = Validador.ObtenerFechaHoraCostaRica();
+            RegistroAutenticacion registro = new RegistroAutenticacion
+            {
+                IdEmpresa = intIdEmpresa,
+                CodigoUsuario = strCodigoUsuario,
+                Id = strGuid,
+                Fecha = fechaRegistro,
+                Role = intRole
+            };
+            try
+            {
+                dbContext.RegistroAutenticacionRepository.Add(registro);
                 string strTokenEncriptado = Encriptador.EncriptarDatos(strGuid);
                 return strTokenEncriptado;
+            }
+            catch (Exception ex)
+            {
+                if (_logger != null) _logger.LogError("Error al generar registro de autenticación: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                else throw new Exception("Se produjo un error al generar el registro de autenticación. Por favor consulte con su proveedor.");
             }
         }
     }

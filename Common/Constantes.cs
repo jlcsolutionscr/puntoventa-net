@@ -25,6 +25,7 @@ namespace LeandroSoftware.Common.Constantes
     {
         public static readonly short ADMINISTRADOR = 1;
         public static readonly short USUARIO_SISTEMA = 2;
+        public static readonly short SOPORTE = 3;
     };
 
     public static class StaticTipoMoneda
