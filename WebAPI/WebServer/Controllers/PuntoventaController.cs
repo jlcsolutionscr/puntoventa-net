@@ -130,16 +130,21 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpGet("generarnotificacionrestablecerclaveusuario")]
-        public void GenerarNotificacionRestablecerClaveUsuario(string identificacion, string correonotificacion)
+        public void GenerarNotificacionRestablecerClaveUsuario(string correonotificacion)
         {
-            string strServicioWebURL = _configuration.GetSection("appSettings").GetSection("strServicioWebURL").Value;
-            _servicioMantenimiento.GenerarNotificacionRestablecerClaveUsuario(strServicioWebURL, identificacion, correonotificacion);
+            _servicioMantenimiento.GenerarNotificacionRestablecerClaveUsuario(correonotificacion);
         }
 
         [HttpGet("restablecerclaveusuario")]
         public void RestablecerClaveUsuario(string session, string clave)
         {
             _servicioMantenimiento.RestablecerClaveUsuario(session.Replace("@", "+").Replace("~", "/"), clave);
+        }
+
+        [HttpGet("autorizarcorreousuario")]
+        public void AutorizarCorreoUsuario(string session)
+        {
+            _servicioMantenimiento.AutorizarCorreoUsuario(session.Replace("@", "+").Replace("~", "/"));
         }
     }
 }

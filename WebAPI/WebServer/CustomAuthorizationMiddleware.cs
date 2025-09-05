@@ -12,6 +12,7 @@ namespace WebServer.Middlewares
             "recibirrespuestahacienda",
             "generarnotificacionrestablecerclaveusuario",
             "restablecerclaveusuario",
+            "autorizarcorreousuario",
             "limpiarregistrosinvalidos",
             "obtenerultimaversionapp",
             "obtenerlistadotiqueteordenserviciopendiente",

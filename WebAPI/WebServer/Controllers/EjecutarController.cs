@@ -469,6 +469,11 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                     _servicioFacturacion.ReprocesarDocumentoElectronico(intIdLlave1);
                     break;
+                case "GenerarAutorizacionActualizacionCorreoUsuario":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                    string strCorreoNotificacion = parametrosJO.Property("CorreoNotificacion").Value.ToString();
+                    _servicioMantenimiento.GenerarAutorizacionActualizacionCorreoUsuario(intIdLlave1, strCorreoNotificacion);
+                    break;
                 case "EnviarReportePorCorreoElectronico":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
