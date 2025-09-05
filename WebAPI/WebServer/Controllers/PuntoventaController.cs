@@ -89,7 +89,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("validarcredenciales")]
         public string ValidarCredenciales(string usuario, string clave, int idempresa, string dispositivo)
         {
-            empresa = _servicioMantenimiento.ValidarCredenciales(usuario, clave, idempresa, dispositivo);
+            empresa = _servicioMantenimiento.ValidarCredenciales(usuario, clave.Replace(" ", "+"), idempresa, dispositivo);
             string strRespuesta = "";
             if (empresa != null)
                 strRespuesta = JsonConvert.SerializeObject(empresa);
@@ -99,7 +99,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("validarcredencialesweb")]
         public string ValidarCredencialesWeb(string usuario, string clave, string identificacion)
         {
-            Empresa empresa = _servicioMantenimiento.ValidarCredenciales(usuario, clave, identificacion);
+            Empresa empresa = _servicioMantenimiento.ValidarCredenciales(usuario, clave.Replace(" ", "+"), identificacion);
             string strRespuesta = "";
             if (empresa != null)
                 strRespuesta = JsonConvert.SerializeObject(empresa);
