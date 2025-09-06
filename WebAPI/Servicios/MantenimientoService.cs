@@ -2980,7 +2980,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.AsNoTracking().Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
                     if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar el proceso de restablecimiento de su contraseña.");
                     if (registro.Fecha < Validador.ObtenerFechaHoraCostaRica().AddHours(-1)) throw new BusinessException("La acceso para reestablecer la contraseña ya expiró. Debe reiniciar el proceso de restablecimiento de su contraseña.");
-                    if (registro.Role != StaticRolePorUsuario.USUARIO_SISTEMA) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
+                    if (registro.Role != StaticRolePorUsuario.SOPORTE) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == registro.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
@@ -3053,7 +3053,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.AsNoTracking().Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
                     if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar el proceso de restablecimiento de su contraseña.");
                     if (registro.Fecha < Validador.ObtenerFechaHoraCostaRica().AddHours(-1)) throw new BusinessException("La acceso para reestablecer la contraseña ya expiró. Debe reiniciar el proceso de restablecimiento de su contraseña.");
-                    if (registro.Role != StaticRolePorUsuario.USUARIO_SISTEMA) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
+                    if (registro.Role != StaticRolePorUsuario.SOPORTE) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == registro.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
