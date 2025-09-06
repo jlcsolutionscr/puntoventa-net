@@ -125,7 +125,7 @@ Public Class FrmAplicaAbonoCxP
         Dim decMontoPago, decTipoCambio As Decimal
         decMontoPago = CDbl(txtMontoPago.Text)
         decTipoCambio = 1
-        If cuentaPorPagar.IdTipoMoneda = 1 Then decTipoCambio = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
+        If cuentaPorPagar.IdTipoMoneda = 2 Then decTipoCambio = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
         dtrRowDesglosePago = dtbDesglosePago.NewRow
         dtrRowDesglosePago.Item(0) = cboFormaPago.SelectedValue
         dtrRowDesglosePago.Item(1) = cboFormaPago.Text
