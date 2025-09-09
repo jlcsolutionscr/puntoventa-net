@@ -42,14 +42,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarApartado(Apartado apartado);
         void AnularApartado(int intIdApartado, int intIdUsuario, string strMotivoAnulacion);
         Apartado ObtenerApartado(int intIdApartado);
-        int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdApartado, string strNombre, string strFechaFinal);
-        IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal);
+        int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, bool bolExcluyeCancelados, int intIdApartado, string strNombre, string strFechaFinal);
+        IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal);
         string AgregarOrdenServicio(OrdenServicio ordenServicio);
         void ActualizarOrdenServicio(OrdenServicio ordenServicio);
         void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivoAnulacion);
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
-        int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdOrdenServicio, string strNombre, string strFechaFinal);
-        IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal);
+        int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, bool bolExcluyeCancelados, int intIdOrdenServicio, string strNombre, string strFechaFinal);
+        IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal);
         IList<ClsTiquete> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc);
         void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado);
         string AgregarDevolucionCliente(DevolucionCliente devolucion);
@@ -1372,7 +1372,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdApartado, string strNombre, string strFechaFinal)
+        public int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, bool bolExcluyeCancelados, int intIdApartado, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1380,10 +1380,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     var listaApartados = dbContext.ApartadoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                    if (bolAplicado)
+                        listaApartados = listaApartados.Where(x => x.Aplicado);
+                    else
+                        listaApartados = listaApartados.Where(x => !x.Aplicado);
                     if (!bolIncluyeNulos)
                         listaApartados = listaApartados.Where(x => !x.Nulo);
+                    if (bolExcluyeCancelados)
+                        listaApartados = listaApartados.Where(x => x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (intIdApartado > 0)
-                        listaApartados = listaApartados.Where(x => x.ConsecApartado == intIdApartado);
+                            listaApartados = listaApartados.Where(x => x.ConsecApartado == intIdApartado);
                     if (!strNombre.Equals(string.Empty))
                         listaApartados = listaApartados.Where(x => x.NombreCliente.Contains(strNombre));
                     if (strFechaFinal != "")
@@ -1402,7 +1408,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal)
+        public IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1411,8 +1417,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     var listado = dbContext.ApartadoRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                    if (bolAplicado)
+                        listado = listado.Where(x => x.Aplicado);
+                    else
+                        listado = listado.Where(x => !x.Aplicado);
                     if (!bolIncluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
+                    if (bolExcluyeCancelados)
+                        listado = listado.Where(x => x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (intIdApartado > 0)
                         listado = listado.Where(x => x.ConsecApartado == intIdApartado);
                     if (!strNombre.Equals(string.Empty))
@@ -1696,7 +1708,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdOrdenServicio, string strNombre, string strFechaFinal)
+        public int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, bool bolExcluyeCancelados, int intIdOrdenServicio, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1705,9 +1717,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     var listado = dbContext.OrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (bolAplicado)
-                        listado = listado.Where(x => x.Nulo == bolAplicado || x.Aplicado);
+                        listado = listado.Where(x => x.Aplicado);
                     else
-                        listado = listado.Where(x => !x.Nulo && !x.Aplicado);
+                        listado = listado.Where(x => !x.Aplicado);
+                    if (!bolIncluyeNulos)
+                        listado = listado.Where(x => !x.Nulo);
+                    if (bolExcluyeCancelados)
+                        listado = listado.Where(x => x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (intIdOrdenServicio > 0)
                         listado = listado.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                     if (!strNombre.Equals(string.Empty))
@@ -1728,7 +1744,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal)
+        public IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1738,9 +1754,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     var listado = dbContext.OrdenServicioRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (bolAplicado)
-                        listado = listado.Where(x => x.Nulo == bolAplicado || x.Aplicado);
+                        listado = listado.Where(x => x.Aplicado);
                     else
-                        listado = listado.Where(x => !x.Nulo && !x.Aplicado);
+                        listado = listado.Where(x => !x.Aplicado);
+                    if (!bolIncluyeNulos)
+                        listado = listado.Where(x => !x.Nulo);
+                    if (bolExcluyeCancelados)
+                        listado = listado.Where(x => x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (intIdOrdenServicio > 0)
                         listado = listado.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                     if (!strNombre.Equals(string.Empty))

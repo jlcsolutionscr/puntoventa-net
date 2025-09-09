@@ -29,12 +29,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         MovimientoCuentaPorPagar ObtenerMovimientoCxP(int intIdMovimiento);
         int ObtenerCantidadCxPVencidas(int intIdPropietario, int intIdTipo);
         decimal ObtenerSaldoCuentasPorPagar(int intIdPropietario, int intIdTipo);
-        List<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa);
         List<EfectivoDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado);
         void AplicarMovimientoApartado(MovimientoApartado movimiento);
         void AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoApartado ObtenerMovimientoApartado(int intIdMovimiento);
-        List<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa);
         List<EfectivoDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden);
         void AplicarMovimientoOrdenServicio(MovimientoOrdenServicio movimiento);
         void AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
@@ -841,31 +839,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                var listaCuentas = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.ApartadoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Aplicado == false && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0 && !x.Nulo).OrderByDescending(x => x.Fecha);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdApartado, "Apartado " + value.IdApartado + " de " + value.NombreCliente);
-                        listaCuentas.Add(item);
-                    }
-                    return listaCuentas;
-                }
-                catch (Exception ex)
-                {
-                    if (_logger != null) _logger.LogError("Error al obtener el listado de apartados pendientes: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error consultando el listado de apartados pendientes. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
         public List<EfectivoDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
@@ -1023,31 +996,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al obtener el movimiento del registro de apartado: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al obtener el movimiento del registro de apartado. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public List<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                var listaCuentas = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.OrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Aplicado == false && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0 && !x.Nulo).OrderByDescending(x => x.Fecha);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdOrden, "Orden servicio " + value.IdOrden + " de " + value.NombreCliente);
-                        listaCuentas.Add(item);
-                    }
-                    return listaCuentas;
-                }
-                catch (Exception ex)
-                {
-                    if (_logger != null) _logger.LogError("Error al obtener el listado de ordenes de servicio pendientes: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error consultando el listado de ordenes de servicio pendientes. Por favor consulte con su proveedor.");
                 }
             }
         }

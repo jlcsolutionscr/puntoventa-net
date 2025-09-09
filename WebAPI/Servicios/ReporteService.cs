@@ -1636,7 +1636,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
                                 {
-                                    int porcentaje = int.Parse(lineaDetalle["Impuesto"]["Exoneracion"]["TarifaExonerada"].InnerText, CultureInfo.InvariantCulture);
+                                    int porcentaje = 0;
+                                    if (documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/"))
+                                    {
+                                        porcentaje = int.Parse(lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText, CultureInfo.InvariantCulture);
+                                    }
+                                    else
+                                    {
+                                        porcentaje = int.Parse(lineaDetalle["Impuesto"]["Exoneracion"]["TarifaExonerada"].InnerText, CultureInfo.InvariantCulture);
+                                    }
                                     decMontoPorLinea = decMontoPorLinea * (100 - porcentaje) / 100;
                                 }
                                 string strTarifa = lineaDetalle["Impuesto"]["Tarifa"].InnerText;
@@ -1814,7 +1822,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     {
                                         if (impuestoDetalle["Exoneracion"] != null)
                                         {
-                                            int porcentaje = int.Parse(impuestoDetalle["Exoneracion"]["TarifaExonerada"].InnerText, CultureInfo.InvariantCulture);
+                                            int porcentaje = 0;
+                                            if (documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/"))
+                                            {
+                                                porcentaje = int.Parse(lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText, CultureInfo.InvariantCulture);
+                                            }
+                                            else
+                                            {
+                                                porcentaje = int.Parse(lineaDetalle["Impuesto"]["Exoneracion"]["TarifaExonerada"].InnerText, CultureInfo.InvariantCulture);
+                                            }
                                             decMontoPorLinea = decMontoPorLinea * (100 - porcentaje) / 100;
                                         }
                                         string strTarifa = impuestoDetalle["Tarifa"].InnerText.Replace(" ", string.Empty);
