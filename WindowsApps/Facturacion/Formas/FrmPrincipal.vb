@@ -262,6 +262,24 @@ Public Class FrmPrincipal
             .CodigoActividad = ""
         }
     End Function
+
+    Public Async Function CargarListaBancoAdquiriente() As Task(Of List(Of LlaveDescripcion))
+        Dim lista As IList = Await Puntoventa.ObtenerListadoBancoAdquiriente(empresaGlobal.IdEmpresa, "", usuarioGlobal.Token)
+        If lista.Count() = 0 Then
+            Throw New Exception("Debe parametrizar la lista de bancos adquirientes para pagos con tarjeta.")
+        Else
+            Return lista
+        End If
+    End Function
+
+    Public Async Function CargarListaCuentaBanco() As Task(Of List(Of LlaveDescripcion))
+        Dim lista As IList = Await Puntoventa.ObtenerListadoCuentasBanco(empresaGlobal.IdEmpresa, "", usuarioGlobal.Token)
+        If lista.Count() = 0 Then
+            Throw New Exception("Debe parametrizar la lista de bancos para registrar movimientos.")
+        Else
+            Return lista
+        End If
+    End Function
 #End Region
 
 #Region "Eventos del Menu"

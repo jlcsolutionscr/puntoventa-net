@@ -1,5 +1,7 @@
+Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmBusquedaTraslado
 #Region "Variables"
@@ -45,7 +47,11 @@ Public Class FrmBusquedaTraslado
         Dim intId As Integer = 0
         If strId <> "" Then intId = CInt(txtId.Text)
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoTraslados(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, False, intNumeroPagina, intFilasPorPagina, intId, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+            Dim listado = New List(Of TrasladoDetalle)
+            If intCantidadDePaginas > 0 Then
+                listado = Await Puntoventa.ObtenerListadoTraslados(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, False, intNumeroPagina, intFilasPorPagina, intId, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+            End If
+            dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)

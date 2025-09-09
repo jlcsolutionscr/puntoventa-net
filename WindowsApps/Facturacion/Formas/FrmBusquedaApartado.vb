@@ -6,7 +6,7 @@ Imports LeandroSoftware.Common.DatosComunes
 Public Class FrmBusquedaApartado
 #Region "Variables"
     Private dtListaEstado As New DataTable, drListaEstado As DataRow
-    Private intTotalRegistros As Integer
+    Private intTotalApartados As Integer
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
@@ -14,6 +14,7 @@ Public Class FrmBusquedaApartado
     Private bolCargado As Boolean = False
     Public bolIncluyeEstado As Boolean = False
     Public bolIncluyeNulos As Boolean = False
+    Public bolExcluyeCancelados As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -65,7 +66,7 @@ Public Class FrmBusquedaApartado
         Try
             Dim listado = New List(Of FacturaDetalle)
             If intCantidadDePaginas > 0 Then
-                listado = Await Puntoventa.ObtenerListadoApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+                listado = Await Puntoventa.ObtenerListadoApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, bolExcluyeCancelados, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
             End If
             dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
@@ -79,13 +80,13 @@ Public Class FrmBusquedaApartado
 
     Private Async Function ValidarCantidadApartados() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalApartados = Await Puntoventa.ObtenerTotalListaApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, bolExcluyeCancelados, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Function
         End Try
-        intCantidadDePaginas = Math.Truncate(intTotalRegistros / intFilasPorPagina) + IIf((intTotalRegistros Mod intFilasPorPagina) = 0, 0, 1)
+        intCantidadDePaginas = Math.Truncate(intTotalApartados / intFilasPorPagina) + IIf((intTotalApartados Mod intFilasPorPagina) = 0, 0, 1)
         If intCantidadDePaginas > 1 Then
             btnLast.Enabled = True
             btnNext.Enabled = True

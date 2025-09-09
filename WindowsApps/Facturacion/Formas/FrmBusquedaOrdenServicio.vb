@@ -14,6 +14,7 @@ Public Class FrmBusquedaOrdenServicio
     Private bolCargado As Boolean = False
     Public bolIncluyeEstado As Boolean = False
     Public bolIncluyeNulos As Boolean = False
+    Public bolExcluyeCancelados As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -70,7 +71,7 @@ Public Class FrmBusquedaOrdenServicio
         Try
             Dim listado = New List(Of FacturaDetalle)
             If intCantidadDePaginas > 0 Then
-                listado = Await Puntoventa.ObtenerListadoOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+                listado = Await Puntoventa.ObtenerListadoOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, bolExcluyeCancelados, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
             End If
             dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
@@ -82,9 +83,9 @@ Public Class FrmBusquedaOrdenServicio
         dgvListado.Refresh()
     End Function
 
-    Private Async Function ValidarCantidadProformas() As Task
+    Private Async Function ValidarCantidadOrdenServicio() As Task
         Try
-            intTotalOrdenes = Await Puntoventa.ObtenerTotalListaOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalOrdenes = Await Puntoventa.ObtenerTotalListaOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, bolExcluyeCancelados, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -191,7 +192,7 @@ Public Class FrmBusquedaOrdenServicio
             lblEstado.Visible = bolIncluyeEstado
             EstablecerPropiedadesDataGridView()
             CargarCombos()
-            Await ValidarCantidadProformas()
+            Await ValidarCantidadOrdenServicio()
             intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
             bolCargado = True
@@ -217,7 +218,7 @@ Public Class FrmBusquedaOrdenServicio
         Else
             intId = CInt(txtId.Text)
         End If
-        Await ValidarCantidadProformas()
+        Await ValidarCantidadOrdenServicio()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)
         btnFiltrar.Enabled = True

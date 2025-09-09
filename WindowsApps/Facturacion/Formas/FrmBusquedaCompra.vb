@@ -1,5 +1,7 @@
+Imports System.Collections.Generic
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
 
 Public Class FrmBusquedaCompra
 #Region "Variables"
@@ -52,7 +54,11 @@ Public Class FrmBusquedaCompra
 
     Private Async Function ActualizarDatos(ByVal intNumeroPagina As Integer) As Task
         Try
-            dgvListado.DataSource = Await Puntoventa.ObtenerListadoCompras(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtRefFactura.Text, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+            Dim listado = New List(Of CompraDetalle)
+            If intCantidadDePaginas > 0 Then
+                listado = Await Puntoventa.ObtenerListadoCompras(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtRefFactura.Text, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+            End If
+            dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)

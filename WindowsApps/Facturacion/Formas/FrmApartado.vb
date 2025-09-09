@@ -317,8 +317,9 @@ Public Class FrmApartado
 
     Private Sub CargarLineaDesglosePago()
         Dim objPkDesglose(1) As Object
+        Dim intTipoBanco As Integer = IIf(cboFormaPago.SelectedValue = StaticFormaPago.Efectivo, 0, cboTipoBanco.SelectedValue)
         objPkDesglose(0) = cboFormaPago.SelectedValue
-        objPkDesglose(1) = cboTipoBanco.SelectedValue
+        objPkDesglose(1) = intTipoBanco
         If dtbDesglosePago.Rows.Contains(objPkDesglose) Then
             MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -329,7 +330,7 @@ Public Class FrmApartado
         dtrRowDesglosePago = dtbDesglosePago.NewRow
         dtrRowDesglosePago.Item(0) = cboFormaPago.SelectedValue
         dtrRowDesglosePago.Item(1) = cboFormaPago.Text
-        dtrRowDesglosePago.Item(2) = cboTipoBanco.SelectedValue
+        dtrRowDesglosePago.Item(2) = intTipoBanco
         dtrRowDesglosePago.Item(3) = cboTipoBanco.Text
         dtrRowDesglosePago.Item(4) = txtTipoTarjeta.Text
         dtrRowDesglosePago.Item(5) = txtAutorizacion.Text
@@ -406,29 +407,9 @@ Public Class FrmApartado
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
         cboTipoMoneda.DataSource = FrmPrincipal.ObtenerListadoTipoMoneda()
+        cboTipoBanco.ValueMember = "Id"
+        cboTipoBanco.DisplayMember = "Descripcion"
     End Sub
-
-    Private Async Function CargarListaBancoAdquiriente() As Task
-        Dim lista As IList = Await Puntoventa.ObtenerListadoBancoAdquiriente(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
-        If lista.Count() = 0 Then
-            Throw New Exception("Debe parametrizar la lista de bancos adquirientes para pagos con tarjeta.")
-        Else
-            cboTipoBanco.DataSource = lista
-            cboTipoBanco.ValueMember = "Id"
-            cboTipoBanco.DisplayMember = "Descripcion"
-        End If
-    End Function
-
-    Private Async Function CargarListaCuentaBanco() As Task
-        Dim lista As IList = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
-        If lista.Count() = 0 Then
-            Throw New Exception("Debe parametrizar la lista de bancos para registrar movimientos.")
-        Else
-            cboTipoBanco.DataSource = lista
-            cboTipoBanco.ValueMember = "Id"
-            cboTipoBanco.DisplayMember = "Descripcion"
-        End If
-    End Function
 
     Private Function ObtenerPrecioVentaPorCliente(cliente As Cliente, producto As Producto)
         Dim decPrecioVenta As Decimal = producto.PrecioVenta1
@@ -552,7 +533,6 @@ Public Class FrmApartado
             If FrmPrincipal.bolModificaCliente Then txtPorcDesc.ReadOnly = False
             txtCodigo.Focus()
             CargarCombos()
-            Await CargarListaBancoAdquiriente()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
             txtTipoCambio.Text = 1
@@ -567,11 +547,6 @@ Public Class FrmApartado
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdApartado.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
-        cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-        cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-        txtTipoCambio.Text = 1
-        If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
-        cboTipoMoneda.Enabled = True
         txtTelefono.Text = ""
         txtDocumento.Text = ""
         txtPorcentajeExoneracion.Text = "0"
@@ -588,9 +563,6 @@ Public Class FrmApartado
         txtExistencias.Text = ""
         txtPorcDesc.Text = "0"
         txtPrecio.Text = ""
-        dtbDesglosePago.Rows.Clear()
-        grdDesglosePago.Refresh()
-        txtMontoPago.Text = ""
         decSaldoPorPagar = 0
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         decTotal = 0
@@ -623,9 +595,21 @@ Public Class FrmApartado
             vendedor = Nothing
             txtVendedor.Text = ""
         End If
-        txtTipoCambio.Text = "1"
+        cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
+        txtTipoCambio.Text = 1
+        If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
+        cboTipoMoneda.Enabled = True
+        cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
+        cboTipoBanco.DataSource = New List(Of LlaveDescripcion)
+        cboTipoBanco.Width = 325
+        lblBanco.Width = 325
+        lblBanco.Text = "Banco Adquiriente"
+        lblAutorizacion.Text = "Autorización"
+        txtDocumento.Text = ""
+        txtTipoTarjeta.Text = ""
         txtMontoPago.Text = ""
-        txtCodigo.Focus()
+        dtbDesglosePago.Rows.Clear()
+        grdDesglosePago.Refresh()
     End Sub
 
     Private Async Sub BtnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
@@ -977,32 +961,33 @@ Public Class FrmApartado
         If bolReady And cboFormaPago.SelectedValue IsNot Nothing Then
             txtTipoTarjeta.Text = ""
             txtAutorizacion.Text = ""
-            If cboFormaPago.SelectedValue <> StaticFormaPago.Cheque And cboFormaPago.SelectedValue <> StaticFormaPago.TransferenciaDepositoBancario Then
-                Try
-                    Await CargarListaBancoAdquiriente()
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Exit Sub
-                End Try
-                cboTipoBanco.SelectedIndex = 0
+            If cboFormaPago.SelectedValue = StaticFormaPago.Efectivo Or cboFormaPago.SelectedValue = StaticFormaPago.Tarjeta Then
+                If cboFormaPago.SelectedValue = StaticFormaPago.Tarjeta Then
+                    Try
+                        cboTipoBanco.DataSource = Await FrmPrincipal.CargarListaBancoAdquiriente()
+                        cboTipoBanco.SelectedIndex = 0
+                        cboTipoBanco.Enabled = True
+                        txtTipoTarjeta.ReadOnly = False
+                        txtAutorizacion.ReadOnly = False
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Exit Sub
+                    End Try
+                Else
+                    cboTipoBanco.DataSource = New List(Of LlaveDescripcion)
+                    cboTipoBanco.Enabled = False
+                    txtTipoTarjeta.ReadOnly = True
+                    txtAutorizacion.ReadOnly = True
+                End If
                 cboTipoBanco.Width = 325
                 lblBanco.Width = 325
                 lblBanco.Text = "Banco Adquiriente"
                 lblAutorizacion.Text = "Autorización"
                 txtTipoTarjeta.Visible = True
                 lblTipoTarjeta.Visible = True
-                If cboFormaPago.SelectedValue = StaticFormaPago.Tarjeta Then
-                    cboTipoBanco.Enabled = True
-                    txtTipoTarjeta.ReadOnly = False
-                    txtAutorizacion.ReadOnly = False
-                Else
-                    cboTipoBanco.Enabled = False
-                    txtTipoTarjeta.ReadOnly = True
-                    txtAutorizacion.ReadOnly = True
-                End If
             Else
                 Try
-                    Await CargarListaCuentaBanco()
+                    cboTipoBanco.DataSource = Await FrmPrincipal.CargarListaCuentaBanco()
                 Catch ex As Exception
                     cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -1030,13 +1015,19 @@ Public Class FrmApartado
     End Sub
 
     Private Sub BtnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
-        If cboFormaPago.SelectedValue > 0 And cboTipoMoneda.SelectedValue > 0 And cboTipoBanco.SelectedValue > 0 And decTotal > 0 And txtMontoPago.Text <> "" Then
-            If decSaldoPorPagar = 0 Then
-                MessageBox.Show("El monto de por cancelar ya se encuentra cubierto. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End If
+        If decTotal = 0 Then
+            MessageBox.Show("No ha ingresado el detalle del apartado. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        ElseIf cboFormaPago.SelectedValue <> StaticFormaPago.Efectivo And cboTipoBanco.SelectedValue Is Nothing Then
+            MessageBox.Show("Debe indicar un monto de pago mayor a 0 para la forma de pago seleccionada. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        ElseIf decSaldoPorPagar = 0 Then
+            MessageBox.Show("El monto por cancelar ya se encuentra cubierto en el detalle de pago. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        ElseIf txtMontoPago.Text = FormatNumber(0, 2) Then
+            MessageBox.Show("El monto de pago debe ser mayor a 0. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Else
             CargarLineaDesglosePago()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
+            cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
+            txtMontoPago.Text = ""
             CargarTotalesPago()
             cboFormaPago.Focus()
         End If
@@ -1230,18 +1221,20 @@ Public Class FrmApartado
     End Sub
 
     Private Sub TxtMontoPago_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
-        If txtMontoPago.Text = "" Then
-            txtMontoPago.Text = "0.00"
-        ElseIf CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
-            MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
+        If txtMontoPago.Text <> "" Then
+            If CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
+                MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
+            Else
+                txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
+            End If
         Else
-            txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
+            txtMontoPago.Text = FormatNumber(0, 2)
         End If
     End Sub
 
     Private Sub TxtMontoPago_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtMontoPago.PreviewKeyDown
-        If e.KeyCode = Keys.Enter And txtIdApartado.Text = "" And txtMontoPago.Text <> "" Then
+        If e.KeyCode = Keys.Enter And txtIdApartado.Text = "" And txtMontoPago.Text <> "0.00" Then
             If CDbl(txtMontoPago.Text) > decSaldoPorPagar Then
                 MessageBox.Show("El monto ingresado no puede sar mayor al saldo por pagar", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
