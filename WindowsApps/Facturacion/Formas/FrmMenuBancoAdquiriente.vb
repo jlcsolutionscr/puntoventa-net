@@ -28,7 +28,7 @@ Public Class FrmMenuBancoAdquiriente
             FrmPrincipal.intBusqueda = cboIdBancoAdquiriente.SelectedValue
             Close()
         Else
-            MessageBox.Show("Debe seleccionar una cuenta bancaria para continuar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe seleccionar una cuenta bancaria para continuar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 #End Region

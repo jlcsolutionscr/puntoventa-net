@@ -641,7 +641,7 @@ Public Class FrmPrincipal
         Try
             appSettings = ConfigurationManager.AppSettings
         Catch ex As Exception
-            MessageBox.Show("Error al cargar el archivo de configuración del sistema. Por favor contacte con su proveedor del servicio. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al cargar el archivo de configuración del sistema. Por favor contacte con su proveedor del servicio.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -667,7 +667,7 @@ Public Class FrmPrincipal
             Dim formDescarga As New FrmDescargaActualizacion()
             formDescarga.ShowDialog()
             If bolDescargaCancelada Then
-                MessageBox.Show("Actualización cancelada por el usuario. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MessageBox.Show("Actualización cancelada por el usuario.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             End If
             Application.Exit()
         End If

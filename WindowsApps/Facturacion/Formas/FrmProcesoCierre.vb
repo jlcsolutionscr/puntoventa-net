@@ -49,7 +49,7 @@ Public Class FrmProcesoCierre
             'FrmMenuPrincipal.objGenericoCN.EjecutarSQL(SQLString)
             SQLString = "UPDATE Usuario Set FondoInicio = FondoInicio + Aporte + VentasContado + IngresosCxC + OtrosIngresos - ComprasContado - SalidasCxP - OtrosGastos"
             'FrmMenuPrincipal.objGenericoCN.EjecutarSQL(SQLString)
-            MessageBox.Show("Cambio de Fecha concluido satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Cambio de Fecha concluido satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             EvaluaEstado()
             REM FrmMenuPrincipal.FechaSistema = CDate(FrmMenuPrincipal.objGenericoCN.ObtenerValor("SELECT FechaDia FROM Calendario WHERE IdModulo = 1"))
             REM remFrmMenuPrincipal.StrFecha = DatePart(DateInterval.Year, FrmMenuPrincipal.FechaSistema) & "/" & DatePart(DateInterval.Month, FrmMenuPrincipal.FechaSistema) & "/" & DatePart(DateInterval.Day, FrmMenuPrincipal.FechaSistema)
@@ -85,7 +85,7 @@ Public Class FrmProcesoCierre
         End If
         'SQLString = "UPDATE Calendario SET Estado = 1 WHERE IdModulo = 1 AND IdEmpresa = " & FrmMenuPrincipal.intEmpresa
         'FrmMenuPrincipal.objGenericoCN.EjecutarSQL(SQLString)
-        MessageBox.Show("Proceso concluido satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Proceso concluido satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         EvaluaEstado()
         CmdCambiarFecha.Enabled = True
         CmdCambiarFecha.Focus()

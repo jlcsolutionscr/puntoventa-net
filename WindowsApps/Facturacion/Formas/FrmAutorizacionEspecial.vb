@@ -57,7 +57,7 @@ Public Class FrmAutorizacionEspecial
                     TxtUsuario.Focus()
                 End Try
             Else
-                MessageBox.Show("Información incompleta. Por favor verifique. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Información incompleta. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 TxtUsuario.Focus()
             End If
         Catch ex As Exception

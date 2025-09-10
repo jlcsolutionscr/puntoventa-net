@@ -53,7 +53,7 @@ Public Class FrmUsuario
 
     Private Sub CargarLineaDetalleRole(ByVal intIdRole As Integer, ByVal strDescripcion As String)
         If dtbRolePorUsuario.Rows.Contains(intIdRole) Then
-            MessageBox.Show("El role seleccionado ya esta asignado. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El role seleccionado ya esta asignado.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Else
             dtrRolePorUsuario = dtbRolePorUsuario.NewRow
             dtrRolePorUsuario.Item(0) = intIdRole

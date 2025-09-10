@@ -69,7 +69,7 @@ Public Class FrmRegistro
     Private Async Sub BtnRegistrar_Click(sender As Object, e As EventArgs) Handles btnRegistrar.Click
         Try
             Await Puntoventa.RegistrarTerminal(txtUsuario.Text, strEncryptedPassword, txtIdentificacion.Text, intIdSucursal, intIdTerminal, StaticTipoDispisitivo.AppEscritorio, strDispositivoId)
-            MessageBox.Show("Equipo registrado satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Equipo registrado satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Close()
             Exit Sub
         Catch ex As Exception

@@ -36,7 +36,7 @@ Public Class FrmActualizarClave
                 Exit Sub
             End Try
         Else
-            MessageBox.Show("No coinciden las contraseñas.  Intente de nuevo. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("No coinciden las contraseñas.  Intente de nuevo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             TxtClave1.Text = ""
             TxtClave2.Text = ""
             TxtClave1.Focus()

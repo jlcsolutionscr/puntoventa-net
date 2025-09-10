@@ -323,7 +323,7 @@ Public Class FrmFacturaCompra
     Private Async Sub TxtCodigo_Validated(sender As Object, e As EventArgs) Handles txtCodigo.Validated
         If txtCodigo.Text <> "" Then
             If txtCodigo.Text.Length <> 13 Then
-                MessageBox.Show("El código debe contener un total de 13 dígitos. Por favor verifique. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El código debe contener un total de 13 dígitos. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             Dim clasificacionProducto As ClasificacionProducto = Await Puntoventa.ObtenerClasificacionProducto(txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
@@ -347,7 +347,7 @@ Public Class FrmFacturaCompra
             Exit Sub
         End If
         If decTotal = 0 Then
-            MessageBox.Show("Debe agregar lineas de detalle a la factura. Por favor verifique. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Debe agregar lineas de detalle a la factura. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             btnGuardar.Enabled = True
             Exit Sub
         End If
@@ -413,13 +413,13 @@ Public Class FrmFacturaCompra
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
     Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
         If txtCantidad.Text <> "" And txtCodigo.Text <> "" And txtDescripcion.Text <> "" And txtPrecio.Text <> "" Then
             If txtCantidad.Text = "0" Then
-                MessageBox.Show("La cantidad no puede ser 0. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("La cantidad no puede ser 0. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
             CargarLineaDetalleFacturaCompra(txtCantidad.Text, txtCodigo.Text, txtDescripcion.Text, cboTipoImpuesto.SelectedValue, FrmPrincipal.ObtenerTarifaImpuesto(cboTipoImpuesto.SelectedValue), cboUnidadMedida.Text, txtPrecio.Text)
             cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
@@ -429,7 +429,7 @@ Public Class FrmFacturaCompra
             txtPrecio.Text = ""
             txtCodigo.Focus()
         Else
-            MessageBox.Show("Debe ingresar la información requerida para la línea de la factura de compra. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe ingresar la información requerida para la línea de la factura de compra.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 

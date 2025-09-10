@@ -212,7 +212,7 @@ Public Class FrmDetalleDocumentoElectronico
             End If
         Catch ex As Exception
             rtxDetalleRespuesta.Visible = False
-            MessageBox.Show("Error al procesar la petición de datos del documento electrónico. Contacte a su proveedor. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al procesar la petición de datos del documento electrónico. Contacte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -232,12 +232,12 @@ Public Class FrmDetalleDocumentoElectronico
         If strCorreoReceptor <> "" Then
             Try
                 Await Puntoventa.EnviarNotificacion(documento.IdDocumento, strCorreoReceptor, FrmPrincipal.usuarioGlobal.Token)
-                MessageBox.Show("Comprobante electrónico enviado satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Comprobante electrónico enviado satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Catch ex As Exception
                 MessageBox.Show("Error al enviar el comprobante:" & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         Else
-            MessageBox.Show("Debe ingresar la dirección(es) de correo electrónico para hacer el envío del comprobante. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe ingresar la dirección(es) de correo electrónico para hacer el envío del comprobante.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 
@@ -268,7 +268,7 @@ Public Class FrmDetalleDocumentoElectronico
                         datos.Save(xw)
                         rtxDetalleRespuesta.Text = sw.ToString()
                     Else
-                        rtxDetalleRespuesta.Text = "No se puede mostrar la información de este documento. . ."
+                        rtxDetalleRespuesta.Text = "No se puede mostrar la información de este documento."
                     End If
                     btnMostrarXML.Text = "Mostrar lista"
                     bolRespuestaVisible = True
@@ -283,7 +283,7 @@ Public Class FrmDetalleDocumentoElectronico
             End If
         Catch ex As Exception
             rtxDetalleRespuesta.Visible = False
-            MessageBox.Show("Error al procesar la petición de datos del documento electrónico. Contacte a su proveedor. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al procesar la petición de datos del documento electrónico. Contacte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -312,7 +312,7 @@ Public Class FrmDetalleDocumentoElectronico
                 Await Puntoventa.ReprocesarDocumentoElectronico(documento.IdDocumento, FrmPrincipal.usuarioGlobal.Token)
                 listadoDocumentosProcesados.Item(intIndex).Reprocesado = True
                 btnGenerar.Enabled = False
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Catch ex As Exception
                 btnGenerar.Enabled = True
                 MessageBox.Show("Error al enviar el comprobante:" & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)

@@ -165,7 +165,7 @@ Public Class FrmAsientoContable
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 CmdAgregar_Click(CmdAgregar, New EventArgs())
             End If
         End If
@@ -230,7 +230,7 @@ Public Class FrmAsientoContable
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             CmdImprimir.Enabled = True
             CmdAgregar.Enabled = True
             CmdAnular.Enabled = FrmPrincipal.bolAnularTransacciones
@@ -239,7 +239,7 @@ Public Class FrmAsientoContable
             cmdInsertar.Enabled = False
             cmdEliminar.Enabled = False
         Else
-            MessageBox.Show("La información del asiento no está completa.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("La información del asiento no está completa.  Favor verificar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
@@ -250,7 +250,7 @@ Public Class FrmAsientoContable
     Private Sub CmdInsertar_Click(sender As Object, e As EventArgs) Handles cmdInsertar.Click
         If cboCuentaContable.SelectedValue <> Nothing And txtDebito.Text <> "" And txtCredito.Text <> "" Then
             If CDbl(txtDebito.Text) > 0 And CDbl(txtCredito.Text) > 0 Then
-                MessageBox.Show("Debe ingresar el monto de la línea del asiento contable.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MessageBox.Show("Debe ingresar el monto de la línea del asiento contable.  Favor verificar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
             Try
@@ -315,7 +315,7 @@ Public Class FrmAsientoContable
 
     Private Sub cboCodigo_Validated(ByVal sender As Object, ByVal e As EventArgs) Handles cboCuentaContable.Validated
         If cboCuentaContable.Text <> "" And cboCuentaContable.SelectedValue Is Nothing Then
-            MessageBox.Show("Debe seleccionar la cuenta contable para continuar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Debe seleccionar la cuenta contable para continuar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             cboCuentaContable.Text = ""
             txtDebito.Text = FormatNumber(0, 2)
             txtCredito.Text = FormatNumber(0, 2)

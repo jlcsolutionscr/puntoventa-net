@@ -58,7 +58,7 @@ Public Class FrmLinea
 
     Private Sub CargarLineaDetalleSucursal(ByVal intId As Integer, ByVal strDescripcion As String)
         If dtbLineaPorSucursal.Rows.Contains(intId) Then
-            MessageBox.Show("La sucursal seleccionada ya se encuentra asignada. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("La sucursal seleccionada ya se encuentra asignada.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Else
             dtrLineaPorSucursal = dtbLineaPorSucursal.NewRow
             dtrLineaPorSucursal.Item(0) = intId

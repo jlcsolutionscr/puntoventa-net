@@ -61,7 +61,7 @@ Public Class FrmEmpresa
 
     Private Sub CargarLineaDetalleActividad(ByVal intCodigo As Integer, ByVal strDescripcion As String)
         If dtbActividadEconomica.Rows.Contains(intCodigo) Then
-            MessageBox.Show("La actividad económica ya se encuentra en el listado. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("La actividad económica ya se encuentra en el listado.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Else
             dtrActividadEconomica = dtbActividadEconomica.NewRow
             dtrActividadEconomica.Item(0) = intCodigo
@@ -233,7 +233,7 @@ Public Class FrmEmpresa
             txtConsecProforma.Text.Length = 0 Or
             txtConsecOrdenServicio.Text.Length = 0 Or
             txtConsecApartado.Text.Length = 0 Then
-            MessageBox.Show("Existen campos requeridos que no fueron ingresados. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Existen campos requeridos que no fueron ingresados. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
         datos.NombreEmpresa = txtNombreEmpresa.Text
@@ -269,7 +269,7 @@ Public Class FrmEmpresa
                 txtUsuarioATV.Text.Length = 0 Or
                 txtClaveATV.Text.Length = 0 Or
                 dgvActividadEconomica.RowCount = 0 Then
-                MessageBox.Show("Los datos para generar los documentos electrónicos son requeridos. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Los datos para generar los documentos electrónicos son requeridos. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             If txtUltimoFE.Text.Length = 0 Or
@@ -277,7 +277,7 @@ Public Class FrmEmpresa
                 txtUltimoNC.Text.Length = 0 Or
                 txtUltimoTE.Text.Length = 0 Or
                 txtUltimoMR.Text.Length = 0 Then
-                MessageBox.Show("La numeración de los últimos documentos electrónicos es requerida. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("La numeración de los últimos documentos electrónicos es requerida. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             If credenciales Is Nothing Or bolCredencialesModificados Then
@@ -413,7 +413,7 @@ Public Class FrmEmpresa
                 bolCredencialesModificados = True
                 txtPinCertificado.ReadOnly = False
             Catch ex As Exception
-                MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .p12 válido. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .p12 válido.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End If
     End Sub
@@ -427,7 +427,7 @@ Public Class FrmEmpresa
                 picLogo.Image = Image.FromFile(ofdAbrirDocumento.FileName)
                 bolLogoModificado = True
             Catch ex As Exception
-                MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .PNG válido. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .PNG válido.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End If
     End Sub

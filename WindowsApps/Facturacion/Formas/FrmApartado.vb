@@ -624,7 +624,7 @@ Public Class FrmApartado
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -843,7 +843,7 @@ Public Class FrmApartado
                 formPagoFactura.decPagoCliente = decPagoCliente
                 formPagoFactura.ShowDialog()
             Else
-                MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
         End If
         btnImprimir.Enabled = True
@@ -964,12 +964,15 @@ Public Class FrmApartado
             If cboFormaPago.SelectedValue = StaticFormaPago.Efectivo Or cboFormaPago.SelectedValue = StaticFormaPago.Tarjeta Then
                 If cboFormaPago.SelectedValue = StaticFormaPago.Tarjeta Then
                     Try
+                        btnInsertarPago.Enabled = False
                         cboTipoBanco.DataSource = Await FrmPrincipal.CargarListaBancoAdquiriente()
                         cboTipoBanco.SelectedIndex = 0
+                        btnInsertarPago.Enabled = True
                         cboTipoBanco.Enabled = True
                         txtTipoTarjeta.ReadOnly = False
                         txtAutorizacion.ReadOnly = False
                     Catch ex As Exception
+                        btnInsertarPago.Enabled = True
                         MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
@@ -987,13 +990,16 @@ Public Class FrmApartado
                 lblTipoTarjeta.Visible = True
             Else
                 Try
+                    btnInsertarPago.Enabled = False
                     cboTipoBanco.DataSource = Await FrmPrincipal.CargarListaCuentaBanco()
                 Catch ex As Exception
+                    btnInsertarPago.Enabled = True
                     cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
                 cboTipoBanco.SelectedIndex = 0
+                btnInsertarPago.Enabled = True
                 cboTipoBanco.Width = 395
                 lblBanco.Width = 395
                 lblBanco.Text = "Cuenta Bancaria"
@@ -1016,13 +1022,13 @@ Public Class FrmApartado
 
     Private Sub BtnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
         If decTotal = 0 Then
-            MessageBox.Show("No ha ingresado el detalle del apartado. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("No ha ingresado el detalle del apartado.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         ElseIf cboFormaPago.SelectedValue <> StaticFormaPago.Efectivo And cboTipoBanco.SelectedValue Is Nothing Then
-            MessageBox.Show("Debe indicar un monto de pago mayor a 0 para la forma de pago seleccionada. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe seleccionar la cuenta bancaria o tipo de tarjeta para esta forma de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         ElseIf decSaldoPorPagar = 0 Then
-            MessageBox.Show("El monto por cancelar ya se encuentra cubierto en el detalle de pago. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("El monto por cancelar ya se encuentra cubierto en el detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         ElseIf txtMontoPago.Text = FormatNumber(0, 2) Then
-            MessageBox.Show("El monto de pago debe ser mayor a 0. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("El monto de pago debe ser mayor a 0.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
             CargarLineaDesglosePago()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo

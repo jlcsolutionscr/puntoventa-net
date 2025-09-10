@@ -69,7 +69,7 @@ Partial Class FrmDescargaActualizacion
         Me.lblEtiqueta.Name = "lblEtiqueta"
         Me.lblEtiqueta.Size = New System.Drawing.Size(311, 20)
         Me.lblEtiqueta.TabIndex = 8
-        Me.lblEtiqueta.Text = "Descarga en progreso. Por favor espere. . ."
+        Me.lblEtiqueta.Text = "Descarga en progreso. Por favor espere."
         '
         'FrmDescargaActualizacion
         '

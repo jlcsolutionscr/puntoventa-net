@@ -595,7 +595,7 @@ Public Class FrmCompra
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -803,7 +803,7 @@ Public Class FrmCompra
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnGenerarPDF.Enabled = True
         btnAgregar.Enabled = True
@@ -969,13 +969,13 @@ Public Class FrmCompra
 
     Private Sub BtnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
         If decTotal = 0 Then
-            MessageBox.Show("No ha ingresado el detalle de la compra. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("No ha ingresado el detalle de la compra.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         ElseIf cboFormaPago.SelectedValue <> StaticFormaPago.Efectivo And cboCuentaBanco.SelectedValue Is Nothing Then
-            MessageBox.Show("Debe indicar un monto de pago mayor a 0 para la forma de pago seleccionada. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe indicar un monto de pago mayor a 0 para la forma de pago seleccionada.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         ElseIf decSaldoPorPagar = 0 Then
-            MessageBox.Show("El monto por cancelar ya se encuentra cubierto en el detalle de pago. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("El monto por cancelar ya se encuentra cubierto en el detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         ElseIf txtMontoPago.Text = FormatNumber(0, 2) Then
-            MessageBox.Show("El monto de pago debe ser mayor a 0. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("El monto de pago debe ser mayor a 0.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
             CargarLineaDesglosePago()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
@@ -1004,7 +1004,7 @@ Public Class FrmCompra
                     txtDescuento.Text = CDbl(Mid(txtDescuento.Text, 1, Len(txtDescuento.Text) - 1)) / 100 * CDbl(txtSubTotal.Text)
                 End If
                 If txtDescuento.Text > CDbl(txtSubTotal.Text) Then
-                    MessageBox.Show("El descuento debe ser menor al SubTotal. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    MessageBox.Show("El descuento debe ser menor al SubTotal.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     txtDescuento.Text = 0
                 End If
                 txtDescuento.Text = FormatNumber(txtDescuento.Text, 2)

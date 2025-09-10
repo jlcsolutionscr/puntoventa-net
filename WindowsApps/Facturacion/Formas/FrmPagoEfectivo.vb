@@ -32,7 +32,7 @@ Public Class FrmPagoEfectivo
                 FrmPrincipal.intBusqueda = txtPagoDelCliente.Text
                 Close()
             Else
-                MessageBox.Show("Debe ingresar el monto de pago del cliente para poder continuar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Debe ingresar el monto de pago del cliente para poder continuar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End If
         e.Handled = False
@@ -58,7 +58,7 @@ Public Class FrmPagoEfectivo
         If txtPagoDelCliente.Text <> "" Then
             FrmPrincipal.intBusqueda = txtPagoDelCliente.Text
         Else
-            MessageBox.Show("Debe ingresar el monto de pago del cliente para poder continuar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe ingresar el monto de pago del cliente para poder continuar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 
@@ -68,7 +68,7 @@ Public Class FrmPagoEfectivo
                 txtPagoDelCliente.Text = FormatNumber(decTotalEfectivo, 2)
             ElseIf txtPagoDelCliente.Text < decTotalEfectivo Then
                 txtPagoDelCliente.Text = FormatNumber(decTotalEfectivo, 2)
-                MessageBox.Show("El monto con el que el cliente paga no puede ser menor al total de la factura. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MessageBox.Show("El monto con el que el cliente paga no puede ser menor al total de la factura.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Else
                 txtPagoDelCliente.Text = FormatNumber(txtPagoDelCliente.Text, 2)
             End If

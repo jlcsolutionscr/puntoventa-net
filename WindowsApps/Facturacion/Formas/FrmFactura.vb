@@ -613,10 +613,10 @@ Public Class FrmFactura
         ElseIf e.KeyCode = Keys.F5 Then
             If FrmPrincipal.empresaGlobal.Modalidad = 2 Then
                 If FrmPrincipal.productoImpuestoServicio Is Nothing Then
-                    MessageBox.Show("El impuesto de servicio no se encuentra configurado. Contacte con su proveedor del sistema. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show("El impuesto de servicio no se encuentra configurado. Contacte con su proveedor del sistema.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Else
                     If bolImpuestoCargado Then
-                        MessageBox.Show("El impuesto de servicio ya se encuentra cargado. Debe eliminarlo si desea recalcularlo. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        MessageBox.Show("El impuesto de servicio ya se encuentra cargado. Debe eliminarlo si desea recalcularlo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Else
                         Dim decMontoImpuesto As Decimal = (decExonerado + decExcento + decGravado) * 0.1
                         If decMontoImpuesto > 0 Then
@@ -782,7 +782,7 @@ Public Class FrmFactura
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -1088,6 +1088,7 @@ Public Class FrmFactura
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.PermiteCredito
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
+                If FrmPrincipal.empresaGlobal.RegimenSimplificado = False And cliente.CodigoActividad = "" Then MessageBox.Show("El cliente no contiene el código de actividad económica. Por favor actualice la información del cliente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 CargarTotales()
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -1148,7 +1149,7 @@ Public Class FrmFactura
                 End If
                 txtTipoCambio.Text = decTipoDeCambioDolar
             Catch ex As Exception
-                MessageBox.Show("Ocurrió un error al consultar el tipo de cambio del dólar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Ocurrió un error al consultar el tipo de cambio del dólar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
         End If
@@ -1255,7 +1256,7 @@ Public Class FrmFactura
             formPagoFactura.decPagoCliente = decPagoCliente
             formPagoFactura.ShowDialog()
         Else
-            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
         btnImprimir.Enabled = True
         btnImprimir.Focus()
@@ -1396,13 +1397,16 @@ Public Class FrmFactura
             txtAutorizacion.Text = ""
             If cboFormaPago.SelectedValue = StaticFormaPago.Efectivo Or cboFormaPago.SelectedValue = StaticFormaPago.Tarjeta Then
                 If cboFormaPago.SelectedValue = StaticFormaPago.Tarjeta Then
+                    btnInsertarPago.Enabled = False
                     Try
                         cboTipoBanco.DataSource = Await FrmPrincipal.CargarListaBancoAdquiriente()
                         cboTipoBanco.SelectedIndex = 0
                         cboTipoBanco.Enabled = True
+                        btnInsertarPago.Enabled = True
                         txtTipoTarjeta.ReadOnly = False
                         txtAutorizacion.ReadOnly = False
                     Catch ex As Exception
+                        btnInsertarPago.Enabled = True
                         MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
@@ -1420,13 +1424,16 @@ Public Class FrmFactura
                 lblTipoTarjeta.Visible = True
             Else
                 Try
+                    btnInsertarPago.Enabled = False
                     cboTipoBanco.DataSource = Await FrmPrincipal.CargarListaCuentaBanco()
                 Catch ex As Exception
+                    btnInsertarPago.Enabled = True
                     cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
                 cboTipoBanco.SelectedIndex = 0
+                btnInsertarPago.Enabled = True
                 cboTipoBanco.Width = 395
                 lblBanco.Width = 395
                 lblBanco.Text = "Cuenta Bancaria"
@@ -1466,13 +1473,13 @@ Public Class FrmFactura
 
     Private Sub BtnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
         If decTotal = 0 Then
-            MessageBox.Show("No ha ingresado el detalle de la factura. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("No ha ingresado el detalle de la factura.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         ElseIf cboFormaPago.SelectedValue <> StaticFormaPago.Efectivo And cboTipoBanco.SelectedValue Is Nothing Then
-            MessageBox.Show("Debe indicar un monto de pago mayor a 0 para la forma de pago seleccionada. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe seleccionar la cuenta bancaria o tipo de tarjeta para esta forma de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         ElseIf decSaldoPorPagar = 0 Then
-            MessageBox.Show("El monto por cancelar ya se encuentra cubierto en el detalle de pago. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("El monto por cancelar ya se encuentra cubierto en el detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         ElseIf txtMontoPago.Text = FormatNumber(0, 2) Then
-            MessageBox.Show("El monto de pago debe ser mayor a 0. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("El monto de pago debe ser mayor a 0.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
             CargarLineaDesglosePago()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
