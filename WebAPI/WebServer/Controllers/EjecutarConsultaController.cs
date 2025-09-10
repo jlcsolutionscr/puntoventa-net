@@ -71,6 +71,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static bool bolFiltraExistencias;
         private static bool bolFiltraConDescuento;
         private static bool bolNulo;
+        private static bool bolFiltraEstado;
         private static bool bolAplicado;
         private static bool bolIncluyeNulos;
         private static bool bolExcluyeCancelados;
@@ -1021,18 +1022,20 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "ObtenerTotalListaOrdenServicio":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                    bolFiltraEstado = parametrosJO.Property("FiltraEstado") != null ? bool.Parse(parametrosJO.Property("FiltraEstado").Value.ToString()) : true;
                     bolAplicado = bool.Parse(parametrosJO.Property("Aplicado").Value.ToString());
                     bolIncluyeNulos = parametrosJO.Property("IncluyeNulos") != null ? bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString()) : false;
                     bolExcluyeCancelados = parametrosJO.Property("ExcluyeCancelados") != null ? bool.Parse(parametrosJO.Property("ExcluyeCancelados").Value.ToString()) : false;
                     intIdLlave1 = parametrosJO.Property("IdOrdenServicio") != null ? int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString()) : 0;
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
                     strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
-                    intTotalLista = _servicioFacturacion.ObtenerTotalListaOrdenServicio(intIdEmpresa, intIdSucursal, bolAplicado, bolIncluyeNulos, bolExcluyeCancelados, intIdLlave1, strNombre, strFechaFinal);
+                    intTotalLista = _servicioFacturacion.ObtenerTotalListaOrdenServicio(intIdEmpresa, intIdSucursal, bolFiltraEstado, bolAplicado, bolIncluyeNulos, bolExcluyeCancelados, intIdLlave1, strNombre, strFechaFinal);
                     strRespuesta = JsonConvert.SerializeObject(intTotalLista);
                     break;
                 case "ObtenerListadoOrdenServicio":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                    bolFiltraEstado = parametrosJO.Property("FiltraEstado") != null ? bool.Parse(parametrosJO.Property("FiltraEstado").Value.ToString()) : true;
                     bolAplicado = bool.Parse(parametrosJO.Property("Aplicado").Value.ToString());
                     bolIncluyeNulos = parametrosJO.Property("IncluyeNulos") != null ? bool.Parse(parametrosJO.Property("IncluyeNulos").Value.ToString()) : false;
                     bolExcluyeCancelados = parametrosJO.Property("ExcluyeCancelados") != null ? bool.Parse(parametrosJO.Property("ExcluyeCancelados").Value.ToString()) : false;
@@ -1041,7 +1044,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdLlave1 = parametrosJO.Property("IdOrdenServicio") != null ? int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString()) : 0;
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
                     strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
-                    IList<FacturaDetalle> listadoOrdenServicio = _servicioFacturacion.ObtenerListadoOrdenServicio(intIdEmpresa, intIdSucursal, bolAplicado, bolIncluyeNulos, bolExcluyeCancelados, intNumeroPagina, intFilasPorPagina, intIdLlave1, strNombre, strFechaFinal);
+                    IList<FacturaDetalle> listadoOrdenServicio = _servicioFacturacion.ObtenerListadoOrdenServicio(intIdEmpresa, intIdSucursal, bolFiltraEstado, bolAplicado, bolIncluyeNulos, bolExcluyeCancelados, intNumeroPagina, intFilasPorPagina, intIdLlave1, strNombre, strFechaFinal);
                     if (listadoOrdenServicio.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoOrdenServicio);
                     break;

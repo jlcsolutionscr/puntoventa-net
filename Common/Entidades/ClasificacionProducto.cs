@@ -5,5 +5,6 @@
         public string Id { get; set; }
         public string Descripcion { get; set; }
         public int Impuesto { get; set; }
+        public int Tipo { get; set; }
     }
 }
