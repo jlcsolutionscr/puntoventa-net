@@ -507,12 +507,6 @@
     <Compile Include="Formas\FrmBusquedaEgreso.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmBusquedaOrdenCompra.Designer.vb">
-      <DependentUpon>FrmBusquedaOrdenCompra.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmBusquedaOrdenCompra.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Formas\FrmBusquedaDevolucionCliente.Designer.vb">
       <DependentUpon>FrmBusquedaDevolucionCliente.vb</DependentUpon>
     </Compile>
@@ -709,12 +703,6 @@
       <DependentUpon>FrmMovimientoBanco.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmMovimientoBanco.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmOrdenCompra.Designer.vb">
-      <DependentUpon>FrmOrdenCompra.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmOrdenCompra.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmProcesoCierre.Designer.vb">
@@ -1004,10 +992,6 @@
       <DependentUpon>FrmBusquedaEgreso.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmBusquedaOrdenCompra.resX">
-      <DependentUpon>FrmBusquedaOrdenCompra.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaDevolucionCliente.resX">
       <DependentUpon>FrmBusquedaDevolucionCliente.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -1129,9 +1113,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmMovimientoBanco.resx">
       <DependentUpon>FrmMovimientoBanco.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmOrdenCompra.resX">
-      <DependentUpon>FrmOrdenCompra.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmProcesoCierre.resx">
       <DependentUpon>FrmProcesoCierre.vb</DependentUpon>

@@ -458,13 +458,6 @@ Public Class FrmPrincipal
         formProforma.Show()
     End Sub
 
-    Public Sub MnuCapturaOrden_Click(sender As Object, e As EventArgs)
-        Dim formOrdenCompra As New FrmOrdenCompra With {
-            .MdiParent = Me
-        }
-        formOrdenCompra.Show()
-    End Sub
-
     Private Sub MnuCapturaDevolucionProveedor_Click(sender As Object, e As EventArgs)
         Dim formDevolucionProveedores As New FrmDevolucionAProveedores With {
             .MdiParent = Me

@@ -644,49 +644,49 @@ Public Class FrmCompra
         End If
     End Sub
 
-    Private Sub BtnOrdenCompra_Click(sender As Object, e As EventArgs) Handles btnOrdenCompra.Click
-        Dim formBusqueda As New FrmBusquedaOrdenCompra()
-        formBusqueda.ExcluirOrdenesAplicadas()
-        FrmPrincipal.intBusqueda = 0
-        formBusqueda.ShowDialog()
-        If FrmPrincipal.intBusqueda > 0 Then
-            Try
-                'ordenCompra = servicioCompras.ObtenerOrdenCompra(FrmMenuPrincipal.intBusqueda)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            If ordenCompra IsNot Nothing Then
-                txtIdCompra.Text = ""
-                proveedor = ordenCompra.Proveedor
-                txtProveedor.Text = proveedor.Nombre
-                txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
-                txtFactura.Text = ""
-                cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
-                txtPlazoCredito.Text = ""
-                txtDescuento.Text = FormatNumber(ordenCompra.Descuento, 2)
-                txtIdOrdenCompra.Text = ordenCompra.IdOrdenCompra
-                CargarDetalleOrdenCompra(ordenCompra)
-                dtbDesglosePago.Rows.Clear()
-                grdDesglosePago.Refresh()
-                CargarTotales()
-                CargarTotalesPago()
-                txtDescuento.ReadOnly = False
-                btnInsertar.Enabled = True
-                btnEliminar.Enabled = True
-                btnInsertarPago.Enabled = True
-                btnEliminarPago.Enabled = True
-                btnBusProd.Enabled = True
-                btnAnular.Enabled = False
-                btnGuardar.Enabled = True
-                btnImprimir.Enabled = False
-                btnGenerarPDF.Enabled = False
-                btnBuscarProveedor.Enabled = True
-            Else
-                MessageBox.Show("No existe registro de orden de compra asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End If
-        End If
-    End Sub
+    'Private Sub BtnOrdenCompra_Click(sender As Object, e As EventArgs) Handles btnOrdenCompra.Click
+    '    Dim formBusqueda As New FrmBusquedaOrdenCompra()
+    '    formBusqueda.ExcluirOrdenesAplicadas()
+    '    FrmPrincipal.intBusqueda = 0
+    '    formBusqueda.ShowDialog()
+    '    If FrmPrincipal.intBusqueda > 0 Then
+    '        Try
+    '            'ordenCompra = servicioCompras.ObtenerOrdenCompra(FrmMenuPrincipal.intBusqueda)
+    '        Catch ex As Exception
+    '            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+    '            Exit Sub
+    '        End Try
+    '        If ordenCompra IsNot Nothing Then
+    '            txtIdCompra.Text = ""
+    '            proveedor = ordenCompra.Proveedor
+    '            txtProveedor.Text = proveedor.Nombre
+    '            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
+    '            txtFactura.Text = ""
+    '            cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
+    '            txtPlazoCredito.Text = ""
+    '            txtDescuento.Text = FormatNumber(ordenCompra.Descuento, 2)
+    '            txtIdOrdenCompra.Text = ordenCompra.IdOrdenCompra
+    '            CargarDetalleOrdenCompra(ordenCompra)
+    '            dtbDesglosePago.Rows.Clear()
+    '            grdDesglosePago.Refresh()
+    '            CargarTotales()
+    '            CargarTotalesPago()
+    '            txtDescuento.ReadOnly = False
+    '            btnInsertar.Enabled = True
+    '            btnEliminar.Enabled = True
+    '            btnInsertarPago.Enabled = True
+    '            btnEliminarPago.Enabled = True
+    '            btnBusProd.Enabled = True
+    '            btnAnular.Enabled = False
+    '            btnGuardar.Enabled = True
+    '            btnImprimir.Enabled = False
+    '            btnGenerarPDF.Enabled = False
+    '            btnBuscarProveedor.Enabled = True
+    '        Else
+    '            MessageBox.Show("No existe registro de orden de compra asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+    '        End If
+    '    End If
+    'End Sub
 
     Private Async Sub BtnBuscarProveedor_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
         Dim formBusquedaProveedor As New FrmBusquedaProveedor()

@@ -35,6 +35,7 @@ Partial Class FrmBusquedaOrdenServicio
         Me.cboEstado = New System.Windows.Forms.ComboBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.FechaFinal = New System.Windows.Forms.DateTimePicker()
+        Me.chkMostrarNulos = New System.Windows.Forms.CheckBox()
         CType(Me.dgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -58,7 +59,7 @@ Partial Class FrmBusquedaOrdenServicio
         '
         Me.btnFiltrar.Enabled = False
         Me.btnFiltrar.Image = CType(resources.GetObject("btnFiltrar.Image"), System.Drawing.Image)
-        Me.btnFiltrar.Location = New System.Drawing.Point(610, 10)
+        Me.btnFiltrar.Location = New System.Drawing.Point(610, 11)
         Me.btnFiltrar.Name = "btnFiltrar"
         Me.btnFiltrar.Size = New System.Drawing.Size(22, 22)
         Me.btnFiltrar.TabIndex = 2
@@ -145,7 +146,7 @@ Partial Class FrmBusquedaOrdenServicio
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 15)
+        Me.Label1.Location = New System.Drawing.Point(12, 16)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(30, 13)
         Me.Label1.TabIndex = 39
@@ -186,7 +187,7 @@ Partial Class FrmBusquedaOrdenServicio
         Me.lblEstado.BackColor = System.Drawing.Color.Transparent
         Me.lblEstado.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblEstado.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblEstado.Location = New System.Drawing.Point(421, 13)
+        Me.lblEstado.Location = New System.Drawing.Point(432, 13)
         Me.lblEstado.Name = "lblEstado"
         Me.lblEstado.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblEstado.Size = New System.Drawing.Size(52, 19)
@@ -198,16 +199,16 @@ Partial Class FrmBusquedaOrdenServicio
         '
         Me.cboEstado.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboEstado.FormattingEnabled = True
-        Me.cboEstado.Location = New System.Drawing.Point(479, 12)
+        Me.cboEstado.Location = New System.Drawing.Point(490, 12)
         Me.cboEstado.Name = "cboEstado"
-        Me.cboEstado.Size = New System.Drawing.Size(124, 21)
+        Me.cboEstado.Size = New System.Drawing.Size(113, 21)
         Me.cboEstado.TabIndex = 165
         Me.cboEstado.TabStop = False
         '
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(144, 15)
+        Me.Label3.Location = New System.Drawing.Point(109, 16)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(78, 13)
         Me.Label3.TabIndex = 168
@@ -216,11 +217,22 @@ Partial Class FrmBusquedaOrdenServicio
         'FechaFinal
         '
         Me.FechaFinal.Format = System.Windows.Forms.DateTimePickerFormat.Custom
-        Me.FechaFinal.Location = New System.Drawing.Point(228, 12)
+        Me.FechaFinal.Location = New System.Drawing.Point(193, 12)
         Me.FechaFinal.Name = "FechaFinal"
         Me.FechaFinal.Size = New System.Drawing.Size(84, 20)
         Me.FechaFinal.TabIndex = 167
         Me.FechaFinal.Value = New Date(2013, 6, 9, 0, 0, 0, 0)
+        '
+        'chkMostrarNulos
+        '
+        Me.chkMostrarNulos.AutoSize = True
+        Me.chkMostrarNulos.Location = New System.Drawing.Point(283, 14)
+        Me.chkMostrarNulos.Name = "chkMostrarNulos"
+        Me.chkMostrarNulos.Size = New System.Drawing.Size(149, 17)
+        Me.chkMostrarNulos.TabIndex = 169
+        Me.chkMostrarNulos.TabStop = False
+        Me.chkMostrarNulos.Text = "Mostrar registros anulados"
+        Me.chkMostrarNulos.UseVisualStyleBackColor = True
         '
         'FrmBusquedaOrdenServicio
         '
@@ -229,6 +241,7 @@ Partial Class FrmBusquedaOrdenServicio
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(644, 415)
+        Me.Controls.Add(Me.chkMostrarNulos)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.FechaFinal)
         Me.Controls.Add(Me.lblEstado)
@@ -279,4 +292,5 @@ Partial Class FrmBusquedaOrdenServicio
     Friend WithEvents cboEstado As ComboBox
     Friend WithEvents Label3 As Label
     Friend WithEvents FechaFinal As DateTimePicker
+    Friend WithEvents chkMostrarNulos As CheckBox
 End Class

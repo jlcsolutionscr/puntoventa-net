@@ -71,7 +71,7 @@ Public Class FrmBusquedaOrdenServicio
         Try
             Dim listado = New List(Of FacturaDetalle)
             If intCantidadDePaginas > 0 Then
-                listado = Await Puntoventa.ObtenerListadoOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, bolExcluyeCancelados, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+                listado = Await Puntoventa.ObtenerListadoOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolIncluyeEstado, cboEstado.SelectedValue, chkMostrarNulos.Checked, bolExcluyeCancelados, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
             End If
             dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
@@ -85,7 +85,7 @@ Public Class FrmBusquedaOrdenServicio
 
     Private Async Function ValidarCantidadOrdenServicio() As Task
         Try
-            intTotalOrdenes = Await Puntoventa.ObtenerTotalListaOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, bolExcluyeCancelados, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalOrdenes = Await Puntoventa.ObtenerTotalListaOrdenServicio(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolIncluyeEstado, cboEstado.SelectedValue, chkMostrarNulos.Checked, bolExcluyeCancelados, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -190,6 +190,7 @@ Public Class FrmBusquedaOrdenServicio
         Try
             cboEstado.Visible = bolIncluyeEstado
             lblEstado.Visible = bolIncluyeEstado
+            chkMostrarNulos.Visible = bolIncluyeNulos
             EstablecerPropiedadesDataGridView()
             CargarCombos()
             Await ValidarCantidadOrdenServicio()
@@ -225,6 +226,10 @@ Public Class FrmBusquedaOrdenServicio
     End Sub
 
     Private Sub cboEstado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboEstado.SelectedIndexChanged
+        If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
+    End Sub
+
+    Private Sub chkMostrarNulos_CheckedChanged(sender As Object, e As EventArgs) Handles chkMostrarNulos.CheckedChanged
         If bolCargado Then BtnFiltrar_Click(btnFiltrar, New EventArgs())
     End Sub
 
