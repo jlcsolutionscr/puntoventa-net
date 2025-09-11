@@ -2712,7 +2712,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                     }
-                    return listado.OrderByDescending(x => x.Descripcion).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                    return listado.OrderBy(x => x.Descripcion).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                 }
                 catch (Exception ex)
                 {
