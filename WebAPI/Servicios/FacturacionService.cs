@@ -3551,13 +3551,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
                     {
-                        if (strExoneracionLeyenda.Length == 0) strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["TarifaExonerada"].InnerText + "% del valor gravado.";
+                        if (strExoneracionLeyenda.Length == 0)
+                        {
+                            if (documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/"))
+                                strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText + "% del valor gravado.";
+                            else
+                                strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["TarifaExonerada"].InnerText + "% del valor gravado.";
+                        }
                     }
                 }
                 EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
                 {
                     Cantidad = lineaDetalle["Cantidad"].InnerText,
-                    Codigo = lineaDetalle["CodigoCABYS"].InnerText,
+                    Codigo = documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/") ? lineaDetalle["Codigo"].InnerText : lineaDetalle["CodigoCABYS"].InnerText,
                     Detalle = lineaDetalle["Detalle"].InnerText,
                     PrecioUnitario = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["PrecioUnitario"].InnerText, CultureInfo.InvariantCulture)),
                     TotalLinea = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["MontoTotal"].InnerText, CultureInfo.InvariantCulture))
@@ -3572,7 +3578,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
             XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
-            datos.MedioPago = resumenFacturaNode["MedioPago"] != null ? FormaDePago.ObtenerDescripcion(int.Parse(resumenFacturaNode["MedioPago"].ChildNodes.Item(0).InnerText)) : "Sin especificar";
+
+            datos.MedioPago = FormaDePago.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
+            if (documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/"))
+            {
+                datos.MedioPago = FormaDePago.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
+            }
+            else
+            {
+                datos.MedioPago = resumenFacturaNode["MedioPago"] != null ? FormaDePago.ObtenerDescripcion(int.Parse(resumenFacturaNode["MedioPago"].ChildNodes.Item(0).InnerText)) : "Sin especificar";
+            }
             datos.TotalGravado = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
             datos.TotalExonerado = resumenFacturaNode["TotalExonerado"] != null && resumenFacturaNode["TotalExonerado"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExonerado"].InnerText, CultureInfo.InvariantCulture)) : "0.00";
             datos.TotalExento = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExento"].InnerText, CultureInfo.InvariantCulture));
