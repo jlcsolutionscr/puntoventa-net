@@ -3578,8 +3578,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
             XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
-
-            datos.MedioPago = FormaDePago.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
             if (documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/"))
             {
                 datos.MedioPago = FormaDePago.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
