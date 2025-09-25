@@ -224,7 +224,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     CodigoCABYS = detalleFactura.Codigo,
                     Cantidad = detalleFactura.Cantidad
                 };
-                lineaDetalle.Cantidad = detalleFactura.Cantidad;
                 if (detalleFactura.UnidadMedida == "Und")
                     lineaDetalle.UnidadMedida = UnidadMedidaType.Unid;
                 else if (detalleFactura.UnidadMedida == "Sp")
@@ -551,9 +550,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     FacturaElectronicaLineaDetalle lineaDetalle = new FacturaElectronicaLineaDetalle
                     {
                         NumeroLinea = (detalleServicioList.Count() + 1).ToString(),
-                        CodigoCABYS = detalleFactura.Producto.CodigoClasificacion
+                        CodigoCABYS = detalleFactura.Producto.CodigoClasificacion,
+                        Cantidad = detalleFactura.Cantidad
                     };
-                    lineaDetalle.Cantidad = detalleFactura.Cantidad;
+                    CodigoType codigoComercial = new CodigoType
+                    {
+                        Tipo = CodigoTypeTipo.Item01,
+                        Codigo = detalleFactura.Producto.Codigo
+                    };
+                    lineaDetalle.CodigoComercial = new CodigoType[] { codigoComercial };
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Unid;
                     else if (detalleFactura.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
@@ -861,9 +866,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     TiqueteElectronicoLineaDetalle lineaDetalle = new TiqueteElectronicoLineaDetalle
                     {
                         NumeroLinea = (detalleServicioList.Count() + 1).ToString(),
-                        CodigoCABYS = detalleFactura.Producto.CodigoClasificacion
+                        CodigoCABYS = detalleFactura.Producto.CodigoClasificacion,
+                        Cantidad = detalleFactura.Cantidad
                     };
-                    lineaDetalle.Cantidad = detalleFactura.Cantidad;
+                    CodigoType codigoComercial = new CodigoType
+                    {
+                        Tipo = CodigoTypeTipo.Item01,
+                        Codigo = detalleFactura.Producto.Codigo
+                    };
+                    lineaDetalle.CodigoComercial = new CodigoType[] { codigoComercial };
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Unid;
                     else if (detalleFactura.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
@@ -1171,9 +1182,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle
                     {
                         NumeroLinea = (detalleServicioList.Count() + 1).ToString(),
-                        CodigoCABYS = detalleFactura.Producto.CodigoClasificacion
+                        CodigoCABYS = detalleFactura.Producto.CodigoClasificacion,
+                        Cantidad = detalleFactura.Cantidad
                     };
-                    lineaDetalle.Cantidad = detalleFactura.Cantidad;
+                    CodigoType codigoComercial = new CodigoType
+                    {
+                        Tipo = CodigoTypeTipo.Item01,
+                        Codigo = detalleFactura.Producto.Codigo
+                    };
+                    lineaDetalle.CodigoComercial = new CodigoType[] { codigoComercial };
                     if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Unid;
                     else if (detalleFactura.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
@@ -1494,9 +1511,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle
                     {
                         NumeroLinea = (detalleServicioList.Count() + 1).ToString(),
-                        CodigoCABYS = detalle.Producto.CodigoClasificacion
+                        CodigoCABYS = detalle.Producto.CodigoClasificacion,
+                        Cantidad = detalle.Cantidad
                     };
-                    lineaDetalle.Cantidad = detalle.Cantidad;
+                    CodigoType codigoComercial = new CodigoType
+                    {
+                        Tipo = CodigoTypeTipo.Item01,
+                        Codigo = detalle.Producto.Codigo
+                    };
+                    lineaDetalle.CodigoComercial = new CodigoType[] { codigoComercial };
                     if (detalle.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Unid;
                     else if (detalle.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
@@ -1807,9 +1830,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     NotaDebitoElectronicaLineaDetalle lineaDetalle = new NotaDebitoElectronicaLineaDetalle
                     {
                         NumeroLinea = (detalleServicioList.Count() + 1).ToString(),
-                        CodigoCABYS = detalle.Producto.CodigoClasificacion
+                        CodigoCABYS = detalle.Producto.CodigoClasificacion,
+                        Cantidad = detalle.Cantidad
                     };
-                    lineaDetalle.Cantidad = detalle.Cantidad;
+                    CodigoType codigoComercial = new CodigoType
+                    {
+                        Tipo = CodigoTypeTipo.Item01,
+                        Codigo = detalle.Producto.Codigo
+                    };
+                    lineaDetalle.CodigoComercial = new CodigoType[] { codigoComercial };
                     if (detalle.Producto.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Unid;
                     else if (detalle.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
