@@ -710,10 +710,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documentoFE = null;
                     if (!empresa.RegimenSimplificado)
                     {
-                        if (factura.IdCliente > 1)
-                            documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, cliente, dbContext);
-                        else
+                        if (factura.IdCliente == 1 || factura.CodigoActividadReceptor == "")
                             documentoFE = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, cliente, dbContext);
+                        else
+                            documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, cliente, dbContext);
                         factura.IdDocElectronico = documentoFE.ClaveNumerica;
                     }
                     dbContext.Commit();

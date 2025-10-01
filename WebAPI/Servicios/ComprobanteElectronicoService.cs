@@ -762,17 +762,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public static DocumentoElectronico GeneraTiqueteElectronico(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
-            if (cliente.IdCliente > 1)
-            {
-                if (cliente.CorreoElectronico == null || cliente.CorreoElectronico.Length == 0)
-                {
-                    throw new BusinessException("El cliente seleccionado debe poseer una dirección de correo electrónico para ser notificado.");
-                }
-                else
-                {
-                    strCorreoNotificacion = cliente.CorreoElectronico;
-                }
-            }
             if (factura.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura.");
             TiqueteElectronico tiqueteElectronico = new TiqueteElectronico
             {
@@ -1049,7 +1038,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public static DocumentoElectronico GenerarNotaDeCreditoElectronica(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
-            if (cliente.IdCliente > 1)
+            if (factura.IdCliente > 1 && factura.CodigoActividadReceptor != "")
             {
                 if (cliente.CorreoElectronico == null || cliente.CorreoElectronico.Length == 0)
                 {
@@ -1069,9 +1058,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica(),
                 ProveedorSistemas = empresa.Identificacion
             };
-            if (cliente.IdCliente > 1)
+            if (cliente.IdCliente > 1 && factura.CodigoActividadReceptor != "")
             {
-                if (factura.CodigoActividadReceptor == "") throw new BusinessException("Debe ingresar el código de actividad económica del receptor.");
                 notaCreditoElectronica.CodigoActividadReceptor = factura.CodigoActividadReceptor;
             }
             EmisorType emisor = new EmisorType();
@@ -1102,7 +1090,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             };
             emisor.Ubicacion = ubicacionType;
             notaCreditoElectronica.Emisor = emisor;
-            if (factura.IdCliente > 1)
+            if (factura.IdCliente > 1 && factura.CodigoActividadReceptor != "")
             {
                 ReceptorType receptor = new ReceptorType();
                 IdentificacionType identificacionReceptorType = new IdentificacionType
@@ -1399,7 +1387,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
-            if (cliente.IdCliente > 1)
+            if (factura.IdCliente > 1 && factura.CodigoActividadReceptor != "")
             {
                 if (cliente.CorreoElectronico == null || cliente.CorreoElectronico.Length == 0)
                 {
@@ -1419,9 +1407,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 FechaEmision = devolucion.Fecha,
                 ProveedorSistemas = empresa.Identificacion
             };
-            if (cliente.IdCliente > 1)
+            if (factura.IdCliente > 1 && factura.CodigoActividadReceptor != "")
             {
-                if (factura.CodigoActividadReceptor == "") throw new BusinessException("Debe ingresar el código de actividad económica del receptor.");
                 notaCreditoElectronica.CodigoActividadReceptor = factura.CodigoActividadReceptor;
             }
             EmisorType emisor = new EmisorType();
@@ -1452,7 +1439,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             };
             emisor.Ubicacion = ubicacionType;
             notaCreditoElectronica.Emisor = emisor;
-            if (devolucion.IdCliente > 1)
+            if (factura.IdCliente > 1 && factura.CodigoActividadReceptor != "")
             {
                 ReceptorType receptor = new ReceptorType();
                 IdentificacionType identificacionReceptorType = new IdentificacionType
@@ -1718,7 +1705,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
-            if (cliente.IdCliente > 1)
+            if (factura.IdCliente > 1 && factura.CodigoActividadReceptor != "")
             {
                 if (cliente.CorreoElectronico == null || cliente.CorreoElectronico.Length == 0)
                 {
@@ -1738,9 +1725,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 FechaEmision = Validador.ObtenerFechaHoraCostaRica(),
                 ProveedorSistemas = empresa.Identificacion
             };
-            if (cliente.IdCliente > 1)
+            if (factura.IdCliente > 1 && factura.CodigoActividadReceptor != "")
             {
-                if (factura.CodigoActividadReceptor == "") throw new BusinessException("Debe ingresar el código de actividad económica del receptor.");
                 notaDebitoElectronica.CodigoActividadReceptor = factura.CodigoActividadReceptor;
             }
             EmisorType emisor = new EmisorType();
@@ -1771,7 +1757,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             };
             emisor.Ubicacion = ubicacionType;
             notaDebitoElectronica.Emisor = emisor;
-            if (devolucion.IdCliente > 1)
+            if (factura.IdCliente > 1 && factura.CodigoActividadReceptor != "")
             {
                 ReceptorType receptor = new ReceptorType();
                 IdentificacionType identificacionReceptorType = new IdentificacionType
