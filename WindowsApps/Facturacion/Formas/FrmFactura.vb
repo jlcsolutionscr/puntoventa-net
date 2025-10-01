@@ -1088,7 +1088,7 @@ Public Class FrmFactura
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.PermiteCredito
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
-                If FrmPrincipal.empresaGlobal.RegimenSimplificado = False And cliente.CodigoActividad = "" Then MessageBox.Show("El cliente no contiene el código de actividad económica. Por favor actualice la información del cliente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                If FrmPrincipal.empresaGlobal.RegimenSimplificado = False And cliente.CodigoActividad = "" Then MessageBox.Show("El cliente no posee el código de actividad económica registrada en el sistema por lo tanto se emitirá un tiquete electrónico.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 CargarTotales()
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)

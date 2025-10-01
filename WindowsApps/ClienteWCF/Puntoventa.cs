@@ -367,7 +367,9 @@ namespace LeandroSoftware.ClienteWCF
 
         public static async Task<ContribuyenteHacienda> ObtenerInformacionContribuyente(string strIdentificacion)
         {
-            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioHaciendaURL + "/fe/ae?identificacion=" + strIdentificacion);
+            HttpClient customHttpClient = new HttpClient();
+            customHttpClient.Timeout = TimeSpan.FromSeconds(5);
+            HttpResponseMessage httpResponse = await customHttpClient.GetAsync(strServicioHaciendaURL + "/fe/ae?identificacion=" + strIdentificacion);
             if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
             {
                 throw new Exception("Error al consultar la informacion del contribuyente en el Ministerio de Hacienda");

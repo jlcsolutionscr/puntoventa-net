@@ -220,15 +220,7 @@ Public Class FrmDetalleDocumentoElectronico
         Dim strCorreoReceptor = ""
         Dim intIndex As Integer = dgvDatos.CurrentRow.Index
         Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
-        If documento.CorreoNotificacion <> "" Then
-            If MessageBox.Show("Desea utilizar la dirección(es) de correo electrónico registrada(s) en el documento?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                strCorreoReceptor = documento.CorreoNotificacion
-            Else
-                strCorreoReceptor = InputBox("Ingrese la(s) dirección(es) de correo electrónico donde se enviará el comprobante, separados por punto y coma:")
-            End If
-        Else
-            strCorreoReceptor = InputBox("Ingrese la(s) dirección(es) de correo electrónico donde se enviará el comprobante, separados por punto y coma:")
-        End If
+        strCorreoReceptor = InputBox("Ingrese la(s) dirección(es) de correo electrónico donde se enviará el comprobante, separados por punto y coma:", "", documento.CorreoNotificacion)
         If strCorreoReceptor <> "" Then
             Try
                 Await Puntoventa.EnviarNotificacion(documento.IdDocumento, strCorreoReceptor, FrmPrincipal.usuarioGlobal.Token)
@@ -236,8 +228,6 @@ Public Class FrmDetalleDocumentoElectronico
             Catch ex As Exception
                 MessageBox.Show("Error al enviar el comprobante:" & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
-        Else
-            MessageBox.Show("Debe ingresar la dirección(es) de correo electrónico para hacer el envío del comprobante.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 
@@ -298,7 +288,7 @@ Public Class FrmDetalleDocumentoElectronico
         Dim documento As DocumentoDetalle = listadoDocumentosProcesados.Item(intIndex)
         btnReenviarNotificacion.Enabled = False
         btnGenerar.Enabled = False
-        If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado And documento.EsMensajeReceptor = "N" Then btnReenviarNotificacion.Enabled = True
+        If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Aceptado And documento.EsMensajeReceptor = "N" And documento.CorreoNotificacion <> "" Then btnReenviarNotificacion.Enabled = True
         If documento.EstadoEnvio = StaticEstadoDocumentoElectronico.Rechazado And documento.EsMensajeReceptor = "N" And documento.Reprocesado = False Then btnGenerar.Enabled = True
     End Sub
 

@@ -73,6 +73,7 @@ Partial Class FrmCliente
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label37 = New System.Windows.Forms.Label()
         Me.cboActividadEconomica = New System.Windows.Forms.ComboBox()
+        Me.txtActividadEconomica = New System.Windows.Forms.TextBox()
         Me.SuspendLayout()
         '
         'txtFax
@@ -605,7 +606,7 @@ Partial Class FrmCliente
         Me.Label37.BackColor = System.Drawing.Color.Transparent
         Me.Label37.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label37.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label37.Location = New System.Drawing.Point(10, 421)
+        Me.Label37.Location = New System.Drawing.Point(10, 419)
         Me.Label37.Name = "Label37"
         Me.Label37.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label37.Size = New System.Drawing.Size(123, 17)
@@ -629,12 +630,27 @@ Partial Class FrmCliente
         Me.cboActividadEconomica.Size = New System.Drawing.Size(386, 21)
         Me.cboActividadEconomica.TabIndex = 277
         '
+        'txtActividadEconomica
+        '
+        Me.txtActividadEconomica.AcceptsReturn = True
+        Me.txtActividadEconomica.BackColor = System.Drawing.SystemColors.Window
+        Me.txtActividadEconomica.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtActividadEconomica.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtActividadEconomica.Location = New System.Drawing.Point(139, 417)
+        Me.txtActividadEconomica.MaxLength = 0
+        Me.txtActividadEconomica.Name = "txtActividadEconomica"
+        Me.txtActividadEconomica.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtActividadEconomica.Size = New System.Drawing.Size(386, 20)
+        Me.txtActividadEconomica.TabIndex = 279
+        Me.txtActividadEconomica.Visible = False
+        '
         'FrmCliente
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(539, 450)
+        Me.Controls.Add(Me.txtActividadEconomica)
         Me.Controls.Add(Me.Label37)
         Me.Controls.Add(Me.cboActividadEconomica)
         Me.Controls.Add(Me.txtInciso)
@@ -719,4 +735,5 @@ Partial Class FrmCliente
     Public WithEvents Label5 As Label
     Public WithEvents Label37 As Label
     Public WithEvents cboActividadEconomica As ComboBox
+    Public WithEvents txtActividadEconomica As TextBox
 End Class
