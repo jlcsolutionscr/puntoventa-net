@@ -2446,8 +2446,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         catch (Exception ex)
                         {
-                            string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                            stringBuilder.AppendLine("Error al obtener la lista de correo de gastos con iva acreditable. Detalle: " + strError);
+                            if (_logger != null) _logger.LogError("Error al obtener la lista de correo de gastos con iva acreditable: ", ex);
                         }
                         foreach (POPEmail correo in listadoCorreoAcreditable)
                         {
@@ -2460,22 +2459,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
                                 strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
-                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
-                                _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaIvaAcreditable, _configRecepcion.ClaveIvaAcreditable, correo.MessageNumber);
-                                /*try {
-                                    _servicioCorreo.SendErrorEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message, false, null);
-                                }
-                                catch (Exception emailEx)
+                                Notificacion notificacion = new Notificacion
                                 {
-                                    string strEmailError = emailEx.InnerException != null ? emailEx.InnerException.Message : emailEx.Message;
-                                    stringBuilder.AppendLine("Error al notificar la recepción fallida del documento electrónico: " + strEmailError);
-                                }*/
+                                    CorreoNotificacion = strFrom,
+                                    Titulo = "Notificación de error en recepción de documento electrónico",
+                                    Mensaje = "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message,
+                                    Estado = StaticEstadoNotificacion.Pendiente,
+                                    FechaEnvio = Validador.ObtenerFechaHoraCostaRica(),
+                                    ErrorEnvio = ""
+                                };
+                                dbContext.NotificacionRepository.Add(notificacion);
+                                dbContext.Commit();
+                                if (_logger != null) _logger.LogError("Error al procesar el documento con IVA acreditable: ", ex);
+                                _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaIvaAcreditable, _configRecepcion.ClaveIvaAcreditable, correo.MessageNumber);
                             }
                             catch (Exception ex)
                             {
-                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable con asunto " + correo.Subject + ". Detalle: " + strError);
+                                if (_logger != null) _logger.LogError("Error al procesar el documento con IVA acreditable: ", ex);
                             }
                         }
                         List<POPEmail> listadoCorreoGasto = new List<POPEmail>();
@@ -2485,8 +2485,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         catch (Exception ex)
                         {
-                            string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                            stringBuilder.AppendLine("Error al obtener la lista de correos de gastos con iva no acreditable. Detalle: " + strError);
+                            if (_logger != null) _logger.LogError("Error al obtener la lista de correo de gastos sin iva acreditable: ", ex);
                         }
                         foreach (POPEmail correo in listadoCorreoGasto)
                         {
@@ -2499,38 +2498,61 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
                                 strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
-                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
-                                _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaGastoNoAcreditable, _configRecepcion.ClaveGastoNoAcreditable, correo.MessageNumber);
-                                /*try {
-                                    _servicioCorreo.SendErrorEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message, false, null);
-                                }
-                                catch (Exception emailEx)
+                                Notificacion notificacion = new Notificacion
                                 {
-                                    string strEmailError = emailEx.InnerException != null ? emailEx.InnerException.Message : emailEx.Message;
-                                    stringBuilder.AppendLine("Error al notificar la recepción fallida del documento electrónico: " + strEmailError);
-                                }*/
+                                    CorreoNotificacion = strFrom,
+                                    Titulo = "Notificación de error en recepción de documento electrónico",
+                                    Mensaje = "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message,
+                                    Estado = StaticEstadoNotificacion.Pendiente,
+                                    FechaEnvio = Validador.ObtenerFechaHoraCostaRica(),
+                                    ErrorEnvio = ""
+                                };
+                                dbContext.NotificacionRepository.Add(notificacion);
+                                dbContext.Commit();
+                                if (_logger != null) _logger.LogError("Error al procesar el documento sin IVA acreditable: ", ex);
+                                _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaGastoNoAcreditable, _configRecepcion.ClaveGastoNoAcreditable, correo.MessageNumber);
                             }
                             catch (Exception ex)
                             {
-                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable con asunto " + correo.Subject + ". Detalle: " + strError);
+                                if (_logger != null) _logger.LogError("Error al procesar el documento sin IVA acreditable: ", ex);
                             }
                         }
                     }
                 }
-                if (stringBuilder.Length > 0)
+            }
+            ProcesarNotificaciones();
+        }
+
+        void ProcesarNotificaciones()
+        {
+            if (_serviceScopeFactory == null || _configRecepcion == null) throw new Exception("Service factory or configuration not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
                 {
-                    byte[] bytes = Encoding.UTF8.GetBytes(stringBuilder.ToString());
-                    stringBuilder = null;
-                    JArray archivosJArray = new JArray();
-                    JObject jobDatosAdjuntos1 = new JObject
+                    var notificacionesPendientes = dbContext.NotificacionRepository.OrderBy(x => x.Estado).ToList();
+                    foreach (Notificacion notificacion in notificacionesPendientes)
                     {
-                        ["nombre"] = "logRecepcion-" + fechaActual.ToString("ddMMyyyy-HH-mm-ss") + ".txt",
-                        ["contenido"] = Convert.ToBase64String(bytes)
-                    };
-                    archivosJArray.Add(jobDatosAdjuntos1);
-                    _servicioCorreo.SendSupportEmail(new string[] { _config.CorreoNotificacionErrores }, new string[] { }, "Detalle de errores del procesamiento de recepción de documentos electrónicos", "Adjunto el archivo con el detalle del procesamiento.", false, archivosJArray);
+                        try
+                        {
+                            _servicioCorreo.SendErrorEmail(new string[] { notificacion.CorreoNotificacion }, new string[] { }, notificacion.Titulo, notificacion.Mensaje, false, null);
+                            dbContext.NotificarEliminacion(notificacion);
+                            dbContext.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            notificacion.Estado = StaticEstadoNotificacion.Rechazado;
+                            notificacion.ErrorEnvio = ex.Message;
+                            dbContext.NotificarModificacion(notificacion);
+                            dbContext.Commit();
+                            if (_logger != null) _logger.LogError("Error al procesar la notificación pendiente: ", ex);
+                        }
+                        Thread.Sleep(5000);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de notificaciones pendientes: ", ex);
                 }
             }
         }
