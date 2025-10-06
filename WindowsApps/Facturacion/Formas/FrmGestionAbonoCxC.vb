@@ -125,10 +125,10 @@ Public Class FrmGestionAbonoCxC
     End Sub
 
     Private Async Sub BtnBuscarCxC_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarCliente.Click
-        Dim formBusquedaCuentaPorCobrar As New FrmBusquedaCuentaPorCobrar()
-        formBusquedaCuentaPorCobrar.bolPendientes = False
+        Dim formBusqueda As New FrmBusquedaCuentaPorCobrar()
+        formBusqueda.bolPendientes = False
         FrmPrincipal.intBusqueda = 0
-        formBusquedaCuentaPorCobrar.ShowDialog()
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 cuentaPorCobrar = Await Puntoventa.ObtenerCuentaPorCobrar(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)

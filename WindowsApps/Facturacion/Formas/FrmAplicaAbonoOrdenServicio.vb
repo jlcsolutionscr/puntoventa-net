@@ -438,10 +438,11 @@ Public Class FrmAplicaAbonoOrdenServicio
     End Sub
 
     Private Async Sub btnBuscarOrdenServicio_Click(sender As Object, e As EventArgs) Handles btnBuscarOrdenServicio.Click
-        Dim formBusquedaOrdenServicio As New FrmBusquedaOrdenServicio()
+        Dim formBusqueda As New FrmBusquedaOrdenServicio()
         FrmPrincipal.intBusqueda = 0
-        formBusquedaOrdenServicio.bolExcluyeCancelados = True
-        formBusquedaOrdenServicio.ShowDialog()
+        formBusqueda.bolExcluyeCancelados = True
+        formBusqueda.bolExcluyeNulos = True
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 ordenServicio = Await Puntoventa.ObtenerOrdenServicio(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)

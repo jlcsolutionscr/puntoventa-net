@@ -861,6 +861,8 @@ Public Class FrmFactura
     Private Async Sub BtnOrdenServicio_Click(sender As Object, e As EventArgs) Handles btnOrdenServicio.Click
         Dim formBusqueda As New FrmBusquedaOrdenServicio()
         FrmPrincipal.intBusqueda = 0
+        formBusqueda.bolExcluyeAplicados = True
+        formBusqueda.bolExcluyeNulos = True
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
@@ -927,6 +929,8 @@ Public Class FrmFactura
     Private Async Sub BtnApartado_Click(sender As Object, e As EventArgs) Handles btnApartado.Click
         Dim formBusqueda As New FrmBusquedaApartado()
         FrmPrincipal.intBusqueda = 0
+        formBusqueda.bolExcluyeAplicados = True
+        formBusqueda.bolExcluyeNulos = True
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
@@ -993,6 +997,8 @@ Public Class FrmFactura
     Private Async Sub BtnProforma_Click(sender As Object, e As EventArgs) Handles btnProforma.Click
         Dim formBusqueda As New FrmBusquedaProforma()
         FrmPrincipal.intBusqueda = 0
+        formBusqueda.bolExcluyeAplicados = True
+        formBusqueda.bolExcluyeNulos = True
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
@@ -1057,9 +1063,9 @@ Public Class FrmFactura
     End Sub
 
     Private Async Sub BtnBuscaVendedor_Click(sender As Object, e As EventArgs) Handles btnBuscaVendedor.Click
-        Dim formBusquedaVendedor As New FrmBusquedaVendedor()
+        Dim formBusqueda As New FrmBusquedaVendedor()
         FrmPrincipal.intBusqueda = 0
-        formBusquedaVendedor.ShowDialog()
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 vendedor = Await Puntoventa.ObtenerVendedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
@@ -1076,9 +1082,9 @@ Public Class FrmFactura
     End Sub
 
     Private Async Sub BtnBuscarCliente_Click(sender As Object, e As EventArgs) Handles btnBuscarCliente.Click
-        Dim formBusquedaCliente As New FrmBusquedaCliente()
+        Dim formBusqueda As New FrmBusquedaCliente()
         FrmPrincipal.intBusqueda = 0
-        formBusquedaCliente.ShowDialog()
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)

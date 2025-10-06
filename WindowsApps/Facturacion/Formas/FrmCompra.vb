@@ -689,9 +689,9 @@ Public Class FrmCompra
     'End Sub
 
     Private Async Sub BtnBuscarProveedor_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
-        Dim formBusquedaProveedor As New FrmBusquedaProveedor()
+        Dim formBusqueda As New FrmBusquedaProveedor()
         FrmPrincipal.intBusqueda = 0
-        formBusquedaProveedor.ShowDialog()
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 proveedor = Await Puntoventa.ObtenerProveedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)

@@ -303,9 +303,9 @@ Public Class FrmFacturaCompra
     End Sub
 
     Private Sub btnBuscarClasificacion_Click(sender As Object, e As EventArgs) Handles btnBuscarClasificacion.Click
-        Dim formBusquedaClasificacionProducto As New FrmBusquedaClasificacionProducto()
+        Dim formBusqueda As New FrmBusquedaClasificacionProducto()
         FrmPrincipal.strBusqueda = 0
-        formBusquedaClasificacionProducto.ShowDialog()
+        formBusqueda.ShowDialog()
         If FrmPrincipal.strBusqueda <> "0" Then
             Dim codigoDesc = FrmPrincipal.strBusqueda.Split(New Char() {"-"c}, 2)
             txtCodigo.Text = codigoDesc(0)

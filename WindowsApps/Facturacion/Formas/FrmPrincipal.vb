@@ -291,10 +291,10 @@ Public Class FrmPrincipal
     End Sub
 
     Private Sub mnuArchivoConsultaCierre_Click(sender As Object, e As EventArgs) Handles mnuArchivoConsultaCierre.Click
-        Dim formBusquedaCierreCaja As New FrmCierreDeCajaListado With {
+        Dim formBusqueda As New FrmCierreDeCajaListado With {
             .MdiParent = Me
         }
-        formBusquedaCierreCaja.Show()
+        formBusqueda.Show()
     End Sub
 
     Public Sub MnuArchivoReporte_Click(sender As Object, e As EventArgs) Handles MnuArchivoReporte.Click

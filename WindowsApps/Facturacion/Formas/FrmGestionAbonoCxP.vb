@@ -125,10 +125,10 @@ Public Class FrmGestionAbonoCxP
     End Sub
 
     Private Async Sub btnBuscarCxP_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
-        Dim formBusquedaCuentaPorPagar As New FrmBusquedaCuentaPorPagar()
-        formBusquedaCuentaPorPagar.bolPendientes = False
+        Dim formBusqueda As New FrmBusquedaCuentaPorPagar()
+        formBusqueda.bolPendientes = False
         FrmPrincipal.intBusqueda = 0
-        formBusquedaCuentaPorPagar.ShowDialog()
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 cuentaPorPagar = Await Puntoventa.ObtenerCuentaPorPagar(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)

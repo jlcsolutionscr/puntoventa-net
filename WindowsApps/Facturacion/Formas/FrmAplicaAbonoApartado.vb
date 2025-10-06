@@ -437,10 +437,11 @@ Public Class FrmAplicaAbonoApartado
     End Sub
 
     Private Async Sub btnBuscarApartado_Click(sender As Object, e As EventArgs) Handles btnBuscarApartado.Click
-        Dim formBusquedaApartado As New FrmBusquedaApartado()
+        Dim formBusqueda As New FrmBusquedaApartado()
         FrmPrincipal.intBusqueda = 0
-        formBusquedaApartado.bolExcluyeCancelados = True
-        formBusquedaApartado.ShowDialog()
+        formBusqueda.bolExcluyeCancelados = True
+        formBusqueda.bolExcluyeNulos = True
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 apartado = Await Puntoventa.ObtenerApartado(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)

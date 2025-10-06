@@ -12,9 +12,10 @@ Public Class FrmBusquedaApartado
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
     Private bolCargado As Boolean = False
-    Public bolIncluyeEstado As Boolean = False
-    Public bolIncluyeNulos As Boolean = False
+    Public bolHabilitaFiltros As Boolean = False
+    Public bolExcluyeNulos As Boolean = False
     Public bolExcluyeCancelados As Boolean = False
+    Public bolExcluyeAplicados = False
 #End Region
 
 #Region "Métodos"
@@ -66,7 +67,7 @@ Public Class FrmBusquedaApartado
         Try
             Dim listado = New List(Of FacturaDetalle)
             If intCantidadDePaginas > 0 Then
-                listado = Await Puntoventa.ObtenerListadoApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, bolExcluyeCancelados, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+                listado = Await Puntoventa.ObtenerListadoApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolHabilitaFiltros, cboEstado.SelectedValue, bolExcluyeAplicados, bolExcluyeNulos, bolExcluyeCancelados, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
             End If
             dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
@@ -80,7 +81,7 @@ Public Class FrmBusquedaApartado
 
     Private Async Function ValidarCantidadApartados() As Task
         Try
-            intTotalApartados = Await Puntoventa.ObtenerTotalListaApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, bolIncluyeNulos, bolExcluyeCancelados, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalApartados = Await Puntoventa.ObtenerTotalListaApartados(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolHabilitaFiltros, cboEstado.SelectedValue, bolExcluyeAplicados, bolExcluyeNulos, bolExcluyeCancelados, intId, txtNombre.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -183,8 +184,8 @@ Public Class FrmBusquedaApartado
 
     Private Async Sub FrmBusProd_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            cboEstado.Visible = bolIncluyeEstado
-            lblEstado.Visible = bolIncluyeEstado
+            cboEstado.Visible = bolHabilitaFiltros
+            lblEstado.Visible = bolHabilitaFiltros
             EstablecerPropiedadesDataGridView()
             CargarCombos()
             Await ValidarCantidadApartados()

@@ -632,8 +632,7 @@ Public Class FrmApartado
 
     Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaApartado()
-        formBusqueda.bolIncluyeEstado = True
-        formBusqueda.bolIncluyeNulos = True
+        formBusqueda.bolHabilitaFiltros = True
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
@@ -683,9 +682,9 @@ Public Class FrmApartado
     End Sub
 
     Private Async Sub BtnBuscaVendedor_Click(sender As Object, e As EventArgs) Handles btnBuscaVendedor.Click
-        Dim formBusquedaVendedor As New FrmBusquedaVendedor()
+        Dim formBusqueda As New FrmBusquedaVendedor()
         FrmPrincipal.intBusqueda = 0
-        formBusquedaVendedor.ShowDialog()
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 vendedor = Await Puntoventa.ObtenerVendedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
@@ -702,9 +701,9 @@ Public Class FrmApartado
     End Sub
 
     Private Async Sub BtnBuscarCliente_Click(sender As Object, e As EventArgs) Handles btnBuscarCliente.Click
-        Dim formBusquedaCliente As New FrmBusquedaCliente()
+        Dim formBusqueda As New FrmBusquedaCliente()
         FrmPrincipal.intBusqueda = 0
-        formBusquedaCliente.ShowDialog()
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
