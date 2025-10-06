@@ -77,6 +77,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<MovimientoCuentaPorPagar> MovimientoCuentaPorPagarRepository { get; set; }
         public DbSet<MovimientoOrdenServicio> MovimientoOrdenServicioRepository { get; set; }
         public DbSet<MovimientoProducto> MovimientoProductoRepository { get; set; }
+        public DbSet<Notificacion> NotificacionRepository { get; set; }
         public DbSet<OrdenCompra> OrdenRepository { get; set; }
         public DbSet<OrdenServicio> OrdenServicioRepository { get; set; }
         public DbSet<ParametroContable> ParametroContableRepository { get; set; }

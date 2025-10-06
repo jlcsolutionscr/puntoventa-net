@@ -171,4 +171,10 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly string Aceptado = "aceptado";
         public static readonly string Rechazado = "rechazado";
     };
+
+    public static class StaticEstadoNotificacion
+    {
+        public static readonly string Pendiente = "pendiente";
+        public static readonly string Rechazado = "rechazado";
+    };
 }
