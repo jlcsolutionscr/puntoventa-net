@@ -35,10 +35,10 @@
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
     <ROW Property="ARPCONTACT" Value="ventas@jlcsolutionscr.com"/>
     <ROW Property="Manufacturer" Value="JLC Solutions CR"/>
-    <ROW Property="ProductCode" Value="1033:{78EBA804-E723-4506-BCFB-FD4E50A5EF19} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{C1A5F43B-635A-4A60-8EAC-BD5ED067296A} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="puntoventaJLC"/>
-    <ROW Property="ProductVersion" Value="5.8.7" Options="32"/>
+    <ROW Property="ProductVersion" Value="5.8.8" Options="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{6DE6977F-E27E-4C68-8B91-EDDB74510900}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
