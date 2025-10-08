@@ -711,7 +711,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!empresa.RegimenSimplificado)
                     {
                         if (factura.IdCliente == 1 || factura.CodigoActividadReceptor == "")
+                        {
+                            if (factura.Exonerado > 0)
+                                throw new BusinessException("No es posible emitir un tiquete electrónico con exoneración. Por favor verifique la información suministrada!");
                             documentoFE = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, cliente, dbContext);
+                        }
                         else
                             documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, cliente, dbContext);
                         factura.IdDocElectronico = documentoFE.ClaveNumerica;
