@@ -718,6 +718,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         else
                         {
+                            if (factura.CodigoActividad.Length < 6)
+                                throw new BusinessException("El código de actividad económica de la empresa no posee el formato apropiado (6 digitos). Por favor realice el ajuste correspondiente!");
                             if (factura.CodigoActividadReceptor.Length < 6)
                                 throw new BusinessException("El código de actividad económica del cliente no posee el formato apropiado (6 digitos). Por favor realice el ajuste correspondiente!");
                             documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, cliente, dbContext);
