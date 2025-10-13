@@ -381,12 +381,11 @@ namespace LeandroSoftware.ClienteWCF
             if (datosJO.Property("actividades") == null) throw new Exception("Error al consultar la informacion del contribuyente en el Ministerio de Hacienda");
 
             JArray actividades = JArray.Parse(datosJO.Property("actividades").Value.ToString());
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            foreach (JObject item in actividades)
+            List<LlaveTextoDescripcion> listado = new List<LlaveTextoDescripcion>();
+            foreach (JObject actividad in actividades)
             {
-                JArray ciiu3 = JArray.Parse(item.Property("ciiu3").Value.ToString());
-                JObject actividad = (JObject)ciiu3[0];
-                listado.Add(new LlaveDescripcion(int.Parse(actividad.Property("codigo").Value.ToString()), actividad.Property("codigo").Value.ToString() + " - " + actividad.Property("descripcion").Value.ToString()));
+
+                listado.Add(new LlaveTextoDescripcion(actividad.Property("codigo").Value.ToString(), actividad.Property("codigo").Value.ToString() + " - " + actividad.Property("descripcion").Value.ToString()));
             }
             ContribuyenteHacienda cliente = new ContribuyenteHacienda
             {

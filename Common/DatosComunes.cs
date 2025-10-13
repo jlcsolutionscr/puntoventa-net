@@ -287,6 +287,19 @@ namespace LeandroSoftware.Common.DatosComunes
         public int AnchoLinea { get; set; }
     }
 
+    public class LlaveTextoDescripcion
+    {
+        public LlaveTextoDescripcion() { }
+
+        public LlaveTextoDescripcion(string llave, string descripcion)
+        {
+            Llave = llave;
+            Descripcion = descripcion;
+        }
+        public string Llave { get; set; }
+        public string Descripcion { get; set; }
+    }
+
     public class LlaveDescripcion
     {
         public LlaveDescripcion() { }
@@ -583,12 +596,12 @@ namespace LeandroSoftware.Common.DatosComunes
     {
         public ContribuyenteHacienda() { }
 
-        public ContribuyenteHacienda(string strNombre, IList<LlaveDescripcion> lstActividadesEconomicas)
+        public ContribuyenteHacienda(string strNombre, IList<LlaveTextoDescripcion> lstActividadesEconomicas)
         {
             Nombre = strNombre;
             ActividadesEconomicas = lstActividadesEconomicas;
         }
         public string Nombre { get; set; }
-        public IList<LlaveDescripcion> ActividadesEconomicas { get; set; }
+        public IList<LlaveTextoDescripcion> ActividadesEconomicas { get; set; }
     }
 }

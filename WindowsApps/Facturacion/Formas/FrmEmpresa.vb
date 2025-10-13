@@ -59,7 +59,7 @@ Public Class FrmEmpresa
         dgvActividadEconomica.Refresh()
     End Sub
 
-    Private Sub CargarLineaDetalleActividad(ByVal intCodigo As Integer, ByVal strDescripcion As String)
+    Private Sub CargarLineaDetalleActividad(ByVal intCodigo As String, ByVal strDescripcion As String)
         If dtbActividadEconomica.Rows.Contains(intCodigo) Then
             MessageBox.Show("La actividad económica ya se encuentra en el listado.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Else
@@ -91,7 +91,7 @@ Public Class FrmEmpresa
         cboProvincia.ValueMember = "Id"
         cboProvincia.DisplayMember = "Descripcion"
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
-        cboActividadEconomica.ValueMember = "Id"
+        cboActividadEconomica.ValueMember = "Llave"
         cboActividadEconomica.DisplayMember = "Descripcion"
         Dim contribuyente As ContribuyenteHacienda = Await Puntoventa.ObtenerInformacionContribuyente(strIdentificacion)
         cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas

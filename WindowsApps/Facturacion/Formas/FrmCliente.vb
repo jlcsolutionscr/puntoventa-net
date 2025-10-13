@@ -27,7 +27,7 @@ Public Class FrmCliente
         cboInstExoneracion.ValueMember = "Id"
         cboInstExoneracion.DisplayMember = "Descripcion"
         cboInstExoneracion.DataSource = FrmPrincipal.ObtenerListadoNombreInstExoneracion()
-        cboActividadEconomica.ValueMember = "Id"
+        cboActividadEconomica.ValueMember = "Llave"
         cboActividadEconomica.DisplayMember = "Descripcion"
     End Sub
 #End Region
@@ -104,7 +104,7 @@ Public Class FrmCliente
                     txtActividadEconomica.Visible = False
                     If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
                         If datos.CodigoActividad <> "" Then
-                            cboActividadEconomica.SelectedValue = Integer.Parse(datos.CodigoActividad)
+                            cboActividadEconomica.SelectedValue = datos.CodigoActividad
                         Else
                             cboActividadEconomica.SelectedIndex = -1
                         End If
@@ -112,7 +112,7 @@ Public Class FrmCliente
                 Else
                     cboActividadEconomica.Visible = False
                     txtActividadEconomica.Visible = True
-                    If datos.CodigoActividad <> "" Then txtActividadEconomica.Text = Integer.Parse(datos.CodigoActividad)
+                    If datos.CodigoActividad <> "" Then txtActividadEconomica.Text = datos.CodigoActividad
                 End If
             Else
                 datos = New Cliente
@@ -225,7 +225,7 @@ Public Class FrmCliente
                         txtActividadEconomica.Visible = False
                         If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
                             If datos.CodigoActividad <> "" Then
-                                cboActividadEconomica.SelectedValue = Integer.Parse(datos.CodigoActividad)
+                                cboActividadEconomica.SelectedValue = datos.CodigoActividad
                             Else
                                 cboActividadEconomica.SelectedIndex = -1
                             End If

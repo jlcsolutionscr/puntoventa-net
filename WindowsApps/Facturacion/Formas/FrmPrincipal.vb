@@ -51,7 +51,7 @@ Public Class FrmPrincipal
     Private listaNombreInstExoneracion As List(Of LlaveDescripcion)
     Private listaSucursales As List(Of LlaveDescripcion)
     Private listaTipoPrecio As List(Of LlaveDescripcion)
-    Private listaActividadEconomica As List(Of LlaveDescripcion)
+    Private listaActividadEconomica As List(Of LlaveTextoDescripcion)
     Private tipoDeCambioDolar As LlaveDescripcionValor
 
 #End Region
@@ -105,8 +105,8 @@ Public Class FrmPrincipal
         Return New List(Of LlaveDescripcion)(listaTipoPrecio)
     End Function
 
-    Public Function ObtenerListadoActividadEconomica() As List(Of LlaveDescripcion)
-        Return New List(Of LlaveDescripcion)(listaActividadEconomica)
+    Public Function ObtenerListadoActividadEconomica() As List(Of LlaveTextoDescripcion)
+        Return New List(Of LlaveTextoDescripcion)(listaActividadEconomica)
     End Function
 
     Public Function ObtenerDescripcionTipoExoneracion(intIdTipo As Integer) As String
@@ -740,9 +740,9 @@ Public Class FrmPrincipal
         For Each sucursal As SucursalPorEmpresa In empresa.SucursalPorEmpresa
             listaSucursales.Add(New LlaveDescripcion(sucursal.IdSucursal, sucursal.NombreSucursal))
         Next
-        listaActividadEconomica = New List(Of LlaveDescripcion)
+        listaActividadEconomica = New List(Of LlaveTextoDescripcion)
         For Each actividad As ActividadEconomicaEmpresa In empresa.ActividadEconomicaEmpresa
-            listaActividadEconomica.Add(New LlaveDescripcion(actividad.CodigoActividad, actividad.Descripcion))
+            listaActividadEconomica.Add(New LlaveTextoDescripcion(actividad.CodigoActividad, actividad.Descripcion))
         Next
         picLoader.Visible = False
         Dim formInicio As New FrmInicio()

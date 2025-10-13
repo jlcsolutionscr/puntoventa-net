@@ -511,7 +511,7 @@ Public Class FrmFactura
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
         cboTipoMoneda.DataSource = FrmPrincipal.ObtenerListadoTipoMoneda()
-        cboActividadEconomica.ValueMember = "Id"
+        cboActividadEconomica.ValueMember = "Llave"
         cboActividadEconomica.DisplayMember = "Descripcion"
         cboActividadEconomica.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
         cboTipoBanco.ValueMember = "Id"
