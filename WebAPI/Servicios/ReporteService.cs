@@ -1820,79 +1820,82 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 {
                                     foreach (XmlNode impuestoDetalle in lineaDetalle.GetElementsByTagName("Impuesto"))
                                     {
-                                        if (impuestoDetalle["Exoneracion"] != null)
+                                        if (impuestoDetalle["Codigo"].InnerText == "01")
                                         {
-                                            int porcentaje = 0;
-                                            if (documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/"))
+                                            if (impuestoDetalle["Exoneracion"] != null)
                                             {
-                                                porcentaje = int.Parse(lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText, CultureInfo.InvariantCulture);
+                                                int porcentaje = 0;
+                                                if (documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/"))
+                                                {
+                                                    porcentaje = int.Parse(lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText, CultureInfo.InvariantCulture);
+                                                }
+                                                else
+                                                {
+                                                    porcentaje = int.Parse(lineaDetalle["Impuesto"]["Exoneracion"]["TarifaExonerada"].InnerText, CultureInfo.InvariantCulture);
+                                                }
+                                                decMontoPorLinea = decMontoPorLinea * (100 - porcentaje) / 100;
+                                            }
+                                            string strTarifa = impuestoDetalle["Tarifa"].InnerText.Replace(" ", string.Empty);
+                                            int intTarifa = -1;
+                                            try
+                                            {
+                                                intTarifa = int.Parse(strTarifa, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, new CultureInfo("en-US"));
+                                            }
+                                            catch (Exception)
+                                            {
+                                                throw new Exception("No se logro convertir el string de la tarifa " + strTarifa + " en un numero entero");
+                                            }
+                                            if (lineaDetalle["UnidadMedida"].InnerText == "Os" || lineaDetalle["UnidadMedida"].InnerText == "Sp" || lineaDetalle["UnidadMedida"].InnerText == "Spe" || lineaDetalle["UnidadMedida"].InnerText == "St")
+                                            {
+                                                switch (intTarifa)
+                                                {
+                                                    case 0:
+                                                        decCompraServiciosExento += decMontoPorLinea;
+                                                        break;
+                                                    case 1:
+                                                        decCompraServiciosTasa1 += decMontoPorLinea;
+                                                        break;
+                                                    case 2:
+                                                        decCompraServiciosTasa2 += decMontoPorLinea;
+                                                        break;
+                                                    case 4:
+                                                        decCompraServiciosTasa4 += decMontoPorLinea;
+                                                        break;
+                                                    case 8:
+                                                        decCompraServiciosTasa8 += decMontoPorLinea;
+                                                        break;
+                                                    case 13:
+                                                        decCompraServiciosTasa13 += decMontoPorLinea;
+                                                        break;
+                                                    default:
+                                                        throw new Exception("La tarifa de impuesto " + strTarifa + " de la linea de detalle no esta parametrizada");
+                                                }
                                             }
                                             else
                                             {
-                                                porcentaje = int.Parse(lineaDetalle["Impuesto"]["Exoneracion"]["TarifaExonerada"].InnerText, CultureInfo.InvariantCulture);
-                                            }
-                                            decMontoPorLinea = decMontoPorLinea * (100 - porcentaje) / 100;
-                                        }
-                                        string strTarifa = impuestoDetalle["Tarifa"].InnerText.Replace(" ", string.Empty);
-                                        int intTarifa = -1;
-                                        try
-                                        {
-                                            intTarifa = int.Parse(strTarifa, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, new CultureInfo("en-US"));
-                                        }
-                                        catch (Exception)
-                                        {
-                                            throw new Exception("No se logro convertir el string de la tarifa " + strTarifa + " en un numero entero");
-                                        }
-                                        if (lineaDetalle["UnidadMedida"].InnerText == "Os" || lineaDetalle["UnidadMedida"].InnerText == "Sp" || lineaDetalle["UnidadMedida"].InnerText == "Spe" || lineaDetalle["UnidadMedida"].InnerText == "St")
-                                        {
-                                            switch (intTarifa)
-                                            {
-                                                case 0:
-                                                    decCompraServiciosExento += decMontoPorLinea;
-                                                    break;
-                                                case 1:
-                                                    decCompraServiciosTasa1 += decMontoPorLinea;
-                                                    break;
-                                                case 2:
-                                                    decCompraServiciosTasa2 += decMontoPorLinea;
-                                                    break;
-                                                case 4:
-                                                    decCompraServiciosTasa4 += decMontoPorLinea;
-                                                    break;
-                                                case 8:
-                                                    decCompraServiciosTasa8 += decMontoPorLinea;
-                                                    break;
-                                                case 13:
-                                                    decCompraServiciosTasa13 += decMontoPorLinea;
-                                                    break;
-                                                default:
-                                                    throw new Exception("La tarifa de impuesto " + strTarifa + " de la linea de detalle no esta parametrizada");
-                                            }
-                                        }
-                                        else
-                                        {
-                                            switch (intTarifa)
-                                            {
-                                                case 0:
-                                                    decCompraBienesExento += decMontoPorLinea;
-                                                    break;
-                                                case 1:
-                                                    decCompraBienesTasa1 += decMontoPorLinea;
-                                                    break;
-                                                case 2:
-                                                    decCompraBienesTasa2 += decMontoPorLinea;
-                                                    break;
-                                                case 4:
-                                                    decCompraBienesTasa4 += decMontoPorLinea;
-                                                    break;
-                                                case 8:
-                                                    decCompraBienesTasa8 += decMontoPorLinea;
-                                                    break;
-                                                case 13:
-                                                    decCompraBienesTasa13 += decMontoPorLinea;
-                                                    break;
-                                                default:
-                                                    throw new Exception("La tarifa de impuesto " + strTarifa + " de la linea de detalle no esta parametrizada");
+                                                switch (intTarifa)
+                                                {
+                                                    case 0:
+                                                        decCompraBienesExento += decMontoPorLinea;
+                                                        break;
+                                                    case 1:
+                                                        decCompraBienesTasa1 += decMontoPorLinea;
+                                                        break;
+                                                    case 2:
+                                                        decCompraBienesTasa2 += decMontoPorLinea;
+                                                        break;
+                                                    case 4:
+                                                        decCompraBienesTasa4 += decMontoPorLinea;
+                                                        break;
+                                                    case 8:
+                                                        decCompraBienesTasa8 += decMontoPorLinea;
+                                                        break;
+                                                    case 13:
+                                                        decCompraBienesTasa13 += decMontoPorLinea;
+                                                        break;
+                                                    default:
+                                                        throw new Exception("La tarifa de impuesto " + strTarifa + " de la linea de detalle no esta parametrizada");
+                                                }
                                             }
                                         }
                                     }
