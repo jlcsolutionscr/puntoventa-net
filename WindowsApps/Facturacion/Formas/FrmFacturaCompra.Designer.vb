@@ -83,7 +83,6 @@ Partial Class FrmFacturaCompra
         Me.grdDetalleProforma = New System.Windows.Forms.DataGridView()
         Me.btnEliminar = New System.Windows.Forms.Button()
         Me.btnInsertar = New System.Windows.Forms.Button()
-        Me.cboActEconEmisor = New System.Windows.Forms.ComboBox()
         Me.Label18 = New System.Windows.Forms.Label()
         Me.Label10 = New System.Windows.Forms.Label()
         Me.cboInstExoneracion = New System.Windows.Forms.ComboBox()
@@ -95,6 +94,7 @@ Partial Class FrmFacturaCompra
         Me.Label7 = New System.Windows.Forms.Label()
         Me.txtNumeroReferencia = New System.Windows.Forms.TextBox()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.txtActividadEconomica = New System.Windows.Forms.TextBox()
         Me.GroupBox1.SuspendLayout()
         CType(Me.grdDetalleProforma, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -920,23 +920,6 @@ Partial Class FrmFacturaCompra
         Me.btnInsertar.Text = "Insertar"
         Me.btnInsertar.UseVisualStyleBackColor = False
         '
-        'cboActEconEmisor
-        '
-        Me.cboActEconEmisor.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cboActEconEmisor.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cboActEconEmisor.BackColor = System.Drawing.SystemColors.Window
-        Me.cboActEconEmisor.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cboActEconEmisor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboActEconEmisor.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboActEconEmisor.IntegralHeight = False
-        Me.cboActEconEmisor.ItemHeight = 13
-        Me.cboActEconEmisor.Location = New System.Drawing.Point(104, 197)
-        Me.cboActEconEmisor.Name = "cboActEconEmisor"
-        Me.cboActEconEmisor.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboActEconEmisor.Size = New System.Drawing.Size(290, 21)
-        Me.cboActEconEmisor.TabIndex = 12
-        Me.cboActEconEmisor.TabStop = False
-        '
         'Label18
         '
         Me.Label18.BackColor = System.Drawing.Color.Transparent
@@ -1090,6 +1073,19 @@ Partial Class FrmFacturaCompra
         Me.Label17.Text = "Nro. Referencia:"
         Me.Label17.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
+        'txtActividadEconomica
+        '
+        Me.txtActividadEconomica.AcceptsReturn = True
+        Me.txtActividadEconomica.BackColor = System.Drawing.SystemColors.Window
+        Me.txtActividadEconomica.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtActividadEconomica.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtActividadEconomica.Location = New System.Drawing.Point(104, 198)
+        Me.txtActividadEconomica.MaxLength = 20
+        Me.txtActividadEconomica.Name = "txtActividadEconomica"
+        Me.txtActividadEconomica.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtActividadEconomica.Size = New System.Drawing.Size(297, 20)
+        Me.txtActividadEconomica.TabIndex = 12
+        '
         'FrmFacturaCompra
         '
         Me.AcceptButton = Me.btnInsertar
@@ -1098,6 +1094,7 @@ Partial Class FrmFacturaCompra
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(839, 691)
+        Me.Controls.Add(Me.txtActividadEconomica)
         Me.Controls.Add(Me.txtNumeroReferencia)
         Me.Controls.Add(Me.Label17)
         Me.Controls.Add(Me.cboActEconReceptor)
@@ -1108,7 +1105,6 @@ Partial Class FrmFacturaCompra
         Me.Controls.Add(Me.Label13)
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.cboInstExoneracion)
-        Me.Controls.Add(Me.cboActEconEmisor)
         Me.Controls.Add(Me.Label18)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.txtFechaExoneracion)
@@ -1219,7 +1215,6 @@ Partial Class FrmFacturaCompra
     Public WithEvents btnEliminar As Button
     Public WithEvents btnInsertar As Button
     Friend WithEvents btnBuscarClasificacion As Button
-    Public WithEvents cboActEconEmisor As ComboBox
     Public WithEvents Label18 As Label
     Public WithEvents Label10 As Label
     Public WithEvents cboInstExoneracion As ComboBox
@@ -1231,4 +1226,5 @@ Partial Class FrmFacturaCompra
     Public WithEvents Label7 As Label
     Public WithEvents txtNumeroReferencia As TextBox
     Public WithEvents Label17 As Label
+    Public WithEvents txtActividadEconomica As TextBox
 End Class

@@ -184,8 +184,6 @@ Public Class FrmFacturaCompra
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
         cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
-        cboActEconEmisor.ValueMember = "Id"
-        cboActEconEmisor.DisplayMember = "Descripcion"
         cboActEconReceptor.ValueMember = "Id"
         cboActEconReceptor.DisplayMember = "Descripcion"
         cboActEconReceptor.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
@@ -267,8 +265,7 @@ Public Class FrmFacturaCompra
         txtNombreComercial.Text = ""
         txtTelefono.Text = ""
         txtCorreoElectronico.Text = ""
-        cboActEconEmisor.DataSource = Nothing
-        cboActEconEmisor.SelectedValue = Nothing
+        txtActividadEconomica.Text = ""
         cboActEconReceptor.SelectedIndex = 0
         cboTipoIdentificacion.SelectedIndex = 0
         Await CargarListadoDistritos(1, 1)
@@ -294,12 +291,6 @@ Public Class FrmFacturaCompra
         decTotal = 0
         cboTipoIdentificacion.Focus()
         btnGuardar.Enabled = True
-    End Sub
-
-    Private Async Sub txtIdentificacion_Validated(sender As Object, e As EventArgs) Handles txtIdentificacion.Validated
-        Dim contribuyente As ContribuyenteHacienda = Await Puntoventa.ObtenerInformacionContribuyente(txtIdentificacion.Text)
-        txtNombre.Text = contribuyente.Nombre
-        cboActEconEmisor.DataSource = contribuyente.ActividadesEconomicas
     End Sub
 
     Private Sub btnBuscarClasificacion_Click(sender As Object, e As EventArgs) Handles btnBuscarClasificacion.Click
@@ -339,15 +330,20 @@ Public Class FrmFacturaCompra
         If txtNombre.Text = "" Then strCampo = "Nombre"
         If txtCorreoElectronico.Text = "" Then strCampo = "Correo electrónico"
         If txtNumeroReferencia.Text = "" Then strCampo = "Numero de referencia"
-        If cboActEconEmisor.SelectedValue = Nothing Then strCampo = "Actividad econ. del emisor"
+        If txtActividadEconomica.Text = "" Then strCampo = "Actividad econ. del emisor"
         If cboActEconReceptor.SelectedValue = Nothing Then strCampo = "Actividad econ. del receptor"
         If strCampo <> "" Then
-            MessageBox.Show("El campo " & strCampo & " es requerido", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El campo " & strCampo & " es requerido!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            btnGuardar.Enabled = True
+            Exit Sub
+        End If
+        If txtActividadEconomica.Text.Length > 6 Then
+            MessageBox.Show("El código de actividad económica no puede contener mas de 6 digitos. Por favor verifique!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             btnGuardar.Enabled = True
             Exit Sub
         End If
         If decTotal = 0 Then
-            MessageBox.Show("Debe agregar lineas de detalle a la factura. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Debe agregar lineas de detalle a la factura. Por favor verifique!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             btnGuardar.Enabled = True
             Exit Sub
         End If
@@ -360,7 +356,7 @@ Public Class FrmFacturaCompra
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdTipoMoneda = 1,
                 .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
-                .CodigoActividadEmisor = cboActEconEmisor.SelectedValue,
+                .CodigoActividadEmisor = txtActividadEconomica.Text,
                 .CodigoActividad = cboActEconReceptor.SelectedValue,
                 .NumeroReferencia = txtNumeroReferencia.Text,
                 .IdCondicionVenta = 1,
