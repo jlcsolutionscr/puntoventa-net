@@ -27,8 +27,6 @@ Public Class FrmCliente
         cboInstExoneracion.ValueMember = "Id"
         cboInstExoneracion.DisplayMember = "Descripcion"
         cboInstExoneracion.DataSource = FrmPrincipal.ObtenerListadoNombreInstExoneracion()
-        cboActividadEconomica.ValueMember = "Llave"
-        cboActividadEconomica.DisplayMember = "Descripcion"
     End Sub
 #End Region
 
@@ -64,8 +62,9 @@ Public Class FrmCliente
 
     Private Async Sub FrmCliente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            contribuyente = Nothing
-            If FrmPrincipal.bolModificaCliente Then chkPermiteCredito.Enabled = True
+            'contribuyente = Nothing
+            chkPermiteCredito.Enabled = FrmPrincipal.bolModificaCliente
+            txtActividadEconomica.ReadOnly = FrmPrincipal.empresaGlobal.RegimenSimplificado
             CargarCombos()
             If intIdCliente > 0 Then
                 ChangeEnableInputs(False)
@@ -73,12 +72,12 @@ Public Class FrmCliente
                 If datos Is Nothing Then
                     Throw New Exception("El cliente seleccionado no existe")
                 End If
-                Try
-                    contribuyente = Await Puntoventa.ObtenerInformacionContribuyente(datos.Identificacion)
-                    If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas
-                Catch
-                    MessageBox.Show("No se logró obtener la información del contribuyente en el Ministerio de Hacienda!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                End Try
+                'Try
+                '    contribuyente = Await Puntoventa.ObtenerInformacionContribuyente(datos.Identificacion)
+                '    If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas
+                'Catch
+                '    MessageBox.Show("No se logró obtener la información del contribuyente en el Ministerio de Hacienda!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                'End Try
                 ChangeEnableInputs(True)
                 txtIdCliente.Text = datos.IdCliente
                 cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
@@ -99,21 +98,7 @@ Public Class FrmCliente
                 txtInciso.Text = datos.IncisoExoneracion
                 txtFechaExoneracion.Value = datos.FechaEmisionDoc
                 txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
-                If contribuyente IsNot Nothing Then
-                    cboActividadEconomica.Visible = True
-                    txtActividadEconomica.Visible = False
-                    If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
-                        If datos.CodigoActividad <> "" Then
-                            cboActividadEconomica.SelectedValue = datos.CodigoActividad
-                        Else
-                            cboActividadEconomica.SelectedIndex = -1
-                        End If
-                    End If
-                Else
-                    cboActividadEconomica.Visible = False
-                    txtActividadEconomica.Visible = True
-                    If datos.CodigoActividad <> "" Then txtActividadEconomica.Text = datos.CodigoActividad
-                End If
+                txtActividadEconomica.Text = datos.CodigoActividad
             Else
                 datos = New Cliente
                 cboTipoExoneracion.SelectedValue = StaticValoresPorDefecto.TipoExoneracion
@@ -142,6 +127,10 @@ Public Class FrmCliente
                 Exit Sub
             End If
         End If
+        If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And txtActividadEconomica.Text.Length > 0 And txtActividadEconomica.Text.Length < 6 Then
+            MessageBox.Show("El código de actividad económica debe contener un mínimo de 6 dígitos. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
+        End If
         btnCancelar.Focus()
         btnGuardar.Enabled = False
         If datos.IdCliente = 0 Then
@@ -165,12 +154,7 @@ Public Class FrmCliente
         datos.IncisoExoneracion = txtInciso.Text
         datos.FechaEmisionDoc = txtFechaExoneracion.Value
         datos.PorcentajeExoneracion = txtPorcentajeExoneracion.Text
-        datos.CodigoActividad = ""
-        If contribuyente IsNot Nothing Then
-            If cboActividadEconomica.SelectedValue <> Nothing Then datos.CodigoActividad = cboActividadEconomica.SelectedValue
-        Else
-            datos.CodigoActividad = txtActividadEconomica.Text
-        End If
+        datos.CodigoActividad = txtActividadEconomica.Text
         Try
             If datos.IdCliente = 0 Then
                 Await Puntoventa.AgregarCliente(datos, FrmPrincipal.usuarioGlobal.Token)
@@ -190,13 +174,6 @@ Public Class FrmCliente
     Private Async Sub Identificacion_Validating(ByVal sender As Object, ByVal e As EventArgs) Handles txtIdentificacion.Validated
         Try
             If txtIdCliente.Text = "" And txtIdentificacion.Text <> "" Then
-                contribuyente = Nothing
-                Try
-                    contribuyente = Await Puntoventa.ObtenerInformacionContribuyente(txtIdentificacion.Text)
-                    If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas
-                Catch
-                    MessageBox.Show("No se logró obtener la información del contribuyente en el Ministerio de Hacienda!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                End Try
                 Dim cliente As Cliente = Nothing
                 cliente = Await Puntoventa.ValidaIdentificacionCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
                 If cliente IsNot Nothing Then
@@ -220,24 +197,9 @@ Public Class FrmCliente
                     cboInstExoneracion.SelectedValue = datos.IdNombreInstExoneracion
                     txtFechaExoneracion.Text = datos.FechaEmisionDoc.ToString()
                     txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
-                    If contribuyente IsNot Nothing Then
-                        cboActividadEconomica.Visible = True
-                        txtActividadEconomica.Visible = False
-                        If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
-                            If datos.CodigoActividad <> "" Then
-                                cboActividadEconomica.SelectedValue = datos.CodigoActividad
-                            Else
-                                cboActividadEconomica.SelectedIndex = -1
-                            End If
-                        End If
-                    Else
-                        cboActividadEconomica.Visible = False
-                        txtActividadEconomica.Visible = True
-                        If datos.CodigoActividad <> "" Then txtActividadEconomica.Text = datos.CodigoActividad
-                    End If
+                    txtActividadEconomica.Text = datos.CodigoActividad
                 Else
                     txtNombre.Text = IIf(contribuyente IsNot Nothing, contribuyente.Nombre, "")
-                    If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And contribuyente IsNot Nothing Then cboActividadEconomica.SelectedIndex = 0
                 End If
             End If
         Catch ex As Exception

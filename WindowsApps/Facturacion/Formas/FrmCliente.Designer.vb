@@ -72,7 +72,6 @@ Partial Class FrmCliente
         Me.txtInciso = New System.Windows.Forms.TextBox()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label37 = New System.Windows.Forms.Label()
-        Me.cboActividadEconomica = New System.Windows.Forms.ComboBox()
         Me.txtActividadEconomica = New System.Windows.Forms.TextBox()
         Me.SuspendLayout()
         '
@@ -614,22 +613,6 @@ Partial Class FrmCliente
         Me.Label37.Text = "Actividad Economica:"
         Me.Label37.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
-        'cboActividadEconomica
-        '
-        Me.cboActividadEconomica.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cboActividadEconomica.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cboActividadEconomica.BackColor = System.Drawing.SystemColors.Window
-        Me.cboActividadEconomica.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cboActividadEconomica.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboActividadEconomica.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboActividadEconomica.IntegralHeight = False
-        Me.cboActividadEconomica.ItemHeight = 13
-        Me.cboActividadEconomica.Location = New System.Drawing.Point(139, 417)
-        Me.cboActividadEconomica.Name = "cboActividadEconomica"
-        Me.cboActividadEconomica.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboActividadEconomica.Size = New System.Drawing.Size(386, 21)
-        Me.cboActividadEconomica.TabIndex = 277
-        '
         'txtActividadEconomica
         '
         Me.txtActividadEconomica.AcceptsReturn = True
@@ -642,7 +625,6 @@ Partial Class FrmCliente
         Me.txtActividadEconomica.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtActividadEconomica.Size = New System.Drawing.Size(386, 20)
         Me.txtActividadEconomica.TabIndex = 279
-        Me.txtActividadEconomica.Visible = False
         '
         'FrmCliente
         '
@@ -650,9 +632,7 @@ Partial Class FrmCliente
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(539, 450)
-        Me.Controls.Add(Me.txtActividadEconomica)
         Me.Controls.Add(Me.Label37)
-        Me.Controls.Add(Me.cboActividadEconomica)
         Me.Controls.Add(Me.txtInciso)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.txtArticulo)
@@ -693,6 +673,7 @@ Partial Class FrmCliente
         Me.Controls.Add(Me.lblLabel4)
         Me.Controls.Add(Me.lblLabel3)
         Me.Controls.Add(Me.lblLabel2)
+        Me.Controls.Add(Me.txtActividadEconomica)
         Me.Cursor = System.Windows.Forms.Cursors.Default
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.KeyPreview = True
@@ -734,6 +715,5 @@ Partial Class FrmCliente
     Public WithEvents txtInciso As TextBox
     Public WithEvents Label5 As Label
     Public WithEvents Label37 As Label
-    Public WithEvents cboActividadEconomica As ComboBox
     Public WithEvents txtActividadEconomica As TextBox
 End Class
