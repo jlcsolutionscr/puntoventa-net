@@ -10,7 +10,6 @@ Public Class FrmCliente
     Public intIdCliente As Integer
     Private datos As Cliente
     Private provider As CultureInfo = CultureInfo.InvariantCulture
-    Private contribuyente As ContribuyenteHacienda = Nothing
 #End Region
 
 #Region "Métodos"
@@ -198,8 +197,6 @@ Public Class FrmCliente
                     txtFechaExoneracion.Text = datos.FechaEmisionDoc.ToString()
                     txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
                     txtActividadEconomica.Text = datos.CodigoActividad
-                Else
-                    txtNombre.Text = IIf(contribuyente IsNot Nothing, contribuyente.Nombre, "")
                 End If
             End If
         Catch ex As Exception
