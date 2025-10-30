@@ -2642,7 +2642,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
                                 {
                                     XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
-                                    strIdentificacion = emisorNode["Identificacion"]["Numero"].InnerText;
+                                    if (emisorNode["Identificacion"] == null)
+                                    {
+                                        strError = "El documento electrónico no contiene el valor de 'Identificacion' en el Nodo del Receptor, necesario para ser procesado. Por favor verifique la información";
+                                    }
+                                    else
+                                        strIdentificacion = emisorNode["Identificacion"]["Numero"].InnerText;
                                 }
                                 strDatos = documentoXml.OuterXml.Replace("'", "");
                             }
