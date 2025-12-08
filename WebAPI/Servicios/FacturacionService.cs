@@ -2506,7 +2506,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 };
                                 dbContext.NotificacionRepository.Add(notificacion);
                                 dbContext.Commit();
-                                if (_logger != null) _logger.LogError("Error al procesar el documento con IVA acreditable: ", ex);
+                                if (_logger != null) _logger.LogError("Error al procesar el documento con IVA acreditable del remitente " + strFrom + ": ", ex);
                                 _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaIvaAcreditable, _configRecepcion.ClaveIvaAcreditable, correo.MessageNumber);
                             }
                             catch (Exception ex)
