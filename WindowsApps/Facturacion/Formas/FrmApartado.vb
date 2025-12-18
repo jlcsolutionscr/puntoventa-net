@@ -599,6 +599,7 @@ Public Class FrmApartado
         txtTipoCambio.Text = 1
         If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
         cboTipoMoneda.Enabled = True
+        cboFormaPago.Enabled = True
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoBanco.DataSource = New List(Of LlaveDescripcion)
         cboTipoBanco.Width = 325
@@ -666,6 +667,7 @@ Public Class FrmApartado
                 btnInsertar.Enabled = False
                 btnEliminar.Enabled = False
                 btnBusProd.Enabled = False
+                cboFormaPago.Enabled = False
                 btnInsertarPago.Enabled = False
                 btnEliminarPago.Enabled = False
                 btnImprimir.Enabled = Not apartado.Nulo
@@ -853,6 +855,7 @@ Public Class FrmApartado
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnInsertar.Enabled = False
         btnEliminar.Enabled = False
+        cboFormaPago.Enabled = False
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
         btnBusProd.Enabled = False

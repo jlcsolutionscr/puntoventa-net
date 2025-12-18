@@ -641,6 +641,7 @@ Public Class FrmOrdenServicio
         txtTipoCambio.Text = 1
         If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
         cboTipoMoneda.Enabled = True
+        cboFormaPago.Enabled = True
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoBanco.DataSource = New List(Of LlaveDescripcion)
         cboTipoBanco.Width = 325
@@ -715,6 +716,7 @@ Public Class FrmOrdenServicio
                 btnEnviar.Enabled = Not ordenServicio.Nulo
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
+                cboFormaPago.Enabled = False
                 btnInsertarPago.Enabled = False
                 btnEliminarPago.Enabled = False
                 btnGuardar.Enabled = Not ordenServicio.Nulo And Not ordenServicio.Aplicado
@@ -934,6 +936,7 @@ Public Class FrmOrdenServicio
         btnEnviar.Enabled = True
         btnImprimir.Focus()
         btnGuardar.Enabled = True
+        cboFormaPago.Enabled = False
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
