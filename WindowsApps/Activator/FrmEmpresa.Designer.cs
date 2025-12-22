@@ -102,6 +102,8 @@
             this.btnLimpiar = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.cboModalidad = new System.Windows.Forms.ComboBox();
+            this.txtCorreoSucursal = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.TabRoles.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRolePorEmpresa)).BeginInit();
             this.tabReportes.SuspendLayout();
@@ -622,7 +624,7 @@
             this.txtDescripcionTerminal.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtDescripcionTerminal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDescripcionTerminal.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtDescripcionTerminal.Location = new System.Drawing.Point(637, 484);
+            this.txtDescripcionTerminal.Location = new System.Drawing.Point(638, 510);
             this.txtDescripcionTerminal.MaxLength = 0;
             this.txtDescripcionTerminal.Name = "txtDescripcionTerminal";
             this.txtDescripcionTerminal.ReadOnly = true;
@@ -635,7 +637,7 @@
             // 
             this.chkDispositivoMovil.AutoSize = true;
             this.chkDispositivoMovil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkDispositivoMovil.Location = new System.Drawing.Point(536, 537);
+            this.chkDispositivoMovil.Location = new System.Drawing.Point(537, 563);
             this.chkDispositivoMovil.Name = "chkDispositivoMovil";
             this.chkDispositivoMovil.Size = new System.Drawing.Size(104, 17);
             this.chkDispositivoMovil.TabIndex = 261;
@@ -664,7 +666,7 @@
             this.btnCargarTerminal.Enabled = false;
             this.btnCargarTerminal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCargarTerminal.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnCargarTerminal.Location = new System.Drawing.Point(585, 483);
+            this.btnCargarTerminal.Location = new System.Drawing.Point(586, 509);
             this.btnCargarTerminal.Name = "btnCargarTerminal";
             this.btnCargarTerminal.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.btnCargarTerminal.Size = new System.Drawing.Size(46, 22);
@@ -710,7 +712,7 @@
             this.label27.Cursor = System.Windows.Forms.Cursors.Default;
             this.label27.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label27.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label27.Location = new System.Drawing.Point(476, 486);
+            this.label27.Location = new System.Drawing.Point(477, 512);
             this.label27.Name = "label27";
             this.label27.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label27.Size = new System.Drawing.Size(54, 17);
@@ -726,7 +728,7 @@
             this.txtValorRegistro.Enabled = false;
             this.txtValorRegistro.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtValorRegistro.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtValorRegistro.Location = new System.Drawing.Point(536, 511);
+            this.txtValorRegistro.Location = new System.Drawing.Point(537, 537);
             this.txtValorRegistro.MaxLength = 0;
             this.txtValorRegistro.Name = "txtValorRegistro";
             this.txtValorRegistro.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -742,7 +744,7 @@
             this.txtIdTerminal.Enabled = false;
             this.txtIdTerminal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtIdTerminal.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtIdTerminal.Location = new System.Drawing.Point(536, 484);
+            this.txtIdTerminal.Location = new System.Drawing.Point(537, 510);
             this.txtIdTerminal.MaxLength = 5;
             this.txtIdTerminal.Name = "txtIdTerminal";
             this.txtIdTerminal.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -756,7 +758,7 @@
             this._lblLabels_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._lblLabels_2.ForeColor = System.Drawing.SystemColors.ControlText;
             this._lblLabels_2.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this._lblLabels_2.Location = new System.Drawing.Point(478, 512);
+            this._lblLabels_2.Location = new System.Drawing.Point(479, 538);
             this._lblLabels_2.Name = "_lblLabels_2";
             this._lblLabels_2.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this._lblLabels_2.Size = new System.Drawing.Size(52, 17);
@@ -785,7 +787,7 @@
             this.txtTelefonoSucursal.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtTelefonoSucursal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTelefonoSucursal.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtTelefonoSucursal.Location = new System.Drawing.Point(536, 458);
+            this.txtTelefonoSucursal.Location = new System.Drawing.Point(537, 484);
             this.txtTelefonoSucursal.MaxLength = 50;
             this.txtTelefonoSucursal.Name = "txtTelefonoSucursal";
             this.txtTelefonoSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -812,7 +814,7 @@
             this.label34.Cursor = System.Windows.Forms.Cursors.Default;
             this.label34.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label34.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label34.Location = new System.Drawing.Point(467, 459);
+            this.label34.Location = new System.Drawing.Point(468, 485);
             this.label34.Name = "label34";
             this.label34.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label34.Size = new System.Drawing.Size(64, 17);
@@ -1085,6 +1087,34 @@
             this.cboModalidad.Size = new System.Drawing.Size(126, 21);
             this.cboModalidad.TabIndex = 265;
             // 
+            // txtCorreoSucursal
+            // 
+            this.txtCorreoSucursal.AcceptsReturn = true;
+            this.txtCorreoSucursal.BackColor = System.Drawing.SystemColors.Window;
+            this.txtCorreoSucursal.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtCorreoSucursal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCorreoSucursal.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtCorreoSucursal.Location = new System.Drawing.Point(536, 458);
+            this.txtCorreoSucursal.MaxLength = 200;
+            this.txtCorreoSucursal.Name = "txtCorreoSucursal";
+            this.txtCorreoSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtCorreoSucursal.Size = new System.Drawing.Size(266, 20);
+            this.txtCorreoSucursal.TabIndex = 267;
+            // 
+            // label10
+            // 
+            this.label10.BackColor = System.Drawing.Color.Transparent;
+            this.label10.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label10.Location = new System.Drawing.Point(411, 461);
+            this.label10.Name = "label10";
+            this.label10.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label10.Size = new System.Drawing.Size(119, 17);
+            this.label10.TabIndex = 268;
+            this.label10.Text = "Correo electrónico:";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FrmEmpresa
             // 
             this.AcceptButton = this.btnInsertaRole;
@@ -1092,7 +1122,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
-            this.ClientSize = new System.Drawing.Size(851, 561);
+            this.ClientSize = new System.Drawing.Size(851, 591);
+            this.Controls.Add(this.txtCorreoSucursal);
+            this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.cboModalidad);
             this.Controls.Add(this.btnLimpiar);
@@ -1152,8 +1184,8 @@
             this.Controls.Add(this._lblLabels_0);
             this.Controls.Add(this.cmdUpdate);
             this.Controls.Add(this.cmdCancel);
-            this.MaximumSize = new System.Drawing.Size(867, 600);
-            this.MinimumSize = new System.Drawing.Size(867, 600);
+            this.MaximumSize = new System.Drawing.Size(867, 630);
+            this.MinimumSize = new System.Drawing.Size(867, 630);
             this.Name = "FrmEmpresa";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Registrar/Actualizar datos de la empresa seleccionada";
@@ -1242,6 +1274,8 @@
         public System.Windows.Forms.Button btnLimpiar;
         public System.Windows.Forms.Label label9;
         internal System.Windows.Forms.ComboBox cboModalidad;
+        public System.Windows.Forms.TextBox txtCorreoSucursal;
+        public System.Windows.Forms.Label label10;
     }
 }
 

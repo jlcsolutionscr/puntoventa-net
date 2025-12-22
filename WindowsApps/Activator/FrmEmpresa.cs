@@ -220,6 +220,7 @@ namespace LeandroSoftware.Activator
                     txtNombreSucursal.Text = txtNombreComercial.Text != "" ? txtNombreComercial.Text : txtNombreEmpresa.Text;
                     txtDireccionSucursal.Text = txtDireccion.Text;
                     txtTelefonoSucursal.Text = txtTelefono.Text;
+                    txtCorreoSucursal.Text = txtCorreoNotificacion.Text;
                     txtIdTerminal.Text = "1";
                     txtDescripcionTerminal.Text = "Terminal 1";
                     txtValorRegistro.Text = "";
@@ -252,6 +253,7 @@ namespace LeandroSoftware.Activator
                     txtNombreSucursal.Text = sucursal.NombreSucursal;
                     txtDireccionSucursal.Text = sucursal.Direccion;
                     txtTelefonoSucursal.Text = sucursal.Telefono;
+                    txtCorreoSucursal.Text = sucursal.CorreoElectronico;
                     txtIdTerminal.Enabled = true;
                     txtValorRegistro.Enabled = true;
                     btnCargarTerminal.Enabled = true;
@@ -460,6 +462,7 @@ namespace LeandroSoftware.Activator
                     sucursal.NombreSucursal = txtNombreSucursal.Text;
                     sucursal.Direccion = txtDireccionSucursal.Text;
                     sucursal.Telefono = txtTelefonoSucursal.Text;
+                    sucursal.CorreoElectronico = txtCorreoSucursal.Text;
                     if (bolSucursalNueva)
                     {
                         await Administrador.AgregarSucursalPorEmpresa(sucursal, strToken);
@@ -508,7 +511,7 @@ namespace LeandroSoftware.Activator
             }
         }
 
-        private async void CboDistrito_SelectedIndexChanged(object sender, EventArgs e)
+        private void CboDistrito_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!bolLoading)
             {
