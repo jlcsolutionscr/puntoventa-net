@@ -283,6 +283,7 @@ namespace LeandroSoftware.Common.DatosComunes
         public string NombreSucursal { get; set; }
         public string DireccionSucursal { get; set; }
         public string TelefonoSucursal { get; set; }
+        public string CorreoElectronico { get; set; }
         public string ImpresoraFactura { get; set; }
         public int AnchoLinea { get; set; }
     }

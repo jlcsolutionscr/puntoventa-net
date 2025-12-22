@@ -77,10 +77,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.CuentaBancoRepository.Add(cuentaBanco);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -104,10 +104,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(cuentaBanco);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -138,10 +138,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al agregar el parámetro contable: ", ex);
                     throw new BusinessException("No es posible eliminar el banco adquiriente seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -260,10 +260,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.Commit();
                 return movimiento.IdMov.ToString();
             }
-            catch (BusinessException ex)
+            catch (BusinessException)
             {
                 dbContext.RollBack();
-                throw ex;
+                throw;
             }
             catch (Exception ex)
             {
@@ -288,10 +288,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(movimiento);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -335,10 +335,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.NotificarModificacion(cuenta);
                 dbContext.Commit();
             }
-            catch (BusinessException ex)
+            catch (BusinessException)
             {
                 dbContext.RollBack();
-                throw ex;
+                throw;
             }
             catch (Exception ex)
             {

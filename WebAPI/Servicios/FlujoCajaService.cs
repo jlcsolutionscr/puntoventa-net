@@ -74,10 +74,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.CuentaIngresoRepository.Add(cuenta);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -101,10 +101,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(cuenta);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -135,10 +135,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al eliminar la cuenta de ingreso: ", ex);
                     throw new BusinessException("No es posible eliminar la cuenta de ingreso seleccionada. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -273,10 +273,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -315,10 +315,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -424,10 +424,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.CuentaEgresoRepository.Add(cuenta);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -451,10 +451,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(cuenta);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -485,10 +485,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al eliminar la cuenta de egreso: ", ex);
                     throw new BusinessException("No es posible eliminar la cuenta de egreso seleccionada. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -617,10 +617,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     return egreso.IdEgreso.ToString();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -658,10 +658,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1264,9 +1264,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.DetalleMovimientoCierreCaja = listaMovimientos;
                     return cierre;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1301,9 +1301,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContextTransaction.Commit();
                         return cierre.IdCierre.ToString();
                     }
-                    catch (BusinessException ex)
+                    catch (BusinessException)
                     {
-                        throw ex;
+                        throw;
                     }
                     catch (Exception ex)
                     {

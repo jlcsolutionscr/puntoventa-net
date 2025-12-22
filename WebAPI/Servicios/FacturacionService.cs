@@ -136,10 +136,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.ClienteRepository.Add(cliente);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -181,10 +181,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(cliente);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -215,10 +215,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al eliminar cliente: ", ex);
                     throw new BusinessException("No es posible eliminar el cliente seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -755,10 +755,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return factura.IdFactura.ToString() + "-" + factura.ConsecFactura.ToString();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -802,10 +802,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return facturaCompra.IdFactCompra.ToString();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -938,10 +938,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC));
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -969,21 +969,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     foreach (DesglosePagoFactura desglosePago in factura.DesglosePagoFactura)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                        if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
                         {
-                            BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
-                            if (banco != null)
-                                desglosePago.DescripcionCuenta = banco.Descripcion;
+                            if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                            {
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                if (banco != null)
+                                    desglosePago.DescripcionCuenta = banco.Descripcion;
+                                else
+                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            }
                             else
-                                desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
-                        }
-                        else
-                        {
-                            CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
-                            if (banco != null)
-                                desglosePago.DescripcionCuenta = banco.Descripcion;
-                            else
-                                desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            {
+                                CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                if (banco != null)
+                                    desglosePago.DescripcionCuenta = banco.Descripcion;
+                                else
+                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            }
                         }
                     }
                     return factura;
@@ -1099,9 +1102,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     return proforma.IdProforma.ToString() + "-" + proforma.ConsecProforma.ToString();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1135,9 +1138,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.DetalleProformaRepository.Add(detalle);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1168,10 +1171,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(proforma);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1310,10 +1313,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     return apartado.IdApartado.ToString() + "-" + apartado.ConsecApartado.ToString();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1347,10 +1350,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(apartado);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1372,21 +1375,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Apartado apartado = dbContext.ApartadoRepository.Include("Cliente").Include("Vendedor").Include("DetalleApartado.Producto").Include("DesglosePagoApartado").FirstOrDefault(x => x.IdApartado == intIdApartado);
                     foreach (DesglosePagoApartado desglosePago in apartado.DesglosePagoApartado)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                        if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
                         {
-                            BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
-                            if (banco != null)
-                                desglosePago.DescripcionCuenta = banco.Descripcion;
+                            if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                            {
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                if (banco != null)
+                                    desglosePago.DescripcionCuenta = banco.Descripcion;
+                                else
+                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            }
                             else
-                                desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
-                        }
-                        else
-                        {
-                            CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
-                            if (banco != null)
-                                desglosePago.DescripcionCuenta = banco.Descripcion;
-                            else
-                                desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            {
+                                CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                if (banco != null)
+                                    desglosePago.DescripcionCuenta = banco.Descripcion;
+                                else
+                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            }
                         }
                     }
                     return apartado;
@@ -1508,10 +1514,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     return ordenServicio.IdOrden.ToString() + "-" + ordenServicio.ConsecOrdenServicio.ToString();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1571,9 +1577,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.DetalleOrdenServicioRepository.Add(detalle);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1685,10 +1691,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(ordenServicio);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1712,21 +1718,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalle.Codigo = detalle.Producto.Codigo;
                     foreach (DesglosePagoOrdenServicio desglosePago in ordenServicio.DesglosePagoOrdenServicio)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                        if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
                         {
-                            BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
-                            if (banco != null)
-                                desglosePago.DescripcionCuenta = banco.Descripcion;
+                            if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                            {
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                if (banco != null)
+                                    desglosePago.DescripcionCuenta = banco.Descripcion;
+                                else
+                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            }
                             else
-                                desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
-                        }
-                        else
-                        {
-                            CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
-                            if (banco != null)
-                                desglosePago.DescripcionCuenta = banco.Descripcion;
-                            else
-                                desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            {
+                                CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                if (banco != null)
+                                    desglosePago.DescripcionCuenta = banco.Descripcion;
+                                else
+                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            }
                         }
                     }
                     return ordenServicio;
@@ -1873,9 +1882,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     tiquete.Impreso = bolEstado;
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2014,10 +2023,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC));
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2138,10 +2147,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoND));
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2252,9 +2261,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listaDocumento;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2284,9 +2293,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listaDocumento;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2442,9 +2451,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoMR));
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2754,9 +2763,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, nuevoDocumento));
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2797,9 +2806,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (result != null && result != "") return int.Parse(result);
                             return 0;
                         }
-                        catch (BusinessException ex)
+                        catch (BusinessException)
                         {
-                            throw ex;
+                            throw;
                         }
                         catch (Exception ex)
                         {
@@ -2836,9 +2845,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listaDocumento;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2867,9 +2876,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     return documento;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2978,9 +2987,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3010,9 +3019,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3036,9 +3045,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     EstructuraPDF datos = GenerarEstructuraApartadoPDF(empresa, apartado, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3062,9 +3071,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3088,9 +3097,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3133,9 +3142,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                         throw new BusinessException("La empresa no cuenta con un correo para el envío de notificaciones. Por favor actualice su información");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3687,9 +3696,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     jarrayObj.Add(jobDatosAdjuntos1);
                     _servicioCorreo.SendNotificationEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3726,9 +3735,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     jarrayObj.Add(jobDatosAdjuntos1);
                     _servicioCorreo.SendNotificationEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {

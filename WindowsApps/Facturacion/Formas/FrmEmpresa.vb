@@ -170,6 +170,7 @@ Public Class FrmEmpresa
             txtNombreSucursal.Text = datosSucursal.NombreSucursal
             txtDireccionSucursal.Text = datosSucursal.Direccion
             txtTelefonoSucursal.Text = datosSucursal.Telefono
+            txtCorreoSucursal.Text = datosSucursal.CorreoElectronico
             txtConsecFactura.Text = datosSucursal.ConsecFactura
             txtConsecProforma.Text = datosSucursal.ConsecProforma
             txtConsecOrdenServicio.Text = datosSucursal.ConsecOrdenServicio
@@ -331,6 +332,7 @@ Public Class FrmEmpresa
                 datosSucursal.NombreSucursal = txtNombreSucursal.Text
                 datosSucursal.Direccion = txtDireccionSucursal.Text
                 datosSucursal.Telefono = txtTelefonoSucursal.Text
+                datosSucursal.CorreoElectronico = txtCorreoSucursal.Text
                 datosSucursal.ConsecFactura = txtConsecFactura.Text
                 datosSucursal.ConsecProforma = txtConsecProforma.Text
                 datosSucursal.ConsecOrdenServicio = txtConsecOrdenServicio.Text
@@ -340,6 +342,7 @@ Public Class FrmEmpresa
                 FrmPrincipal.equipoGlobal.NombreSucursal = txtNombreSucursal.Text
                 FrmPrincipal.equipoGlobal.DireccionSucursal = txtDireccionSucursal.Text
                 FrmPrincipal.equipoGlobal.TelefonoSucursal = txtTelefonoSucursal.Text
+                FrmPrincipal.equipoGlobal.CorreoElectronico = txtCorreoSucursal.Text
             End If
             If bolTerminalActualizada Then
                 datosTerminal.ImpresoraFactura = txtNombreImpresora.Text
@@ -389,11 +392,7 @@ Public Class FrmEmpresa
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 
-    Private Sub TextFieldSucursal_Validated(sender As Object, e As EventArgs) Handles txtNombreSucursal.Validated, txtDireccionSucursal.Validated, txtTelefonoSucursal.Validated
-        bolSucursalActualizada = True
-    End Sub
-
-    Private Sub chkCierre_CheckedChanged(sender As Object, e As EventArgs) Handles chkCierre.CheckedChanged
+    Private Sub TextFieldSucursal_Validated(sender As Object, e As EventArgs) Handles txtNombreSucursal.Validated, txtDireccionSucursal.Validated, txtTelefonoSucursal.Validated, txtCorreoSucursal.Validated, chkCierre.CheckedChanged
         bolSucursalActualizada = True
     End Sub
 

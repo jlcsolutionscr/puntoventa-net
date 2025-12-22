@@ -198,9 +198,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listaEquipoRegistrado;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -323,10 +323,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (parametro.Valor == "SI") return true;
                     return false;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -367,10 +367,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(terminal);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -397,9 +397,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     usuario.Token = strToken;
                     return usuario;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -425,9 +425,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     empresa.Usuario.Token = strToken;
                     return empresa;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -451,9 +451,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     empresa.Usuario.Token = strToken;
                     return empresa;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -517,6 +517,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     NombreSucursal = sucursal.NombreSucursal,
                     DireccionSucursal = sucursal.Direccion,
                     TelefonoSucursal = sucursal.Telefono,
+                    CorreoElectronico = sucursal.CorreoElectronico,
                     ImpresoraFactura = terminal.ImpresoraFactura,
                     AnchoLinea = terminal.AnchoLinea
                 };
@@ -574,9 +575,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                     return usuario.PorcMaxDescuento;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -732,9 +733,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     return empresa;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -774,9 +775,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.ActividadEconomicaEmpresaRepository.Add(detalle);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -806,9 +807,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listaReportes;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -905,9 +906,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         strLogotipo = Convert.ToBase64String(empresa.Logotipo);
                     return strLogotipo;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -936,9 +937,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         empresa.Logotipo = new byte[0];
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1012,7 +1013,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (BusinessException ex)
                 {
                     if (_logger != null) _logger.LogError("Error al actualizar los credenciales de Hacienda: ", ex);
-                    if (_config.EsModoDesarrollo) throw ex;
+                    if (_config.EsModoDesarrollo) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando los credenciales de Hacienda. Por favor consulte con su proveedor.");
                 }
             }
@@ -1194,9 +1195,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.UsuarioRepository.Add(usuario);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1230,9 +1231,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.RolePorUsuarioRepository.Add(detalle);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1294,10 +1295,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al eliminar el usuario: ", ex);
                     throw new BusinessException("No es posible eliminar el usuario seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1321,9 +1322,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         throw new BusinessException("El usuario por consultar no existe");
                     return usuario;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1374,10 +1375,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.VendedorRepository.Add(vendedor);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1401,10 +1402,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(vendedor);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1436,10 +1437,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al eliminar el vendedor: ", ex);
                     throw new BusinessException("No es posible eliminar el vendedor seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1463,9 +1464,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         throw new BusinessException("El Vendedor por consultar no existe");
                     return Vendedor;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1488,9 +1489,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         throw new BusinessException("La empresa no posee registrado ningún vendedor");
                     return Vendedor;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1584,10 +1585,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.LineaRepository.Add(linea);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1618,10 +1619,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.LineaPorSucursalRepository.Add(detalle);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1653,10 +1654,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al agregar el parámetro contable: ", ex);
                     throw new BusinessException("No es posible eliminar la línea seleccionada. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1765,10 +1766,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.ProductoRepository.Add(producto);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1804,10 +1805,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(producto);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1847,10 +1848,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1879,10 +1880,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al agregar el parámetro contable: ", ex);
                     throw new BusinessException("No es posible eliminar el producto seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2199,10 +2200,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.BancoAdquirienteRepository.Add(bancoAdquiriente);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2226,10 +2227,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(bancoAdquiriente);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2260,10 +2261,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al agregar el parámetro contable: ", ex);
                     throw new BusinessException("No es posible eliminar el banco adquiriente seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2389,10 +2390,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.Commit();
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2450,10 +2451,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2800,10 +2801,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al eliminar el punto de servicio: ", ex);
                     throw new BusinessException("No es posible eliminar el punto de servicio seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2883,9 +2884,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (registro.Role != intRole) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2955,9 +2956,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     _servicioCorreo.SendNotificationEmail(new string[] { usuario.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\n" + _config.ServicioWebURL + "reset?id=" + strToken.Replace("/", "~").Replace("+", "@") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2995,9 +2996,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3029,9 +3030,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     _servicioCorreo.SendNotificationEmail(new string[] { strCorreoNotificacion }, new string[] { }, "Solicitud para autorizar dirección de correo electronico", "Adjunto se adjunta el link para autorizar la dirección de correo electronico suministrado.\n\n" + _config.ServicioWebURL + "authorize?id=" + strToken.Replace("/", "~").Replace("+", "@") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3068,9 +3069,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {

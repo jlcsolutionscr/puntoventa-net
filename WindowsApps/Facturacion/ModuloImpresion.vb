@@ -218,7 +218,7 @@ Public Class ModuloImpresion
         Dim strIdentificacion As String = objEmpresa.Identificacion
         If objEmpresa.Identificacion.Length > 32 Then strIdentificacion = strIdentificacion.Substring(0, 32)
         lineas.Add(New ClsLineaImpresion(1, strIdentificacion, 0, 100, 10, StringAlignment.Center, False))
-        lineas.Add(New ClsLineaImpresion(2, objEmpresa.CorreoNotificacion, 0, 100, 10, StringAlignment.Center, False))
+        lineas.Add(New ClsLineaImpresion(2, objEquipo.CorreoElectronico, 0, 100, 10, StringAlignment.Center, False))
         lineas.Add(New ClsLineaImpresion(1, objEquipo.NombreSucursal, 0, 100, 10, StringAlignment.Center, False))
         lineas.Add(New ClsLineaImpresion(2, "Terminal: " & objEquipo.IdTerminal, 0, 100, 10, StringAlignment.Center, False))
     End Sub
@@ -268,7 +268,7 @@ Public Class ModuloImpresion
         lineas.Add(New ClsLineaImpresion(1, objComprobante.strTotal, 54, 46, 10, StringAlignment.Far, True))
     End Sub
 
-    Public Shared Sub ImprimirFactura(ByVal objImpresion As ClsComprobante)
+    Public Shared Sub ImprimirFactura(objImpresion As ClsComprobante)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -335,7 +335,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirProforma(ByVal objImpresion As ClsComprobante)
+    Public Shared Sub ImprimirProforma(objImpresion As ClsComprobante)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -382,7 +382,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirApartado(ByVal objImpresion As ClsComprobante)
+    Public Shared Sub ImprimirApartado(objImpresion As ClsComprobante)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -437,7 +437,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirOrdenServicio(ByVal objImpresion As ClsComprobante)
+    Public Shared Sub ImprimirOrdenServicio(objImpresion As ClsComprobante)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -510,7 +510,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirCompra(ByVal objImpresion As ClsComprobante)
+    Public Shared Sub ImprimirCompra(objImpresion As ClsComprobante)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -558,7 +558,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirDevolucionCliente(ByVal objImpresion As ClsComprobante)
+    Public Shared Sub ImprimirDevolucionCliente(objImpresion As ClsComprobante)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -595,7 +595,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirDevolucionProveedor(ByVal objImpresion As ClsComprobante)
+    Public Shared Sub ImprimirDevolucionProveedor(objImpresion As ClsComprobante)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -623,7 +623,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirTraslado(ByVal objImpresion As ClsComprobante)
+    Public Shared Sub ImprimirTraslado(objImpresion As ClsComprobante)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -647,7 +647,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirReciboCxC(ByVal objImpresion As ClsRecibo)
+    Public Shared Sub ImprimirReciboCxC(objImpresion As ClsRecibo)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -685,7 +685,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirReciboCxP(ByVal objImpresion As ClsRecibo)
+    Public Shared Sub ImprimirReciboCxP(objImpresion As ClsRecibo)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -723,7 +723,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirReciboApartado(ByVal objImpresion As ClsRecibo)
+    Public Shared Sub ImprimirReciboApartado(objImpresion As ClsRecibo)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -761,7 +761,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirReciboOrdenServicio(ByVal objImpresion As ClsRecibo)
+    Public Shared Sub ImprimirReciboOrdenServicio(objImpresion As ClsRecibo)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -799,7 +799,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirEgreso(ByVal objImpresion As ClsEgreso)
+    Public Shared Sub ImprimirEgreso(objImpresion As ClsEgreso)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -824,7 +824,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirIngreso(ByVal objImpresion As ClsIngreso)
+    Public Shared Sub ImprimirIngreso(objImpresion As ClsIngreso)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
@@ -849,7 +849,7 @@ Public Class ModuloImpresion
         End Try
     End Sub
 
-    Public Shared Sub ImprimirCierreEfectivo(ByVal objImpresion As ClsCierreCaja)
+    Public Shared Sub ImprimirCierreEfectivo(objImpresion As ClsCierreCaja)
         lineas.Clear()
         charCount = objImpresion.equipo.AnchoLinea
         Try
