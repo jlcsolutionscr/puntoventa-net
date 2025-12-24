@@ -218,7 +218,12 @@ Public Class ModuloImpresion
         Dim strIdentificacion As String = objEmpresa.Identificacion
         If objEmpresa.Identificacion.Length > 32 Then strIdentificacion = strIdentificacion.Substring(0, 32)
         lineas.Add(New ClsLineaImpresion(1, strIdentificacion, 0, 100, 10, StringAlignment.Center, False))
-        lineas.Add(New ClsLineaImpresion(2, objEquipo.CorreoElectronico, 0, 100, 10, StringAlignment.Center, False))
+        Dim strCorreoElectronico As String = objEquipo.CorreoElectronico
+        If objEquipo.CorreoElectronico.Length > 32 Then
+            lineas.Add(New ClsLineaImpresion(1, objEquipo.CorreoElectronico.Substring(0, 32), 0, 100, 10, StringAlignment.Center, False))
+            strCorreoElectronico = objEquipo.CorreoElectronico.Substring(32)
+        End If
+        lineas.Add(New ClsLineaImpresion(2, strCorreoElectronico, 0, 100, 10, StringAlignment.Center, False))
         lineas.Add(New ClsLineaImpresion(1, objEquipo.NombreSucursal, 0, 100, 10, StringAlignment.Center, False))
         lineas.Add(New ClsLineaImpresion(2, "Terminal: " & objEquipo.IdTerminal, 0, 100, 10, StringAlignment.Center, False))
     End Sub
