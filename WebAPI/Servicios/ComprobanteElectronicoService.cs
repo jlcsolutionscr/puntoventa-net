@@ -124,7 +124,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public static DocumentoElectronico GenerarFacturaCompraElectronica(FacturaCompra facturaCompra, Empresa empresa, LeandroContext dbContext)
+        public static DocumentoElectronico GenerarFacturaCompraElectronica(FacturaCompra facturaCompra, Empresa empresa, SucursalPorEmpresa sucursal, LeandroContext dbContext)
         {
             string strCorreoNotificacion = empresa.CorreoNotificacion;
             if (facturaCompra.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura de compra.");
@@ -180,17 +180,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TelefonoType telefonoType = new TelefonoType
                 {
                     CodigoPais = "506",
-                    NumTelefono = empresa.Telefono1
+                    NumTelefono = sucursal.Telefono
                 };
                 receptor.Telefono = telefonoType;
             }
-            receptor.CorreoElectronico = empresa.CorreoNotificacion;
+            receptor.CorreoElectronico = sucursal.CorreoElectronico;
             ubicacionType = new UbicacionType
             {
                 Provincia = empresa.IdProvincia.ToString(),
                 Canton = empresa.IdCanton.ToString("D2"),
                 Distrito = empresa.IdDistrito.ToString("D2"),
-                OtrasSenas = empresa.Direccion
+                OtrasSenas = sucursal.Direccion
             };
             receptor.Ubicacion = ubicacionType;
             facturaElectronica.Receptor = receptor;
@@ -417,7 +417,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, facturaCompra.IdSucursal, facturaCompra.IdTerminal, TipoDocumento.FacturaElectronicaCompra, false, strCorreoNotificacion);
         }
 
-        public static DocumentoElectronico GenerarFacturaElectronica(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
+        public static DocumentoElectronico GenerarFacturaElectronica(Factura factura, Empresa empresa, SucursalPorEmpresa sucursal, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
             if (cliente.IdCliente > 1)
@@ -459,17 +459,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TelefonoType telefonoType = new TelefonoType
                 {
                     CodigoPais = "506",
-                    NumTelefono = empresa.Telefono1
+                    NumTelefono = sucursal.Telefono
                 };
                 emisor.Telefono = telefonoType;
             }
-            emisor.CorreoElectronico = new string[] { empresa.CorreoNotificacion };
+            emisor.CorreoElectronico = new string[] { sucursal.CorreoElectronico };
             UbicacionType ubicacionType = new UbicacionType
             {
                 Provincia = empresa.IdProvincia.ToString(),
                 Canton = empresa.IdCanton.ToString("D2"),
                 Distrito = empresa.IdDistrito.ToString("D2"),
-                OtrasSenas = empresa.Direccion
+                OtrasSenas = sucursal.Direccion
             };
             emisor.Ubicacion = ubicacionType;
             facturaElectronica.Emisor = emisor;
@@ -759,7 +759,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.FacturaElectronica, false, strCorreoNotificacion);
         }
 
-        public static DocumentoElectronico GeneraTiqueteElectronico(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
+        public static DocumentoElectronico GeneraTiqueteElectronico(Factura factura, Empresa empresa, SucursalPorEmpresa sucursal, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
             if (factura.CodigoActividad == "") throw new BusinessException("Debe ingresar el código de actividad económica en el encabezado de la factura.");
@@ -785,17 +785,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TelefonoType telefonoType = new TelefonoType
                 {
                     CodigoPais = "506",
-                    NumTelefono = empresa.Telefono1
+                    NumTelefono = sucursal.Telefono
                 };
                 emisor.Telefono = telefonoType;
             }
-            emisor.CorreoElectronico = new string[] { empresa.CorreoNotificacion };
+            emisor.CorreoElectronico = new string[] { sucursal.CorreoElectronico };
             UbicacionType ubicacionType = new UbicacionType
             {
                 Provincia = empresa.IdProvincia.ToString(),
                 Canton = empresa.IdCanton.ToString("D2"),
                 Distrito = empresa.IdDistrito.ToString("D2"),
-                OtrasSenas = empresa.Direccion
+                OtrasSenas = sucursal.Direccion
             };
             emisor.Ubicacion = ubicacionType;
             tiqueteElectronico.Emisor = emisor;
@@ -1035,7 +1035,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.TiqueteElectronico, false, strCorreoNotificacion);
         }
 
-        public static DocumentoElectronico GenerarNotaDeCreditoElectronica(Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
+        public static DocumentoElectronico GenerarNotaDeCreditoElectronica(Factura factura, Empresa empresa, SucursalPorEmpresa sucursal, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
             if (factura.IdCliente > 1 && factura.CodigoActividadReceptor != "")
@@ -1076,17 +1076,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TelefonoType telefonoType = new TelefonoType
                 {
                     CodigoPais = "506",
-                    NumTelefono = empresa.Telefono1
+                    NumTelefono = sucursal.Telefono
                 };
                 emisor.Telefono = telefonoType;
             }
-            emisor.CorreoElectronico = new string[] { empresa.CorreoNotificacion };
+            emisor.CorreoElectronico = new string[] { sucursal.CorreoElectronico };
             UbicacionType ubicacionType = new UbicacionType
             {
                 Provincia = empresa.IdProvincia.ToString(),
                 Canton = empresa.IdCanton.ToString("D2"),
                 Distrito = empresa.IdDistrito.ToString("D2"),
-                OtrasSenas = empresa.Direccion
+                OtrasSenas = sucursal.Direccion
             };
             emisor.Ubicacion = ubicacionType;
             notaCreditoElectronica.Emisor = emisor;
@@ -1384,7 +1384,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion);
         }
 
-        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
+        public static DocumentoElectronico GenerarNotaDeCreditoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, SucursalPorEmpresa sucursal, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
             if (factura.IdCliente > 1 && factura.CodigoActividadReceptor != "")
@@ -1425,17 +1425,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TelefonoType telefonoType = new TelefonoType
                 {
                     CodigoPais = "506",
-                    NumTelefono = empresa.Telefono1
+                    NumTelefono = sucursal.Telefono
                 };
                 emisor.Telefono = telefonoType;
             }
-            emisor.CorreoElectronico = new string[] { empresa.CorreoNotificacion };
+            emisor.CorreoElectronico = new string[] { sucursal.CorreoElectronico };
             UbicacionType ubicacionType = new UbicacionType
             {
                 Provincia = empresa.IdProvincia.ToString(),
                 Canton = empresa.IdCanton.ToString("D2"),
                 Distrito = empresa.IdDistrito.ToString("D2"),
-                OtrasSenas = empresa.Direccion
+                OtrasSenas = sucursal.Direccion
             };
             emisor.Ubicacion = ubicacionType;
             notaCreditoElectronica.Emisor = emisor;
@@ -1702,7 +1702,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return RegistrarDocumentoElectronico(empresa, documentoXml, null, dbContext, factura.IdSucursal, factura.IdTerminal, TipoDocumento.NotaCreditoElectronica, false, strCorreoNotificacion);
         }
 
-        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, Cliente cliente, LeandroContext dbContext)
+        public static DocumentoElectronico GenerarNotaDeDebitoElectronicaParcial(DevolucionCliente devolucion, Factura factura, Empresa empresa, SucursalPorEmpresa sucursal, Cliente cliente, LeandroContext dbContext)
         {
             string strCorreoNotificacion = "";
             if (factura.IdCliente > 1 && factura.CodigoActividadReceptor != "")
@@ -1743,17 +1743,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TelefonoType telefonoType = new TelefonoType
                 {
                     CodigoPais = "506",
-                    NumTelefono = empresa.Telefono1
+                    NumTelefono = sucursal.Telefono
                 };
                 emisor.Telefono = telefonoType;
             }
-            emisor.CorreoElectronico = new string[] { empresa.CorreoNotificacion };
+            emisor.CorreoElectronico = new string[] { sucursal.CorreoElectronico };
             UbicacionType ubicacionType = new UbicacionType
             {
                 Provincia = empresa.IdProvincia.ToString(),
                 Canton = empresa.IdCanton.ToString("D2"),
                 Distrito = empresa.IdDistrito.ToString("D2"),
-                OtrasSenas = empresa.Direccion
+                OtrasSenas = sucursal.Direccion
             };
             emisor.Ubicacion = ubicacionType;
             notaDebitoElectronica.Emisor = emisor;

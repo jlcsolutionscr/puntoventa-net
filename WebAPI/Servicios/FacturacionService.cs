@@ -714,7 +714,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             if (factura.Exonerado > 0)
                                 throw new BusinessException("No es posible emitir un tiquete electrónico con exoneración. Por favor verifique la información suministrada!");
-                            documentoFE = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, cliente, dbContext);
+                            documentoFE = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, sucursal, cliente, dbContext);
                         }
                         else
                         {
@@ -722,7 +722,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 throw new BusinessException("El código de actividad económica de la empresa no posee el formato apropiado (6 digitos). Por favor realice el ajuste correspondiente!");
                             if (factura.CodigoActividadReceptor.Trim().Length < 6)
                                 throw new BusinessException("El código de actividad económica del cliente no posee el formato apropiado (6 digitos). Por favor realice el ajuste correspondiente!");
-                            documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, cliente, dbContext);
+                            documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, sucursal, cliente, dbContext);
                         }
                         factura.IdDocElectronico = documentoFE.ClaveNumerica;
                     }
@@ -794,7 +794,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (clasificacion == null) throw new BusinessException("El código " + detalle.Codigo + " asignado al detalle de la factura de compra no corresponde a un código CABYS válido.");
                     }
                     dbContext.FacturaCompraRepository.Add(facturaCompra);
-                    DocumentoElectronico documentoFE = ComprobanteElectronicoService.GenerarFacturaCompraElectronica(facturaCompra, empresa, dbContext);
+                    DocumentoElectronico documentoFE = ComprobanteElectronicoService.GenerarFacturaCompraElectronica(facturaCompra, empresa, sucursal, dbContext);
                     dbContext.Commit();
                     if (documentoFE != null)
                     {
@@ -928,7 +928,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                         {
-                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, cliente, dbContext);
+                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, sucursal, cliente, dbContext);
                             factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
                         }
                     }
@@ -2007,7 +2007,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
                     {
                         Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
-                        documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext);
+                        documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, sucursal, cliente, dbContext);
                         devolucion.IdDocElectronico = documentoNC.ClaveNumerica;
                     }
                     dbContext.DevolucionClienteRepository.Add(devolucion);
@@ -2136,7 +2136,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                         {
-                            documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext);
+                            documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, sucursal, devolucion.Cliente, dbContext);
                             devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;
                         }
                     }
@@ -2708,15 +2708,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                         if (factura == null) throw new BusinessException("La registro origen del documento no existe.");
+                        SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == factura.IdSucursal);
+                        if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                         foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                         {
                             Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                             if (producto != null) detalleFactura.Producto = producto;
                         }
                         if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, factura.Cliente, dbContext);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, sucursal, factura.Cliente, dbContext);
                         else
-                            nuevoDocumento = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, factura.Cliente, dbContext);
+                            nuevoDocumento = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, sucursal, factura.Cliente, dbContext);
                         factura.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(factura);
                     }
@@ -2725,12 +2727,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (factura != null)
                         {
+                            SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == factura.IdSucursal);
+                            if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                             foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                             {
                                 Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                                 if (producto != null) detalleFactura.Producto = producto;
                             }
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, factura.Cliente, dbContext);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, sucursal, factura.Cliente, dbContext);
                             factura.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
                             dbContext.NotificarModificacion(factura);
                         }
@@ -2739,7 +2743,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                             if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                             factura = dbContext.FacturaRepository.AsNoTracking().Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, factura.Cliente, dbContext);
+                            SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == factura.IdSucursal);
+                            if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, sucursal, factura.Cliente, dbContext);
                             devolucion.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                             dbContext.NotificarModificacion(devolucion);
                         }
@@ -2749,7 +2755,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                         Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                        nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext);
+                        SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == factura.IdSucursal);
+                        if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
+                        nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, sucursal, devolucion.Cliente, dbContext);
                         devolucion.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(devolucion);
                     }
@@ -3009,14 +3017,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     if (factura == null) throw new BusinessException("La registro de la factura no existe.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == factura.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                     foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                     {
                         Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto != null) detalleFactura.Producto = producto;
                     }
-                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
+                    Empresa empresa = dbContext.EmpresaRepository.Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, bytLogo);
+                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
                 catch (BusinessException)
@@ -3042,7 +3052,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Apartado apartado = dbContext.ApartadoRepository.Include("Cliente").Include("DetalleApartado.Producto").FirstOrDefault(x => x.IdApartado == intIdApartado);
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == apartado.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    EstructuraPDF datos = GenerarEstructuraApartadoPDF(empresa, apartado, bytLogo);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == apartado.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en el apartado no existe.");
+                    EstructuraPDF datos = GenerarEstructuraApartadoPDF(empresa, apartado, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
                 catch (BusinessException)
@@ -3068,7 +3080,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente").Include("DetalleOrdenServicio.Producto").FirstOrDefault(x => x.IdOrden == intIdOrdenServicio);
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, bytLogo);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == ordenServicio.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la orden de servicio no existe.");
+                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
                 catch (BusinessException)
@@ -3094,7 +3108,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Proforma proforma = dbContext.ProformaRepository.Include("Cliente").Include("DetalleProforma.Producto").FirstOrDefault(x => x.IdProforma == intIdProforma);
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == proforma.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, bytLogo);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == proforma.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la proforma no existe.");
+                    EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
                 catch (BusinessException)
@@ -3120,6 +3136,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     JArray jarrayObj = new JArray();
                     Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     if (factura == null) throw new BusinessException("La registro de la factura no existe.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == factura.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                     foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                     {
                         Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
@@ -3129,7 +3147,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CorreoNotificacion != "")
                     {
-                        EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, bytLogo);
+                        EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
                         byte[] pdfAttactment = Generador.GenerarPDF(datos);
                         JObject jobDatosAdjuntos1 = new JObject
                         {
@@ -3155,7 +3173,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, byte[] bytLogo)
+        private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
             EstructuraPDF datos = new EstructuraPDF
             {
@@ -3198,13 +3216,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
-            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
-            datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
+            datos.CorreoElectronicoEmisor = sucursal.CorreoElectronico;
+            datos.TelefonoEmisor = sucursal.Telefono;
             datos.FaxEmisor = "";
-            datos.ProvinciaEmisor = empresa.Distrito.Canton.Provincia.Descripcion;
-            datos.CantonEmisor = empresa.Distrito.Canton.Descripcion;
-            datos.DistritoEmisor = empresa.Distrito.Descripcion;
-            datos.DireccionEmisor = empresa.Direccion;
+            datos.DireccionEmisor = sucursal.Direccion;
             datos.NombreReceptor = factura.NombreCliente;
             if (factura.IdCliente > 1)
             {
@@ -3242,7 +3257,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        private EstructuraPDF GenerarEstructuraApartadoPDF(Empresa empresa, Apartado apartado, byte[] bytLogo)
+        private EstructuraPDF GenerarEstructuraApartadoPDF(Empresa empresa, Apartado apartado, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
             EstructuraPDF datos = new EstructuraPDF
             {
@@ -3278,13 +3293,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
-            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
-            datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
+            datos.CorreoElectronicoEmisor = sucursal.CorreoElectronico;
+            datos.TelefonoEmisor = sucursal.Telefono;
             datos.FaxEmisor = "";
-            datos.ProvinciaEmisor = empresa.Distrito.Canton.Provincia.Descripcion;
-            datos.CantonEmisor = empresa.Distrito.Canton.Descripcion;
-            datos.DistritoEmisor = empresa.Distrito.Descripcion;
-            datos.DireccionEmisor = empresa.Direccion;
+            datos.DireccionEmisor = sucursal.Direccion;
             datos.NombreReceptor = apartado.NombreCliente;
             if (apartado.IdCliente > 1)
             {
@@ -3322,7 +3334,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        private EstructuraPDF GenerarEstructuraOrdenServicioPDF(Empresa empresa, OrdenServicio ordenServicio, byte[] bytLogo)
+        private EstructuraPDF GenerarEstructuraOrdenServicioPDF(Empresa empresa, OrdenServicio ordenServicio, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
             EstructuraPDF datos = new EstructuraPDF
             {
@@ -3358,13 +3370,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
-            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
-            datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
+            datos.CorreoElectronicoEmisor = sucursal.CorreoElectronico;
+            datos.TelefonoEmisor = sucursal.Telefono;
             datos.FaxEmisor = "";
-            datos.ProvinciaEmisor = empresa.Distrito.Canton.Provincia.Descripcion;
-            datos.CantonEmisor = empresa.Distrito.Canton.Descripcion;
-            datos.DistritoEmisor = empresa.Distrito.Descripcion;
-            datos.DireccionEmisor = empresa.Direccion;
+            datos.DireccionEmisor = sucursal.Direccion;
             datos.NombreReceptor = ordenServicio.NombreCliente;
             if (ordenServicio.IdCliente > 1)
             {
@@ -3401,7 +3410,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        private EstructuraPDF GenerarEstructuraProformaPDF(Empresa empresa, Proforma proforma, byte[] bytLogo)
+        private EstructuraPDF GenerarEstructuraProformaPDF(Empresa empresa, Proforma proforma, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
             EstructuraPDF datos = new EstructuraPDF
             {
@@ -3437,13 +3446,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
-            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
-            datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
+            datos.CorreoElectronicoEmisor = sucursal.CorreoElectronico;
+            datos.TelefonoEmisor = sucursal.Telefono;
             datos.FaxEmisor = "";
-            datos.ProvinciaEmisor = empresa.Distrito.Canton.Provincia.Descripcion;
-            datos.CantonEmisor = empresa.Distrito.Canton.Descripcion;
-            datos.DistritoEmisor = empresa.Distrito.Descripcion;
-            datos.DireccionEmisor = empresa.Direccion;
+            datos.DireccionEmisor = sucursal.Direccion;
             datos.NombreReceptor = proforma.NombreCliente;
             if (proforma.IdCliente > 1)
             {
@@ -3593,12 +3599,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CorreoElectronicoEmisor = emisorNode["CorreoElectronico"].InnerText;
             datos.TelefonoEmisor = emisorNode["Telefono"] != null && emisorNode["Telefono"].ChildNodes.Count > 0 ? emisorNode["Telefono"]["NumTelefono"].InnerText : "";
             datos.FaxEmisor = emisorNode["Fax"] != null && emisorNode["Fax"].ChildNodes.Count > 0 ? emisorNode["Fax"]["NumTelefono"].InnerText : "";
-            int intProvincia = int.Parse(emisorNode["Ubicacion"]["Provincia"].InnerText);
-            int intCanton = int.Parse(emisorNode["Ubicacion"]["Canton"].InnerText);
-            int intDistrito = int.Parse(emisorNode["Ubicacion"]["Distrito"].InnerText);
-            datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
-            datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
-            datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
             datos.DireccionEmisor = emisorNode["Ubicacion"]["OtrasSenas"].InnerText;
             string strExoneracionLeyenda = "";
             if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
@@ -3681,10 +3681,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (proforma == null) throw new BusinessException("No existe registro de proforma para el identificador suministrado: " + intIdProforma);
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == proforma.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == proforma.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la proforma no existe.");
                     string strBody;
                     string strTitle = empresa.NombreComercial + " - Factura proforma";
                     strBody = "Estimado cliente, adjunto encontrará el detalle de la proforma solicitada.";
-                    EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, bytLogo);
+                    EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, sucursal, bytLogo);
                     JArray jarrayObj = new JArray();
                     string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
                     byte[] pdfAttactment = Generador.GenerarPDF(datos);
@@ -3720,10 +3722,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ordenServicio == null) throw new BusinessException("No existe registro de orden de servicio para el identificador suministrado: " + intIdOrden);
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == ordenServicio.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la orden de servicio no existe.");
                     string strBody;
                     string strTitle = empresa.NombreComercial + " - Orden de servicio";
                     strBody = "Estimado cliente, adjunto encontrará el detalle de la orden de servicio solicitada.";
-                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, bytLogo);
+                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
                     JArray jarrayObj = new JArray();
                     string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
                     byte[] pdfAttactment = Generador.GenerarPDF(datos);
