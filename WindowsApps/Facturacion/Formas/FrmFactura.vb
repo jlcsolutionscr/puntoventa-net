@@ -1317,7 +1317,7 @@ Public Class FrmFactura
                     .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
                 }
                 If factura.IdDocElectronico IsNot Nothing Then
-                    comprobanteImpresion.strTipoDocumento = IIf(factura.IdCliente = 1 Or factura.CodigoActividadReceptor = "", "TIQUETE ELECTRONICO", "FACTURA ELECTRONICA")
+                    comprobanteImpresion.strTipoDocumento = IIf(cliente.IdCliente > 1, "FACTURA ELECTRONICA", "TIQUETE ELECTRONICO")
                     comprobanteImpresion.strClaveNumerica = factura.IdDocElectronico
                 Else
                     comprobanteImpresion.strClaveNumerica = ""
