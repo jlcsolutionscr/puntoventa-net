@@ -180,7 +180,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TelefonoType telefonoType = new TelefonoType
                 {
                     CodigoPais = "506",
-                    NumTelefono = sucursal.Telefono
+                    NumTelefono = sucursal.Telefono.Length > 8 ? sucursal.Telefono.Substring(0,8) : sucursal.Telefono
                 };
                 receptor.Telefono = telefonoType;
             }
@@ -459,7 +459,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TelefonoType telefonoType = new TelefonoType
                 {
                     CodigoPais = "506",
-                    NumTelefono = sucursal.Telefono
+                    NumTelefono = sucursal.Telefono.Length > 8 ? sucursal.Telefono.Substring(0,8) : sucursal.Telefono
                 };
                 emisor.Telefono = telefonoType;
             }
@@ -785,7 +785,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TelefonoType telefonoType = new TelefonoType
                 {
                     CodigoPais = "506",
-                    NumTelefono = sucursal.Telefono
+                    NumTelefono = sucursal.Telefono.Length > 8 ? sucursal.Telefono.Substring(0,8) : sucursal.Telefono
                 };
                 emisor.Telefono = telefonoType;
             }
@@ -1076,7 +1076,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TelefonoType telefonoType = new TelefonoType
                 {
                     CodigoPais = "506",
-                    NumTelefono = sucursal.Telefono
+                    NumTelefono = sucursal.Telefono.Length > 8 ? sucursal.Telefono.Substring(0,8) : sucursal.Telefono
                 };
                 emisor.Telefono = telefonoType;
             }
@@ -1425,7 +1425,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TelefonoType telefonoType = new TelefonoType
                 {
                     CodigoPais = "506",
-                    NumTelefono = sucursal.Telefono
+                    NumTelefono = sucursal.Telefono.Length > 8 ? sucursal.Telefono.Substring(0,8) : sucursal.Telefono
                 };
                 emisor.Telefono = telefonoType;
             }
@@ -1743,7 +1743,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 TelefonoType telefonoType = new TelefonoType
                 {
                     CodigoPais = "506",
-                    NumTelefono = sucursal.Telefono
+                    NumTelefono = sucursal.Telefono.Length > 8 ? sucursal.Telefono.Substring(0,8) : sucursal.Telefono
                 };
                 emisor.Telefono = telefonoType;
             }

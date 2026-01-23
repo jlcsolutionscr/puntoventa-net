@@ -2708,7 +2708,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                         if (factura == null) throw new BusinessException("La registro origen del documento no existe.");
-                        SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == factura.IdSucursal);
+                        SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                         if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                         foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                         {
@@ -2727,7 +2727,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (factura != null)
                         {
-                            SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == factura.IdSucursal);
+                            SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                             if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                             foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                             {
@@ -2743,7 +2743,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                             if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                             factura = dbContext.FacturaRepository.AsNoTracking().Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                            SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == factura.IdSucursal);
+                            SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                             if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                             nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, sucursal, factura.Cliente, dbContext);
                             devolucion.IdDocElectronico = nuevoDocumento.ClaveNumerica;
@@ -2755,7 +2755,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                         Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                        SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == factura.IdSucursal);
+                        SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                         if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                         nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, sucursal, devolucion.Cliente, dbContext);
                         devolucion.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
@@ -3017,7 +3017,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     if (factura == null) throw new BusinessException("La registro de la factura no existe.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == factura.IdSucursal);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                     foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                     {
@@ -3052,7 +3052,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Apartado apartado = dbContext.ApartadoRepository.Include("Cliente").Include("DetalleApartado.Producto").FirstOrDefault(x => x.IdApartado == intIdApartado);
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == apartado.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == apartado.IdSucursal);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == apartado.IdEmpresa && x.IdSucursal == apartado.IdSucursal);
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en el apartado no existe.");
                     EstructuraPDF datos = GenerarEstructuraApartadoPDF(empresa, apartado, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
@@ -3080,7 +3080,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente").Include("DetalleOrdenServicio.Producto").FirstOrDefault(x => x.IdOrden == intIdOrdenServicio);
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == ordenServicio.IdSucursal);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en la orden de servicio no existe.");
                     EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
@@ -3108,7 +3108,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Proforma proforma = dbContext.ProformaRepository.Include("Cliente").Include("DetalleProforma.Producto").FirstOrDefault(x => x.IdProforma == intIdProforma);
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == proforma.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == proforma.IdSucursal);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == proforma.IdEmpresa && x.IdSucursal == proforma.IdSucursal);
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en la proforma no existe.");
                     EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
@@ -3136,7 +3136,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     JArray jarrayObj = new JArray();
                     Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     if (factura == null) throw new BusinessException("La registro de la factura no existe.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == factura.IdSucursal);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                     foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                     {
@@ -3681,7 +3681,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (proforma == null) throw new BusinessException("No existe registro de proforma para el identificador suministrado: " + intIdProforma);
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == proforma.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == proforma.IdSucursal);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == proforma.IdEmpresa && x.IdSucursal == proforma.IdSucursal);
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en la proforma no existe.");
                     string strBody;
                     string strTitle = empresa.NombreComercial + " - Factura proforma";
@@ -3722,7 +3722,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ordenServicio == null) throw new BusinessException("No existe registro de orden de servicio para el identificador suministrado: " + intIdOrden);
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdSucursal == ordenServicio.IdSucursal);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en la orden de servicio no existe.");
                     string strBody;
                     string strTitle = empresa.NombreComercial + " - Orden de servicio";
