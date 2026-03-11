@@ -714,7 +714,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             if (factura.Exonerado > 0)
                                 throw new BusinessException("No es posible emitir un tiquete electrónico con exoneración. Por favor verifique la información suministrada!");
-                            documentoFE = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, sucursal, cliente, dbContext);
+                            documentoFE = ComprobanteElectronicoService.GenerarTiqueteElectronico(factura, empresa, sucursal, cliente, dbContext);
                         }
                         else
                         {
@@ -722,6 +722,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 throw new BusinessException("El código de actividad económica de la empresa no posee el formato apropiado (6 digitos). Por favor realice el ajuste correspondiente!");
                             if (factura.CodigoActividadReceptor.Trim().Length < 6)
                                 throw new BusinessException("El código de actividad económica del cliente no posee el formato apropiado (6 digitos). Por favor realice el ajuste correspondiente!");
+                            if (factura.CodigoActividadReceptor.IndexOf(".") == -1)
+                                throw new BusinessException("El código de actividad económica del cliente no posee el formato actual.");
                             documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, sucursal, cliente, dbContext);
                         }
                         factura.IdDocElectronico = documentoFE.ClaveNumerica;
@@ -2718,7 +2720,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
                             nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, sucursal, factura.Cliente, dbContext);
                         else
-                            nuevoDocumento = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, sucursal, factura.Cliente, dbContext);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarTiqueteElectronico(factura, empresa, sucursal, factura.Cliente, dbContext);
                         factura.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(factura);
                     }
