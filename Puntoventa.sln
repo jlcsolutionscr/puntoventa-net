@@ -3,14 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31815.197
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E01A4995-69A5-421D-9B7F-FA935E758AC9}"
-	ProjectSection(SolutionItems) = preProject
-		setup.ico = setup.ico
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1B7A0D86-3849-41BB-9ED1-E1131E372260}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{956E5D79-5D36-4508-9914-F4EC39BEA928}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WindowsApps", "WindowsApps", "{23B7469F-E6D8-422F-A8DB-9C19E213915B}"
 EndProject
@@ -56,27 +49,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.All|.NET.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.All|Any CPU.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.All|Mixed Platforms.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.All|x86.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Debug|.NET.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Debug|.NET.Build.0 = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Debug|Any CPU.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Debug|Mixed Platforms.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Debug|Mixed Platforms.Build.0 = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Debug|x86.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.DefaultBuild|.NET.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.DefaultBuild|Any CPU.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.DefaultBuild|Mixed Platforms.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.DefaultBuild|x86.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Release|.NET.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Release|.NET.Build.0 = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Release|Any CPU.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Release|Any CPU.Build.0 = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Release|Mixed Platforms.ActiveCfg = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Release|Mixed Platforms.Build.0 = Release
-		{956E5D79-5D36-4508-9914-F4EC39BEA928}.Release|x86.ActiveCfg = Release
 		{9D54BA58-FBB9-4325-82EF-1A4F8B36881F}.All|.NET.ActiveCfg = Release|Any CPU
 		{9D54BA58-FBB9-4325-82EF-1A4F8B36881F}.All|.NET.Build.0 = Release|Any CPU
 		{9D54BA58-FBB9-4325-82EF-1A4F8B36881F}.All|Any CPU.ActiveCfg = Release|Any CPU
@@ -370,7 +342,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{956E5D79-5D36-4508-9914-F4EC39BEA928} = {E01A4995-69A5-421D-9B7F-FA935E758AC9}
 		{9D54BA58-FBB9-4325-82EF-1A4F8B36881F} = {23B7469F-E6D8-422F-A8DB-9C19E213915B}
 		{53A26DE3-C25B-430E-8147-990AC6131BE1} = {948F74DD-5FFA-4A02-808F-1812C15C5071}
 		{5CD9843B-44FC-434C-A31A-DDD0C786CE62} = {1EE28990-FB8B-4CB1-AE40-CE2903135873}
@@ -382,7 +353,7 @@ Global
 		{E64BF898-9568-43DE-A289-0E6381B5F5F3} = {23B7469F-E6D8-422F-A8DB-9C19E213915B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {D8133CC0-28D9-4CD6-8284-726C2C85E359}
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
+		SolutionGuid = {D8133CC0-28D9-4CD6-8284-726C2C85E359}
 	EndGlobalSection
 EndGlobal
