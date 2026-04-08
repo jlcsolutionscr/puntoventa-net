@@ -221,7 +221,7 @@ Public Class FrmTrasladoMercaderia
         Try
             IniciaDetalleTraslado()
             EstablecerPropiedadesDataGridView()
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             txtNombreSucursalOrigen.Text = FrmPrincipal.equipoGlobal.NombreSucursal
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             grdDetalleTraslado.DataSource = dtbDetalleTraslado
@@ -242,7 +242,7 @@ Public Class FrmTrasladoMercaderia
 
     Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdTraslado.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+        txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         txtNombreSucursalOrigen.Text = FrmPrincipal.equipoGlobal.NombreSucursal
         txtReferencia.Text = ""
         dtbDetalleTraslado.Rows.Clear()
@@ -278,7 +278,7 @@ Public Class FrmTrasladoMercaderia
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -350,7 +350,7 @@ Public Class FrmTrasladoMercaderia
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdSucursalOrigen = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdSucursalDestino = cboIdSucursalDestino.SelectedValue,
-                .Fecha = FrmPrincipal.ObtenerFechaFormateada(),
+                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .Referencia = txtReferencia.Text,
                 .Total = decTotal
             }
@@ -373,7 +373,7 @@ Public Class FrmTrasladoMercaderia
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones

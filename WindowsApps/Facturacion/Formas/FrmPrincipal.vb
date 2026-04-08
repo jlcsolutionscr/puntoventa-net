@@ -1,9 +1,11 @@
 Imports System.Collections.Generic
 Imports System.Configuration
+Imports System.Globalization
 Imports System.Linq
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.Constantes
 Imports LeandroSoftware.Common.DatosComunes
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.Common.Seguridad
@@ -13,6 +15,7 @@ Public Class FrmPrincipal
     Private objMenu As ToolStripMenuItem
     Private appSettings As Specialized.NameValueCollection
     Private bolEsAdministrador As Boolean = False
+    Private provider As CultureInfo = CultureInfo.InvariantCulture
     Public usuarioGlobal As Usuario
     Public empresaGlobal As Empresa
     Public equipoGlobal As EquipoRegistrado
@@ -45,9 +48,10 @@ Public Class FrmPrincipal
     Private listaTipoMoneda As List(Of LlaveDescripcion)
     Private listaCondicionVenta As List(Of LlaveDescripcion)
     Private listaTipoExoneracion As List(Of LlaveDescripcion)
+    Private listaNombreInstExoneracion As List(Of LlaveDescripcion)
     Private listaSucursales As List(Of LlaveDescripcion)
     Private listaTipoPrecio As List(Of LlaveDescripcion)
-    Private listaActividadEconomica As List(Of LlaveDescripcion)
+    Private listaActividadEconomica As List(Of LlaveTextoDescripcion)
     Private tipoDeCambioDolar As LlaveDescripcionValor
 
 #End Region
@@ -81,6 +85,10 @@ Public Class FrmPrincipal
         Return New List(Of LlaveDescripcion)(listaTipoExoneracion)
     End Function
 
+    Public Function ObtenerListadoNombreInstExoneracion() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaNombreInstExoneracion)
+    End Function
+
     Public Function ObtenerListadoTipoProducto() As List(Of LlaveDescripcion)
         Return New List(Of LlaveDescripcion)(listaTipoProducto)
     End Function
@@ -97,12 +105,21 @@ Public Class FrmPrincipal
         Return New List(Of LlaveDescripcion)(listaTipoPrecio)
     End Function
 
-    Public Function ObtenerListadoActividadEconomica() As List(Of LlaveDescripcion)
-        Return New List(Of LlaveDescripcion)(listaActividadEconomica)
+    Public Function ObtenerListadoActividadEconomica() As List(Of LlaveTextoDescripcion)
+        Return New List(Of LlaveTextoDescripcion)(listaActividadEconomica)
     End Function
 
     Public Function ObtenerDescripcionTipoExoneracion(intIdTipo As Integer) As String
         Dim tipo As LlaveDescripcion = listaTipoExoneracion.FirstOrDefault(Function(x) x.Id = intIdTipo)
+        If tipo.Descripcion <> Nothing Then
+            Return tipo.Descripcion
+        Else
+            Return ""
+        End If
+    End Function
+
+    Public Function ObtenerDescripcionNombreInstExoneracion(intIdTipo As Integer) As String
+        Dim tipo As LlaveDescripcion = listaNombreInstExoneracion.FirstOrDefault(Function(x) x.Id = intIdTipo)
         If tipo.Descripcion <> Nothing Then
             Return tipo.Descripcion
         Else
@@ -138,11 +155,10 @@ Public Class FrmPrincipal
         End If
     End Function
 
-    Public Function ObtenerFechaFormateada() As Date
+    Public Function ObtenerFechaCostaRica() As Date
         Dim timeUtc As Date = Date.UtcNow()
         Dim cstZone As TimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Central America Standard Time")
-        Dim fecha As Date = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone)
-        Return FormatDateTime(fecha, DateFormat.ShortDate)
+        Return TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone)
     End Function
 
     Public Function RequiereActualizacion(actual As String, servidor As String) As Boolean
@@ -220,20 +236,49 @@ Public Class FrmPrincipal
     End Function
 
     Public Async Function ObtenerTipoDeCambioDolar() As Task(Of Decimal)
-        Dim strFecha As String = ObtenerFechaFormateada()
+        Dim strFecha As String = FormatDateTime(ObtenerFechaCostaRica(), DateFormat.ShortDate)
         Dim decTipoDeCambioDolar As Decimal = 0
         If Not IsNothing(tipoDeCambioDolar) Then
             If tipoDeCambioDolar.Descripcion = strFecha Then Return tipoDeCambioDolar.Valor
-        End If
-        If decTipoDeCambioDolar = 0 Then
-            decTipoDeCambioDolar = Await Puntoventa.ObtenerTipoCambioDolar(strFecha, usuarioGlobal.Token)
-        End If
-        If decTipoDeCambioDolar = 0 Then
+        Else
             decTipoDeCambioDolar = Decimal.Parse(Await Puntoventa.ObtenerTipoCambioDolarHacienda())
-            Await Puntoventa.AgregarTipoCambioDolar(strFecha, decTipoDeCambioDolar, usuarioGlobal.Token)
+            tipoDeCambioDolar = New LlaveDescripcionValor(1, strFecha, decTipoDeCambioDolar)
         End If
-        tipoDeCambioDolar = New LlaveDescripcionValor(1, strFecha, decTipoDeCambioDolar)
         Return decTipoDeCambioDolar
+    End Function
+
+    Public Function ObtenerClienteDeContado()
+        Return New Cliente With {
+            .IdCliente = 1,
+            .Nombre = "CLIENTE DE CONTADO",
+            .Telefono = "",
+            .IdTipoExoneracion = StaticValoresPorDefecto.TipoExoneracion,
+            .IdNombreInstExoneracion = StaticValoresPorDefecto.IdNombreInstExoneracion,
+            .NumDocExoneracion = "",
+            .ArticuloExoneracion = "",
+            .IncisoExoneracion = "",
+            .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", Provider),
+            .PorcentajeExoneracion = 0,
+            .CodigoActividad = ""
+        }
+    End Function
+
+    Public Async Function CargarListaBancoAdquiriente() As Task(Of List(Of LlaveDescripcion))
+        Dim lista As IList = Await Puntoventa.ObtenerListadoBancoAdquiriente(empresaGlobal.IdEmpresa, "", usuarioGlobal.Token)
+        If lista.Count() = 0 Then
+            Throw New Exception("Debe parametrizar la lista de bancos adquirientes para pagos con tarjeta.")
+        Else
+            Return lista
+        End If
+    End Function
+
+    Public Async Function CargarListaCuentaBanco() As Task(Of List(Of LlaveDescripcion))
+        Dim lista As IList = Await Puntoventa.ObtenerListadoCuentasBanco(empresaGlobal.IdEmpresa, "", usuarioGlobal.Token)
+        If lista.Count() = 0 Then
+            Throw New Exception("Debe parametrizar la lista de bancos para registrar movimientos.")
+        Else
+            Return lista
+        End If
     End Function
 #End Region
 
@@ -246,10 +291,10 @@ Public Class FrmPrincipal
     End Sub
 
     Private Sub mnuArchivoConsultaCierre_Click(sender As Object, e As EventArgs) Handles mnuArchivoConsultaCierre.Click
-        Dim formBusquedaCierreCaja As New FrmCierreDeCajaListado With {
+        Dim formBusqueda As New FrmCierreDeCajaListado With {
             .MdiParent = Me
         }
-        formBusquedaCierreCaja.Show()
+        formBusqueda.Show()
     End Sub
 
     Public Sub MnuArchivoReporte_Click(sender As Object, e As EventArgs) Handles MnuArchivoReporte.Click
@@ -411,13 +456,6 @@ Public Class FrmPrincipal
             .MdiParent = Me
         }
         formProforma.Show()
-    End Sub
-
-    Public Sub MnuCapturaOrden_Click(sender As Object, e As EventArgs)
-        Dim formOrdenCompra As New FrmOrdenCompra With {
-            .MdiParent = Me
-        }
-        formOrdenCompra.Show()
     End Sub
 
     Private Sub MnuCapturaDevolucionProveedor_Click(sender As Object, e As EventArgs)
@@ -603,7 +641,7 @@ Public Class FrmPrincipal
         Try
             appSettings = ConfigurationManager.AppSettings
         Catch ex As Exception
-            MessageBox.Show("Error al cargar el archivo de configuración del sistema. Por favor contacte con su proveedor del servicio. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al cargar el archivo de configuración del sistema. Por favor contacte con su proveedor del servicio.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
             Exit Sub
         End Try
@@ -629,7 +667,7 @@ Public Class FrmPrincipal
             Dim formDescarga As New FrmDescargaActualizacion()
             formDescarga.ShowDialog()
             If bolDescargaCancelada Then
-                MessageBox.Show("Actualización cancelada por el usuario. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                MessageBox.Show("Actualización cancelada por el usuario.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             End If
             Application.Exit()
         End If
@@ -696,14 +734,15 @@ Public Class FrmPrincipal
         listaTipoMoneda = empresa.ListadoTipoMoneda
         listaCondicionVenta = empresa.ListadoCondicionVenta
         listaTipoExoneracion = empresa.ListadoTipoExoneracion
+        listaNombreInstExoneracion = empresa.ListadoNombreInstExoneracion
         listaTipoPrecio = empresa.ListadoTipoPrecio
         listaSucursales = New List(Of LlaveDescripcion)
         For Each sucursal As SucursalPorEmpresa In empresa.SucursalPorEmpresa
             listaSucursales.Add(New LlaveDescripcion(sucursal.IdSucursal, sucursal.NombreSucursal))
         Next
-        listaActividadEconomica = New List(Of LlaveDescripcion)
+        listaActividadEconomica = New List(Of LlaveTextoDescripcion)
         For Each actividad As ActividadEconomicaEmpresa In empresa.ActividadEconomicaEmpresa
-            listaActividadEconomica.Add(New LlaveDescripcion(actividad.CodigoActividad, actividad.Descripcion))
+            listaActividadEconomica.Add(New LlaveTextoDescripcion(actividad.CodigoActividad, actividad.Descripcion))
         Next
         picLoader.Visible = False
         Dim formInicio As New FrmInicio()

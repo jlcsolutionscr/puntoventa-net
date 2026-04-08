@@ -28,7 +28,7 @@ Public Class FrmDescargaActualizacion
                 Process.Start(procStartInfo)
                 Close()
             Catch ex As Exception
-                MessageBox.Show("Error al ejecutar la actualización. Por favor contacte con su proveedor del servicio. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al ejecutar la actualización. Por favor contacte con su proveedor del servicio.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End If
     End Sub
@@ -40,7 +40,7 @@ Public Class FrmDescargaActualizacion
             appSettings = ConfigurationManager.AppSettings
             strServicioURL = appSettings.Get("ServicioURL")
         Catch ex As Exception
-            MessageBox.Show("Error al cargar el archivo de configuración del sistema. Por favor contacte con su proveedor del servicio. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error al cargar el archivo de configuración del sistema. Por favor contacte con su proveedor del servicio.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Application.Exit()
         End Try
         DownloaderClient = New WebClient

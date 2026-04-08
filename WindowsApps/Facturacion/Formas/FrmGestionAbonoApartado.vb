@@ -111,7 +111,7 @@ Public Class FrmGestionAbonoApartado
                         MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
-                    MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     CargarDetalleMovimiento(apartado.IdCliente)
                 End If
             Else
@@ -123,9 +123,10 @@ Public Class FrmGestionAbonoApartado
     End Sub
 
     Private Async Sub btnBuscarApartado_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarApartado.Click
-        Dim formBusquedaCliente As New FrmBusquedaApartado()
+        Dim formBusqueda As New FrmBusquedaApartado()
         FrmPrincipal.intBusqueda = 0
-        formBusquedaCliente.ShowDialog()
+        formBusqueda.bolExcluyeNulos = True
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 apartado = Await Puntoventa.ObtenerApartado(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)

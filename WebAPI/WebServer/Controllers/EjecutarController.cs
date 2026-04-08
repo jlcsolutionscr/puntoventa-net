@@ -110,11 +110,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
             switch (strNombreMetodo)
             {
-                case "AgregarTipoCambioDolar":
-                    strFechaInicial = parametrosJO.Property("Fecha").Value.ToString();
-                    string strTipoCambio = parametrosJO.Property("Valor").Value.ToString();
-                    _servicioMantenimiento.AgregarTipoCambioDolar(strFechaInicial, strTipoCambio);
-                    break;
                 case "ActualizarParametroDelSistema":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdParametro").Value.ToString());
                     string strValor = parametrosJO.Property("Valor").Value.ToString();
@@ -473,6 +468,11 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "ReprocesarDocumentoElectronico":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdDocumento").Value.ToString());
                     _servicioFacturacion.ReprocesarDocumentoElectronico(intIdLlave1);
+                    break;
+                case "GenerarAutorizacionActualizacionCorreoUsuario":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                    string strCorreoNotificacion = parametrosJO.Property("CorreoNotificacion").Value.ToString();
+                    _servicioMantenimiento.GenerarAutorizacionActualizacionCorreoUsuario(intIdLlave1, strCorreoNotificacion);
                     break;
                 case "EnviarReportePorCorreoElectronico":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

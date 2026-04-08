@@ -124,7 +124,7 @@ Public Class FrmCierreDeCaja
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        MessageBox.Show("Información guardada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Información guardada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnReporte.Enabled = True
         btnReporte.Focus()
         btnTiquete.Enabled = True

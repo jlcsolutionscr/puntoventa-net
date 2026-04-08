@@ -1,8 +1,9 @@
-Imports System.Threading.Tasks
-Imports LeandroSoftware.Common.Dominio.Entidades
-Imports System.IO
-Imports LeandroSoftware.ClienteWCF
 Imports System.Collections.Generic
+Imports System.IO
+Imports System.Threading.Tasks
+Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
 
 Public Class FrmEmpresa
 #Region "Variables"
@@ -58,9 +59,9 @@ Public Class FrmEmpresa
         dgvActividadEconomica.Refresh()
     End Sub
 
-    Private Sub CargarLineaDetalleActividad(ByVal intCodigo As Integer, ByVal strDescripcion As String)
+    Private Sub CargarLineaDetalleActividad(ByVal intCodigo As String, ByVal strDescripcion As String)
         If dtbActividadEconomica.Rows.Contains(intCodigo) Then
-            MessageBox.Show("La actividad económica ya se encuentra en el listado. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("La actividad económica ya se encuentra en el listado.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Else
             dtrActividadEconomica = dtbActividadEconomica.NewRow
             dtrActividadEconomica.Item(0) = intCodigo
@@ -70,7 +71,7 @@ Public Class FrmEmpresa
             dgvActividadEconomica.Refresh()
         End If
     End Sub
-    Private Async Function CargarListadoBarrios(IdProvincia As Integer, IdCanton As Integer, IdDistrito As Integer) As Task
+    Private Async Function CargarListadoDistritos(IdProvincia As Integer, IdCanton As Integer) As Task
         Try
             cboCanton.ValueMember = "Id"
             cboCanton.DisplayMember = "Descripcion"
@@ -78,9 +79,6 @@ Public Class FrmEmpresa
             cboDistrito.ValueMember = "Id"
             cboDistrito.DisplayMember = "Descripcion"
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(IdProvincia, IdCanton, FrmPrincipal.usuarioGlobal.Token)
-            cboBarrio.ValueMember = "Id"
-            cboBarrio.DisplayMember = "Descripcion"
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(IdProvincia, IdCanton, IdDistrito, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -93,9 +91,10 @@ Public Class FrmEmpresa
         cboProvincia.ValueMember = "Id"
         cboProvincia.DisplayMember = "Descripcion"
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
-        cboActividadEconomica.ValueMember = "Id"
+        cboActividadEconomica.ValueMember = "Llave"
         cboActividadEconomica.DisplayMember = "Descripcion"
-        cboActividadEconomica.DataSource = Await Puntoventa.ObtenerListadoActividadEconomica(strIdentificacion)
+        Dim contribuyente As ContribuyenteHacienda = Await Puntoventa.ObtenerInformacionContribuyente(strIdentificacion)
+        cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas
         Dim comboSource As New Dictionary(Of Integer, String)()
         comboSource.Add(80, "80MM THERMAL RECEIPT PRINTER")
         comboSource.Add(52, "58MM THERMAL RECEIPT PRINTER")
@@ -140,7 +139,7 @@ Public Class FrmEmpresa
                 Close()
                 Exit Sub
             End If
-            Await CargarListadoBarrios(datos.IdProvincia, datos.IdCanton, datos.IdDistrito)
+            Await CargarListadoDistritos(datos.IdProvincia, datos.IdCanton)
             txtIdEmpresa.Text = datos.IdEmpresa
             txtNombreEmpresa.Text = datos.NombreEmpresa
             txtNombreComercial.Text = datos.NombreComercial
@@ -149,7 +148,6 @@ Public Class FrmEmpresa
             cboProvincia.SelectedValue = datos.IdProvincia
             cboCanton.SelectedValue = datos.IdCanton
             cboDistrito.SelectedValue = datos.IdDistrito
-            cboBarrio.SelectedValue = datos.IdBarrio
             txtDireccion.Text = datos.Direccion
             txtTelefono1.Text = datos.Telefono1
             txtTelefono2.Text = datos.Telefono2
@@ -172,6 +170,7 @@ Public Class FrmEmpresa
             txtNombreSucursal.Text = datosSucursal.NombreSucursal
             txtDireccionSucursal.Text = datosSucursal.Direccion
             txtTelefonoSucursal.Text = datosSucursal.Telefono
+            txtCorreoSucursal.Text = datosSucursal.CorreoElectronico
             txtConsecFactura.Text = datosSucursal.ConsecFactura
             txtConsecProforma.Text = datosSucursal.ConsecProforma
             txtConsecOrdenServicio.Text = datosSucursal.ConsecOrdenServicio
@@ -225,7 +224,6 @@ Public Class FrmEmpresa
             cboProvincia.SelectedValue Is Nothing Or
             cboCanton.SelectedValue Is Nothing Or
             cboDistrito.SelectedValue Is Nothing Or
-            cboBarrio.SelectedValue Is Nothing Or
             txtDireccion.Text.Length = 0 Or
             txtTelefono1.Text.Length = 0 Or
             txtCorreoNotificacion.Text.Length = 0 Or
@@ -236,7 +234,7 @@ Public Class FrmEmpresa
             txtConsecProforma.Text.Length = 0 Or
             txtConsecOrdenServicio.Text.Length = 0 Or
             txtConsecApartado.Text.Length = 0 Then
-            MessageBox.Show("Existen campos requeridos que no fueron ingresados. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Existen campos requeridos que no fueron ingresados. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
         datos.NombreEmpresa = txtNombreEmpresa.Text
@@ -246,7 +244,6 @@ Public Class FrmEmpresa
         datos.IdProvincia = cboProvincia.SelectedValue
         datos.IdCanton = cboCanton.SelectedValue
         datos.IdDistrito = cboDistrito.SelectedValue
-        datos.IdBarrio = cboBarrio.SelectedValue
         datos.Direccion = txtDireccion.Text
         datos.Telefono1 = txtTelefono1.Text
         datos.Telefono2 = txtTelefono2.Text
@@ -257,7 +254,7 @@ Public Class FrmEmpresa
         datos.LeyendaProforma = txtLeyendaProforma.Text
         datos.PrecioVentaIncluyeIVA = chkPrecioVentaIncluyeIVA.Checked
         datos.MontoRedondeoDescuento = txtMontoRedondeoDescuento.Text
-        datos.Barrio = Nothing
+        datos.Distrito = Nothing
         datos.ActividadEconomicaEmpresa.Clear()
         For I As Short = 0 To dtbActividadEconomica.Rows.Count - 1
             Dim actividadEconomicaEmpresa As ActividadEconomicaEmpresa = New ActividadEconomicaEmpresa With {
@@ -273,7 +270,7 @@ Public Class FrmEmpresa
                 txtUsuarioATV.Text.Length = 0 Or
                 txtClaveATV.Text.Length = 0 Or
                 dgvActividadEconomica.RowCount = 0 Then
-                MessageBox.Show("Los datos para generar los documentos electrónicos son requeridos. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Los datos para generar los documentos electrónicos son requeridos. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             If txtUltimoFE.Text.Length = 0 Or
@@ -281,7 +278,7 @@ Public Class FrmEmpresa
                 txtUltimoNC.Text.Length = 0 Or
                 txtUltimoTE.Text.Length = 0 Or
                 txtUltimoMR.Text.Length = 0 Then
-                MessageBox.Show("La numeración de los últimos documentos electrónicos es requerida. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("La numeración de los últimos documentos electrónicos es requerida. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             If credenciales Is Nothing Or bolCredencialesModificados Then
@@ -335,6 +332,7 @@ Public Class FrmEmpresa
                 datosSucursal.NombreSucursal = txtNombreSucursal.Text
                 datosSucursal.Direccion = txtDireccionSucursal.Text
                 datosSucursal.Telefono = txtTelefonoSucursal.Text
+                datosSucursal.CorreoElectronico = txtCorreoSucursal.Text
                 datosSucursal.ConsecFactura = txtConsecFactura.Text
                 datosSucursal.ConsecProforma = txtConsecProforma.Text
                 datosSucursal.ConsecOrdenServicio = txtConsecOrdenServicio.Text
@@ -344,6 +342,7 @@ Public Class FrmEmpresa
                 FrmPrincipal.equipoGlobal.NombreSucursal = txtNombreSucursal.Text
                 FrmPrincipal.equipoGlobal.DireccionSucursal = txtDireccionSucursal.Text
                 FrmPrincipal.equipoGlobal.TelefonoSucursal = txtTelefonoSucursal.Text
+                FrmPrincipal.equipoGlobal.CorreoElectronico = txtCorreoSucursal.Text
             End If
             If bolTerminalActualizada Then
                 datosTerminal.ImpresoraFactura = txtNombreImpresora.Text
@@ -373,7 +372,6 @@ Public Class FrmEmpresa
             bolInicializado = False
             cboCanton.DataSource = Await Puntoventa.ObtenerListadoCantones(cboProvincia.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, 1, 1, FrmPrincipal.usuarioGlobal.Token)
             bolInicializado = True
         End If
     End Sub
@@ -382,15 +380,6 @@ Public Class FrmEmpresa
         If bolInicializado Then
             bolInicializado = False
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
-            bolInicializado = True
-        End If
-    End Sub
-
-    Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
-        If bolInicializado Then
-            bolInicializado = False
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             bolInicializado = True
         End If
     End Sub
@@ -403,11 +392,7 @@ Public Class FrmEmpresa
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 
-    Private Sub TextFieldSucursal_Validated(sender As Object, e As EventArgs) Handles txtNombreSucursal.Validated, txtDireccionSucursal.Validated, txtTelefonoSucursal.Validated
-        bolSucursalActualizada = True
-    End Sub
-
-    Private Sub chkCierre_CheckedChanged(sender As Object, e As EventArgs) Handles chkCierre.CheckedChanged
+    Private Sub TextFieldSucursal_Validated(sender As Object, e As EventArgs) Handles txtNombreSucursal.Validated, txtDireccionSucursal.Validated, txtTelefonoSucursal.Validated, txtCorreoSucursal.Validated, chkCierre.CheckedChanged
         bolSucursalActualizada = True
     End Sub
 
@@ -427,7 +412,7 @@ Public Class FrmEmpresa
                 bolCredencialesModificados = True
                 txtPinCertificado.ReadOnly = False
             Catch ex As Exception
-                MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .p12 válido. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .p12 válido.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End If
     End Sub
@@ -441,7 +426,7 @@ Public Class FrmEmpresa
                 picLogo.Image = Image.FromFile(ofdAbrirDocumento.FileName)
                 bolLogoModificado = True
             Catch ex As Exception
-                MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .PNG válido. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al intentar cargar el certificado. Verifique que sea un archivo .PNG válido.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         End If
     End Sub

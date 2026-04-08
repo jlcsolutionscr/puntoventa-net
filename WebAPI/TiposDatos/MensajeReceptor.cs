@@ -1,8 +1,9 @@
 ﻿namespace LeandroSoftware.ServicioWeb.TiposDatosHacienda
 {
-    /// <comentarios/>
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/mensajeReceptor")]
-    [System.Xml.Serialization.XmlRoot(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/mensajeReceptor", IsNullable = false)]
+    /// <remarks/>
+    [Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/mensajeReceptor")]
+    [System.Xml.Serialization.XmlRoot(Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/mensajeReceptor", IsNullable = false)]
     public partial class MensajeReceptor
     {
 
@@ -10,7 +11,7 @@
 
         private string numeroCedulaEmisorField;
 
-        private System.DateTime fechaEmisionDocField;
+        private DateTime fechaEmisionDocField;
 
         private MensajeReceptorMensaje mensajeField;
 
@@ -57,7 +58,7 @@
         }
 
         /// <remarks/>
-        public System.DateTime FechaEmisionDoc
+        public DateTime FechaEmisionDoc
         {
             get => fechaEmisionDocField;
             set => fechaEmisionDocField = value;
@@ -175,8 +176,8 @@
     }
 
     /// <remarks/>
-    [System.Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/mensajeReceptor")]
+    [Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/mensajeReceptor")]
     public enum MensajeReceptorMensaje
     {
 
@@ -194,8 +195,8 @@
     }
 
     /// <remarks/>
-    [System.Serializable()]
-    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/mensajeReceptor")]
+    [Serializable()]
+    [System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/mensajeReceptor")]
     public enum MensajeReceptorCondicionImpuesto
     {
 

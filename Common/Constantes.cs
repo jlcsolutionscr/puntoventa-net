@@ -25,6 +25,7 @@ namespace LeandroSoftware.Common.Constantes
     {
         public static readonly short ADMINISTRADOR = 1;
         public static readonly short USUARIO_SISTEMA = 2;
+        public static readonly short SOPORTE = 3;
     };
 
     public static class StaticTipoMoneda
@@ -40,6 +41,7 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly int MonedaDelSistema = 1;
         public static readonly int TasaImpuesto = 8;
         public static readonly int TipoExoneracion = 1;
+        public static readonly int IdNombreInstExoneracion = 1;
     };
 
     public static class StaticTipoCuentaPorCobrar
@@ -86,6 +88,8 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly int Cheque = 3;
         public static readonly int TransferenciaDepositoBancario = 4;
         public static readonly int RacaudadoPorTerceros = 5;
+        public static readonly int SinpeMovil = 6;
+        public static readonly int PlataformaDigital = 7;
         public static readonly int Otros = 99;
     };
 
@@ -165,6 +169,12 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly string Enviado = "enviado";
         public static readonly string Procesando = "procesando";
         public static readonly string Aceptado = "aceptado";
+        public static readonly string Rechazado = "rechazado";
+    };
+
+    public static class StaticEstadoNotificacion
+    {
+        public static readonly string Pendiente = "pendiente";
         public static readonly string Rechazado = "rechazado";
     };
 }

@@ -19,7 +19,6 @@ Public Class FrmProforma
     Private vendedor As Vendedor
     Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
-    Private provider As CultureInfo = CultureInfo.InvariantCulture
     'Impresion de tiquete
     Private comprobanteImpresion As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
@@ -371,7 +370,7 @@ Public Class FrmProforma
         Try
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             grdDetalleProforma.DataSource = dtbDetalleProforma
             consecDetalle = 0
@@ -380,16 +379,7 @@ Public Class FrmProforma
             txtSubTotal.Text = FormatNumber(0, 2)
             txtImpuesto.Text = FormatNumber(0, 2)
             txtTotal.Text = FormatNumber(0, 2)
-            cliente = New Cliente With {
-                .IdCliente = 1,
-                .Nombre = "CLIENTE DE CONTADO",
-                .Telefono = "",
-                .IdTipoExoneracion = 1,
-                .PorcentajeExoneracion = 0,
-                .NombreInstExoneracion = "",
-                .NumDocExoneracion = "",
-                .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
-            }
+            cliente = FrmPrincipal.ObtenerClienteDeContado()
             txtNombreCliente.Text = cliente.Nombre
             txtPorcentajeExoneracion.Text = "0"
             If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
@@ -405,7 +395,8 @@ Public Class FrmProforma
             txtCodigo.Focus()
             CargarCombos()
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
+            txtTipoCambio.Text = 1
+            If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
             bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -415,11 +406,12 @@ Public Class FrmProforma
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdProforma.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+        txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         cboTipoMoneda.Enabled = True
-        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
+        txtTipoCambio.Text = 1
+        If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
         txtTextoAdicional.Text = ""
         txtTelefono.Text = ""
         txtPorcentajeExoneracion.Text = "0"
@@ -444,16 +436,7 @@ Public Class FrmProforma
         btnEnviar.Enabled = False
         btnBuscaVendedor.Enabled = True
         btnBuscarCliente.Enabled = True
-        cliente = New Cliente With {
-            .IdCliente = 1,
-            .Nombre = "CLIENTE DE CONTADO",
-            .Telefono = "",
-            .IdTipoExoneracion = 1,
-            .PorcentajeExoneracion = 0,
-            .NombreInstExoneracion = "",
-            .NumDocExoneracion = "",
-            .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
-        }
+        cliente = FrmPrincipal.ObtenerClienteDeContado()
         txtNombreCliente.Text = cliente.Nombre
         txtNombreCliente.ReadOnly = False
         If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
@@ -484,7 +467,7 @@ Public Class FrmProforma
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -492,8 +475,7 @@ Public Class FrmProforma
 
     Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaProforma()
-        formBusqueda.bolIncluyeEstado = True
-        formBusqueda.bolIncluyeNulos = True
+        formBusqueda.bolHabilitaFiltros = True
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
@@ -533,9 +515,9 @@ Public Class FrmProforma
     End Sub
 
     Private Async Sub BtnBuscaVendedor_Click(sender As Object, e As EventArgs) Handles btnBuscaVendedor.Click
-        Dim formBusquedaVendedor As New FrmBusquedaVendedor()
+        Dim formBusqueda As New FrmBusquedaVendedor()
         FrmPrincipal.intBusqueda = 0
-        formBusquedaVendedor.ShowDialog()
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 vendedor = Await Puntoventa.ObtenerVendedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
@@ -552,9 +534,9 @@ Public Class FrmProforma
     End Sub
 
     Private Async Sub BtnBuscarCliente_Click(sender As Object, e As EventArgs) Handles btnBuscarCliente.Click
-        Dim formBusquedaCliente As New FrmBusquedaCliente()
+        Dim formBusqueda As New FrmBusquedaCliente()
         FrmPrincipal.intBusqueda = 0
-        formBusquedaCliente.ShowDialog()
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
@@ -613,7 +595,7 @@ Public Class FrmProforma
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
-                .Fecha = Now(),
+                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .TextoAdicional = txtTextoAdicional.Text,
                 .Telefono = txtTelefono.Text,
                 .IdVendedor = vendedor.IdVendedor,
@@ -681,7 +663,7 @@ Public Class FrmProforma
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnImprimir.Focus()
         btnGenerarPDF.Enabled = True
@@ -790,7 +772,8 @@ Public Class FrmProforma
 
     Private Async Sub cboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
         If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
+            txtTipoCambio.Text = 1
+            If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
         End If
     End Sub
 

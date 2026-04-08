@@ -47,10 +47,10 @@ Public Class FrmAceptarDocumentoElectronico
                     intEstado = 2
                 End If
                 Await Puntoventa.GenerarMensajeReceptor(strDatos, FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, intEstado, chkIvaAcreditable.Checked, FrmPrincipal.usuarioGlobal.Token)
-                MessageBox.Show("Documento enviado satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Documento enviado satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Close()
             Else
-                MessageBox.Show("Proceso cancelado por el usuario. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Proceso cancelado por el usuario.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
         Catch ex As Exception
             MessageBox.Show("Error al cargar el documento electrónico: " & ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -80,7 +80,7 @@ Public Class FrmAceptarDocumentoElectronico
                 txtMensaje.Text = sw.ToString()
                 btnEnviar.Enabled = True
             Catch ex As Exception
-                MessageBox.Show("Error al intentar cargar el archivo. Por favor intente de nuevo o contacte a su proveedor. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al intentar cargar el archivo. Por favor intente de nuevo o contacte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 btnEnviar.Enabled = False
                 Close()
                 Exit Sub

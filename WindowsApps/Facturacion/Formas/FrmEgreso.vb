@@ -52,7 +52,7 @@ Public Class FrmEgreso
 
     Private Async Sub FrmEgreso_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             Await CargarCombos()
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -62,7 +62,7 @@ Public Class FrmEgreso
 
     Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdEgreso.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+        txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         cboCuentaEgreso.SelectedIndex = 0
         txtBeneficiario.Text = ""
         txtDetalle.Text = ""
@@ -84,7 +84,7 @@ Public Class FrmEgreso
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -139,7 +139,7 @@ Public Class FrmEgreso
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-                .Fecha = Now(),
+                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .IdCuenta = cboCuentaEgreso.SelectedValue,
                 .Beneficiario = txtBeneficiario.Text,
                 .Detalle = txtDetalle.Text,
@@ -155,7 +155,7 @@ Public Class FrmEgreso
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones

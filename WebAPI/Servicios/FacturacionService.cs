@@ -31,25 +31,25 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarFacturaCompra(FacturaCompra facturaCompra);
         void AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion);
         Factura ObtenerFactura(int intIdFactura);
-        int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
-        IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
+        int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
+        IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
         string AgregarProforma(Proforma proforma);
         void ActualizarProforma(Proforma proforma);
         void AnularProforma(int intIdProforma, int intIdUsuario, string strMotivoAnulacion);
         Proforma ObtenerProforma(int intIdProforma);
-        int ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdProforma, string strNombre, string strFechaFinal);
-        IList<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdProforma, string strNombre, string strFechaFinal);
+        int ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int intIdProforma, string strNombre, string strFechaFinal);
+        IList<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int numPagina, int cantRec, int intIdProforma, string strNombre, string strFechaFinal);
         string AgregarApartado(Apartado apartado);
         void AnularApartado(int intIdApartado, int intIdUsuario, string strMotivoAnulacion);
         Apartado ObtenerApartado(int intIdApartado);
-        int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdApartado, string strNombre, string strFechaFinal);
-        IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal);
+        int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int intIdApartado, string strNombre, string strFechaFinal);
+        IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal);
         string AgregarOrdenServicio(OrdenServicio ordenServicio);
         void ActualizarOrdenServicio(OrdenServicio ordenServicio);
         void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivoAnulacion);
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
-        int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdOrdenServicio, string strNombre, string strFechaFinal);
-        IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal);
+        int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int intIdOrdenServicio, string strNombre, string strFechaFinal);
+        IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal);
         IList<ClsTiquete> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc);
         void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado);
         string AgregarDevolucionCliente(DevolucionCliente devolucion);
@@ -128,17 +128,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (existe) throw new BusinessException("El cliente con identificación " + cliente.Identificacion + " ya se encuentra registrado en la empresa. Por favor verifique.");
                     if (cliente.PorcentajeExoneracion > 0)
                     {
-                        if (cliente.NombreInstExoneracion == "") throw new BusinessException("El nombre de la institución para la exoneración es requerido. Por favor verifique.");
                         if (cliente.NumDocExoneracion == "") throw new BusinessException("El número de documento para la exoneración es requerido. Por favor verifique.");
+                        if (cliente.ArticuloExoneracion == "") throw new BusinessException("El número de artículo para la exoneración es requerido. Por favor verifique.");
+                        if (cliente.IncisoExoneracion == "") throw new BusinessException("El número de inciso para la exoneración es requerido. Por favor verifique.");
                         if (cliente.PorcentajeExoneracion > 13) throw new BusinessException("El porcentaje de exoneración no puede ser mayor a 13%. Por favor verifique.");
                     }
                     dbContext.ClienteRepository.Add(cliente);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -169,20 +170,21 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(cliente.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     bool existe = dbContext.ClienteRepository.AsNoTracking().FirstOrDefault(x => x.Identificacion == cliente.Identificacion && x.IdEmpresa == empresa.IdEmpresa && x.IdCliente != cliente.IdCliente) != null;
-                    if (existe) throw new BusinessException("El cliente con identificación " + cliente.Identificacion + " ya se encuentra registrado en la empresa. Por favor verifique.");
+                    if (existe) throw new BusinessException("El número de identificación " + cliente.Identificacion + " corresponde a otro cliente registrado en la empresa. Por favor verifique.");
                     if (cliente.PorcentajeExoneracion > 0)
                     {
-                        if (cliente.NombreInstExoneracion == "") throw new BusinessException("El nombre de la institución para la exoneración es requerido. Por favor verifique.");
                         if (cliente.NumDocExoneracion == "") throw new BusinessException("El número de documento para la exoneración es requerido. Por favor verifique.");
+                        if (cliente.ArticuloExoneracion == "") throw new BusinessException("El número de artículo para la exoneración es requerido. Por favor verifique.");
+                        if (cliente.IncisoExoneracion == "") throw new BusinessException("El número de inciso para la exoneración es requerido. Por favor verifique.");
                         if (cliente.PorcentajeExoneracion > 13) throw new BusinessException("El porcentaje de exoneración no puede ser mayor a 13%. Por favor verifique.");
                     }
                     dbContext.NotificarModificacion(cliente);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -213,10 +215,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al eliminar cliente: ", ex);
                     throw new BusinessException("No es posible eliminar el cliente seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -259,21 +261,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Cliente cliente = dbContext.ClienteRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Identificacion == strIdentificacion).FirstOrDefault();
                     if (cliente != null)
                         return cliente;
-                    else
-                    {
-                        Padron persona = dbContext.PadronRepository.Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
-                        if (persona == null)
-                            return null;
-                        else
-                        {
-                            cliente = new Cliente
-                            {
-                                Identificacion = persona.Identificacion,
-                                Nombre = persona.Nombre + " " + persona.PrimerApellido + " " + persona.SegundoApellido
-                            };
-                            return cliente;
-                        }
-                    }
+                    return null;
                 }
                 catch (Exception ex)
                 {
@@ -341,7 +329,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                factura.Fecha = Validador.ObtenerFechaHoraCostaRica();
+                if (factura.Fecha.ToShortDateString() != Validador.ObtenerFechaHoraCostaRica().ToShortDateString()) throw new BusinessException("La fecha del registro de factura (" + factura.Fecha.ToShortDateString() + ") no coincide con la fecha del servidor (" + Validador.ObtenerFechaHoraCostaRica().ToShortDateString() + "). Por favor verifique la información");
                 decimal decTotalIngresosMercancia = 0;
                 decimal decTotalIngresosServicios = 0;
                 decimal decTotalImpuesto = 0;
@@ -506,7 +494,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     foreach (var desglosePago in factura.DesglosePagoFactura)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                        if (!new int[] { StaticFormaPago.Efectivo, StaticFormaPago.Tarjeta }.Contains(desglosePago.IdFormaPago))
                         {
                             movimientoBanco = new MovimientoBanco
                             {
@@ -598,23 +586,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             foreach (var desglosePago in factura.DesglosePagoFactura)
                             {
-                                if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
-                                {
-                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
-                                    if (bancoParam == null)
-                                        throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
-                                    intLineaDetalleAsiento += 1;
-                                    detalleAsiento = new DetalleAsiento
-                                    {
-                                        Linea = intLineaDetalleAsiento,
-                                        IdCuenta = bancoParam.IdCuenta,
-                                        Debito = desglosePago.MontoLocal,
-                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(bancoParam.IdCuenta).SaldoActual
-                                    };
-                                    asiento.DetalleAsiento.Add(detalleAsiento);
-                                    asiento.TotalDebito += detalleAsiento.Debito;
-                                }
-                                else if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
+                                if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
                                 {
                                     intLineaDetalleAsiento += 1;
                                     detalleAsiento = new DetalleAsiento
@@ -670,6 +642,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                         asiento.TotalDebito += detalleAsiento.Debito;
                                     }
                                 }
+                                else
+                                {
+                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                    if (bancoParam == null)
+                                        throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
+                                    intLineaDetalleAsiento += 1;
+                                    detalleAsiento = new DetalleAsiento
+                                    {
+                                        Linea = intLineaDetalleAsiento,
+                                        IdCuenta = bancoParam.IdCuenta,
+                                        Debito = desglosePago.MontoLocal,
+                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(bancoParam.IdCuenta).SaldoActual
+                                    };
+                                    asiento.DetalleAsiento.Add(detalleAsiento);
+                                    asiento.TotalDebito += detalleAsiento.Debito;
+                                }
+                                
                             }
                         }
                         else
@@ -721,10 +710,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DocumentoElectronico documentoFE = null;
                     if (!empresa.RegimenSimplificado)
                     {
-                        if (factura.IdCliente > 1)
-                            documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, cliente, dbContext);
+                        if (factura.IdCliente == 1 || factura.CodigoActividadReceptor == "")
+                        {
+                            if (factura.Exonerado > 0)
+                                throw new BusinessException("No es posible emitir un tiquete electrónico con exoneración. Por favor verifique la información suministrada!");
+                            documentoFE = ComprobanteElectronicoService.GenerarTiqueteElectronico(factura, empresa, sucursal, cliente, dbContext);
+                        }
                         else
-                            documentoFE = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, cliente, dbContext);
+                        {
+                            if (factura.CodigoActividad.Trim().Length < 6)
+                                throw new BusinessException("El código de actividad económica de la empresa no posee el formato apropiado (6 digitos). Por favor realice el ajuste correspondiente!");
+                            if (factura.CodigoActividadReceptor.Trim().Length < 6)
+                                throw new BusinessException("El código de actividad económica del cliente no posee el formato apropiado (6 digitos). Por favor realice el ajuste correspondiente!");
+                            if (factura.CodigoActividadReceptor.IndexOf(".") == -1)
+                                throw new BusinessException("El código de actividad económica del cliente no posee el formato actual.");
+                            documentoFE = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, sucursal, cliente, dbContext);
+                        }
                         factura.IdDocElectronico = documentoFE.ClaveNumerica;
                     }
                     dbContext.Commit();
@@ -756,10 +757,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return factura.IdFactura.ToString() + "-" + factura.ConsecFactura.ToString();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -795,7 +796,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (clasificacion == null) throw new BusinessException("El código " + detalle.Codigo + " asignado al detalle de la factura de compra no corresponde a un código CABYS válido.");
                     }
                     dbContext.FacturaCompraRepository.Add(facturaCompra);
-                    DocumentoElectronico documentoFE = ComprobanteElectronicoService.GenerarFacturaCompraElectronica(facturaCompra, empresa, dbContext);
+                    DocumentoElectronico documentoFE = ComprobanteElectronicoService.GenerarFacturaCompraElectronica(facturaCompra, empresa, sucursal, dbContext);
                     dbContext.Commit();
                     if (documentoFE != null)
                     {
@@ -803,17 +804,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return facturaCompra.IdFactCompra.ToString();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
                     dbContext.RollBack();
                     if (_logger != null) _logger.LogError("Error al agregar el registro de facturación: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error guardando la información de la facturaCompra. Por favor consulte con su proveedor.");
+                    else throw new Exception("Se produjo un error guardando la información de la factura de compra. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -929,7 +930,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                         {
-                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, cliente, dbContext);
+                            documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, sucursal, cliente, dbContext);
                             factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
                         }
                     }
@@ -939,10 +940,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC));
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -970,21 +971,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     foreach (DesglosePagoFactura desglosePago in factura.DesglosePagoFactura)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                        if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
                         {
-                            BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
-                            if (banco != null)
-                                desglosePago.DescripcionCuenta = banco.Descripcion;
+                            if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                            {
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                if (banco != null)
+                                    desglosePago.DescripcionCuenta = banco.Descripcion;
+                                else
+                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            }
                             else
-                                desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
-                        }
-                        else
-                        {
-                            CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
-                            if (banco != null)
-                                desglosePago.DescripcionCuenta = banco.Descripcion;
-                            else
-                                desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            {
+                                CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                if (banco != null)
+                                    desglosePago.DescripcionCuenta = banco.Descripcion;
+                                else
+                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            }
                         }
                     }
                     return factura;
@@ -998,7 +1002,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal)
+        public int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1006,7 +1010,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
-                    if (!bolIncluyeNulos)
+                    if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
                     if (intIdFactura > 0)
                         listado = listado.Where(x => x.ConsecFactura == intIdFactura);
@@ -1030,7 +1034,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal)
+        public IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1039,7 +1043,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
-                    if (!bolIncluyeNulos)
+                    if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
                     if (intIdFactura > 0)
                         listado = listado.Where(x => x.ConsecFactura == intIdFactura);
@@ -1100,9 +1104,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     return proforma.IdProforma.ToString() + "-" + proforma.ConsecProforma.ToString();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1136,9 +1140,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.DetalleProformaRepository.Add(detalle);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1169,10 +1173,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(proforma);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1205,15 +1209,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdProforma, string strNombre, string strFechaFinal)
+        public int ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int intIdProforma, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
-                    var listado = dbContext.ProformaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
-                    if (!bolIncluyeNulos)
+                    var listado = dbContext.ProformaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (bolFiltraEstado)
+                    {
+                        if (bolAplicado)
+                            listado = listado.Where(x => x.Aplicado);
+                        else
+                            listado = listado.Where(x => !x.Aplicado);
+                    }
+                    if (bolExcluyeAplicados)
+                        listado = listado.Where(x => !x.Aplicado);
+                    if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
                     if (intIdProforma > 0)
                         listado = listado.Where(x => x.ConsecProforma == intIdProforma);
@@ -1235,7 +1248,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdProforma, string strNombre, string strFechaFinal)
+        public IList<FacturaDetalle> ObtenerListadoProformas(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int numPagina, int cantRec, int intIdProforma, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1243,8 +1256,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaProforma = new List<FacturaDetalle>();
                 try
                 {
-                    var listado = dbContext.ProformaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
-                    if (!bolIncluyeNulos)
+                    var listado = dbContext.ProformaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (bolFiltraEstado)
+                    {
+                        if (bolAplicado)
+                            listado = listado.Where(x => x.Aplicado);
+                        else
+                            listado = listado.Where(x => !x.Aplicado);
+                    }
+                    if (bolExcluyeAplicados)
+                        listado = listado.Where(x => !x.Aplicado);
+                    if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
                     if (intIdProforma > 0)
                         listado = listado.Where(x => x.ConsecProforma == intIdProforma);
@@ -1293,10 +1315,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     return apartado.IdApartado.ToString() + "-" + apartado.ConsecApartado.ToString();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1330,10 +1352,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(apartado);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1355,21 +1377,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Apartado apartado = dbContext.ApartadoRepository.Include("Cliente").Include("Vendedor").Include("DetalleApartado.Producto").Include("DesglosePagoApartado").FirstOrDefault(x => x.IdApartado == intIdApartado);
                     foreach (DesglosePagoApartado desglosePago in apartado.DesglosePagoApartado)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                        if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
                         {
-                            BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
-                            if (banco != null)
-                                desglosePago.DescripcionCuenta = banco.Descripcion;
+                            if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                            {
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                if (banco != null)
+                                    desglosePago.DescripcionCuenta = banco.Descripcion;
+                                else
+                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            }
                             else
-                                desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
-                        }
-                        else
-                        {
-                            CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
-                            if (banco != null)
-                                desglosePago.DescripcionCuenta = banco.Descripcion;
-                            else
-                                desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            {
+                                CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                if (banco != null)
+                                    desglosePago.DescripcionCuenta = banco.Descripcion;
+                                else
+                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            }
                         }
                     }
                     return apartado;
@@ -1383,26 +1408,34 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdApartado, string strNombre, string strFechaFinal)
+        public int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int intIdApartado, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
-                    var listaApartados = dbContext.ApartadoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
-                    if (!bolIncluyeNulos)
-                        listaApartados = listaApartados.Where(x => !x.Nulo);
+                    var listado = dbContext.ApartadoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
+                    if (bolAplicado)
+                        listado = listado.Where(x => x.Aplicado);
+                    else
+                        listado = listado.Where(x => !x.Aplicado);
+                    if (bolExcluyeAplicados)
+                        listado = listado.Where(x => !x.Aplicado);
+                    if (bolExcluyeNulos)
+                        listado = listado.Where(x => !x.Nulo);
+                    if (bolExcluyeCancelados)
+                        listado = listado.Where(x => x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (intIdApartado > 0)
-                        listaApartados = listaApartados.Where(x => x.ConsecApartado == intIdApartado);
+                            listado = listado.Where(x => x.ConsecApartado == intIdApartado);
                     if (!strNombre.Equals(string.Empty))
-                        listaApartados = listaApartados.Where(x => x.NombreCliente.Contains(strNombre));
+                        listado = listado.Where(x => x.NombreCliente.Contains(strNombre));
                     if (strFechaFinal != "")
                     {
                         DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                        listaApartados = listaApartados.Where(x => x.Fecha <= datFechaFinal);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
                     }
-                    return listaApartados.Count();
+                    return listado.Count();
                 }
                 catch (Exception ex)
                 {
@@ -1413,7 +1446,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal)
+        public IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1421,9 +1454,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaApartado = new List<FacturaDetalle>();
                 try
                 {
-                    var listado = dbContext.ApartadoRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Aplicado == bolAplicado);
-                    if (!bolIncluyeNulos)
+                    var listado = dbContext.ApartadoRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (bolAplicado)
+                        listado = listado.Where(x => x.Aplicado);
+                    else
+                        listado = listado.Where(x => !x.Aplicado);
+                    if (bolExcluyeAplicados)
+                        listado = listado.Where(x => !x.Aplicado);
+                    if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
+                    if (bolExcluyeCancelados)
+                        listado = listado.Where(x => x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (intIdApartado > 0)
                         listado = listado.Where(x => x.ConsecApartado == intIdApartado);
                     if (!strNombre.Equals(string.Empty))
@@ -1475,10 +1516,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     return ordenServicio.IdOrden.ToString() + "-" + ordenServicio.ConsecOrdenServicio.ToString();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1538,9 +1579,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.DetalleOrdenServicioRepository.Add(detalle);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1652,10 +1693,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(ordenServicio);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1679,21 +1720,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalle.Codigo = detalle.Producto.Codigo;
                     foreach (DesglosePagoOrdenServicio desglosePago in ordenServicio.DesglosePagoOrdenServicio)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                        if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
                         {
-                            BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
-                            if (banco != null)
-                                desglosePago.DescripcionCuenta = banco.Descripcion;
+                            if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
+                            {
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                if (banco != null)
+                                    desglosePago.DescripcionCuenta = banco.Descripcion;
+                                else
+                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            }
                             else
-                                desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
-                        }
-                        else
-                        {
-                            CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
-                            if (banco != null)
-                                desglosePago.DescripcionCuenta = banco.Descripcion;
-                            else
-                                desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            {
+                                CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                if (banco != null)
+                                    desglosePago.DescripcionCuenta = banco.Descripcion;
+                                else
+                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                            }
                         }
                     }
                     return ordenServicio;
@@ -1707,7 +1751,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int intIdOrdenServicio, string strNombre, string strFechaFinal)
+        public int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int intIdOrdenServicio, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1715,10 +1759,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     var listado = dbContext.OrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
-                    if (bolAplicado)
-                        listado = listado.Where(x => x.Nulo == bolAplicado || x.Aplicado);
-                    else
-                        listado = listado.Where(x => !x.Nulo && !x.Aplicado);
+                    if (bolFiltraEstado)
+                    {
+                        if (bolAplicado)
+                            listado = listado.Where(x => x.Aplicado);
+                        else
+                            listado = listado.Where(x => !x.Aplicado);
+                    }
+                    if (bolExcluyeAplicados)
+                        listado = listado.Where(x => !x.Aplicado);
+                    if (bolExcluyeNulos)
+                        listado = listado.Where(x => !x.Nulo);
+                    if (bolExcluyeCancelados)
+                        listado = listado.Where(x => x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (intIdOrdenServicio > 0)
                         listado = listado.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                     if (!strNombre.Equals(string.Empty))
@@ -1739,7 +1792,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolAplicado, bool bolIncluyeNulos, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal)
+        public IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1748,10 +1801,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     var listado = dbContext.OrdenServicioRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
-                    if (bolAplicado)
-                        listado = listado.Where(x => x.Nulo == bolAplicado || x.Aplicado);
-                    else
-                        listado = listado.Where(x => !x.Nulo && !x.Aplicado);
+                    if (bolFiltraEstado)
+                    {
+                        if (bolAplicado)
+                            listado = listado.Where(x => x.Aplicado);
+                        else
+                            listado = listado.Where(x => !x.Aplicado);
+                    }
+                    if (bolExcluyeAplicados)
+                        listado = listado.Where(x => !x.Aplicado);
+                    if (bolExcluyeNulos)
+                        listado = listado.Where(x => !x.Nulo);
+                    if (bolExcluyeCancelados)
+                        listado = listado.Where(x => x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (intIdOrdenServicio > 0)
                         listado = listado.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                     if (!strNombre.Equals(string.Empty))
@@ -1822,9 +1884,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     tiquete.Impreso = bolEstado;
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1947,7 +2009,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
                     {
                         Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
-                        documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, cliente, dbContext);
+                        documentoNC = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, sucursal, cliente, dbContext);
                         devolucion.IdDocElectronico = documentoNC.ClaveNumerica;
                     }
                     dbContext.DevolucionClienteRepository.Add(devolucion);
@@ -1963,10 +2025,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC));
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2076,7 +2138,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
                         {
-                            documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext);
+                            documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, sucursal, devolucion.Cliente, dbContext);
                             devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;
                         }
                     }
@@ -2087,10 +2149,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoND));
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2201,9 +2263,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listaDocumento;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2233,9 +2295,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listaDocumento;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2391,9 +2453,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoMR));
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2431,8 +2493,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         catch (Exception ex)
                         {
-                            string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                            stringBuilder.AppendLine("Error al obtener la lista de correo de gastos con iva acreditable. Detalle: " + strError);
+                            if (_logger != null) _logger.LogError("Error al obtener la lista de correo de gastos con iva acreditable: ", ex);
                         }
                         foreach (POPEmail correo in listadoCorreoAcreditable)
                         {
@@ -2445,22 +2506,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
                                 strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
-                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
-                                _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaIvaAcreditable, _configRecepcion.ClaveIvaAcreditable, correo.MessageNumber);
-                                /*try {
-                                    _servicioCorreo.SendErrorEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message, false, null);
-                                }
-                                catch (Exception emailEx)
+                                Notificacion notificacion = new Notificacion
                                 {
-                                    string strEmailError = emailEx.InnerException != null ? emailEx.InnerException.Message : emailEx.Message;
-                                    stringBuilder.AppendLine("Error al notificar la recepción fallida del documento electrónico: " + strEmailError);
-                                }*/
+                                    CorreoNotificacion = strFrom,
+                                    Titulo = "Notificación de error en recepción de documento electrónico",
+                                    Mensaje = "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message,
+                                    Estado = StaticEstadoNotificacion.Pendiente,
+                                    FechaEnvio = Validador.ObtenerFechaHoraCostaRica(),
+                                    ErrorEnvio = ""
+                                };
+                                dbContext.NotificacionRepository.Add(notificacion);
+                                dbContext.Commit();
+                                if (_logger != null) _logger.LogError("Error al procesar el documento con IVA acreditable del remitente " + strFrom + ": ", ex);
+                                _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaIvaAcreditable, _configRecepcion.ClaveIvaAcreditable, correo.MessageNumber);
                             }
                             catch (Exception ex)
                             {
-                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                stringBuilder.AppendLine("Error al procesar el documento con IVA acreditable con asunto " + correo.Subject + ". Detalle: " + strError);
+                                if (_logger != null) _logger.LogError("Error al procesar el documento con IVA acreditable: ", ex);
                             }
                         }
                         List<POPEmail> listadoCorreoGasto = new List<POPEmail>();
@@ -2470,8 +2532,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         catch (Exception ex)
                         {
-                            string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                            stringBuilder.AppendLine("Error al obtener la lista de correos de gastos con iva no acreditable. Detalle: " + strError);
+                            if (_logger != null) _logger.LogError("Error al obtener la lista de correo de gastos sin iva acreditable: ", ex);
                         }
                         foreach (POPEmail correo in listadoCorreoGasto)
                         {
@@ -2484,38 +2545,61 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
                                 strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
-                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable. Enviado por " + strFrom + " Asunto " + correo.Subject + ". Detalle: " + strError);
-                                _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaGastoNoAcreditable, _configRecepcion.ClaveGastoNoAcreditable, correo.MessageNumber);
-                                /*try {
-                                    _servicioCorreo.SendErrorEmail(new string[] { strFrom }, new string[] { }, "Notificación de error en recepción de documento electrónico", "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message, false, null);
-                                }
-                                catch (Exception emailEx)
+                                Notificacion notificacion = new Notificacion
                                 {
-                                    string strEmailError = emailEx.InnerException != null ? emailEx.InnerException.Message : emailEx.Message;
-                                    stringBuilder.AppendLine("Error al notificar la recepción fallida del documento electrónico: " + strEmailError);
-                                }*/
+                                    CorreoNotificacion = strFrom,
+                                    Titulo = "Notificación de error en recepción de documento electrónico",
+                                    Mensaje = "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message,
+                                    Estado = StaticEstadoNotificacion.Pendiente,
+                                    FechaEnvio = Validador.ObtenerFechaHoraCostaRica(),
+                                    ErrorEnvio = ""
+                                };
+                                dbContext.NotificacionRepository.Add(notificacion);
+                                dbContext.Commit();
+                                if (_logger != null) _logger.LogError("Error al procesar el documento sin IVA acreditable: ", ex);
+                                _servicioCorreo.EliminarMensaje(_configRecepcion.CuentaGastoNoAcreditable, _configRecepcion.ClaveGastoNoAcreditable, correo.MessageNumber);
                             }
                             catch (Exception ex)
                             {
-                                string strError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                stringBuilder.AppendLine("Error al procesar el documento sin IVA acreditable con asunto " + correo.Subject + ". Detalle: " + strError);
+                                if (_logger != null) _logger.LogError("Error al procesar el documento sin IVA acreditable: ", ex);
                             }
                         }
                     }
                 }
-                if (stringBuilder.Length > 0)
+            }
+            ProcesarNotificaciones();
+        }
+
+        void ProcesarNotificaciones()
+        {
+            if (_serviceScopeFactory == null || _configRecepcion == null) throw new Exception("Service factory or configuration not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
                 {
-                    byte[] bytes = Encoding.UTF8.GetBytes(stringBuilder.ToString());
-                    stringBuilder = null;
-                    JArray archivosJArray = new JArray();
-                    JObject jobDatosAdjuntos1 = new JObject
+                    var notificacionesPendientes = dbContext.NotificacionRepository.OrderBy(x => x.Estado).ToList();
+                    foreach (Notificacion notificacion in notificacionesPendientes)
                     {
-                        ["nombre"] = "logRecepcion-" + fechaActual.ToString("ddMMyyyy-HH-mm-ss") + ".txt",
-                        ["contenido"] = Convert.ToBase64String(bytes)
-                    };
-                    archivosJArray.Add(jobDatosAdjuntos1);
-                    _servicioCorreo.SendSupportEmail(new string[] { _config.CorreoNotificacionErrores }, new string[] { }, "Detalle de errores del procesamiento de recepción de documentos electrónicos", "Adjunto el archivo con el detalle del procesamiento.", false, archivosJArray);
+                        try
+                        {
+                            _servicioCorreo.SendErrorEmail(new string[] { notificacion.CorreoNotificacion }, new string[] { }, notificacion.Titulo, notificacion.Mensaje, false, null);
+                            dbContext.NotificarEliminacion(notificacion);
+                            dbContext.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            notificacion.Estado = StaticEstadoNotificacion.Rechazado;
+                            notificacion.ErrorEnvio = ex.Message;
+                            dbContext.NotificarModificacion(notificacion);
+                            dbContext.Commit();
+                            if (_logger != null) _logger.LogError("Error al procesar la notificación pendiente: ", ex);
+                        }
+                        Thread.Sleep(5000);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de notificaciones pendientes: ", ex);
                 }
             }
         }
@@ -2569,7 +2653,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
                                 {
                                     XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
-                                    strIdentificacion = emisorNode["Identificacion"]["Numero"].InnerText;
+                                    if (emisorNode["Identificacion"] == null)
+                                    {
+                                        strError = "El documento electrónico no contiene el valor de 'Identificacion' en el Nodo del Receptor, necesario para ser procesado. Por favor verifique la información";
+                                    }
+                                    else
+                                        strIdentificacion = emisorNode["Identificacion"]["Numero"].InnerText;
                                 }
                                 strDatos = documentoXml.OuterXml.Replace("'", "");
                             }
@@ -2610,9 +2699,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").FirstOrDefault(x => x.IdEmpresa == documento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (documento.Reprocesado) throw new BusinessException("El documento ya fue reprocesado y no puede procesarse nuevamente.");
-                    if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado && documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
+                    if (!new string[] { StaticEstadoDocumentoElectronico.Aceptado, StaticEstadoDocumentoElectronico.Rechazado }.Contains(documento.EstadoEnvio))
                     {
-                        throw new BusinessException("El documento electrónico por procesar no ha sido procesado. No se puede generar un nuevo documento por el momento");
+                        throw new BusinessException("El documento electrónico no ha recibido respuesta de Hacienda. No se puede generar un nuevo documento por el momento");
                     }
                     if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado) throw new BusinessException("El documento no posee un estado de rechazado por lo que no puede ser reenviado al Ministerio de Hacienda.");
                     if (documento.EsMensajeReceptor == "S") throw new BusinessException("No se puede reenviar documento recepcionados, solo documentos emitidos por el sistema.");
@@ -2621,15 +2710,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                         if (factura == null) throw new BusinessException("La registro origen del documento no existe.");
+                        SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
+                        if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                         foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                         {
                             Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                             if (producto != null) detalleFactura.Producto = producto;
                         }
                         if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, factura.Cliente, dbContext);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, sucursal, factura.Cliente, dbContext);
                         else
-                            nuevoDocumento = ComprobanteElectronicoService.GeneraTiqueteElectronico(factura, empresa, factura.Cliente, dbContext);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarTiqueteElectronico(factura, empresa, sucursal, factura.Cliente, dbContext);
                         factura.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(factura);
                     }
@@ -2638,12 +2729,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (factura != null)
                         {
+                            SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
+                            if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                             foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                             {
                                 Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                                 if (producto != null) detalleFactura.Producto = producto;
                             }
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, factura.Cliente, dbContext);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, sucursal, factura.Cliente, dbContext);
                             factura.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
                             dbContext.NotificarModificacion(factura);
                         }
@@ -2652,7 +2745,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDocElectronico == documento.ClaveNumerica);
                             if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                             factura = dbContext.FacturaRepository.AsNoTracking().Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, factura.Cliente, dbContext);
+                            SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
+                            if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronicaParcial(devolucion, factura, empresa, sucursal, factura.Cliente, dbContext);
                             devolucion.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                             dbContext.NotificarModificacion(devolucion);
                         }
@@ -2662,7 +2757,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente.Producto").FirstOrDefault(x => x.IdDocElectronicoRev == documento.ClaveNumerica);
                         if (devolucion == null) throw new BusinessException("El registro origen del documento no existe.");
                         Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                        nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, devolucion.Cliente, dbContext);
+                        SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
+                        if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
+                        nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, sucursal, devolucion.Cliente, dbContext);
                         devolucion.IdDocElectronicoRev = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(devolucion);
                     }
@@ -2676,9 +2773,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, nuevoDocumento));
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2719,9 +2816,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (result != null && result != "") return int.Parse(result);
                             return 0;
                         }
-                        catch (BusinessException ex)
+                        catch (BusinessException)
                         {
-                            throw ex;
+                            throw;
                         }
                         catch (Exception ex)
                         {
@@ -2758,9 +2855,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listaDocumento;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2789,9 +2886,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     return documento;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2846,7 +2943,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         documentoElectronico.Respuesta = bytRespuestaXML;
                         dbContext.NotificarModificacion(documentoElectronico);
                         dbContext.Commit();
-                        if (documentoElectronico.CorreoNotificacion != "") GenerarNotificacionDocumentoElectronico(dbContext, documentoElectronico, empresa, documentoElectronico.CorreoNotificacion, strCorreoNotificacionErrores, bytLogo);
+                        if (documentoElectronico.CorreoNotificacion != "")
+                        {
+                            try
+                            {
+                                GenerarNotificacionDocumentoElectronico(dbContext, documentoElectronico, empresa, documentoElectronico.CorreoNotificacion, bytLogo);
+                            }
+                            catch (Exception ex)
+                            {
+                                if (_logger != null) _logger.LogError("Error al enviar notificación al receptor para el documento con ID: " + documentoElectronico.IdDocumento, ex);
+                                string strBody = "El documento con clave " + documentoElectronico.ClaveNumerica + " registrado en la empresa " + empresa.NombreEmpresa + " generó un error en el envío del PDF al remitente: " + documentoElectronico.CorreoNotificacion + " Error: " + ex.Message;
+                                _servicioCorreo.SendSupportEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false);
+                            }
+                        }
                     }
                 }
             }
@@ -2875,13 +2984,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                         if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado || documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Rechazado)
                         {
-                            GenerarNotificacionDocumentoElectronico(dbContext, documento, empresa, strCorreoReceptor, _config.CorreoNotificacionErrores, bytLogo);
+                            try
+                            {
+                                GenerarNotificacionDocumentoElectronico(dbContext, documento, empresa, strCorreoReceptor, bytLogo);
+                            }
+                            catch (Exception ex)
+                            {
+                                string strBody = "El documento con clave " + documento.ClaveNumerica + " registrado en la empresa " + empresa.NombreEmpresa + " generó un error en el envío del PDF al remitente: " + strCorreoReceptor + " Error: " + ex.Message;
+                                _servicioCorreo.SendSupportEmail(new string[] { _config.CorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false);
+                                throw;
+                            }
                         }
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2901,19 +3019,21 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     if (factura == null) throw new BusinessException("La registro de la factura no existe.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                     foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                     {
                         Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto != null) detalleFactura.Producto = producto;
                     }
-                    Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
+                    Empresa empresa = dbContext.EmpresaRepository.Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, bytLogo);
+                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2932,14 +3052,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Apartado apartado = dbContext.ApartadoRepository.Include("Cliente").Include("DetalleApartado.Producto").FirstOrDefault(x => x.IdApartado == intIdApartado);
-                    Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == apartado.IdEmpresa).FirstOrDefault();
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == apartado.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    EstructuraPDF datos = GenerarEstructuraApartadoPDF(empresa, apartado, bytLogo);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == apartado.IdEmpresa && x.IdSucursal == apartado.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en el apartado no existe.");
+                    EstructuraPDF datos = GenerarEstructuraApartadoPDF(empresa, apartado, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2958,14 +3080,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente").Include("DetalleOrdenServicio.Producto").FirstOrDefault(x => x.IdOrden == intIdOrdenServicio);
-                    Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, bytLogo);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la orden de servicio no existe.");
+                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2984,14 +3108,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Proforma proforma = dbContext.ProformaRepository.Include("Cliente").Include("DetalleProforma.Producto").FirstOrDefault(x => x.IdProforma == intIdProforma);
-                    Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == proforma.IdEmpresa).FirstOrDefault();
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == proforma.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, bytLogo);
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == proforma.IdEmpresa && x.IdSucursal == proforma.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la proforma no existe.");
+                    EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3012,16 +3138,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     JArray jarrayObj = new JArray();
                     Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     if (factura == null) throw new BusinessException("La registro de la factura no existe.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
                     foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                     {
                         Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto != null) detalleFactura.Producto = producto;
                     }
-                    Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CorreoNotificacion != "")
                     {
-                        EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, bytLogo);
+                        EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
                         byte[] pdfAttactment = Generador.GenerarPDF(datos);
                         JObject jobDatosAdjuntos1 = new JObject
                         {
@@ -3034,9 +3162,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                         throw new BusinessException("La empresa no cuenta con un correo para el envío de notificaciones. Por favor actualice su información");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3047,7 +3175,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, byte[] bytLogo)
+        private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
             EstructuraPDF datos = new EstructuraPDF
             {
@@ -3090,14 +3218,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
-            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
-            datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
+            datos.CorreoElectronicoEmisor = sucursal.CorreoElectronico;
+            datos.TelefonoEmisor = sucursal.Telefono;
             datos.FaxEmisor = "";
-            datos.ProvinciaEmisor = empresa.Barrio.Distrito.Canton.Provincia.Descripcion;
-            datos.CantonEmisor = empresa.Barrio.Distrito.Canton.Descripcion;
-            datos.DistritoEmisor = empresa.Barrio.Distrito.Descripcion;
-            datos.BarrioEmisor = empresa.Barrio.Descripcion;
-            datos.DireccionEmisor = empresa.Direccion;
+            datos.DireccionEmisor = sucursal.Direccion;
             datos.NombreReceptor = factura.NombreCliente;
             if (factura.IdCliente > 1)
             {
@@ -3135,7 +3259,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        private EstructuraPDF GenerarEstructuraApartadoPDF(Empresa empresa, Apartado apartado, byte[] bytLogo)
+        private EstructuraPDF GenerarEstructuraApartadoPDF(Empresa empresa, Apartado apartado, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
             EstructuraPDF datos = new EstructuraPDF
             {
@@ -3171,14 +3295,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
-            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
-            datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
+            datos.CorreoElectronicoEmisor = sucursal.CorreoElectronico;
+            datos.TelefonoEmisor = sucursal.Telefono;
             datos.FaxEmisor = "";
-            datos.ProvinciaEmisor = empresa.Barrio.Distrito.Canton.Provincia.Descripcion;
-            datos.CantonEmisor = empresa.Barrio.Distrito.Canton.Descripcion;
-            datos.DistritoEmisor = empresa.Barrio.Distrito.Descripcion;
-            datos.BarrioEmisor = empresa.Barrio.Descripcion;
-            datos.DireccionEmisor = empresa.Direccion;
+            datos.DireccionEmisor = sucursal.Direccion;
             datos.NombreReceptor = apartado.NombreCliente;
             if (apartado.IdCliente > 1)
             {
@@ -3216,7 +3336,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        private EstructuraPDF GenerarEstructuraOrdenServicioPDF(Empresa empresa, OrdenServicio ordenServicio, byte[] bytLogo)
+        private EstructuraPDF GenerarEstructuraOrdenServicioPDF(Empresa empresa, OrdenServicio ordenServicio, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
             EstructuraPDF datos = new EstructuraPDF
             {
@@ -3252,14 +3372,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
-            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
-            datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
+            datos.CorreoElectronicoEmisor = sucursal.CorreoElectronico;
+            datos.TelefonoEmisor = sucursal.Telefono;
             datos.FaxEmisor = "";
-            datos.ProvinciaEmisor = empresa.Barrio.Distrito.Canton.Provincia.Descripcion;
-            datos.CantonEmisor = empresa.Barrio.Distrito.Canton.Descripcion;
-            datos.DistritoEmisor = empresa.Barrio.Distrito.Descripcion;
-            datos.BarrioEmisor = empresa.Barrio.Descripcion;
-            datos.DireccionEmisor = empresa.Direccion;
+            datos.DireccionEmisor = sucursal.Direccion;
             datos.NombreReceptor = ordenServicio.NombreCliente;
             if (ordenServicio.IdCliente > 1)
             {
@@ -3296,7 +3412,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        private EstructuraPDF GenerarEstructuraProformaPDF(Empresa empresa, Proforma proforma, byte[] bytLogo)
+        private EstructuraPDF GenerarEstructuraProformaPDF(Empresa empresa, Proforma proforma, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
             EstructuraPDF datos = new EstructuraPDF
             {
@@ -3332,14 +3448,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
-            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
-            datos.TelefonoEmisor = empresa.Telefono1 + (empresa.Telefono2.Length > 0 ? " - " + empresa.Telefono2 : "");
+            datos.CorreoElectronicoEmisor = sucursal.CorreoElectronico;
+            datos.TelefonoEmisor = sucursal.Telefono;
             datos.FaxEmisor = "";
-            datos.ProvinciaEmisor = empresa.Barrio.Distrito.Canton.Provincia.Descripcion;
-            datos.CantonEmisor = empresa.Barrio.Distrito.Canton.Descripcion;
-            datos.DistritoEmisor = empresa.Barrio.Distrito.Descripcion;
-            datos.BarrioEmisor = empresa.Barrio.Descripcion;
-            datos.DireccionEmisor = empresa.Direccion;
+            datos.DireccionEmisor = sucursal.Direccion;
             datos.NombreReceptor = proforma.NombreCliente;
             if (proforma.IdCliente > 1)
             {
@@ -3377,67 +3489,59 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        private void GenerarNotificacionDocumentoElectronico(LeandroContext dbContext, DocumentoElectronico documentoElectronico, Empresa empresa, string strCorreoReceptor, string strCorreoNotificacionErrores, byte[] bytLogo)
+        private void GenerarNotificacionDocumentoElectronico(LeandroContext dbContext, DocumentoElectronico documentoElectronico, Empresa empresa, string strCorreoReceptor, byte[] bytLogo)
         {
-            try
+            string strBody;
+            JArray jarrayObj = new JArray();
+            if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaDebitoElectronica)
             {
-                string strBody;
-                JArray jarrayObj = new JArray();
-                if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica || documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaDebitoElectronica)
+                if (documentoElectronico.EstadoEnvio == "aceptado" && strCorreoReceptor != "")
                 {
-                    if (documentoElectronico.EstadoEnvio == "aceptado" && strCorreoReceptor != "")
+                    string strTitle;
+                    string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
+                    strBody = "Estimado cliente, adjunto encontrará el detalle del documento electrónico en formato PDF y XML con clave " + documentoElectronico.ClaveNumerica + " y la respuesta de aceptación del Ministerio de Hacienda.";
+                    if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica)
                     {
-                        string strTitle = "";
-                        string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
-                        strBody = "Estimado cliente, adjunto encontrará el detalle del documento electrónico en formato PDF y XML con clave " + documentoElectronico.ClaveNumerica + " y la respuesta de aceptación del Ministerio de Hacienda.";
-                        if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.FacturaElectronica)
-                        {
-                            strTitle = "Factura electrónica de emisor " + empresa.NombreComercial;
-                        }
-                        else if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica)
-                        {
-                            strTitle = "Nota de crédito electrónica de emisor " + empresa.NombreComercial;
-                        }
-                        else
-                        {
-                            strTitle = "Nota de débito electrónica de emisor " + empresa.NombreComercial;
-                        }
-                        EstructuraPDF datos = GenerarEstructuraDocumentoPDF(dbContext, empresa, documentoElectronico, bytLogo);
-                        byte[] pdfAttactment = Generador.GenerarPDF(datos);
-                        JObject jobDatosAdjuntos1 = new JObject
-                        {
-                            ["nombre"] = documentoElectronico.ClaveNumerica + ".pdf",
-                            ["contenido"] = Convert.ToBase64String(pdfAttactment)
-                        };
-                        jarrayObj.Add(jobDatosAdjuntos1);
-                        JObject jobDatosAdjuntos2 = new JObject
-                        {
-                            ["nombre"] = documentoElectronico.ClaveNumerica + ".xml",
-                            ["contenido"] = Convert.ToBase64String(documentoElectronico.DatosDocumento)
-                        };
-                        jarrayObj.Add(jobDatosAdjuntos2);
-                        JObject jobDatosAdjuntos3 = new JObject
-                        {
-                            ["nombre"] = documentoElectronico.ClaveNumerica + "-respuesta.xml",
-                            ["contenido"] = Convert.ToBase64String(documentoElectronico.Respuesta)
-                        };
-                        jarrayObj.Add(jobDatosAdjuntos3);
-                        _servicioCorreo.SendNotificationEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
+                        strTitle = "Factura electrónica de emisor " + empresa.NombreComercial;
                     }
-                    else if (documentoElectronico.EstadoEnvio == "rechazado")
+                    else if (documentoElectronico.IdTipoDocumento == (int)TipoDocumento.NotaCreditoElectronica)
                     {
-                        XmlDocument xmlRespuesta = new XmlDocument();
-                        xmlRespuesta.LoadXml(Encoding.UTF8.GetString(documentoElectronico.Respuesta));
-                        string strMensajeHacienda = xmlRespuesta.GetElementsByTagName("DetalleMensaje").Item(0).InnerText;
-                        strBody = "Estimado cliente, le informamos que el documento electrónico con clave " + documentoElectronico.ClaveNumerica + " fue rechazado por el Ministerio de Hacienda con el siguiente mensaje:\n\n" + strMensajeHacienda + "\n\nPara mayor información consulte el documento en su plataforma de factura electrónica.";
-                        _servicioCorreo.SendErrorEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Rechazo de documento electrónico con clave " + documentoElectronico.ClaveNumerica, strBody, false);
+                        strTitle = "Nota de crédito electrónica de emisor " + empresa.NombreComercial;
                     }
+                    else
+                    {
+                        strTitle = "Nota de débito electrónica de emisor " + empresa.NombreComercial;
+                    }
+                    EstructuraPDF datos = GenerarEstructuraDocumentoPDF(dbContext, empresa, documentoElectronico, bytLogo);
+                    byte[] pdfAttactment = Generador.GenerarPDF(datos);
+                    JObject jobDatosAdjuntos1 = new JObject
+                    {
+                        ["nombre"] = documentoElectronico.ClaveNumerica + ".pdf",
+                        ["contenido"] = Convert.ToBase64String(pdfAttactment)
+                    };
+                    jarrayObj.Add(jobDatosAdjuntos1);
+                    JObject jobDatosAdjuntos2 = new JObject
+                    {
+                        ["nombre"] = documentoElectronico.ClaveNumerica + ".xml",
+                        ["contenido"] = Convert.ToBase64String(documentoElectronico.DatosDocumento)
+                    };
+                    jarrayObj.Add(jobDatosAdjuntos2);
+                    JObject jobDatosAdjuntos3 = new JObject
+                    {
+                        ["nombre"] = documentoElectronico.ClaveNumerica + "-respuesta.xml",
+                        ["contenido"] = Convert.ToBase64String(documentoElectronico.Respuesta)
+                    };
+                    jarrayObj.Add(jobDatosAdjuntos3);
+                    _servicioCorreo.SendNotificationEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
                 }
-            }
-            catch (Exception ex)
-            {
-                string strBody = "El documento con clave " + documentoElectronico.ClaveNumerica + " registrado en la empresa " + empresa.NombreEmpresa + " generó un error en el envío del PDF al remitente: " + strCorreoReceptor + " Error: " + ex.Message;
-                _servicioCorreo.SendSupportEmail(new string[] { strCorreoNotificacionErrores }, new string[] { }, "Error al tratar de enviar el correo al receptor.", strBody, false);
+                else if (documentoElectronico.EstadoEnvio == "rechazado")
+                {
+                    XmlDocument xmlRespuesta = new XmlDocument();
+                    xmlRespuesta.LoadXml(Encoding.UTF8.GetString(documentoElectronico.Respuesta));
+                    string strMensajeHacienda = xmlRespuesta.GetElementsByTagName("DetalleMensaje").Item(0).InnerText;
+                    strBody = "Estimado cliente, le informamos que el documento electrónico con clave " + documentoElectronico.ClaveNumerica + " fue rechazado por el Ministerio de Hacienda con el siguiente mensaje:\n\n" + strMensajeHacienda + "\n\nPara mayor información consulte el documento en su plataforma de factura electrónica.";
+                    _servicioCorreo.SendErrorEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Rechazo de documento electrónico con clave " + documentoElectronico.ClaveNumerica, strBody, false);
+                }
             }
         }
 
@@ -3490,7 +3594,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.Clave = documentoElectronico.ClaveNumerica;
             datos.CondicionVenta = CondicionDeVenta.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("CondicionVenta").Item(0).InnerText));
             datos.Fecha = documentoElectronico.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-            datos.MedioPago = FormaDePago.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
             XmlNode emisorNode = documentoXml.GetElementsByTagName("Emisor").Item(0);
             datos.NombreEmisor = emisorNode["Nombre"] != null && emisorNode["Nombre"].ChildNodes.Count > 0 ? emisorNode["Nombre"].InnerText : "";
             datos.NombreComercialEmisor = emisorNode["NombreComercial"] != null && emisorNode["NombreComercial"].ChildNodes.Count > 0 ? emisorNode["NombreComercial"].InnerText : "";
@@ -3498,14 +3601,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CorreoElectronicoEmisor = emisorNode["CorreoElectronico"].InnerText;
             datos.TelefonoEmisor = emisorNode["Telefono"] != null && emisorNode["Telefono"].ChildNodes.Count > 0 ? emisorNode["Telefono"]["NumTelefono"].InnerText : "";
             datos.FaxEmisor = emisorNode["Fax"] != null && emisorNode["Fax"].ChildNodes.Count > 0 ? emisorNode["Fax"]["NumTelefono"].InnerText : "";
-            int intProvincia = int.Parse(emisorNode["Ubicacion"]["Provincia"].InnerText);
-            int intCanton = int.Parse(emisorNode["Ubicacion"]["Canton"].InnerText);
-            int intDistrito = int.Parse(emisorNode["Ubicacion"]["Distrito"].InnerText);
-            int intBarrio = int.Parse(emisorNode["Ubicacion"]["Barrio"].InnerText);
-            datos.ProvinciaEmisor = dbContext.ProvinciaRepository.Where(x => x.IdProvincia == intProvincia).FirstOrDefault().Descripcion;
-            datos.CantonEmisor = dbContext.CantonRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton).FirstOrDefault().Descripcion;
-            datos.DistritoEmisor = dbContext.DistritoRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito).FirstOrDefault().Descripcion;
-            datos.BarrioEmisor = dbContext.BarrioRepository.Where(x => x.IdProvincia == intProvincia && x.IdCanton == intCanton && x.IdDistrito == intDistrito && x.IdBarrio == intBarrio).FirstOrDefault().Descripcion;
             datos.DireccionEmisor = emisorNode["Ubicacion"]["OtrasSenas"].InnerText;
             string strExoneracionLeyenda = "";
             if (documentoXml.GetElementsByTagName("Receptor").Count > 0)
@@ -3530,13 +3625,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     if (lineaDetalle["Impuesto"]["Exoneracion"] != null)
                     {
-                        if (strExoneracionLeyenda.Length == 0) strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText + "% del valor gravado.";
+                        if (strExoneracionLeyenda.Length == 0)
+                        {
+                            if (documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/"))
+                                strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["PorcentajeExoneracion"].InnerText + "% del valor gravado.";
+                            else
+                                strExoneracionLeyenda = "Se aplica exoneración segun oficio " + lineaDetalle["Impuesto"]["Exoneracion"]["NumeroDocumento"].InnerText + " por un porcentaje del " + lineaDetalle["Impuesto"]["Exoneracion"]["TarifaExonerada"].InnerText + "% del valor gravado.";
+                        }
                     }
                 }
                 EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
                 {
                     Cantidad = lineaDetalle["Cantidad"].InnerText,
-                    Codigo = lineaDetalle["Codigo"].InnerText,
+                    Codigo = documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/") ? lineaDetalle["Codigo"].InnerText : lineaDetalle["CodigoCABYS"].InnerText,
                     Detalle = lineaDetalle["Detalle"].InnerText,
                     PrecioUnitario = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["PrecioUnitario"].InnerText, CultureInfo.InvariantCulture)),
                     TotalLinea = string.Format("{0:N2}", Convert.ToDouble(lineaDetalle["MontoTotal"].InnerText, CultureInfo.InvariantCulture))
@@ -3551,6 +3652,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
             XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
+            if (documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/"))
+            {
+                datos.MedioPago = FormaDePago.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
+            }
+            else
+            {
+                datos.MedioPago = resumenFacturaNode["MedioPago"] != null ? FormaDePago.ObtenerDescripcion(int.Parse(resumenFacturaNode["MedioPago"].ChildNodes.Item(0).InnerText)) : "Sin especificar";
+            }
             datos.TotalGravado = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
             datos.TotalExonerado = resumenFacturaNode["TotalExonerado"] != null && resumenFacturaNode["TotalExonerado"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExonerado"].InnerText, CultureInfo.InvariantCulture)) : "0.00";
             datos.TotalExento = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExento"].InnerText, CultureInfo.InvariantCulture));
@@ -3572,12 +3681,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (strCorreoReceptor == "") throw new BusinessException("Se debe proveer una dirección de válida para el receptor del documento. Por favor verifique la información suministrada");
                     Proforma proforma = dbContext.ProformaRepository.Include("Cliente").Include("DetalleProforma.Producto").Where(x => x.IdProforma == intIdProforma).FirstOrDefault();
                     if (proforma == null) throw new BusinessException("No existe registro de proforma para el identificador suministrado: " + intIdProforma);
-                    Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == proforma.IdEmpresa).FirstOrDefault();
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == proforma.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == proforma.IdEmpresa && x.IdSucursal == proforma.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la proforma no existe.");
                     string strBody;
                     string strTitle = empresa.NombreComercial + " - Factura proforma";
                     strBody = "Estimado cliente, adjunto encontrará el detalle de la proforma solicitada.";
-                    EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, bytLogo);
+                    EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, sucursal, bytLogo);
                     JArray jarrayObj = new JArray();
                     string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
                     byte[] pdfAttactment = Generador.GenerarPDF(datos);
@@ -3589,9 +3700,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     jarrayObj.Add(jobDatosAdjuntos1);
                     _servicioCorreo.SendNotificationEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3611,12 +3722,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (strCorreoReceptor == "") throw new BusinessException("Se debe proveer una dirección de válida para el receptor del documento. Por favor verifique la información suministrada");
                     OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente").Include("DetalleOrdenServicio.Producto").Where(x => x.IdOrden == intIdOrden).FirstOrDefault();
                     if (ordenServicio == null) throw new BusinessException("No existe registro de orden de servicio para el identificador suministrado: " + intIdOrden);
-                    Empresa empresa = dbContext.EmpresaRepository.Include("Barrio.Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la orden de servicio no existe.");
                     string strBody;
                     string strTitle = empresa.NombreComercial + " - Orden de servicio";
                     strBody = "Estimado cliente, adjunto encontrará el detalle de la orden de servicio solicitada.";
-                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, bytLogo);
+                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
                     JArray jarrayObj = new JArray();
                     string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
                     byte[] pdfAttactment = Generador.GenerarPDF(datos);
@@ -3628,9 +3741,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     jarrayObj.Add(jobDatosAdjuntos1);
                     _servicioCorreo.SendNotificationEmail(arrCorreoReceptor, new string[] { }, strTitle, strBody, false, jarrayObj);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {

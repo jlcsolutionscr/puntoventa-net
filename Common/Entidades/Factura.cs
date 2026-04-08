@@ -11,7 +11,8 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdFactura { get; set; }
         public int ConsecFactura { get; set; }
         public int IdUsuario { get; set; }
-        public int CodigoActividad { get; set; }
+        public string CodigoActividad { get; set; }
+        public string CodigoActividadReceptor { get; set; }
         public int IdTipoMoneda { get; set; }
         public decimal TipoDeCambioDolar { get; set; }
         public int IdCliente { get; set; }
@@ -24,7 +25,9 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdVendedor { get; set; }
         public int IdTipoExoneracion { get; set; }
         public string NumDocExoneracion { get; set; }
-        public string NombreInstExoneracion { get; set; }
+        public string ArticuloExoneracion { get; set; }
+        public string IncisoExoneracion { get; set; }
+        public int IdNombreInstExoneracion { get; set; }
         public DateTime FechaEmisionDoc { get; set; }
         public int PorcentajeExoneracion { get; set; }
         public decimal Excento { get; set; }

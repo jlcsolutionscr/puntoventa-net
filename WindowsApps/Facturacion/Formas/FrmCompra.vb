@@ -505,7 +505,7 @@ Public Class FrmCompra
         Try
             IniciaDetalleCompra()
             EstablecerPropiedadesDataGridView()
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             txtIdOrdenCompra.Text = "0"
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             btnBusProd.Enabled = True
@@ -521,7 +521,8 @@ Public Class FrmCompra
             Await CargarCombos()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
+            txtTipoCambio.Text = 1
+            If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
             bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -531,11 +532,12 @@ Public Class FrmCompra
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdCompra.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+        txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-        txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
+        txtTipoCambio.Text = 1
+        If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
         proveedor = Nothing
         txtProveedor.Text = ""
         txtFactura.Text = ""
@@ -593,7 +595,7 @@ Public Class FrmCompra
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -642,54 +644,54 @@ Public Class FrmCompra
         End If
     End Sub
 
-    Private Sub BtnOrdenCompra_Click(sender As Object, e As EventArgs) Handles btnOrdenCompra.Click
-        Dim formBusqueda As New FrmBusquedaOrdenCompra()
-        formBusqueda.ExcluirOrdenesAplicadas()
-        FrmPrincipal.intBusqueda = 0
-        formBusqueda.ShowDialog()
-        If FrmPrincipal.intBusqueda > 0 Then
-            Try
-                'ordenCompra = servicioCompras.ObtenerOrdenCompra(FrmMenuPrincipal.intBusqueda)
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            If ordenCompra IsNot Nothing Then
-                txtIdCompra.Text = ""
-                proveedor = ordenCompra.Proveedor
-                txtProveedor.Text = proveedor.Nombre
-                txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
-                txtFactura.Text = ""
-                cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
-                txtPlazoCredito.Text = ""
-                txtDescuento.Text = FormatNumber(ordenCompra.Descuento, 2)
-                txtIdOrdenCompra.Text = ordenCompra.IdOrdenCompra
-                CargarDetalleOrdenCompra(ordenCompra)
-                dtbDesglosePago.Rows.Clear()
-                grdDesglosePago.Refresh()
-                CargarTotales()
-                CargarTotalesPago()
-                txtDescuento.ReadOnly = False
-                btnInsertar.Enabled = True
-                btnEliminar.Enabled = True
-                btnInsertarPago.Enabled = True
-                btnEliminarPago.Enabled = True
-                btnBusProd.Enabled = True
-                btnAnular.Enabled = False
-                btnGuardar.Enabled = True
-                btnImprimir.Enabled = False
-                btnGenerarPDF.Enabled = False
-                btnBuscarProveedor.Enabled = True
-            Else
-                MessageBox.Show("No existe registro de orden de compra asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End If
-        End If
-    End Sub
+    'Private Sub BtnOrdenCompra_Click(sender As Object, e As EventArgs) Handles btnOrdenCompra.Click
+    '    Dim formBusqueda As New FrmBusquedaOrdenCompra()
+    '    formBusqueda.ExcluirOrdenesAplicadas()
+    '    FrmPrincipal.intBusqueda = 0
+    '    formBusqueda.ShowDialog()
+    '    If FrmPrincipal.intBusqueda > 0 Then
+    '        Try
+    '            'ordenCompra = servicioCompras.ObtenerOrdenCompra(FrmMenuPrincipal.intBusqueda)
+    '        Catch ex As Exception
+    '            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+    '            Exit Sub
+    '        End Try
+    '        If ordenCompra IsNot Nothing Then
+    '            txtIdCompra.Text = ""
+    '            proveedor = ordenCompra.Proveedor
+    '            txtProveedor.Text = proveedor.Nombre
+    '            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
+    '            txtFactura.Text = ""
+    '            cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
+    '            txtPlazoCredito.Text = ""
+    '            txtDescuento.Text = FormatNumber(ordenCompra.Descuento, 2)
+    '            txtIdOrdenCompra.Text = ordenCompra.IdOrdenCompra
+    '            CargarDetalleOrdenCompra(ordenCompra)
+    '            dtbDesglosePago.Rows.Clear()
+    '            grdDesglosePago.Refresh()
+    '            CargarTotales()
+    '            CargarTotalesPago()
+    '            txtDescuento.ReadOnly = False
+    '            btnInsertar.Enabled = True
+    '            btnEliminar.Enabled = True
+    '            btnInsertarPago.Enabled = True
+    '            btnEliminarPago.Enabled = True
+    '            btnBusProd.Enabled = True
+    '            btnAnular.Enabled = False
+    '            btnGuardar.Enabled = True
+    '            btnImprimir.Enabled = False
+    '            btnGenerarPDF.Enabled = False
+    '            btnBuscarProveedor.Enabled = True
+    '        Else
+    '            MessageBox.Show("No existe registro de orden de compra asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+    '        End If
+    '    End If
+    'End Sub
 
     Private Async Sub BtnBuscarProveedor_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarProveedor.Click
-        Dim formBusquedaProveedor As New FrmBusquedaProveedor()
+        Dim formBusqueda As New FrmBusquedaProveedor()
         FrmPrincipal.intBusqueda = 0
-        formBusquedaProveedor.ShowDialog()
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 proveedor = Await Puntoventa.ObtenerProveedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
@@ -751,7 +753,7 @@ Public Class FrmCompra
                 .IdSucursal = cboSucursal.SelectedValue,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdProveedor = proveedor.IdProveedor,
-                .Fecha = Now(),
+                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .NoDocumento = txtFactura.Text,
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
@@ -801,7 +803,7 @@ Public Class FrmCompra
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnGenerarPDF.Enabled = True
         btnAgregar.Enabled = True
@@ -943,7 +945,8 @@ Public Class FrmCompra
 
     Private Async Sub CboTipoMoneda_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
         If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
-            txtTipoCambio.Text = IIf(cboTipoMoneda.SelectedValue = 1, 1, Await FrmPrincipal.ObtenerTipoDeCambioDolar())
+            txtTipoCambio.Text = 1
+            If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
         End If
     End Sub
 
@@ -965,11 +968,15 @@ Public Class FrmCompra
     End Sub
 
     Private Sub BtnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
-        If cboFormaPago.SelectedValue > 0 And cboTipoMoneda.SelectedValue > 0 And cboCuentaBanco.SelectedValue > 0 And decTotal > 0 And txtMontoPago.Text <> "" Then
-            If decSaldoPorPagar = 0 Then
-                MessageBox.Show("El monto de por cancelar ya se encuentra cubierto. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End If
+        If decTotal = 0 Then
+            MessageBox.Show("No ha ingresado el detalle de la compra.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        ElseIf cboFormaPago.SelectedValue <> StaticFormaPago.Efectivo And cboCuentaBanco.SelectedValue Is Nothing Then
+            MessageBox.Show("Debe indicar un monto de pago mayor a 0 para la forma de pago seleccionada.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        ElseIf decSaldoPorPagar = 0 Then
+            MessageBox.Show("El monto por cancelar ya se encuentra cubierto en el detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        ElseIf txtMontoPago.Text = FormatNumber(0, 2) Then
+            MessageBox.Show("El monto de pago debe ser mayor a 0.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Else
             CargarLineaDesglosePago()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
@@ -997,7 +1004,7 @@ Public Class FrmCompra
                     txtDescuento.Text = CDbl(Mid(txtDescuento.Text, 1, Len(txtDescuento.Text) - 1)) / 100 * CDbl(txtSubTotal.Text)
                 End If
                 If txtDescuento.Text > CDbl(txtSubTotal.Text) Then
-                    MessageBox.Show("El descuento debe ser menor al SubTotal. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    MessageBox.Show("El descuento debe ser menor al SubTotal.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     txtDescuento.Text = 0
                 End If
                 txtDescuento.Text = FormatNumber(txtDescuento.Text, 2)
@@ -1139,8 +1146,12 @@ Public Class FrmCompra
         End If
     End Sub
 
-    Private Sub TxtMonto_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
-        If txtMontoPago.Text <> "" Then txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
+    Private Sub TxtMontoPago_Validated(sender As Object, e As EventArgs) Handles txtMontoPago.Validated
+        If txtMontoPago.Text <> "" Then
+            txtMontoPago.Text = FormatNumber(txtMontoPago.Text, 2)
+        Else
+            txtMontoPago.Text = FormatNumber(0, 2)
+        End If
     End Sub
 
     Private Sub TxtPlazo_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtPlazoCredito.KeyPress

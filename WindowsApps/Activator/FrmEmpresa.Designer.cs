@@ -33,8 +33,6 @@
             this.cmdCancel = new System.Windows.Forms.Button();
             this.ofdAbrirDocumento = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.cboBarrio = new System.Windows.Forms.ComboBox();
-            this.Label15 = new System.Windows.Forms.Label();
             this.cboDistrito = new System.Windows.Forms.ComboBox();
             this.Label14 = new System.Windows.Forms.Label();
             this.cboCanton = new System.Windows.Forms.ComboBox();
@@ -104,6 +102,8 @@
             this.btnLimpiar = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.cboModalidad = new System.Windows.Forms.ComboBox();
+            this.txtCorreoSucursal = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.TabRoles.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRolePorEmpresa)).BeginInit();
             this.tabReportes.SuspendLayout();
@@ -142,30 +142,6 @@
             this.cmdCancel.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.cmdCancel.UseVisualStyleBackColor = false;
             this.cmdCancel.Click += new System.EventHandler(this.CmdCancel_Click);
-            // 
-            // cboBarrio
-            // 
-            this.cboBarrio.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboBarrio.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboBarrio.FormattingEnabled = true;
-            this.cboBarrio.Location = new System.Drawing.Point(139, 249);
-            this.cboBarrio.Name = "cboBarrio";
-            this.cboBarrio.Size = new System.Drawing.Size(147, 21);
-            this.cboBarrio.TabIndex = 10;
-            // 
-            // Label15
-            // 
-            this.Label15.BackColor = System.Drawing.Color.Transparent;
-            this.Label15.Cursor = System.Windows.Forms.Cursors.Default;
-            this.Label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label15.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label15.Location = new System.Drawing.Point(14, 252);
-            this.Label15.Name = "Label15";
-            this.Label15.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.Label15.Size = new System.Drawing.Size(119, 17);
-            this.Label15.TabIndex = 186;
-            this.Label15.Text = "Barrio:";
-            this.Label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cboDistrito
             // 
@@ -256,7 +232,7 @@
             // 
             this.chkFacturaElectronica.AutoSize = true;
             this.chkFacturaElectronica.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkFacturaElectronica.Location = new System.Drawing.Point(87, 442);
+            this.chkFacturaElectronica.Location = new System.Drawing.Point(87, 415);
             this.chkFacturaElectronica.Name = "chkFacturaElectronica";
             this.chkFacturaElectronica.Size = new System.Drawing.Size(99, 17);
             this.chkFacturaElectronica.TabIndex = 40;
@@ -271,7 +247,7 @@
             this.txtCorreoNotificacion.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtCorreoNotificacion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCorreoNotificacion.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtCorreoNotificacion.Location = new System.Drawing.Point(139, 328);
+            this.txtCorreoNotificacion.Location = new System.Drawing.Point(139, 301);
             this.txtCorreoNotificacion.MaxLength = 200;
             this.txtCorreoNotificacion.Name = "txtCorreoNotificacion";
             this.txtCorreoNotificacion.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -284,7 +260,7 @@
             this.Label11.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label11.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label11.Location = new System.Drawing.Point(14, 331);
+            this.Label11.Location = new System.Drawing.Point(14, 304);
             this.Label11.Name = "Label11";
             this.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label11.Size = new System.Drawing.Size(119, 17);
@@ -310,7 +286,7 @@
             // 
             this.chkRecibeDocumentos.AutoSize = true;
             this.chkRecibeDocumentos.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkRecibeDocumentos.Location = new System.Drawing.Point(87, 511);
+            this.chkRecibeDocumentos.Location = new System.Drawing.Point(87, 484);
             this.chkRecibeDocumentos.Name = "chkRecibeDocumentos";
             this.chkRecibeDocumentos.Size = new System.Drawing.Size(187, 17);
             this.chkRecibeDocumentos.TabIndex = 45;
@@ -322,7 +298,7 @@
             // 
             this.chkAutoCompleta.AutoSize = true;
             this.chkAutoCompleta.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkAutoCompleta.Location = new System.Drawing.Point(262, 488);
+            this.chkAutoCompleta.Location = new System.Drawing.Point(262, 461);
             this.chkAutoCompleta.Name = "chkAutoCompleta";
             this.chkAutoCompleta.Size = new System.Drawing.Size(189, 17);
             this.chkAutoCompleta.TabIndex = 43;
@@ -334,7 +310,7 @@
             // 
             this.chkContabiliza.AutoSize = true;
             this.chkContabiliza.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkContabiliza.Location = new System.Drawing.Point(87, 465);
+            this.chkContabiliza.Location = new System.Drawing.Point(87, 438);
             this.chkContabiliza.Name = "chkContabiliza";
             this.chkContabiliza.Size = new System.Drawing.Size(77, 17);
             this.chkContabiliza.TabIndex = 46;
@@ -349,7 +325,7 @@
             this.txtLineasFactura.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtLineasFactura.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLineasFactura.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtLineasFactura.Location = new System.Drawing.Point(139, 354);
+            this.txtLineasFactura.Location = new System.Drawing.Point(139, 327);
             this.txtLineasFactura.MaxLength = 5;
             this.txtLineasFactura.Name = "txtLineasFactura";
             this.txtLineasFactura.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -363,7 +339,7 @@
             this.Label8.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label8.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label8.Location = new System.Drawing.Point(34, 357);
+            this.Label8.Location = new System.Drawing.Point(34, 330);
             this.Label8.Name = "Label8";
             this.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label8.Size = new System.Drawing.Size(100, 17);
@@ -378,7 +354,7 @@
             this.txtTelefono.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtTelefono.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTelefono.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtTelefono.Location = new System.Drawing.Point(139, 302);
+            this.txtTelefono.Location = new System.Drawing.Point(139, 275);
             this.txtTelefono.MaxLength = 20;
             this.txtTelefono.Name = "txtTelefono";
             this.txtTelefono.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -391,7 +367,7 @@
             this.Label5.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label5.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label5.Location = new System.Drawing.Point(14, 305);
+            this.Label5.Location = new System.Drawing.Point(14, 278);
             this.Label5.Name = "Label5";
             this.Label5.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label5.Size = new System.Drawing.Size(119, 17);
@@ -406,7 +382,7 @@
             this.txtDireccion.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtDireccion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDireccion.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtDireccion.Location = new System.Drawing.Point(139, 276);
+            this.txtDireccion.Location = new System.Drawing.Point(139, 249);
             this.txtDireccion.MaxLength = 160;
             this.txtDireccion.Name = "txtDireccion";
             this.txtDireccion.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -419,7 +395,7 @@
             this.Label4.Cursor = System.Windows.Forms.Cursors.Default;
             this.Label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label4.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Label4.Location = new System.Drawing.Point(14, 279);
+            this.Label4.Location = new System.Drawing.Point(14, 252);
             this.Label4.Name = "Label4";
             this.Label4.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Label4.Size = new System.Drawing.Size(119, 17);
@@ -533,7 +509,7 @@
             this._lblLabels_1.Cursor = System.Windows.Forms.Cursors.Default;
             this._lblLabels_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._lblLabels_1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this._lblLabels_1.Location = new System.Drawing.Point(251, 357);
+            this._lblLabels_1.Location = new System.Drawing.Point(251, 330);
             this._lblLabels_1.Name = "_lblLabels_1";
             this._lblLabels_1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this._lblLabels_1.Size = new System.Drawing.Size(113, 17);
@@ -559,7 +535,7 @@
             // 
             this.chkRegimenSimplificado.AutoSize = true;
             this.chkRegimenSimplificado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkRegimenSimplificado.Location = new System.Drawing.Point(262, 465);
+            this.chkRegimenSimplificado.Location = new System.Drawing.Point(262, 438);
             this.chkRegimenSimplificado.Name = "chkRegimenSimplificado";
             this.chkRegimenSimplificado.Size = new System.Drawing.Size(127, 17);
             this.chkRegimenSimplificado.TabIndex = 41;
@@ -574,7 +550,7 @@
             this.txtCantidadDocumentos.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtCantidadDocumentos.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCantidadDocumentos.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtCantidadDocumentos.Location = new System.Drawing.Point(403, 380);
+            this.txtCantidadDocumentos.Location = new System.Drawing.Point(403, 353);
             this.txtCantidadDocumentos.MaxLength = 0;
             this.txtCantidadDocumentos.Name = "txtCantidadDocumentos";
             this.txtCantidadDocumentos.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -588,7 +564,7 @@
             this.label7.Cursor = System.Windows.Forms.Cursors.Default;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label7.Location = new System.Drawing.Point(284, 383);
+            this.label7.Location = new System.Drawing.Point(284, 356);
             this.label7.Name = "label7";
             this.label7.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label7.Size = new System.Drawing.Size(113, 17);
@@ -601,7 +577,7 @@
             this.cboTipoContrato.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTipoContrato.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboTipoContrato.FormattingEnabled = true;
-            this.cboTipoContrato.Location = new System.Drawing.Point(138, 380);
+            this.cboTipoContrato.Location = new System.Drawing.Point(138, 353);
             this.cboTipoContrato.Name = "cboTipoContrato";
             this.cboTipoContrato.Size = new System.Drawing.Size(126, 21);
             this.cboTipoContrato.TabIndex = 22;
@@ -612,7 +588,7 @@
             this.label30.Cursor = System.Windows.Forms.Cursors.Default;
             this.label30.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label30.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label30.Location = new System.Drawing.Point(19, 381);
+            this.label30.Location = new System.Drawing.Point(19, 354);
             this.label30.Name = "label30";
             this.label30.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label30.Size = new System.Drawing.Size(113, 17);
@@ -622,7 +598,7 @@
             // 
             // txtFecha
             // 
-            this.txtFecha.Location = new System.Drawing.Point(370, 354);
+            this.txtFecha.Location = new System.Drawing.Point(370, 327);
             this.txtFecha.Mask = "00/00/0000";
             this.txtFecha.Name = "txtFecha";
             this.txtFecha.Size = new System.Drawing.Size(82, 20);
@@ -633,7 +609,7 @@
             // 
             this.chkAsignaVendedor.AutoSize = true;
             this.chkAsignaVendedor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkAsignaVendedor.Location = new System.Drawing.Point(87, 488);
+            this.chkAsignaVendedor.Location = new System.Drawing.Point(87, 461);
             this.chkAsignaVendedor.Name = "chkAsignaVendedor";
             this.chkAsignaVendedor.Size = new System.Drawing.Size(163, 17);
             this.chkAsignaVendedor.TabIndex = 209;
@@ -648,7 +624,7 @@
             this.txtDescripcionTerminal.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtDescripcionTerminal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDescripcionTerminal.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtDescripcionTerminal.Location = new System.Drawing.Point(637, 484);
+            this.txtDescripcionTerminal.Location = new System.Drawing.Point(638, 510);
             this.txtDescripcionTerminal.MaxLength = 0;
             this.txtDescripcionTerminal.Name = "txtDescripcionTerminal";
             this.txtDescripcionTerminal.ReadOnly = true;
@@ -661,7 +637,7 @@
             // 
             this.chkDispositivoMovil.AutoSize = true;
             this.chkDispositivoMovil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkDispositivoMovil.Location = new System.Drawing.Point(536, 537);
+            this.chkDispositivoMovil.Location = new System.Drawing.Point(537, 563);
             this.chkDispositivoMovil.Name = "chkDispositivoMovil";
             this.chkDispositivoMovil.Size = new System.Drawing.Size(104, 17);
             this.chkDispositivoMovil.TabIndex = 261;
@@ -690,7 +666,7 @@
             this.btnCargarTerminal.Enabled = false;
             this.btnCargarTerminal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCargarTerminal.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnCargarTerminal.Location = new System.Drawing.Point(585, 483);
+            this.btnCargarTerminal.Location = new System.Drawing.Point(586, 509);
             this.btnCargarTerminal.Name = "btnCargarTerminal";
             this.btnCargarTerminal.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.btnCargarTerminal.Size = new System.Drawing.Size(46, 22);
@@ -736,7 +712,7 @@
             this.label27.Cursor = System.Windows.Forms.Cursors.Default;
             this.label27.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label27.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label27.Location = new System.Drawing.Point(476, 486);
+            this.label27.Location = new System.Drawing.Point(477, 512);
             this.label27.Name = "label27";
             this.label27.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label27.Size = new System.Drawing.Size(54, 17);
@@ -752,7 +728,7 @@
             this.txtValorRegistro.Enabled = false;
             this.txtValorRegistro.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtValorRegistro.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtValorRegistro.Location = new System.Drawing.Point(536, 511);
+            this.txtValorRegistro.Location = new System.Drawing.Point(537, 537);
             this.txtValorRegistro.MaxLength = 0;
             this.txtValorRegistro.Name = "txtValorRegistro";
             this.txtValorRegistro.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -768,7 +744,7 @@
             this.txtIdTerminal.Enabled = false;
             this.txtIdTerminal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtIdTerminal.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtIdTerminal.Location = new System.Drawing.Point(536, 484);
+            this.txtIdTerminal.Location = new System.Drawing.Point(537, 510);
             this.txtIdTerminal.MaxLength = 5;
             this.txtIdTerminal.Name = "txtIdTerminal";
             this.txtIdTerminal.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -782,7 +758,7 @@
             this._lblLabels_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._lblLabels_2.ForeColor = System.Drawing.SystemColors.ControlText;
             this._lblLabels_2.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this._lblLabels_2.Location = new System.Drawing.Point(478, 512);
+            this._lblLabels_2.Location = new System.Drawing.Point(479, 538);
             this._lblLabels_2.Name = "_lblLabels_2";
             this._lblLabels_2.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this._lblLabels_2.Size = new System.Drawing.Size(52, 17);
@@ -811,7 +787,7 @@
             this.txtTelefonoSucursal.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtTelefonoSucursal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTelefonoSucursal.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtTelefonoSucursal.Location = new System.Drawing.Point(536, 458);
+            this.txtTelefonoSucursal.Location = new System.Drawing.Point(537, 484);
             this.txtTelefonoSucursal.MaxLength = 50;
             this.txtTelefonoSucursal.Name = "txtTelefonoSucursal";
             this.txtTelefonoSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -838,7 +814,7 @@
             this.label34.Cursor = System.Windows.Forms.Cursors.Default;
             this.label34.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label34.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label34.Location = new System.Drawing.Point(467, 459);
+            this.label34.Location = new System.Drawing.Point(468, 485);
             this.label34.Name = "label34";
             this.label34.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label34.Size = new System.Drawing.Size(64, 17);
@@ -1063,7 +1039,7 @@
             // 
             this.chkIngresaPagoCliente.AutoSize = true;
             this.chkIngresaPagoCliente.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkIngresaPagoCliente.Location = new System.Drawing.Point(262, 442);
+            this.chkIngresaPagoCliente.Location = new System.Drawing.Point(262, 415);
             this.chkIngresaPagoCliente.Name = "chkIngresaPagoCliente";
             this.chkIngresaPagoCliente.Size = new System.Drawing.Size(139, 17);
             this.chkIngresaPagoCliente.TabIndex = 263;
@@ -1093,7 +1069,7 @@
             this.label9.Cursor = System.Windows.Forms.Cursors.Default;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label9.Location = new System.Drawing.Point(19, 408);
+            this.label9.Location = new System.Drawing.Point(19, 381);
             this.label9.Name = "label9";
             this.label9.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.label9.Size = new System.Drawing.Size(113, 17);
@@ -1106,10 +1082,38 @@
             this.cboModalidad.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboModalidad.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboModalidad.FormattingEnabled = true;
-            this.cboModalidad.Location = new System.Drawing.Point(138, 407);
+            this.cboModalidad.Location = new System.Drawing.Point(138, 380);
             this.cboModalidad.Name = "cboModalidad";
             this.cboModalidad.Size = new System.Drawing.Size(126, 21);
             this.cboModalidad.TabIndex = 265;
+            // 
+            // txtCorreoSucursal
+            // 
+            this.txtCorreoSucursal.AcceptsReturn = true;
+            this.txtCorreoSucursal.BackColor = System.Drawing.SystemColors.Window;
+            this.txtCorreoSucursal.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtCorreoSucursal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCorreoSucursal.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtCorreoSucursal.Location = new System.Drawing.Point(536, 458);
+            this.txtCorreoSucursal.MaxLength = 200;
+            this.txtCorreoSucursal.Name = "txtCorreoSucursal";
+            this.txtCorreoSucursal.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.txtCorreoSucursal.Size = new System.Drawing.Size(266, 20);
+            this.txtCorreoSucursal.TabIndex = 267;
+            // 
+            // label10
+            // 
+            this.label10.BackColor = System.Drawing.Color.Transparent;
+            this.label10.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label10.Location = new System.Drawing.Point(411, 461);
+            this.label10.Name = "label10";
+            this.label10.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label10.Size = new System.Drawing.Size(119, 17);
+            this.label10.TabIndex = 268;
+            this.label10.Text = "Correo electrónico:";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FrmEmpresa
             // 
@@ -1118,7 +1122,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
-            this.ClientSize = new System.Drawing.Size(851, 569);
+            this.ClientSize = new System.Drawing.Size(851, 591);
+            this.Controls.Add(this.txtCorreoSucursal);
+            this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.cboModalidad);
             this.Controls.Add(this.btnLimpiar);
@@ -1147,8 +1153,6 @@
             this.Controls.Add(this.label7);
             this.Controls.Add(this.tabContainer);
             this.Controls.Add(this.chkRegimenSimplificado);
-            this.Controls.Add(this.cboBarrio);
-            this.Controls.Add(this.Label15);
             this.Controls.Add(this.cboDistrito);
             this.Controls.Add(this.Label14);
             this.Controls.Add(this.cboCanton);
@@ -1180,6 +1184,8 @@
             this.Controls.Add(this._lblLabels_0);
             this.Controls.Add(this.cmdUpdate);
             this.Controls.Add(this.cmdCancel);
+            this.MaximumSize = new System.Drawing.Size(867, 630);
+            this.MinimumSize = new System.Drawing.Size(867, 630);
             this.Name = "FrmEmpresa";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Registrar/Actualizar datos de la empresa seleccionada";
@@ -1199,8 +1205,6 @@
         public System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.OpenFileDialog ofdAbrirDocumento;
         internal System.Windows.Forms.OpenFileDialog openFileDialog1;
-        internal System.Windows.Forms.ComboBox cboBarrio;
-        public System.Windows.Forms.Label Label15;
         internal System.Windows.Forms.ComboBox cboDistrito;
         public System.Windows.Forms.Label Label14;
         internal System.Windows.Forms.ComboBox cboCanton;
@@ -1270,6 +1274,8 @@
         public System.Windows.Forms.Button btnLimpiar;
         public System.Windows.Forms.Label label9;
         internal System.Windows.Forms.ComboBox cboModalidad;
+        public System.Windows.Forms.TextBox txtCorreoSucursal;
+        public System.Windows.Forms.Label label10;
     }
 }
 

@@ -120,20 +120,20 @@
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnBuscarCliente.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAANlJREFUOE9j
-        YBg24D/QJ6RiFM//P3vj8f/nbz7+//T1x/+/f//9f/Xu0//Ld579P3T+zv+tR6/+X7D11P9Jqw79z+hc
-        BbMIxQBtkAtAGt58+PL/y7cfYMNAhoIM2Hjo8v/ZG4//z+xaDdMMUo8BwIbcfPjy/7uPX/+/fv8ZbMDu
-        Uzf/r9p74X/xpI14NcNMAxty+/FrsAEXbz/9v/PEjf8Nc3YQpRnDkOsPXv7vXbafJM0ohoC8AI0drH4m
-        lAb/H714D2uIE9IIk/8/ZfUhygxASlzEWjoU1QEAIaaj2biZDkUAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAMhJREFUOE/d
+        kDELglAURv0//bGa+wOtBS3SVkNTg00OQhERCFIEUSKRoUQhFaZYmoaLffEevCiSsNo6cJfLOwfu47i/
+        AV/Mc2CiW9i7PoIoRpJccfACaOYO8tSEpMzRlMbgBRn5spAayJElEdxTiPAS0xiJkoAoa6iLQxQqbSaT
+        9y/QyHJjw/MjOMczDfTGSwj9GYq8+FZm0IhhOTSgGlt0RzpKjU4mmXGPLNY2qq3BRzKDRsgJ38gMKOoq
+        9cezglpb/i3wMP/MDSGmo9mccjzwAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="btnBuscaVendedor.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAANlJREFUOE9j
-        YBg24D/QJ6RiFM//P3vj8f/nbz7+//T1x/+/f//9f/Xu0//Ld579P3T+zv+tR6/+X7D11P9Jqw79z+hc
-        BbMIxQBtkAtAGt58+PL/y7cfYMNAhoIM2Hjo8v/ZG4//z+xaDdMMUo8BwIbcfPjy/7uPX/+/fv8ZbMDu
-        Uzf/r9p74X/xpI14NcNMAxty+/FrsAEXbz/9v/PEjf8Nc3YQpRnDkOsPXv7vXbafJM0ohoC8AI0drH4m
-        lAb/H714D2uIE9IIk/8/ZfUhygxASlzEWjoU1QEAIaaj2biZDkUAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAMhJREFUOE/d
+        kDELglAURv0//bGa+wOtBS3SVkNTg00OQhERCFIEUSKRoUQhFaZYmoaLffEevCiSsNo6cJfLOwfu47i/
+        AV/Mc2CiW9i7PoIoRpJccfACaOYO8tSEpMzRlMbgBRn5spAayJElEdxTiPAS0xiJkoAoa6iLQxQqbSaT
+        9y/QyHJjw/MjOMczDfTGSwj9GYq8+FZm0IhhOTSgGlt0RzpKjU4mmXGPLNY2qq3BRzKDRsgJ38gMKOoq
+        9cezglpb/i3wMP/MDSGmo9mccjzwAAAAAElFTkSuQmCC
 </value>
   </data>
 </root>

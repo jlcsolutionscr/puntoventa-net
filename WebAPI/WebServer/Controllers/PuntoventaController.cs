@@ -4,6 +4,7 @@ using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Servicios;
+using LeandroSoftware.Common.Seguridad;
 
 namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
 {
@@ -88,8 +89,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("validarcredenciales")]
         public string ValidarCredenciales(string usuario, string clave, int idempresa, string dispositivo)
         {
-            string strClaveFormateada = clave.Replace(" ", "+");
-            empresa = _servicioMantenimiento.ValidarCredenciales(usuario, strClaveFormateada, idempresa, dispositivo);
+            empresa = _servicioMantenimiento.ValidarCredenciales(usuario, clave.Replace(" ", "+"), idempresa, dispositivo);
             string strRespuesta = "";
             if (empresa != null)
                 strRespuesta = JsonConvert.SerializeObject(empresa);
@@ -99,8 +99,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("validarcredencialesweb")]
         public string ValidarCredencialesWeb(string usuario, string clave, string identificacion)
         {
-            string strClaveFormateada = clave.Replace(" ", "+");
-            Empresa empresa = _servicioMantenimiento.ValidarCredenciales(usuario, strClaveFormateada, identificacion);
+            Empresa empresa = _servicioMantenimiento.ValidarCredenciales(usuario, clave.Replace(" ", "+"), identificacion);
             string strRespuesta = "";
             if (empresa != null)
                 strRespuesta = JsonConvert.SerializeObject(empresa);
@@ -110,8 +109,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("obtenerlistadoterminalesdisponibles")]
         public string ObtenerListadoTerminalesDisponibles(string usuario, string clave, string id, int tipodispositivo)
         {
-            string strClaveFormateada = clave.Replace(" ", "+");
-            IList<EquipoRegistrado> listadoSucursales = (List<EquipoRegistrado>)_servicioMantenimiento.ObtenerListadoTerminalesDisponibles(usuario, strClaveFormateada, id, tipodispositivo);
+            IList<EquipoRegistrado> listadoSucursales = (List<EquipoRegistrado>)_servicioMantenimiento.ObtenerListadoTerminalesDisponibles(usuario, clave.Replace(" ", "+"), id, tipodispositivo);
             string strRespuesta = "";
             if (listadoSucursales.Count > 0)
                 strRespuesta = JsonConvert.SerializeObject(listadoSucursales);
@@ -121,27 +119,32 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("registrarterminal")]
         public void RegistrarTerminal(string usuario, string clave, string id, int sucursal, int terminal, int tipodispositivo, string dispositivo)
         {
-            string strClaveFormateada = clave.Replace(" ", "+");
-            _servicioMantenimiento.RegistrarTerminal(usuario, strClaveFormateada, id, sucursal, terminal, tipodispositivo, dispositivo);
+            _servicioMantenimiento.RegistrarTerminal(usuario, clave.Replace(" ", "+"), id, sucursal, terminal, tipodispositivo, dispositivo);
         }
 
-        [HttpGet("iniciarrestablecerclaveusuario")]
-        public void IniciarRestablecerClaveUsuario(string identificacion, string usuario)
+        [HttpGet("validarregistroautenticacion")]
+        public void ValidarRegistroAutenticacion(string session)
         {
-            string strServicioWebURL = _configuration.GetSection("appSettings").GetSection("strServicioWebURL").Value;
-            _servicioMantenimiento.IniciarRestablecerClaveUsuario(strServicioWebURL, identificacion, usuario);
+            string strTokenDesencriptado = Encriptador.DesencriptarDatos(session.Replace("@", "+").Replace("~", "/"));
+            _servicioMantenimiento.ValidarRegistroAutenticacion(strTokenDesencriptado, StaticRolePorUsuario.SOPORTE, 1);
         }
 
-        [HttpGet("validarsesionrestablecerclaveusuario")]
-        public void ValidarSesionRestablecerClaveUsuario(string session)
+        [HttpGet("generarnotificacionrestablecerclaveusuario")]
+        public void GenerarNotificacionRestablecerClaveUsuario(string correonotificacion)
         {
-            _servicioMantenimiento.ValidarRegistroAutenticacion(session.Replace(" ", "+").Replace("~", "/"), StaticRolePorUsuario.USUARIO_SISTEMA, 1);
+            _servicioMantenimiento.GenerarNotificacionRestablecerClaveUsuario(correonotificacion);
         }
 
         [HttpGet("restablecerclaveusuario")]
         public void RestablecerClaveUsuario(string session, string clave)
         {
-            _servicioMantenimiento.RestablecerClaveUsuario(session.Replace(" ", "+").Replace("~", "/"), clave.Replace(" ", "+"));
+            _servicioMantenimiento.RestablecerClaveUsuario(session.Replace("@", "+").Replace("~", "/"), clave);
+        }
+
+        [HttpGet("autorizarcorreousuario")]
+        public void AutorizarCorreoUsuario(string session)
+        {
+            _servicioMantenimiento.AutorizarCorreoUsuario(session.Replace("@", "+").Replace("~", "/"));
         }
     }
 }

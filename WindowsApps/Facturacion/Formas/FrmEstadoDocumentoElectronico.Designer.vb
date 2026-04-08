@@ -66,8 +66,8 @@ Partial Class FrmEstadoDocumentoElectronico
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(795, 434)
-        Me.Controls.Add(Me.picLoader)
         Me.Controls.Add(Me.dgvDatos)
+        Me.Controls.Add(Me.picLoader)
         Me.Name = "FrmEstadoDocumentoElectronico"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Documentos Electrónicos Pendientes de Enviar"

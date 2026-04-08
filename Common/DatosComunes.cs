@@ -283,8 +283,22 @@ namespace LeandroSoftware.Common.DatosComunes
         public string NombreSucursal { get; set; }
         public string DireccionSucursal { get; set; }
         public string TelefonoSucursal { get; set; }
+        public string CorreoElectronico { get; set; }
         public string ImpresoraFactura { get; set; }
         public int AnchoLinea { get; set; }
+    }
+
+    public class LlaveTextoDescripcion
+    {
+        public LlaveTextoDescripcion() { }
+
+        public LlaveTextoDescripcion(string llave, string descripcion)
+        {
+            Llave = llave;
+            Descripcion = descripcion;
+        }
+        public string Llave { get; set; }
+        public string Descripcion { get; set; }
     }
 
     public class LlaveDescripcion
@@ -577,5 +591,18 @@ namespace LeandroSoftware.Common.DatosComunes
         public string Impresora { get; set; }
         public IList<ClsLineaImpresion> Lineas { get; set; }
         public bool Impreso { get; set; }
+    }
+
+    public class ContribuyenteHacienda
+    {
+        public ContribuyenteHacienda() { }
+
+        public ContribuyenteHacienda(string strNombre, IList<LlaveTextoDescripcion> lstActividadesEconomicas)
+        {
+            Nombre = strNombre;
+            ActividadesEconomicas = lstActividadesEconomicas;
+        }
+        public string Nombre { get; set; }
+        public IList<LlaveTextoDescripcion> ActividadesEconomicas { get; set; }
     }
 }

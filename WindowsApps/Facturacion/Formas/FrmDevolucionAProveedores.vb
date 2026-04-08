@@ -215,7 +215,7 @@ Public Class FrmDevolucionAProveedores
     End Sub
     Private Sub FrmDevolucionAProveedores_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             IniciaDetalleDevolucion()
             EstablecerPropiedadesDataGridView()
             grdDetalleDevolucion.DataSource = dtbDetalleDevolucion
@@ -242,7 +242,7 @@ Public Class FrmDevolucionAProveedores
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         txtIdDevolucion.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+        txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         proveedor = Nothing
         compra = Nothing
         txtProveedor.Text = ""
@@ -268,7 +268,7 @@ Public Class FrmDevolucionAProveedores
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 CmdAgregar_Click(CmdAgregar, New EventArgs())
             End If
         End If
@@ -314,7 +314,7 @@ Public Class FrmDevolucionAProveedores
 
     Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If proveedor Is Nothing Or txtFecha.Text = "" Or compra Is Nothing Or CDbl(txtTotal.Text) = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         CmdGuardar.Enabled = False
@@ -324,7 +324,7 @@ Public Class FrmDevolucionAProveedores
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdProveedor = compra.IdProveedor,
                 .IdCompra = compra.IdCompra,
-                .Fecha = Now(),
+                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .Excento = decExcento,
                 .Gravado = decGravado,
                 .Impuesto = CDbl(txtImpuesto.Text)
@@ -351,7 +351,7 @@ Public Class FrmDevolucionAProveedores
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         grdDetalleDevolucion.ReadOnly = True
         CmdImprimir.Enabled = True
         CmdAgregar.Enabled = True

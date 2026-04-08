@@ -29,6 +29,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal MontoAdelanto { get; set; }
         public decimal MontoPagado { get; set; }
         public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto; } }
+        public decimal TipoDeCambioDolar { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
         public string MotivoAnulacion { get; set; }

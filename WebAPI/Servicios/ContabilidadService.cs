@@ -95,10 +95,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.CatalogoContableRepository.Add(cuenta);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -122,10 +122,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(cuenta);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -156,10 +156,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al eliminar la cuenta contable: ", uex);
                     throw new BusinessException("No es posible eliminar la cuenta contable seleccionada. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -246,10 +246,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.ParametroContableRepository.Add(parametro);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -595,10 +595,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 dbContext.Commit();
             }
-            catch (BusinessException ex)
+            catch (BusinessException)
             {
                 dbContext.RollBack();
-                throw ex;
+                throw;
             }
             catch (Exception ex)
             {
@@ -671,10 +671,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(asiento);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -711,10 +711,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(asiento);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -926,9 +926,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     //empresa.CierreEnEjecucion = false;
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {

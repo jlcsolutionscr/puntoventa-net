@@ -186,7 +186,7 @@ Public Class FrmAjusteInventario
         Try
             IniciaDetalleAjusteInventario()
             EstablecerPropiedadesDataGridView()
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             If FrmPrincipal.empresaGlobal.AutoCompletaProducto Then CargarAutoCompletarProducto()
             btnBusProd.Enabled = True
             grdDetalleAjusteInventario.DataSource = dtbDetalleAjusteInventario
@@ -200,7 +200,7 @@ Public Class FrmAjusteInventario
 
     Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdAjuste.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+        txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         txtDescAjuste.Text = ""
         txtCodigo.Text = ""
         txtDescripcion.Text = ""
@@ -229,7 +229,7 @@ Public Class FrmAjusteInventario
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -259,7 +259,7 @@ Public Class FrmAjusteInventario
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If txtFecha.Text = "" Or txtDescAjuste.Text = "" Or grdDetalleAjusteInventario.RowCount = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         If txtIdAjuste.Text = "" Then
@@ -267,7 +267,7 @@ Public Class FrmAjusteInventario
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = cboSucursal.SelectedValue,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-                .Fecha = Now(),
+                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .Descripcion = txtDescAjuste.Text
             }
             ajusteInventario.DetalleAjusteInventario = New List(Of DetalleAjusteInventario)
@@ -287,7 +287,7 @@ Public Class FrmAjusteInventario
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnAgregar.Focus()

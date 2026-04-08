@@ -39,7 +39,7 @@ Public Class FrmMovimientoBanco
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         txtIdMov.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+        txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         txtNumero.Text = ""
         cboIdCuenta.Text = ""
         cboIdCuenta.SelectedValue = 0
@@ -64,7 +64,7 @@ Public Class FrmMovimientoBanco
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 CmdAgregar_Click(CmdAgregar, New EventArgs())
             End If
         End If
@@ -103,7 +103,7 @@ Public Class FrmMovimientoBanco
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdCuenta = cboIdCuenta.SelectedValue,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-                .Fecha = FrmPrincipal.ObtenerFechaFormateada(),
+                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .IdTipo = cboIdTipo.SelectedValue,
                 .Numero = txtNumero.Text,
                 .Beneficiario = txtBeneficiario.Text,
@@ -118,14 +118,14 @@ Public Class FrmMovimientoBanco
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             CmdImprimir.Enabled = True
             CmdAgregar.Enabled = True
             CmdAnular.Enabled = FrmPrincipal.bolAnularTransacciones
             CmdImprimir.Focus()
             CmdGuardar.Enabled = False
         Else
-            MessageBox.Show("Información incompleta.  Favor verificar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
 
@@ -136,7 +136,7 @@ Public Class FrmMovimientoBanco
 
     Private Sub FrmMantDebCred_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             CargarCombos()
             txtMonto.Text = FormatNumber(0, 2)
         Catch ex As Exception

@@ -484,33 +484,6 @@ namespace LeandroSoftware.ClienteWCF
             }
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito, string strToken)
-        {
-            try
-            {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-                if (strToken != "")
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
-                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadobarrios?idprovincia=" + intIdProvincia + "&idcanton=" + intIdCanton + "&iddistrito=" + intIdDistrito);
-                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
-                {
-                    string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
-                    throw new Exception(strError);
-                }
-                if (httpResponse.StatusCode != HttpStatusCode.OK)
-                    throw new Exception(httpResponse.ReasonPhrase);
-                List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-                string response = await httpResponse.Content.ReadAsStringAsync();
-                if (response != "")
-                    listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(response);
-                return listado;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public static async Task<string> AgregarEmpresa(Empresa empresa, string strToken)
         {
             try

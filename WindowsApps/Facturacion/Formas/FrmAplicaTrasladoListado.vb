@@ -48,10 +48,11 @@ Public Class FrmAplicaTrasladoListado
                 listado = Await Puntoventa.ObtenerListadoTrasladosPorAplicar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, cboEstado.SelectedValue, intNumeroPagina, intFilasPorPagina, FrmPrincipal.usuarioGlobal.Token)
             End If
             dgvListado.DataSource = listado
+            lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
         Catch ex As Exception
-            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Close()
-            Exit Function
+        MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Close()
+        Exit Function
         End Try
         dgvListado.Refresh()
     End Function

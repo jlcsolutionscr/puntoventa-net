@@ -1,9 +1,10 @@
-Imports LeandroSoftware.Common.Dominio.Entidades
+Imports System.Collections.Generic
+Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
 Imports LeandroSoftware.ClienteWCF
-Imports System.Text.RegularExpressions
 Imports LeandroSoftware.Common.Constantes
-Imports System.Collections.Generic
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
 
 Public Class FrmFacturaCompra
 #Region "Variables"
@@ -153,7 +154,7 @@ Public Class FrmFacturaCompra
         txtTotal.Text = FormatNumber(decTotal, 2)
     End Sub
 
-    Private Async Function CargarListadoBarrios(IdProvincia As Integer, IdCanton As Integer, IdDistrito As Integer) As Task
+    Private Async Function CargarListadoDistritos(IdProvincia As Integer, IdCanton As Integer) As Task
         bolInicializado = False
         cboCanton.ValueMember = "Id"
         cboCanton.DisplayMember = "Descripcion"
@@ -161,9 +162,6 @@ Public Class FrmFacturaCompra
         cboDistrito.ValueMember = "Id"
         cboDistrito.DisplayMember = "Descripcion"
         cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(IdProvincia, IdCanton, FrmPrincipal.usuarioGlobal.Token)
-        cboBarrio.ValueMember = "Id"
-        cboBarrio.DisplayMember = "Descripcion"
-        cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(IdProvincia, IdCanton, IdDistrito, FrmPrincipal.usuarioGlobal.Token)
         bolInicializado = True
     End Function
 
@@ -180,12 +178,15 @@ Public Class FrmFacturaCompra
         cboTipoExoneracion.ValueMember = "Id"
         cboTipoExoneracion.DisplayMember = "Descripcion"
         cboTipoExoneracion.DataSource = FrmPrincipal.ObtenerListadoTipoExoneracion()
+        cboInstExoneracion.ValueMember = "Id"
+        cboInstExoneracion.DisplayMember = "Descripcion"
+        cboInstExoneracion.DataSource = FrmPrincipal.ObtenerListadoNombreInstExoneracion()
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
         cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
-        cboActividadEconomica.ValueMember = "Id"
-        cboActividadEconomica.DisplayMember = "Descripcion"
-        cboActividadEconomica.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
+        cboActEconReceptor.ValueMember = "Id"
+        cboActEconReceptor.DisplayMember = "Descripcion"
+        cboActEconReceptor.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
         cboProvincia.ValueMember = "Id"
         cboProvincia.DisplayMember = "Descripcion"
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
@@ -216,9 +217,9 @@ Public Class FrmFacturaCompra
 
     Private Async Sub FrmFacturaCompra_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+            txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             Await CargarCombos()
-            Await CargarListadoBarrios(1, 1, 1)
+            Await CargarListadoDistritos(1, 1)
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
             grdDetalleProforma.DataSource = dtbDetalleProforma
@@ -242,7 +243,7 @@ Public Class FrmFacturaCompra
     Private Async Sub CboProvincia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboProvincia.SelectedIndexChanged
         If bolInicializado Then
             bolInicializado = False
-            Await CargarListadoBarrios(cboProvincia.SelectedValue, 1, 1)
+            Await CargarListadoDistritos(cboProvincia.SelectedValue, 1)
             bolInicializado = True
         End If
     End Sub
@@ -251,32 +252,28 @@ Public Class FrmFacturaCompra
         If bolInicializado Then
             bolInicializado = False
             cboDistrito.DataSource = Await Puntoventa.ObtenerListadoDistritos(cboProvincia.SelectedValue, cboCanton.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, 1, FrmPrincipal.usuarioGlobal.Token)
             bolInicializado = True
-        End If
-    End Sub
-
-    Private Async Sub CboDistrito_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboDistrito.SelectedIndexChanged
-        If bolInicializado Then
-            cboBarrio.DataSource = Await Puntoventa.ObtenerListadoBarrios(cboProvincia.SelectedValue, cboCanton.SelectedValue, cboDistrito.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
         End If
     End Sub
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdFactCompra.Text = ""
-        txtFecha.Text = FrmPrincipal.ObtenerFechaFormateada()
+        txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         txtIdentificacion.Text = ""
         txtDireccion.Text = ""
         txtNombre.Text = ""
         txtNombreComercial.Text = ""
         txtTelefono.Text = ""
         txtCorreoElectronico.Text = ""
-        cboActividadEconomica.SelectedIndex = 0
+        txtActividadEconomica.Text = ""
+        cboActEconReceptor.SelectedIndex = 0
         cboTipoIdentificacion.SelectedIndex = 0
-        Await CargarListadoBarrios(1, 1, 1)
-        cboTipoExoneracion.SelectedIndex = 0
+        Await CargarListadoDistritos(1, 1)
+        cboTipoExoneracion.SelectedIndex = StaticValoresPorDefecto.TipoExoneracion
+        cboInstExoneracion.SelectedIndex = StaticValoresPorDefecto.IdNombreInstExoneracion
         txtNumDocExoneracion.Text = ""
-        txtNombreInstExoneracion.Text = ""
+        txtArticulo.Text = ""
+        txtInciso.Text = ""
         txtFechaExoneracion.Text = "01/01/2019"
         txtPorcentajeExoneracion.Text = "0"
         dtbDetalleProforma.Rows.Clear()
@@ -293,21 +290,13 @@ Public Class FrmFacturaCompra
         txtTextoAdicional.Text = ""
         decTotal = 0
         cboTipoIdentificacion.Focus()
-    End Sub
-
-    Private Async Sub txtIdentificacion_Validated(sender As Object, e As EventArgs) Handles txtIdentificacion.Validated
-        If cboTipoIdentificacion.SelectedValue = 0 Then
-            Dim cliente As Cliente = Await Puntoventa.ValidaIdentificacionCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
-            If cliente IsNot Nothing Then
-                txtNombre.Text = cliente.Nombre
-            End If
-        End If
+        btnGuardar.Enabled = True
     End Sub
 
     Private Sub btnBuscarClasificacion_Click(sender As Object, e As EventArgs) Handles btnBuscarClasificacion.Click
-        Dim formBusquedaClasificacionProducto As New FrmBusquedaClasificacionProducto()
+        Dim formBusqueda As New FrmBusquedaClasificacionProducto()
         FrmPrincipal.strBusqueda = 0
-        formBusquedaClasificacionProducto.ShowDialog()
+        formBusqueda.ShowDialog()
         If FrmPrincipal.strBusqueda <> "0" Then
             Dim codigoDesc = FrmPrincipal.strBusqueda.Split(New Char() {"-"c}, 2)
             txtCodigo.Text = codigoDesc(0)
@@ -325,7 +314,7 @@ Public Class FrmFacturaCompra
     Private Async Sub TxtCodigo_Validated(sender As Object, e As EventArgs) Handles txtCodigo.Validated
         If txtCodigo.Text <> "" Then
             If txtCodigo.Text.Length <> 13 Then
-                MessageBox.Show("El código debe contener un total de 13 dígitos. Por favor verifique. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El código debe contener un total de 13 dígitos. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             Dim clasificacionProducto As ClasificacionProducto = Await Puntoventa.ObtenerClasificacionProducto(txtCodigo.Text, FrmPrincipal.usuarioGlobal.Token)
@@ -340,13 +329,21 @@ Public Class FrmFacturaCompra
         If txtDireccion.Text = "" Then strCampo = "Dirección"
         If txtNombre.Text = "" Then strCampo = "Nombre"
         If txtCorreoElectronico.Text = "" Then strCampo = "Correo electrónico"
+        If txtNumeroReferencia.Text = "" Then strCampo = "Numero de referencia"
+        If txtActividadEconomica.Text = "" Then strCampo = "Actividad econ. del emisor"
+        If cboActEconReceptor.SelectedValue = Nothing Then strCampo = "Actividad econ. del receptor"
         If strCampo <> "" Then
-            MessageBox.Show("El campo " & strCampo & " es requerido", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El campo " & strCampo & " es requerido!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            btnGuardar.Enabled = True
+            Exit Sub
+        End If
+        If txtActividadEconomica.Text.Length > 6 Then
+            MessageBox.Show("El código de actividad económica no puede contener mas de 6 digitos. Por favor verifique!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             btnGuardar.Enabled = True
             Exit Sub
         End If
         If decTotal = 0 Then
-            MessageBox.Show("Debe agregar lineas de detalle a la factura. Por favor verifique. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Debe agregar lineas de detalle a la factura. Por favor verifique!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             btnGuardar.Enabled = True
             Exit Sub
         End If
@@ -358,8 +355,10 @@ Public Class FrmFacturaCompra
                 .IdTerminal = FrmPrincipal.equipoGlobal.IdTerminal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
                 .IdTipoMoneda = 1,
-                .Fecha = Now(),
-                .CodigoActividad = cboActividadEconomica.SelectedValue,
+                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
+                .CodigoActividadEmisor = txtActividadEconomica.Text,
+                .CodigoActividad = cboActEconReceptor.SelectedValue,
+                .NumeroReferencia = txtNumeroReferencia.Text,
                 .IdCondicionVenta = 1,
                 .PlazoCredito = 0,
                 .NombreEmisor = txtNombre.Text,
@@ -370,12 +369,13 @@ Public Class FrmFacturaCompra
                 .IdProvinciaEmisor = cboProvincia.SelectedValue,
                 .IdCantonEmisor = cboCanton.SelectedValue,
                 .IdDistritoEmisor = cboDistrito.SelectedValue,
-                .IdBarrioEmisor = cboBarrio.SelectedValue,
                 .DireccionEmisor = txtDireccion.Text,
                 .CorreoElectronicoEmisor = txtCorreoElectronico.Text,
                 .IdTipoExoneracion = cboTipoExoneracion.SelectedValue,
+                .IdNombreInstExoneracion = cboInstExoneracion.SelectedValue,
                 .NumDocExoneracion = txtNumDocExoneracion.Text,
-                .NombreInstExoneracion = txtNombreInstExoneracion.Text,
+                .ArticuloExoneracion = txtArticulo.Text,
+                .IncisoExoneracion = txtInciso.Text,
                 .FechaEmisionDoc = txtFechaExoneracion.Value,
                 .PorcentajeExoneracion = txtPorcentajeExoneracion.Text,
                 .TextoAdicional = txtTextoAdicional.Text,
@@ -409,13 +409,13 @@ Public Class FrmFacturaCompra
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
     Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
         If txtCantidad.Text <> "" And txtCodigo.Text <> "" And txtDescripcion.Text <> "" And txtPrecio.Text <> "" Then
             If txtCantidad.Text = "0" Then
-                MessageBox.Show("La cantidad no puede ser 0. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("La cantidad no puede ser 0. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
             CargarLineaDetalleFacturaCompra(txtCantidad.Text, txtCodigo.Text, txtDescripcion.Text, cboTipoImpuesto.SelectedValue, FrmPrincipal.ObtenerTarifaImpuesto(cboTipoImpuesto.SelectedValue), cboUnidadMedida.Text, txtPrecio.Text)
             cboTipoImpuesto.SelectedValue = StaticValoresPorDefecto.TasaImpuesto
@@ -425,7 +425,7 @@ Public Class FrmFacturaCompra
             txtPrecio.Text = ""
             txtCodigo.Focus()
         Else
-            MessageBox.Show("Debe ingresar la información requerida para la línea de la factura de compra. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe ingresar la información requerida para la línea de la factura de compra.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 

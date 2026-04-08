@@ -26,7 +26,7 @@ Public Class FrmMenuCuentaDeBalance
             FrmPrincipal.intBusqueda = cboIdCuentaBanco.SelectedValue
             Close()
         Else
-            MessageBox.Show("Debe seleccionar una cuenta contable para continuar. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Debe seleccionar una cuenta contable para continuar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 #End Region

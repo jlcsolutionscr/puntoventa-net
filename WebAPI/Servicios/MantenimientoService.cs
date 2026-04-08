@@ -111,7 +111,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoProvincias();
         IList<LlaveDescripcion> ObtenerListadoCantones(int intIdProvincia);
         IList<LlaveDescripcion> ObtenerListadoDistritos(int intIdProvincia, int intIdCanton);
-        IList<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito);
         int ObtenerTotalListaClasificacionProducto(string strDescripcion);
         IList<ClasificacionProducto> ObtenerListadoClasificacionProducto(int numPagina, int cantRec, string strDescripcion);
         ClasificacionProducto ObtenerClasificacionProducto(string strCodigo);
@@ -122,11 +121,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion);
         void ValidarRegistroAutenticacion(string strToken, int intRole, int intHoras);
         void EliminarRegistroAutenticacionInvalidos();
-        decimal ObtenerTipoCambioVenta(string fechaConsulta);
         List<LlaveDescripcion> ObtenerListadoActividadEconomica(string strServicioURL, string strIdentificacion);
-        void IniciarRestablecerClaveUsuario(string strServicioWebURL, string strIdentificacion, string strCodigoUsuario);
+        void GenerarNotificacionRestablecerClaveUsuario(string strCorreoNotificacion);
         void RestablecerClaveUsuario(string strToken, string strClave);
-        void AgregarTipoCambioDolar(string strFecha, string strTipoCambio);
+        void GenerarAutorizacionActualizacionCorreoUsuario(int intIdUsuario, string strCorreoNotificacion);
+        void AutorizarCorreoUsuario(string strToken);
     }
 
     public class MantenimientoService : IMantenimientoService
@@ -164,7 +163,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaEquipoRegistrado = new List<EquipoRegistrado>();
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
@@ -199,9 +198,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listaEquipoRegistrado;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -324,10 +323,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (parametro.Valor == "SI") return true;
                     return false;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -345,7 +344,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ReportePorEmpresa.CatalogoReporte").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     Usuario usuario = null;
@@ -368,10 +367,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(terminal);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -393,13 +392,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Usuario usuario = dbContext.UsuarioRepository.Where(x => x.CodigoUsuario == strCodigoUsuario.ToUpper()).FirstOrDefault();
                     if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
-                    string strToken = GenerarRegistroAutenticacion(1, usuario.CodigoUsuario, StaticRolePorUsuario.ADMINISTRADOR);
+                    string strToken = GenerarRegistroAutenticacion(dbContext, 1, usuario.CodigoUsuario, StaticRolePorUsuario.ADMINISTRADOR);
+                    dbContext.Commit();
                     usuario.Token = strToken;
                     return usuario;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -420,13 +420,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa local = dbContext.EmpresaRepository.AsNoTracking().FirstOrDefault(x => x.Identificacion == strIdentificacion);
                     if (local == null) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                     Empresa empresa = ObtenerEmpresaPorUsuario(strCodigoUsuario, strClave, local.IdEmpresa, "WebAPI");
-                    string strToken = GenerarRegistroAutenticacion(empresa.IdEmpresa, empresa.Usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
+                    string strToken = GenerarRegistroAutenticacion(dbContext, empresa.IdEmpresa, empresa.Usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
+                    dbContext.Commit();
                     empresa.Usuario.Token = strToken;
                     return empresa;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -445,13 +446,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa empresa = ObtenerEmpresaPorUsuario(strCodigoUsuario, strClave, intIdEmpresa, strValorRegistro);
-                    string strToken = GenerarRegistroAutenticacion(empresa.IdEmpresa, empresa.Usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
+                    string strToken = GenerarRegistroAutenticacion(dbContext, empresa.IdEmpresa, empresa.Usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
+                    dbContext.Commit();
                     empresa.Usuario.Token = strToken;
                     return empresa;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -467,7 +469,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                 empresa.ListadoTipoIdentificacion = ObtenerListadoTipoIdentificacion();
                 empresa.ListadoFormaPagoCliente = ObtenerListadoFormaPagoCliente();
                 empresa.ListadoFormaPagoEmpresa = ObtenerListadoFormaPagoEmpresa();
@@ -476,6 +478,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 empresa.ListadoTipoMoneda = ObtenerListadoTipoMoneda();
                 empresa.ListadoCondicionVenta = ObtenerListadoCondicionVenta();
                 empresa.ListadoTipoExoneracion = ObtenerListadoTipoExoneracion();
+                empresa.ListadoNombreInstExoneracion = ObtenerListadoNombreInstExoneracion();
                 empresa.ListadoTipoPrecio = ObtenerListadoTipodePrecio();
 
                 Usuario usuario = null;
@@ -491,7 +494,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     usuario = dbContext.UsuarioRepository.AsNoTracking().Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strCodigoUsuario.ToUpper());
                 }
-                if (usuario == null) throw new BusinessException("Usuario no registrado en la empresa suministrada. Por favor verifique la información suministrada.");
+                if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                 if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                 TerminalPorSucursal terminal = null;
                 SucursalPorEmpresa sucursal = null;
@@ -514,6 +517,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     NombreSucursal = sucursal.NombreSucursal,
                     DireccionSucursal = sucursal.Direccion,
                     TelefonoSucursal = sucursal.Telefono,
+                    CorreoElectronico = sucursal.CorreoElectronico,
                     ImpresoraFactura = terminal.ImpresoraFactura,
                     AnchoLinea = terminal.AnchoLinea
                 };
@@ -571,9 +575,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                     return usuario.PorcMaxDescuento;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -725,13 +729,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("ActividadEconomicaEmpresa").Include("Barrio.Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("ActividadEconomicaEmpresa").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     return empresa;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -759,7 +763,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         throw new BusinessException(ex.Message);
                     }
                     Empresa noTracking = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                    empresa.Barrio = null;
+                    empresa.Distrito = null;
                     if (noTracking != null && noTracking.Logotipo != null) empresa.Logotipo = noTracking.Logotipo;
                     if (empresa.Logotipo == null) empresa.Logotipo = new byte[0];
                     List<ActividadEconomicaEmpresa> listadoDetalle = empresa.ActividadEconomicaEmpresa.ToList();
@@ -771,9 +775,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.ActividadEconomicaEmpresaRepository.Add(detalle);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -803,9 +807,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listaReportes;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -902,9 +906,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         strLogotipo = Convert.ToBase64String(empresa.Logotipo);
                     return strLogotipo;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -933,9 +937,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         empresa.Logotipo = new byte[0];
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1009,7 +1013,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (BusinessException ex)
                 {
                     if (_logger != null) _logger.LogError("Error al actualizar los credenciales de Hacienda: ", ex);
-                    if (_config.EsModoDesarrollo) throw ex;
+                    if (_config.EsModoDesarrollo) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error actualizando los credenciales de Hacienda. Por favor consulte con su proveedor.");
                 }
             }
@@ -1191,9 +1195,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.UsuarioRepository.Add(usuario);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1227,9 +1231,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.RolePorUsuarioRepository.Add(detalle);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1291,10 +1295,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al eliminar el usuario: ", ex);
                     throw new BusinessException("No es posible eliminar el usuario seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1318,9 +1322,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         throw new BusinessException("El usuario por consultar no existe");
                     return usuario;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1371,10 +1375,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.VendedorRepository.Add(vendedor);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1398,10 +1402,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(vendedor);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1433,10 +1437,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al eliminar el vendedor: ", ex);
                     throw new BusinessException("No es posible eliminar el vendedor seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1460,9 +1464,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         throw new BusinessException("El Vendedor por consultar no existe");
                     return Vendedor;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1485,9 +1489,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         throw new BusinessException("La empresa no posee registrado ningún vendedor");
                     return Vendedor;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1581,10 +1585,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.LineaRepository.Add(linea);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1615,10 +1619,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.LineaPorSucursalRepository.Add(detalle);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1650,10 +1654,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al agregar el parámetro contable: ", ex);
                     throw new BusinessException("No es posible eliminar la línea seleccionada. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1723,6 +1727,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return TipoDeExoneracion.ObtenerListado();
         }
 
+        IList<LlaveDescripcion> ObtenerListadoNombreInstExoneracion()
+        {
+            return TipoDeNombreInstExoneracion.ObtenerListado();
+        }
+
         IList<LlaveDescripcionValor> ObtenerListadoTipoImpuesto()
         {
             return TipoDeImpuesto.ObtenerListado();
@@ -1757,10 +1766,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.ProductoRepository.Add(producto);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1796,10 +1805,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(producto);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1839,10 +1848,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1871,10 +1880,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al agregar el parámetro contable: ", ex);
                     throw new BusinessException("No es posible eliminar el producto seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2000,7 +2009,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (lstLineasPorSucursal.Length > 0)
                             {
                                 string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
-                                string strUsaIndex = "";        
+                                string strUsaIndex = "";
                                 if (!bolIncluyeServicios)
                                     listaProductos += " AND p.Tipo = " + StaticTipoProducto.Producto;
                                 else
@@ -2066,7 +2075,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (lstLineasPorSucursal.Length > 0)
                             {
                                 string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
-                                string strUsaIndex = "";        
+                                string strUsaIndex = "";
                                 if (!bolIncluyeServicios)
                                     listaProductos += " AND p.Tipo = " + StaticTipoProducto.Producto;
                                 else
@@ -2171,7 +2180,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         IList<LlaveDescripcion> ObtenerListadoFormaPagoCliente()
         {
-            return FormaDePago.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta }.Contains(x.Id)).ToList();
+            return FormaDePago.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta, StaticFormaPago.SinpeMovil, StaticFormaPago.PlataformaDigital }.Contains(x.Id)).ToList();
         }
 
         IList<LlaveDescripcion> ObtenerListadoFormaPagoEmpresa()
@@ -2191,10 +2200,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.BancoAdquirienteRepository.Add(bancoAdquiriente);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2218,10 +2227,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(bancoAdquiriente);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2252,10 +2261,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al agregar el parámetro contable: ", ex);
                     throw new BusinessException("No es posible eliminar el banco adquiriente seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2381,10 +2390,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.Commit();
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2442,10 +2451,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2644,31 +2653,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                var listaBarrio = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.BarrioRepository.Where(x => x.IdProvincia == intIdProvincia && x.IdCanton == intIdCanton && x.IdDistrito == intIdDistrito);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdBarrio, value.Descripcion);
-                        listaBarrio.Add(item);
-                    }
-                    return listaBarrio;
-                }
-                catch (Exception ex)
-                {
-                    if (_logger != null) _logger.LogError("Error al obtener el listado de barrios: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error consultando el listado de barrios. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
         private IList<LlaveDescripcion> ObtenerListadoTipodePrecio()
         {
             try
@@ -2729,7 +2713,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                     }
-                    return listado.OrderByDescending(x => x.Descripcion).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
+                    return listado.OrderBy(x => x.Descripcion).Skip((numPagina - 1) * cantRec).Take(cantRec).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -2817,10 +2801,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Validación al eliminar el punto de servicio: ", ex);
                     throw new BusinessException("No es posible eliminar el punto de servicio seleccionado. Posee registros relacionados en el sistema.");
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2880,37 +2864,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private string GenerarRegistroAutenticacion(int intIdEmpresa, string strCodigoUsuario, int intRole)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                string strGuid = Guid.NewGuid().ToString();
-                DateTime fechaRegistro = Validador.ObtenerFechaHoraCostaRica();
-                RegistroAutenticacion registro = new RegistroAutenticacion
-                {
-                    IdEmpresa = intIdEmpresa,
-                    CodigoUsuario = strCodigoUsuario,
-                    Id = strGuid,
-                    Fecha = fechaRegistro,
-                    Role = intRole
-                };
-                try
-                {
-                    dbContext.RegistroAutenticacionRepository.Add(registro);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    if (_logger != null) _logger.LogError("Error al generar registro de autenticación: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error consultando al generar el registro de autenticación. Por favor consulte con su proveedor.");
-                }
-                string strTokenEncriptado = Encriptador.EncriptarDatos(strGuid);
-                return strTokenEncriptado;
-            }
-        }
-
         public void ValidarRegistroAutenticacion(string strToken, int intRole, int intHoras)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
@@ -2918,8 +2871,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    string strTokenDesencriptado = Encriptador.DesencriptarDatos(strToken);
-                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
+                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strToken).FirstOrDefault();
                     if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar su sesión.");
                     if (registro.Fecha < Validador.ObtenerFechaHoraCostaRica().AddHours(-1 * intHoras))
                     {
@@ -2932,9 +2884,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (registro.Role != intRole) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
                     }
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -2958,32 +2910,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al validar el registro de autenticación: ", ex);
-                }
-            }
-        }
-
-        public decimal ObtenerTipoCambioVenta(string fechaConsulta)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    TipoDeCambioDolar tipoDeCambio = null;
-                    tipoDeCambio = dbContext.TipoDeCambioDolarRepository.Find(fechaConsulta);
-                    if (tipoDeCambio == null)
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        return tipoDeCambio.ValorTipoCambio;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error al obtener el tipo de cambio de venta: ", ex);
-                    throw new Exception("Se produjo un error consultando el tipo de cambio de venta del dolar para la fecha actual. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -3013,59 +2939,32 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
             }
         }
-
-        public void IniciarRestablecerClaveUsuario(string strServicioWebURL, string strIdentificacion, string strCodigoUsuario)
+        public void GenerarNotificacionRestablecerClaveUsuario(string strCorreoNotificacion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
-                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
+                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.CorreoNotificacion.ToLower() == strCorreoNotificacion.ToLower());
+                    if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
+                    if(!usuario.CorreoVerificado) throw new BusinessException("El usuario no ha verificado el correo electrónico suministrado y no se permite reestablecer la contraseña!");
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == usuario.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == strCodigoUsuario.ToUpper());
-                    if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
-                    string strToken = GenerarRegistroAutenticacion(empresa.IdEmpresa, usuario.CodigoUsuario, StaticRolePorUsuario.USUARIO_SISTEMA);
-                    _servicioCorreo.SendNotificationEmail(new string[] { empresa.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\n" + strServicioWebURL + "reset?id=" + strToken.Replace("/", "~") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false);
+                    string strToken = GenerarRegistroAutenticacion(dbContext, empresa.IdEmpresa, usuario.CodigoUsuario, StaticRolePorUsuario.SOPORTE);
+                    dbContext.Commit();
+                    _servicioCorreo.SendNotificationEmail(new string[] { usuario.CorreoNotificacion }, new string[] { }, "Solicitud para restablecer la contraseña", "Adjunto se adjunta el link para restablecer la contraseña.\n\n" + _config.ServicioWebURL + "reset?id=" + strToken.Replace("/", "~").Replace("+", "@") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false);
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al iniciar el proceso de restablecimiento de la clave del usuario: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al iniciar el proceso de restablecimiento de la clave del usuario. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public void AgregarTipoCambioDolar(string strFecha, string strTipoCambio)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    TipoDeCambioDolar tipoDeCambio = new TipoDeCambioDolar
-                    {
-                        FechaTipoCambio = strFecha,
-                        ValorTipoCambio = decimal.Parse(strTipoCambio)
-                    };
-                    dbContext.TipoDeCambioDolarRepository.Add(tipoDeCambio);
-                    dbContext.Commit();
-                }
-                catch (BusinessException ex)
-                {
-                    throw ex;
-                }
-                catch (Exception ex)
-                {
-                    if (_logger != null) _logger.LogError("Error al restablecer la clave del usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error al restablecer la clave del usuario. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -3077,11 +2976,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    string strTokenDesencriptado = Encriptador.DesencriptarDatos(strToken);
-                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
-                    if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar su sesión.");
-                    if (registro.Fecha < Validador.ObtenerFechaHoraCostaRica().AddHours(-1)) throw new BusinessException("La sessión del usuario se encuentra expirada. Debe reiniciar su sesión.");
-                    if (registro.Role != StaticRolePorUsuario.USUARIO_SISTEMA) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
+                    string strTokenFormateado = strToken;
+                    string strTokenDesencriptado = Encriptador.DesencriptarDatos(strTokenFormateado);
+                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.AsNoTracking().Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
+                    if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar el proceso de restablecimiento de su contraseña.");
+                    if (registro.Fecha < Validador.ObtenerFechaHoraCostaRica().AddHours(-1)) throw new BusinessException("La acceso para reestablecer la contraseña ya expiró. Debe reiniciar el proceso de restablecimiento de su contraseña.");
+                    if (registro.Role != StaticRolePorUsuario.SOPORTE) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == registro.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
@@ -3089,12 +2989,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
                     usuario.Clave = strClave;
                     dbContext.NotificarModificacion(usuario);
-                    dbContext.NotificarEliminacion(registro);
+                    List<RegistroAutenticacion> registrosPorUsuario = dbContext.RegistroAutenticacionRepository.Where(x => x.CodigoUsuario == usuario.CodigoUsuario).ToList();
+                    foreach (RegistroAutenticacion actual in registrosPorUsuario)
+                    {
+                        dbContext.NotificarEliminacion(actual);
+                    }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -3102,6 +3006,105 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al restablecer la clave del usuario. Por favor consulte con su proveedor.");
                 }
+            }
+        }
+
+        public void GenerarAutorizacionActualizacionCorreoUsuario(int intIdUsuario, string strCorreoNotificacion)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    Usuario correoExistente = dbContext.UsuarioRepository.AsNoTracking().FirstOrDefault(x => x.IdUsuario != intIdUsuario && x.CorreoNotificacion == strCorreoNotificacion);
+                    if (correoExistente != null) throw new BusinessException("El correo suministrado ya se encuentra registrado. Por favor verifique la información suministrada!");
+                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdUsuario == intIdUsuario);
+                    if (usuario == null) throw new BusinessException("Se produjo un error en el proceso de restablecimiento de su contraseña. Por favor verifique la información suministrada!");
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == usuario.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio!");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio!");
+                    usuario.CorreoNotificacion = strCorreoNotificacion;
+                    usuario.CorreoVerificado = false;
+                    dbContext.NotificarModificacion(usuario);
+                    string strToken = GenerarRegistroAutenticacion(dbContext, empresa.IdEmpresa, usuario.CodigoUsuario, StaticRolePorUsuario.SOPORTE);
+                    dbContext.Commit();
+                    _servicioCorreo.SendNotificationEmail(new string[] { strCorreoNotificacion }, new string[] { }, "Solicitud para autorizar dirección de correo electronico", "Adjunto se adjunta el link para autorizar la dirección de correo electronico suministrado.\n\n" + _config.ServicioWebURL + "authorize?id=" + strToken.Replace("/", "~").Replace("+", "@") + "\n\nEl acceso es válido por un único intento y expira en 1 hora.", false);
+                }
+                catch (BusinessException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error en el proceso de actualización del correo de notificación del usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error en el proceso de actualización del correo de notificación del usuario. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+        public void AutorizarCorreoUsuario(string strToken)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    string strTokenFormateado = strToken;
+                    string strTokenDesencriptado = Encriptador.DesencriptarDatos(strTokenFormateado);
+                    RegistroAutenticacion registro = dbContext.RegistroAutenticacionRepository.AsNoTracking().Where(x => x.Id == strTokenDesencriptado).FirstOrDefault();
+                    if (registro == null) throw new BusinessException("La sessión del usuario no es válida. Debe reiniciar el proceso de restablecimiento de su contraseña.");
+                    if (registro.Fecha < Validador.ObtenerFechaHoraCostaRica().AddHours(-1)) throw new BusinessException("La acceso para reestablecer la contraseña ya expiró. Debe reiniciar el proceso de restablecimiento de su contraseña.");
+                    if (registro.Role != StaticRolePorUsuario.SOPORTE) throw new BusinessException("El usuario no se encuentra autorizado para ejecutar la acción solicitada.");
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == registro.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
+                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario == registro.CodigoUsuario.ToUpper());
+                    if (usuario == null) throw new BusinessException("Se produjo un error al autorizar el correo de notificación del usuario. Por favor verifique la información suministrada!");
+                    usuario.CorreoVerificado = true;
+                    dbContext.NotificarModificacion(usuario);
+                    List<RegistroAutenticacion> registrosPorUsuario = dbContext.RegistroAutenticacionRepository.Where(x => x.CodigoUsuario == usuario.CodigoUsuario && x.Role == StaticRolePorUsuario.SOPORTE).ToList();
+                    foreach (RegistroAutenticacion actual in registrosPorUsuario)
+                    {
+                        dbContext.NotificarEliminacion(actual);
+                    }
+                    dbContext.Commit();
+                }
+                catch (BusinessException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al autorizar el correo de notificación del usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al autorizar el correo de notificación del usuario. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+        
+        private string GenerarRegistroAutenticacion(LeandroContext dbContext, int intIdEmpresa, string strCodigoUsuario, int intRole)
+        {
+            string strGuid = Guid.NewGuid().ToString();
+            DateTime fechaRegistro = Validador.ObtenerFechaHoraCostaRica();
+            RegistroAutenticacion registro = new RegistroAutenticacion
+            {
+                IdEmpresa = intIdEmpresa,
+                CodigoUsuario = strCodigoUsuario,
+                Id = strGuid,
+                Fecha = fechaRegistro,
+                Role = intRole
+            };
+            try
+            {
+                dbContext.RegistroAutenticacionRepository.Add(registro);
+                string strTokenEncriptado = Encriptador.EncriptarDatos(strGuid);
+                return strTokenEncriptado;
+            }
+            catch (Exception ex)
+            {
+                if (_logger != null) _logger.LogError("Error al generar registro de autenticación: ", ex);
+                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                else throw new Exception("Se produjo un error al generar el registro de autenticación. Por favor consulte con su proveedor.");
             }
         }
     }

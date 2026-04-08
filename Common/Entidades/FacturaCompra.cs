@@ -10,7 +10,8 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdTerminal { get; set; }
         public int IdFactCompra { get; set; }
         public int IdUsuario { get; set; }
-        public int CodigoActividad { get; set; }
+        public string CodigoActividad { get; set; }
+        public string CodigoActividadEmisor { get; set; }
         public int IdTipoMoneda { get; set; }
         public decimal TipoDeCambioDolar { get; set; }
         public DateTime Fecha { get; set; }
@@ -28,8 +29,11 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string DireccionEmisor { get; set; }
         public string CorreoElectronicoEmisor { get; set; }
         public int IdTipoExoneracion { get; set; }
+        public int IdNombreInstExoneracion { get; set; }
         public string NumDocExoneracion { get; set; }
-        public string NombreInstExoneracion { get; set; }
+        public string ArticuloExoneracion { get; set; }
+        public string IncisoExoneracion { get; set; }
+
         public DateTime FechaEmisionDoc { get; set; }
         public int PorcentajeExoneracion { get; set; }
         public string TextoAdicional { get; set; }
@@ -40,6 +44,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal Impuesto { get; set; }
         public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto - Descuento; } }
         public string IdDocElectronico { get; set; }
+        public string NumeroReferencia { get; set; }
         public List<DetalleFacturaCompra> DetalleFacturaCompra { get; set; }
     }
 }

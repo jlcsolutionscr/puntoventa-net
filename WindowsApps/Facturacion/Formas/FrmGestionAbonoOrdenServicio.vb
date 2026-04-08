@@ -111,7 +111,7 @@ Public Class FrmGestionAbonoOrdenServicio
                         MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                         Exit Sub
                     End Try
-                    MessageBox.Show("Transacción procesada satisfactoriamente. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                     CargarDetalleMovimiento(ordenServicio.IdCliente)
                 End If
             Else
@@ -123,9 +123,10 @@ Public Class FrmGestionAbonoOrdenServicio
     End Sub
 
     Private Async Sub btnBuscarOrdenServicio_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscarOrdenServicio.Click
-        Dim formBusquedaCliente As New FrmBusquedaOrdenServicio()
+        Dim formBusqueda As New FrmBusquedaOrdenServicio()
         FrmPrincipal.intBusqueda = 0
-        formBusquedaCliente.ShowDialog()
+        formBusqueda.bolExcluyeNulos = True
+        formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
                 ordenServicio = Await Puntoventa.ObtenerOrdenServicio(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)

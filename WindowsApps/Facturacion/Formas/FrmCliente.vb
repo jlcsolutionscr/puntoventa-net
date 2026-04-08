@@ -1,9 +1,9 @@
-Imports System.Threading.Tasks
 Imports System.Globalization
-Imports LeandroSoftware.Common.Dominio.Entidades
-Imports LeandroSoftware.ClienteWCF
 Imports System.Text.RegularExpressions
+Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.Constantes
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
 
 Public Class FrmCliente
 #Region "Variables"
@@ -13,7 +13,7 @@ Public Class FrmCliente
 #End Region
 
 #Region "Métodos"
-    Private Async Function CargarCombos() As Task
+    Private Sub CargarCombos()
         cboTipoIdentificacion.ValueMember = "Id"
         cboTipoIdentificacion.DisplayMember = "Descripcion"
         cboTipoIdentificacion.DataSource = FrmPrincipal.ObtenerListadoTipoIdentificacion()
@@ -23,7 +23,10 @@ Public Class FrmCliente
         cboTipoExoneracion.ValueMember = "Id"
         cboTipoExoneracion.DisplayMember = "Descripcion"
         cboTipoExoneracion.DataSource = FrmPrincipal.ObtenerListadoTipoExoneracion()
-    End Function
+        cboInstExoneracion.ValueMember = "Id"
+        cboInstExoneracion.DisplayMember = "Descripcion"
+        cboInstExoneracion.DataSource = FrmPrincipal.ObtenerListadoNombreInstExoneracion()
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -46,15 +49,35 @@ Public Class FrmCliente
         textbox.BackColor = Color.White
     End Sub
 
+    Private Sub ChangeEnableInputs(value As Boolean)
+        For Each ctl As Control In Controls
+            If TypeOf (ctl) Is TextBox Then
+                DirectCast(ctl, TextBox).ReadOnly = Not value
+            ElseIf TypeOf (ctl) IsNot Label Then
+                ctl.Enabled = value
+            End If
+        Next
+    End Sub
+
     Private Async Sub FrmCliente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            If FrmPrincipal.bolModificaCliente Then chkPermiteCredito.Enabled = True
-            Await CargarCombos()
+            'contribuyente = Nothing
+            chkPermiteCredito.Enabled = FrmPrincipal.bolModificaCliente
+            txtActividadEconomica.ReadOnly = FrmPrincipal.empresaGlobal.RegimenSimplificado
+            CargarCombos()
             If intIdCliente > 0 Then
+                ChangeEnableInputs(False)
                 datos = Await Puntoventa.ObtenerCliente(intIdCliente, FrmPrincipal.usuarioGlobal.Token)
                 If datos Is Nothing Then
                     Throw New Exception("El cliente seleccionado no existe")
                 End If
+                'Try
+                '    contribuyente = Await Puntoventa.ObtenerInformacionContribuyente(datos.Identificacion)
+                '    If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas
+                'Catch
+                '    MessageBox.Show("No se logró obtener la información del contribuyente en el Ministerio de Hacienda!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                'End Try
+                ChangeEnableInputs(True)
                 txtIdCliente.Text = datos.IdCliente
                 cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
                 txtIdentificacion.Text = datos.Identificacion
@@ -68,13 +91,17 @@ Public Class FrmCliente
                 chkPermiteCredito.Checked = datos.PermiteCredito
                 cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
                 cboTipoExoneracion.SelectedValue = datos.IdTipoExoneracion
+                cboInstExoneracion.SelectedValue = datos.IdNombreInstExoneracion
                 txtNumDocExoneracion.Text = datos.NumDocExoneracion
-                txtNombreInstExoneracion.Text = datos.NombreInstExoneracion
+                txtArticulo.Text = datos.ArticuloExoneracion
+                txtInciso.Text = datos.IncisoExoneracion
                 txtFechaExoneracion.Value = datos.FechaEmisionDoc
                 txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
+                txtActividadEconomica.Text = datos.CodigoActividad
             Else
                 datos = New Cliente
                 cboTipoExoneracion.SelectedValue = StaticValoresPorDefecto.TipoExoneracion
+                cboInstExoneracion.SelectedValue = StaticValoresPorDefecto.IdNombreInstExoneracion
                 txtPorcentajeExoneracion.Text = "0"
                 txtFechaExoneracion.Value = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider)
             End If
@@ -90,14 +117,18 @@ Public Class FrmCliente
 
     Private Async Sub BtnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
         If cboTipoIdentificacion.SelectedValue Is Nothing Or txtIdentificacion.Text.Length = 0 Or txtDireccion.Text.Length = 0 Or txtNombre.Text.Length = 0 Or txtCorreoElectronico.Text.Length = 0 Then
-            MessageBox.Show("Existen campos requeridos que no se fueron ingresados. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Existen campos requeridos que no se fueron ingresados. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
         If txtPorcentajeExoneracion.Text <> "" Then
             If Integer.Parse(txtPorcentajeExoneracion.Text) > 13 Then
-                MessageBox.Show("El porcentaje de exoneración no puede ser mayor a 13%. Por favor verifique la información. . .", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El porcentaje de exoneración no puede ser mayor a 13%. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
+        End If
+        If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And txtActividadEconomica.Text.Length > 0 And txtActividadEconomica.Text.Length < 6 Then
+            MessageBox.Show("El código de actividad económica debe contener un mínimo de 6 dígitos. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
         End If
         btnCancelar.Focus()
         btnGuardar.Enabled = False
@@ -116,10 +147,13 @@ Public Class FrmCliente
         datos.PermiteCredito = chkPermiteCredito.Checked
         datos.IdTipoPrecio = cboIdTipoPrecio.SelectedValue
         datos.IdTipoExoneracion = cboTipoExoneracion.SelectedValue
+        datos.IdNombreInstExoneracion = cboInstExoneracion.SelectedValue
         datos.NumDocExoneracion = txtNumDocExoneracion.Text
-        datos.NombreInstExoneracion = txtNombreInstExoneracion.Text
+        datos.ArticuloExoneracion = txtArticulo.Text
+        datos.IncisoExoneracion = txtInciso.Text
         datos.FechaEmisionDoc = txtFechaExoneracion.Value
         datos.PorcentajeExoneracion = txtPorcentajeExoneracion.Text
+        datos.CodigoActividad = txtActividadEconomica.Text
         Try
             If datos.IdCliente = 0 Then
                 Await Puntoventa.AgregarCliente(datos, FrmPrincipal.usuarioGlobal.Token)
@@ -142,32 +176,27 @@ Public Class FrmCliente
                 Dim cliente As Cliente = Nothing
                 cliente = Await Puntoventa.ValidaIdentificacionCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtIdentificacion.Text, FrmPrincipal.usuarioGlobal.Token)
                 If cliente IsNot Nothing Then
-                    If cliente.IdCliente > 0 Then
-                        MessageBox.Show("La identificación ingresada ya se encuentra registrada en la base de datos de clientes del sistema.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                        datos = cliente
-                        txtIdCliente.Text = datos.IdCliente
-                        cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
-                        txtIdentificacion.Text = datos.Identificacion
-                        txtDireccion.Text = datos.Direccion
-                        txtNombre.Text = datos.Nombre
-                        txtNombreComercial.Text = datos.NombreComercial
-                        txtTelefono.Text = datos.Telefono
-                        txtCelular.Text = datos.Celular
-                        txtFax.Text = datos.Fax
-                        txtCorreoElectronico.Text = datos.CorreoElectronico
-                        cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
-                        cboTipoExoneracion.SelectedValue = datos.IdTipoExoneracion
-                        txtNumDocExoneracion.Text = datos.NumDocExoneracion
-                        txtNombreInstExoneracion.Text = datos.NombreInstExoneracion
-                        txtFechaExoneracion.Text = datos.FechaEmisionDoc.ToString()
-                        txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
-                    Else
-                        MessageBox.Show("Cliente encontrado en el padrón electoral. Por favor complete la información faltante.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                        cboTipoIdentificacion.SelectedValue = 0
-                        txtNombre.Text = cliente.Nombre
-                    End If
-                ElseIf cboTipoIdentificacion.SelectedValue = 0 Then
-                    MessageBox.Show("No se encontró la identificación registrada en el sistema o en el padrón electoral. Por favor ingrese la información completa.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    MessageBox.Show("La identificación ingresada ya se encuentra registrada en la base de datos de clientes del sistema.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    datos = cliente
+                    txtIdCliente.Text = datos.IdCliente
+                    cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
+                    txtIdentificacion.Text = datos.Identificacion
+                    txtDireccion.Text = datos.Direccion
+                    txtNombre.Text = datos.Nombre
+                    txtNombreComercial.Text = datos.NombreComercial
+                    txtTelefono.Text = datos.Telefono
+                    txtCelular.Text = datos.Celular
+                    txtFax.Text = datos.Fax
+                    txtCorreoElectronico.Text = datos.CorreoElectronico
+                    cboIdTipoPrecio.SelectedValue = datos.IdTipoPrecio
+                    cboTipoExoneracion.SelectedValue = datos.IdTipoExoneracion
+                    txtNumDocExoneracion.Text = datos.NumDocExoneracion
+                    txtArticulo.Text = datos.ArticuloExoneracion
+                    txtInciso.Text = datos.IncisoExoneracion
+                    cboInstExoneracion.SelectedValue = datos.IdNombreInstExoneracion
+                    txtFechaExoneracion.Text = datos.FechaEmisionDoc.ToString()
+                    txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
+                    txtActividadEconomica.Text = datos.CodigoActividad
                 End If
             End If
         Catch ex As Exception

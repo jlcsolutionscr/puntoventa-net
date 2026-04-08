@@ -29,12 +29,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         MovimientoCuentaPorPagar ObtenerMovimientoCxP(int intIdMovimiento);
         int ObtenerCantidadCxPVencidas(int intIdPropietario, int intIdTipo);
         decimal ObtenerSaldoCuentasPorPagar(int intIdPropietario, int intIdTipo);
-        List<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa);
         List<EfectivoDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado);
         void AplicarMovimientoApartado(MovimientoApartado movimiento);
         void AnularMovimientoApartado(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoApartado ObtenerMovimientoApartado(int intIdMovimiento);
-        List<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa);
         List<EfectivoDetalle> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden);
         void AplicarMovimientoOrdenServicio(MovimientoOrdenServicio movimiento);
         void AnularMovimientoOrdenServicio(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
@@ -137,10 +135,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listaCuentas;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -220,7 +218,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(cxc);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoCuentaPorCobrar)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                        if (!new int[] { StaticFormaPago.Efectivo, StaticFormaPago.Tarjeta }.Contains(desglosePago.IdFormaPago))
                         {
                             movimientoBanco = new MovimientoBanco
                             {
@@ -314,7 +312,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     asiento.TotalDebito += detalleAsiento.Debito;
                                 }
                             }
-                            else if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                            else
                             {
                                 detalleAsiento = new DetalleAsiento();
                                 intLineaDetalleAsiento += 1;
@@ -357,10 +355,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -402,10 +400,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -550,9 +548,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     return listaCuentas;
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -622,7 +620,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(cxp);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoCuentaPorPagar)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                        if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
                         {
                             movimientoBanco = new MovimientoBanco
                             {
@@ -682,7 +680,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 asiento.DetalleAsiento.Add(detalleAsiento);
                                 asiento.TotalCredito += detalleAsiento.Credito;
                             }
-                            else if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                            else
                             {
                                 detalleAsiento = new DetalleAsiento();
                                 intLineaDetalleAsiento += 1;
@@ -717,10 +715,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -767,10 +765,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -841,31 +839,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<LlaveDescripcion> ObtenerListadoApartadosConSaldo(int intIdEmpresa)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                var listaCuentas = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.ApartadoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Aplicado == false && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0 && !x.Nulo).OrderByDescending(x => x.Fecha);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdApartado, "Apartado " + value.IdApartado + " de " + value.NombreCliente);
-                        listaCuentas.Add(item);
-                    }
-                    return listaCuentas;
-                }
-                catch (Exception ex)
-                {
-                    if (_logger != null) _logger.LogError("Error al obtener el listado de apartados pendientes: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error consultando el listado de apartados pendientes. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
         public List<EfectivoDetalle> ObtenerListadoMovimientosApartado(int intIdEmpresa, int intIdSucursal, int intIdApartado)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
@@ -914,7 +887,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(apartado);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoApartado)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                        if (!new int[] { StaticFormaPago.Efectivo, StaticFormaPago.Tarjeta }.Contains(desglosePago.IdFormaPago))
                         {
                             movimientoBanco = new MovimientoBanco
                             {
@@ -952,10 +925,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -992,10 +965,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(apartado);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1023,31 +996,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al obtener el movimiento del registro de apartado: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al obtener el movimiento del registro de apartado. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public List<LlaveDescripcion> ObtenerListadoOrdenesServicioConSaldo(int intIdEmpresa)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                var listaCuentas = new List<LlaveDescripcion>();
-                try
-                {
-                    var listado = dbContext.OrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Aplicado == false && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0 && !x.Nulo).OrderByDescending(x => x.Fecha);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdOrden, "Orden servicio " + value.IdOrden + " de " + value.NombreCliente);
-                        listaCuentas.Add(item);
-                    }
-                    return listaCuentas;
-                }
-                catch (Exception ex)
-                {
-                    if (_logger != null) _logger.LogError("Error al obtener el listado de ordenes de servicio pendientes: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error consultando el listado de ordenes de servicio pendientes. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1100,7 +1048,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(ordenServicio);
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoOrdenServicio)
                     {
-                        if (desglosePago.IdFormaPago == StaticFormaPago.Cheque || desglosePago.IdFormaPago == StaticFormaPago.TransferenciaDepositoBancario)
+                        if (!new int[] { StaticFormaPago.Efectivo, StaticFormaPago.Tarjeta }.Contains(desglosePago.IdFormaPago))
                         {
                             movimientoBanco = new MovimientoBanco
                             {
@@ -1138,10 +1086,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -1178,10 +1126,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(ordenServicio);
                     dbContext.Commit();
                 }
-                catch (BusinessException ex)
+                catch (BusinessException)
                 {
                     dbContext.RollBack();
-                    throw ex;
+                    throw;
                 }
                 catch (Exception ex)
                 {

@@ -151,13 +151,13 @@ namespace LeandroSoftware.Activator
             cboTipoContrato.ValueMember = "Id";
             cboTipoContrato.DisplayMember = "Descripcion";
             IList<LlaveDescripcion> dsTipoContrato = new List<LlaveDescripcion>();
-            LlaveDescripcion tipo = new LlaveDescripcion(1, "Plan 50 Documentos");
+            LlaveDescripcion tipo = new LlaveDescripcion(1, "Plan 24 Documentos");
             dsTipoContrato.Add(tipo);
-            new LlaveDescripcion(2, "Plan 100 Documentos");
+            new LlaveDescripcion(2, "Plan 60 Documentos");
             dsTipoContrato.Add(tipo);
-            tipo = new LlaveDescripcion(3, "PYMES 1");
+            tipo = new LlaveDescripcion(3, "Plan 150 Documentos");
             dsTipoContrato.Add(tipo);
-            tipo = new LlaveDescripcion(4, "PYMES 2");
+            tipo = new LlaveDescripcion(4, "PYMES 1");
             dsTipoContrato.Add(tipo);
             tipo = new LlaveDescripcion(5, "Plan Empresarial 1");
             dsTipoContrato.Add(tipo);
@@ -205,14 +205,6 @@ namespace LeandroSoftware.Activator
             cboDistrito.DisplayMember = "Descripcion";
         }
 
-        public async Task CargarBarrios(int intIdProvincia, int intIdCanton, int intIdDistrito)
-        {
-            IList<LlaveDescripcion> dsDataSet = await Administrador.ObtenerListadoBarrios(intIdProvincia, intIdCanton, intIdDistrito, strToken);
-            cboBarrio.DataSource = dsDataSet;
-            cboBarrio.ValueMember = "Id";
-            cboBarrio.DisplayMember = "Descripcion";
-        }
-
         private async void CargarSucursalPorEmpresa()
         {
             if (txtIdEmpresa.Text != "" && txtIdSucursal.Text != "")
@@ -228,6 +220,7 @@ namespace LeandroSoftware.Activator
                     txtNombreSucursal.Text = txtNombreComercial.Text != "" ? txtNombreComercial.Text : txtNombreEmpresa.Text;
                     txtDireccionSucursal.Text = txtDireccion.Text;
                     txtTelefonoSucursal.Text = txtTelefono.Text;
+                    txtCorreoSucursal.Text = txtCorreoNotificacion.Text;
                     txtIdTerminal.Text = "1";
                     txtDescripcionTerminal.Text = "Terminal 1";
                     txtValorRegistro.Text = "";
@@ -260,6 +253,7 @@ namespace LeandroSoftware.Activator
                     txtNombreSucursal.Text = sucursal.NombreSucursal;
                     txtDireccionSucursal.Text = sucursal.Direccion;
                     txtTelefonoSucursal.Text = sucursal.Telefono;
+                    txtCorreoSucursal.Text = sucursal.CorreoElectronico;
                     txtIdTerminal.Enabled = true;
                     txtValorRegistro.Enabled = true;
                     btnCargarTerminal.Enabled = true;
@@ -317,11 +311,9 @@ namespace LeandroSoftware.Activator
                         txtIdentificacion.Text = empresa.Identificacion;
                         await CargarCantones(empresa.IdProvincia);
                         await CargarDistritos(empresa.IdProvincia, empresa.IdCanton);
-                        await CargarBarrios(empresa.IdProvincia, empresa.IdCanton, empresa.IdDistrito);
                         cboProvincia.SelectedValue = empresa.IdProvincia;
                         cboCanton.SelectedValue = empresa.IdCanton;
                         cboDistrito.SelectedValue = empresa.IdDistrito;
-                        cboBarrio.SelectedValue = empresa.IdBarrio;
                         txtDireccion.Text = empresa.Direccion;
                         txtTelefono.Text = empresa.Telefono1;
                         txtCorreoNotificacion.Text = empresa.CorreoNotificacion;
@@ -367,7 +359,6 @@ namespace LeandroSoftware.Activator
                 {
                     await CargarCantones(1);
                     await CargarDistritos(1, 1);
-                    await CargarBarrios(1, 1, 1);
                     empresa = new Empresa();
                 }
                 bolLoading = false;
@@ -411,7 +402,6 @@ namespace LeandroSoftware.Activator
                 empresa.IdProvincia = (int)cboProvincia.SelectedValue;
                 empresa.IdCanton = (int)cboCanton.SelectedValue;
                 empresa.IdDistrito = (int)cboDistrito.SelectedValue;
-                empresa.IdBarrio = (int)cboBarrio.SelectedValue;
                 empresa.Direccion = txtDireccion.Text;
                 empresa.Telefono1 = txtTelefono.Text;
                 empresa.CorreoNotificacion = txtCorreoNotificacion.Text;
@@ -472,6 +462,7 @@ namespace LeandroSoftware.Activator
                     sucursal.NombreSucursal = txtNombreSucursal.Text;
                     sucursal.Direccion = txtDireccionSucursal.Text;
                     sucursal.Telefono = txtTelefonoSucursal.Text;
+                    sucursal.CorreoElectronico = txtCorreoSucursal.Text;
                     if (bolSucursalNueva)
                     {
                         await Administrador.AgregarSucursalPorEmpresa(sucursal, strToken);
@@ -507,7 +498,6 @@ namespace LeandroSoftware.Activator
                 int intIdProvincia = (int)cboProvincia.SelectedValue;
                 await CargarCantones(intIdProvincia);
                 await CargarDistritos(intIdProvincia, 1);
-                await CargarBarrios(intIdProvincia, 1, 1);
             }
         }
 
@@ -518,18 +508,16 @@ namespace LeandroSoftware.Activator
                 int intIdProvincia = (int)cboProvincia.SelectedValue;
                 int intIdCanton = (int)cboCanton.SelectedValue;
                 await CargarDistritos(intIdProvincia, intIdCanton);
-                await CargarBarrios(intIdProvincia, intIdCanton, 1);
             }
         }
 
-        private async void CboDistrito_SelectedIndexChanged(object sender, EventArgs e)
+        private void CboDistrito_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!bolLoading)
             {
                 int intIdProvincia = (int)cboProvincia.SelectedValue;
                 int intIdCanton = (int)cboCanton.SelectedValue;
                 int intIdDistrito = (int)cboDistrito.SelectedValue;
-                await CargarBarrios(intIdProvincia, intIdCanton, intIdDistrito);
             }
         }
 

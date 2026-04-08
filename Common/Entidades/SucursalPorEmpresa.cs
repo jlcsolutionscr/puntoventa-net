@@ -7,6 +7,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string NombreSucursal { get; set; }
         public string Direccion { get; set; }
         public string Telefono { get; set; }
+        public string CorreoElectronico { get; set; }
         public bool CierreEnEjecucion { get; set; }
         public int ConsecFactura { get; set; }
         public int ConsecProforma { get; set; }
