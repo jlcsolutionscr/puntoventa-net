@@ -3244,7 +3244,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 datos.Consecutivo = factura.IdDocElectronico.Substring(21, 20);
             }
             datos.CondicionVenta = CondicionDeVenta.ObtenerDescripcion(factura.IdCondicionVenta);
-            datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
+            datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy");
             if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
                 datos.MedioPago = "Crédito";
             else if (factura.DesglosePagoFactura.ToList().Count > 1)
