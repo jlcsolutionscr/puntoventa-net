@@ -75,6 +75,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void GenerarNotificacionFactura(int intIdFactura, byte[] bytLogo);
         void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, byte[] bytLogo);
         void GenerarNotificacionOrdenServicio(int intIdOrden, string strCorreoReceptor, byte[] bytLogo);
+        byte[] GenerarTiqueteFacturaPDF(int intIdFactura, int intLargoLinea, byte[] bytLogo);
+        byte[] GenerarTiqueteOrdenServicioPDF(int intIdOrdenServicio, int intLargoLinea, byte[] bytLogo);
     }
 
     public class FacturacionService : IFacturacionService
@@ -3175,6 +3177,40 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
+        public byte[] GenerarTiqueteFacturaPDF(int intIdFactura, int intLargoLinea, byte[] bytLogo)
+        {
+            if (_serviceScopeFactory == null || _servicioCorreo == null) throw new Exception("Service factory or email service not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    if (factura == null) throw new BusinessException("La registro de la factura no existe.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
+                    foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
+                    {
+                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        if (producto != null) detalleFactura.Producto = producto;
+                    }
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
+                    return Generador.generarTiqueteFacturaPDF(datos, intLargoLinea);
+                }
+                catch (BusinessException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al enviar por correo la factura con ID: " + intIdFactura, ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al enviar el documento por correo. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
         private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
             EstructuraPDF datos = new EstructuraPDF
@@ -3748,6 +3784,40 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al enviar notificación del orden de servicio al receptor para el documento con ID: " + intIdOrden, ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al notificar la orden de servicio al cliente. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public byte[] GenerarTiqueteOrdenServicioPDF(int intIdOrdenServicio, int intLargoLinea, byte[] bytLogo)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente").Include("DetalleOrdenServicio.Producto").Where(x => x.IdOrden == intIdOrdenServicio).FirstOrDefault();
+                    if (ordenServicio == null) throw new BusinessException("No existe registro de orden de servicio para el identificador suministrado: " + intIdOrdenServicio);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la orden de servicio no existe.");
+                    foreach (DetalleOrdenServicio detalleOrden in ordenServicio.DetalleOrdenServicio)
+                    {
+                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleOrden.IdProducto);
+                        if (producto != null) detalleOrden.Producto = producto;
+                    }
+                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
+                    return Generador.generarTiqueteFacturaPDF(datos, intLargoLinea);
+                }
+                catch (BusinessException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al enviar notificación del orden de servicio al receptor para el documento con ID: " + intIdOrdenServicio, ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al notificar la orden de servicio al cliente. Por favor consulte con su proveedor.");
                 }

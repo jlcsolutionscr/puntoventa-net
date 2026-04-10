@@ -63,6 +63,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static int intIdLlave1;
         private static int intNumeroPagina;
         private static int intFilasPorPagina;
+        private static int intLargoLinea;
         private static int intTotalLista;
         private static string strLogoPath;
         private static string strClave;
@@ -1387,6 +1388,21 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     byte[] proformaPdf = _servicioFacturacion.GenerarProformaPDF(intIdLlave1, bytLogo);
                     if (proformaPdf.Length > 0)
                         strRespuesta = JsonConvert.SerializeObject(proformaPdf);
+                    break;
+                case "GenerarTiqueteFacturaPDF":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
+                    intLargoLinea = int.Parse(parametrosJO.Property("LargoLinea").Value.ToString());
+                    bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
+                    byte[] tiqueteFacturaPdf = _servicioFacturacion.GenerarTiqueteFacturaPDF(intIdLlave1, intLargoLinea, bytLogo);
+                    if (tiqueteFacturaPdf.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(tiqueteFacturaPdf);
+                    break;
+                case "GenerarTiqueteOrdenServicioPDF":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
+                    intLargoLinea = int.Parse(parametrosJO.Property("LargoLinea").Value.ToString());
+                    byte[] tiqueteOrdenServicioPdf = _servicioFacturacion.GenerarTiqueteOrdenServicioPDF(intIdLlave1, intLargoLinea, bytLogo);
+                    if (tiqueteOrdenServicioPdf.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(tiqueteOrdenServicioPdf);
                     break;
                 case "ObtenerListadoPuntoDeServicio":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
