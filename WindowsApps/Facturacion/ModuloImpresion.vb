@@ -898,7 +898,7 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasEfectivo, 0, 100, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Tarjeta", 0, 100, 10, StringAlignment.Near, True))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasTarjeta, 0, 100, 10, StringAlignment.Far, False))
-            lineas.Add(New ClsLineaImpresion(0, "Ttransfercia", 0, 100, 10, StringAlignment.Near, True))
+            lineas.Add(New ClsLineaImpresion(0, "Transfercia", 0, 100, 10, StringAlignment.Near, True))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasTransferencia, 0, 100, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(0, "Crédito", 0, 100, 10, StringAlignment.Near, True))
             lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasCredito, 0, 100, 10, StringAlignment.Far, False))
