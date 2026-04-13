@@ -1211,7 +1211,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "ObtenerListadoMovimientosOrdenServicio":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdOrden").Value.ToString());
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
                     IList<EfectivoDetalle> listadoMovimientosOrdenServicio = _servicioCuentaPorProcesar.ObtenerListadoMovimientosOrdenServicio(intIdEmpresa, intIdSucursal, intIdLlave1);
                     if (listadoMovimientosOrdenServicio.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoMovimientosOrdenServicio);
@@ -1376,7 +1376,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                         strRespuesta = JsonConvert.SerializeObject(apartadoPdf);
                     break;
                 case "ObtenerOrdenServicioPDF":
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdOrden").Value.ToString());
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
                     byte[] ordenPdf = _servicioFacturacion.GenerarOrdenServicioPDF(intIdLlave1, bytLogo);
                     if (ordenPdf.Length > 0)
@@ -1423,7 +1423,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     bolFiltraActivos = bool.Parse(parametrosJO.Property("Impreso").Value.ToString());
-                    IList<ClsTiquete> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, bolFiltraActivos, true);
+                    IList<TiqueteOrdenServicio> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, bolFiltraActivos, true);
                     if (listadoTiqueteOrdenServicio.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoTiqueteOrdenServicio);
                     break;

@@ -50,8 +50,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
         int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int intIdOrdenServicio, string strNombre, string strFechaFinal);
         IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal);
-        IList<ClsTiquete> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc);
-        void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado);
+        IList<TiqueteOrdenServicio> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc);
+        void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolImpreso);
         string AgregarDevolucionCliente(DevolucionCliente devolucion);
         void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion);
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
@@ -1603,71 +1603,54 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 DataTable dtbDetalleTiquete = new DataTable();
                 dtbDetalleTiquete.Columns.Add("Linea", typeof(string));
                 dtbDetalleTiquete.Columns.Add("Descripcion", typeof(string));
-                dtbDetalleTiquete.Columns.Add("Cantidad", typeof(string));
+                dtbDetalleTiquete.Columns.Add("Cantidad", typeof(double));
                 foreach (DetalleOrdenServicio detalle in detalleOrdenServicio)
                 {
                     Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
                     DataRow data = dtbDetalleTiquete.NewRow();
                     data["Linea"] = producto.Linea.Descripcion;
                     data["Descripcion"] = detalle.Descripcion;
-                    data["Cantidad"] = detalle.Cantidad.ToString();
+                    data["Cantidad"] = detalle.Cantidad;
                     dtbDetalleTiquete.Rows.Add(data);
                 }
                 DataView view = new DataView(dtbDetalleTiquete)
                 {
                     Sort = "Linea ASC"
                 };
-                string strLineaDesc = view[0].Row["Linea"].ToString();
-                IList<ClsLineaImpresion> lineasDetalle = new List<ClsLineaImpresion> { };
-                IList<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
+                string strPrinterTarget = view[0].Row["Linea"].ToString();
+                IList<DescripcionValor> lineasDetalle = new List<DescripcionValor> { };
                 TiqueteOrdenServicio tiquete;
                 foreach (DataRowView row in view)
                 {
-                    if (strLineaDesc != row["Linea"].ToString())
+                    if (strPrinterTarget != row["Linea"].ToString())
                     {
-                        tiquete = GenerarTiqueteOrdenServicio(ordenServicio, lineasDetalle, strLineaDesc);
+                        tiquete = GenerarTiqueteOrdenServicio(ordenServicio, lineasDetalle, strPrinterTarget);
                         dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
-                        lineasDetalle = new List<ClsLineaImpresion> { };
-                        strLineaDesc = row["Linea"].ToString();
+                        lineasDetalle = new List<DescripcionValor> { };
+                        strPrinterTarget = row["Linea"].ToString();
                     }
-                    string strLinea = row["Descripcion"].ToString();
-                    lineasDetalle.Add(new ClsLineaImpresion(0, strLinea.Substring(0, Math.Min(30, strLinea.Length)), 0, 95, 10, (int)StringAlignment.Near, false));
-                    lineasDetalle.Add(new ClsLineaImpresion(1, row["Cantidad"].ToString(), 95, 5, 10, (int)StringAlignment.Far, false));
-                    strLinea = strLinea.Substring(Math.Min(30, strLinea.Length));
-                    while (strLinea.Length > 30)
-                    {
-                        lineasDetalle.Add(new ClsLineaImpresion(1, strLinea.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
-                        strLinea = strLinea.Substring(30);
-                    }
-                    if (strLinea.Length > 0) lineasDetalle.Add(new ClsLineaImpresion(1, strLinea, 0, 100, 10, (int)StringAlignment.Near, false));
+                    DescripcionValor detalle = new DescripcionValor(row["Descripcion"].ToString(), Decimal.Parse(row["Cantidad"].ToString()));
+                    lineasDetalle.Add(detalle);
                 }
-                tiquete = GenerarTiqueteOrdenServicio(ordenServicio, lineasDetalle, strLineaDesc);
+                tiquete = GenerarTiqueteOrdenServicio(ordenServicio, lineasDetalle, strPrinterTarget);
                 dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
             }
         }
 
-        private TiqueteOrdenServicio GenerarTiqueteOrdenServicio(OrdenServicio ordenServicio, IList<ClsLineaImpresion> lineasDetalle, string strLineaDesc)
+        private TiqueteOrdenServicio GenerarTiqueteOrdenServicio(OrdenServicio ordenServicio, IList<DescripcionValor> lineasDetalle, string strPrinterTarget)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                List<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
-                lineas.Add(new ClsLineaImpresion(2, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true));
-                lineas.Add(new ClsLineaImpresion(2, Validador.ObtenerFechaHoraCostaRica().ToString(), 0, 100, 12, (int)StringAlignment.Center, false));
-                lineas.Add(new ClsLineaImpresion(2, ordenServicio.NombreCliente, 0, 100, 14, (int)StringAlignment.Center, true));
-                lineas.Add(new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false));
-                foreach (ClsLineaImpresion linea in lineasDetalle)
-                    lineas.Add(linea);
-                lineas.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
-                byte[] bytLineas = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(lineas));
                 return new TiqueteOrdenServicio
                 {
                     IdTiquete = 0,
+                    IdOrden = ordenServicio.IdOrden,
                     IdEmpresa = ordenServicio.IdEmpresa,
                     IdSucursal = ordenServicio.IdSucursal,
                     Descripcion = ordenServicio.NombreCliente,
-                    Impresora = strLineaDesc,
-                    Lineas = bytLineas,
+                    Impresora = strPrinterTarget,
+                    DetalleTiqueteOrdenServicio = JsonConvert.SerializeObject(lineasDetalle),
                     Impreso = false
                 };
             }
@@ -1843,12 +1826,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<ClsTiquete> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc)
+        public IList<TiqueteOrdenServicio> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listaTiquete = new List<ClsTiquete>();
+                var listaTiquete = new List<TiqueteOrdenServicio>();
                 try
                 {
                     var listado = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Impreso == bolImpreso);
@@ -1856,13 +1839,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.OrderByDescending(x => x.IdTiquete);
                     else
                         listado = listado.OrderBy(x => x.IdTiquete);
-                    foreach (var tiquete in listado)
-                    {
-                        string strLineas = Encoding.UTF8.GetString(tiquete.Lineas);
-                        IList<ClsLineaImpresion> lineas = JsonConvert.DeserializeObject<List<ClsLineaImpresion>>(strLineas);
-                        ClsTiquete item = new ClsTiquete(tiquete.IdTiquete, tiquete.IdEmpresa, tiquete.IdSucursal, tiquete.Descripcion, tiquete.Impresora, lineas, tiquete.Impreso);
-                        listaTiquete.Add(item);
-                    }
                     return listaTiquete;
                 }
                 catch (Exception ex)
@@ -1874,7 +1850,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado)
+        public void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolImpreso)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1883,7 +1859,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     TiqueteOrdenServicio tiquete = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdTiquete == intIdTiquete).FirstOrDefault();
                     if (tiquete == null) throw new BusinessException("No se logró obtener la información del tiquete de orden de servicio. Por favor, pongase en contacto con su proveedor del servicio.");
-                    tiquete.Impreso = bolEstado;
+                    tiquete.Impreso = bolImpreso;
                     dbContext.Commit();
                 }
                 catch (BusinessException)

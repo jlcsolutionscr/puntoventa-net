@@ -10,6 +10,7 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
         {
             builder.ToTable("tiqueteordenservicio");
             builder.HasKey(p => p.IdTiquete);
+            builder.HasOne(p => p.OrdenServicio).WithMany().HasForeignKey(p => p.IdOrden);
         }
     }
 }
