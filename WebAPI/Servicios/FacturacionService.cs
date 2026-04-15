@@ -1520,15 +1520,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
                     {
-                        AgregarTiqueteOrdenServicio(ordenServicio, ordenServicio.DetalleOrdenServicio, dbContext);
-                    }
-                    if (ordenServicio.IdPuntoServicio > 0)
-                    {
-                        PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoServicio);
-                        if (puntoDeServicio != null)
+                        if (ordenServicio.IdPuntoServicio > 0)
                         {
-                            puntoDeServicio.IdOrden = ordenServicio.IdOrden;
-                            dbContext.NotificarModificacion(puntoDeServicio);
+                            PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoServicio);
+                            if (puntoDeServicio != null)
+                            {
+                                puntoDeServicio.IdOrden = ordenServicio.IdOrden;
+                                dbContext.NotificarModificacion(puntoDeServicio);
+                                AgregarTiqueteOrdenServicio(ordenServicio, ordenServicio.DetalleOrdenServicio, puntoDeServicio.Descripcion, dbContext);
+                            }
                         }
                     }
                     dbContext.Commit();
@@ -1587,7 +1587,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 nuevoDetalle.Add(detalle);
                             }
                         }
-                        if (nuevoDetalle.Count > 0) AgregarTiqueteOrdenServicio(ordenServicio, nuevoDetalle, dbContext);
+                        PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoServicio);
+                        if (puntoDeServicio != null && nuevoDetalle.Count > 0)
+                        {
+                            AgregarTiqueteOrdenServicio(ordenServicio, nuevoDetalle, puntoDeServicio.Descripcion, dbContext);
+                        }
                     }
                     ordenServicio.DetalleOrdenServicio = null;
                     foreach (DetalleOrdenServicio detalle in listadoDetalleAnterior)
@@ -1611,7 +1615,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private void AgregarTiqueteOrdenServicio(OrdenServicio ordenServicio, ICollection<DetalleOrdenServicio> detalleOrdenServicio, LeandroContext dbContext)
+        private void AgregarTiqueteOrdenServicio(OrdenServicio ordenServicio, ICollection<DetalleOrdenServicio> detalleOrdenServicio, string strPuntoServicio, LeandroContext dbContext)
         {
             DataTable dtbDetalleTiquete = new DataTable();
             dtbDetalleTiquete.Columns.Add("Impresora", typeof(string));
@@ -1631,7 +1635,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             DataView view = new DataView(dtbDetalleTiquete)
             {
-                Sort = "Linea ASC"
+                Sort = "Impresora ASC"
             };
             string strPrinterTarget = view[0].Row["Impresora"].ToString();
             IList<DescripcionValor> lineasDetalle = new List<DescripcionValor> { };
@@ -1646,7 +1650,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         IdOrden = ordenServicio.IdOrden,
                         IdEmpresa = ordenServicio.IdEmpresa,
                         IdSucursal = ordenServicio.IdSucursal,
-                        Descripcion = ordenServicio.NombreCliente,
+                        Descripcion = strPuntoServicio,
                         Impresora = strPrinterTarget,
                         DetalleTiqueteOrdenServicio = JsonConvert.SerializeObject(lineasDetalle),
                         Impreso = false
@@ -1664,7 +1668,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 IdOrden = ordenServicio.IdOrden,
                 IdEmpresa = ordenServicio.IdEmpresa,
                 IdSucursal = ordenServicio.IdSucursal,
-                Descripcion = ordenServicio.NombreCliente,
+                Descripcion = strPuntoServicio,
                 Impresora = strPrinterTarget,
                 DetalleTiqueteOrdenServicio = JsonConvert.SerializeObject(lineasDetalle),
                 Impreso = false
