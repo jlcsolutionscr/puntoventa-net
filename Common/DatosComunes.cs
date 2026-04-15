@@ -333,7 +333,7 @@ namespace LeandroSoftware.Common.DatosComunes
     {
         public ProductoDetalle() { }
 
-        public ProductoDetalle(int id, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta1, string observacion, decimal utilidad, bool activo, byte[] imagen)
+        public ProductoDetalle(int id, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta1, string observacion, decimal utilidad, bool activo, string imagen)
         {
             Id = id;
             Codigo = codigo;
@@ -357,7 +357,7 @@ namespace LeandroSoftware.Common.DatosComunes
         public string Observacion { get; set; }
         public decimal Utilidad { get; set; }
         public bool Activo { get; set; }
-        public byte[] Imagen { get; set; }
+        public string Imagen { get; set; }
     }
 
     public class FacturaDetalle
