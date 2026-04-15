@@ -645,14 +645,21 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     bolIncluyeServicios = parametrosJO.Property("IncluyeServicios") != null ? bool.Parse(parametrosJO.Property("IncluyeServicios").Value.ToString()) : true;
                     bolFiltraActivos = parametrosJO.Property("FiltraActivos") != null ? bool.Parse(parametrosJO.Property("FiltraActivos").Value.ToString()) : false;
                     bolFiltraExistencias = parametrosJO.Property("FiltraExistencias") != null ? bool.Parse(parametrosJO.Property("FiltraExistencias").Value.ToString()) : false;
-                    bolFiltraConDescuento = parametrosJO.Property("FiltraConDescuento") != null ? bool.Parse(parametrosJO.Property("FiltraConDescuento").Value.ToString()) : false;
+                    bolFiltraConDescuento = parametrosJO.Property("FiltraConDescuento") != null ? bool.Parse(parametrosJO.Property("IncluyeImagen").Value.ToString()) : false;
+                    bool bolIncluyeImagen = parametrosJO.Property("IncluyeImagen") != null ? bool.Parse(parametrosJO.Property("FiltraConDescuento").Value.ToString()) : false;
                     intIdLlave1 = parametrosJO.Property("IdLinea") != null ? int.Parse(parametrosJO.Property("IdLinea").Value.ToString()) : 0;
                     strCodigo = parametrosJO.Property("Codigo") != null ? parametrosJO.Property("Codigo").Value.ToString() : "";
                     strCodigoProveedor = parametrosJO.Property("CodigoProveedor") != null ? parametrosJO.Property("CodigoProveedor").Value.ToString() : "";
                     strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";
-                    IList<ProductoDetalle> listadoProducto = (List<ProductoDetalle>)_servicioMantenimiento.ObtenerListadoProductos(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, bolFiltraActivos, bolFiltraExistencias, bolFiltraConDescuento, intIdLlave1, strCodigo, strCodigoProveedor, strDescripcion);
+                    IList<ProductoDetalle> listadoProducto = (List<ProductoDetalle>)_servicioMantenimiento.ObtenerListadoProductos(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, bolIncluyeServicios, bolFiltraActivos, bolFiltraExistencias, bolFiltraConDescuento, bolIncluyeImagen, intIdLlave1, strCodigo, strCodigoProveedor, strDescripcion);
                     if (listadoProducto.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoProducto);
+                    break;
+                case "ObtenerTotalListadoDescripcionProducto":
+                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                    IList<LlaveDescripcion> listadoDescripcionProducto = (List<LlaveDescripcion>)_servicioMantenimiento.ObtenerTotalListadoDescripcionProducto(intIdEmpresa);
+                    if (listadoDescripcionProducto.Count > 0)
+                        strRespuesta = JsonConvert.SerializeObject(listadoDescripcionProducto);
                     break;
                 case "ObtenerProducto":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdProducto").Value.ToString());

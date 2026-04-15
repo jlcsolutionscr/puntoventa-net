@@ -89,7 +89,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Producto ObtenerProductoPorCodigo(int intIdEmpresa, string strCodigo, int intIdSucursal);
         Producto ObtenerProductoPorCodigoProveedor(int intIdEmpresa, string strCodigo, int intIdSucursal);
         int ObtenerTotalListaProductos(int intIdEmpresa, int intIdSucursal, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
-        IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, bool bolIncluyeImagen, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion);
+        IList<LlaveDescripcion> ObtenerTotalListadoDescripcionProducto(int intIdEmpresa);
         int ObtenerTotalMovimientosPorProducto(int intIdProducto, int intIdSucursal, string strFechaInicial, string strFechaFinal);
         IList<MovimientoProducto> ObtenerMovimientosPorProducto(int intIdProducto, int intIdSucursal, int numPagina, int cantRec, string strFechaInicial, string strFechaFinal);
         // Métodos para administrar los parámetros de banco adquiriente
@@ -2055,7 +2056,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
+        public IList<ProductoDetalle> ObtenerListadoProductos(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, bool bolIncluyeServicios, bool bolFiltraActivos, bool bolFiltraExistencias, bool bolFiltraConDescuento, bool bolIncluyeImagen, int intIdLinea, string strCodigo, string strCodigoProveedor, string strDescripcion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -2111,7 +2112,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
                                     decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
                                     decimal decUtilidad = value.PrecioCosto > 0 ? (value.PrecioVenta1 / (1 + (tipoImpuesto.Valor / 100)) * 100 / value.PrecioCosto) - 100 : value.PrecioVenta1 > 0 ? 100 : 0;
-                                    ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, decUtilidad, value.Activo);
+                                    ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, decUtilidad, value.Activo, bolIncluyeImagen ? value.Imagen : new byte[0]);
                                     listaProducto.Add(item);
                                 }
                             }
@@ -2124,6 +2125,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         return listaProducto;
                     }
+                }
+            }
+        }
+
+        public IList<LlaveDescripcion> ObtenerTotalListadoDescripcionProducto(int intIdEmpresa)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    var listaProductos = new List<LlaveDescripcion>();
+                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Activo == true).Select(x => new { x.IdProducto, x.Codigo, x.Descripcion });
+                    foreach (var value in listado)
+                    {
+                        LlaveDescripcion item = new LlaveDescripcion(value.IdProducto, value.Codigo + " - " + value.Descripcion);
+                        listaProductos.Add(item);
+                    }
+                    return listaProductos;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -2142,9 +2168,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    if (_logger != null) _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
+                    if (_logger != null) _logger.LogError("Error al obtener el total de movimientos por productos por rango de fechas: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
+                    else throw new Exception("Se produjo un error consultando el total de movimientos por productos por rango de fechas. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -2166,9 +2192,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 catch (Exception ex)
                 {
-                    if (_logger != null) _logger.LogError("Error al obtener el listado de productos por criterios: ", ex);
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de movimientos por producto por rango de fechas: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error consultando el listado de productos por criterio. Por favor consulte con su proveedor.");
+                    else throw new Exception("Se produjo un error consultando el listado de movimientos por producto por rango de fechas. Por favor consulte con su proveedor.");
                 }
             }
         }
