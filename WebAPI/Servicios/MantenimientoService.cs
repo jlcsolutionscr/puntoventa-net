@@ -46,7 +46,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarReportePorEmpresa(int intIdEmpresa, List<ReportePorEmpresa> listado);
         void ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado);
         string ObtenerLogotipoEmpresa(int intIdEmpresa);
-        void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo);
         // Métodos para administrar las sucursales
         SucursalPorEmpresa ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal);
         void AgregarSucursalPorEmpresa(SucursalPorEmpresa sucursal);
@@ -765,15 +764,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     Empresa noTracking = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
                     empresa.Distrito = null;
-                    if (noTracking != null && noTracking.Logotipo != null) empresa.Logotipo = noTracking.Logotipo;
-                    if (empresa.Logotipo == null) empresa.Logotipo = new byte[0];
                     List<ActividadEconomicaEmpresa> listadoDetalle = empresa.ActividadEconomicaEmpresa.ToList();
                     empresa.ActividadEconomicaEmpresa = null;
-                    foreach (ActividadEconomicaEmpresa detalle in noTracking.ActividadEconomicaEmpresa)
-                        dbContext.NotificarEliminacion(detalle);
+                    dbContext.ActividadEconomicaEmpresaRepository.RemoveRange(noTracking.ActividadEconomicaEmpresa);
                     dbContext.NotificarModificacion(empresa);
-                    foreach (ActividadEconomicaEmpresa detalle in listadoDetalle)
-                        dbContext.ActividadEconomicaEmpresaRepository.Add(detalle);
+                    dbContext.ActividadEconomicaEmpresaRepository.AddRange(listadoDetalle);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -855,10 +850,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     List<ReportePorEmpresa> listadoReportePorEmpresaAnt = dbContext.ReportePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
-                    foreach (ReportePorEmpresa reporte in listadoReportePorEmpresaAnt)
-                        dbContext.ReportePorEmpresaRepository.Remove(reporte);
-                    foreach (ReportePorEmpresa reporte in listado)
-                        dbContext.ReportePorEmpresaRepository.Add(reporte);
+                    dbContext.ReportePorEmpresaRepository.RemoveRange(listadoReportePorEmpresaAnt);
+                    dbContext.ReportePorEmpresaRepository.AddRange(listado);
                     dbContext.Commit();
                 }
                 catch (Exception ex)
@@ -878,10 +871,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     List<RolePorEmpresa> listadoReportePorEmpresaAnt = dbContext.RolePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
-                    foreach (RolePorEmpresa reporte in listadoReportePorEmpresaAnt)
-                        dbContext.RolePorEmpresaRepository.Remove(reporte);
-                    foreach (RolePorEmpresa reporte in listado)
-                        dbContext.RolePorEmpresaRepository.Add(reporte);
+                    dbContext.RolePorEmpresaRepository.RemoveRange(listadoReportePorEmpresaAnt);
+                    dbContext.RolePorEmpresaRepository.AddRange(listado);
                     dbContext.Commit();
                 }
                 catch (Exception ex)
@@ -916,37 +907,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al obtener el logotipo de la empresa: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el logotipo de la empresa. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public void ActualizarLogoEmpresa(int intIdEmpresa, string strLogo)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (strLogo != "")
-                    {
-                        byte[] bytLogotipo = Convert.FromBase64String(strLogo);
-                        empresa.Logotipo = bytLogotipo;
-                    }
-                    else
-                        empresa.Logotipo = new byte[0];
-                    dbContext.Commit();
-                }
-                catch (BusinessException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    if (_logger != null) _logger.LogError("Error al actualizar el logotipo de la empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error registrando el logotipo de la empresa. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -1225,11 +1185,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<RolePorUsuario> listadoDetalleAnterior = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
                     List<RolePorUsuario> listadoDetalle = usuario.RolePorUsuario.ToList();
                     usuario.RolePorUsuario = null;
-                    foreach (RolePorUsuario detalle in listadoDetalleAnterior)
-                        dbContext.NotificarEliminacion(detalle);
+                    dbContext.RolePorUsuarioRepository.RemoveRange(listadoDetalleAnterior);
                     dbContext.NotificarModificacion(usuario);
-                    foreach (RolePorUsuario detalle in listadoDetalle)
-                        dbContext.RolePorUsuarioRepository.Add(detalle);
+                    dbContext.RolePorUsuarioRepository.AddRange(listadoDetalle);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -1286,8 +1244,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     List<RolePorUsuario> listaRole = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
-                    foreach (RolePorUsuario roleUsuario in listaRole)
-                        dbContext.NotificarEliminacion(roleUsuario);
+                    dbContext.RolePorUsuarioRepository.RemoveRange(listaRole);
                     dbContext.NotificarEliminacion(usuario);
                     dbContext.Commit();
                 }
@@ -1613,11 +1570,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<LineaPorSucursal> listadoDetalleAnterior = dbContext.LineaPorSucursalRepository.Where(x => x.IdLinea == linea.IdLinea).ToList();
                     List<LineaPorSucursal> listadoDetalle = linea.LineaPorSucursal.ToList();
                     linea.LineaPorSucursal = null;
-                    foreach (LineaPorSucursal detalle in listadoDetalleAnterior)
-                        dbContext.NotificarEliminacion(detalle);
-                    dbContext.NotificarModificacion(linea);
-                    foreach (LineaPorSucursal detalle in listadoDetalle)
-                        dbContext.LineaPorSucursalRepository.Add(detalle);
+                    dbContext.LineaPorSucursalRepository.RemoveRange(listadoDetalleAnterior);
+                    dbContext.LineaPorSucursalRepository.AddRange(listadoDetalle);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -1791,6 +1745,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
                     if (existe) throw new BusinessException("El código o código de proveedor del producto ingresado ya está registrado en la empresa.");
+                    Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == producto.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("La Empresa asignada al producto no está registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (producto.Tipo == StaticTipoProducto.Transitorio)
                     {
                         bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
@@ -1801,8 +1757,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
                         if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
                     }
-                    if (producto.Imagen == null) producto.Imagen = new byte[0];
-                    if (producto.CodigoClasificacion.Length < 13) throw new BusinessException("El código CABYS debe tener una longitud mínima de 13 caracteres.");
+                    if (empresa.Modalidad == 1 && producto.CodigoClasificacion.Length < 13) throw new BusinessException("El código CABYS debe tener una longitud mínima de 13 caracteres.");
                     dbContext.NotificarModificacion(producto);
                     dbContext.Commit();
                 }
@@ -1906,7 +1861,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == intIdProducto);
                     if (producto != null)
                     {
-                        producto.ImagenBase64 = producto.Imagen.Length > 0 ?Convert.ToBase64String(producto.Imagen) : "";
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
                         decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
                         producto.Existencias = decCantidad;
@@ -3017,10 +2971,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     usuario.Clave = strClave;
                     dbContext.NotificarModificacion(usuario);
                     List<RegistroAutenticacion> registrosPorUsuario = dbContext.RegistroAutenticacionRepository.Where(x => x.CodigoUsuario == usuario.CodigoUsuario).ToList();
-                    foreach (RegistroAutenticacion actual in registrosPorUsuario)
-                    {
-                        dbContext.NotificarEliminacion(actual);
-                    }
+                    dbContext.RegistroAutenticacionRepository.RemoveRange(registrosPorUsuario);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -3090,10 +3041,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     usuario.CorreoVerificado = true;
                     dbContext.NotificarModificacion(usuario);
                     List<RegistroAutenticacion> registrosPorUsuario = dbContext.RegistroAutenticacionRepository.Where(x => x.CodigoUsuario == usuario.CodigoUsuario && x.Role == StaticRolePorUsuario.SOPORTE).ToList();
-                    foreach (RegistroAutenticacion actual in registrosPorUsuario)
-                    {
-                        dbContext.NotificarEliminacion(actual);
-                    }
+                    dbContext.RegistroAutenticacionRepository.RemoveRange(registrosPorUsuario);
                     dbContext.Commit();
                 }
                 catch (BusinessException)

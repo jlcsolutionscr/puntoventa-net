@@ -911,12 +911,6 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task ActualizarLogoEmpresa(int intIdEmpresa, string strLogotipo, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ActualizarLogoEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + ", Logotipo: '" + strLogotipo + "'}}";
-            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
-        }
-
         public static async Task RemoverLogoEmpresa(int intIdEmpresa, string strToken)
         {
             string strDatos = "{NombreMetodo: 'RemoverLogoEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";

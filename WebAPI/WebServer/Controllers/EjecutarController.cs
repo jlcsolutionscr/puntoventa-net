@@ -124,15 +124,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     empresa = JsonConvert.DeserializeObject<Empresa>(strEntidad);
                     _servicioMantenimiento.ActualizarEmpresa(empresa);
                     break;
-                case "ActualizarLogoEmpresa":
-                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                    string strLogotipo = parametrosJO.Property("Logotipo").Value.ToString();
-                    _servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, strLogotipo);
-                    break;
-                case "RemoverLogoEmpresa":
-                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                    _servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, "");
-                    break;
                 case "AgregarCredencialesHacienda":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     strUsuario = parametrosJO.Property("Usuario").Value.ToString();

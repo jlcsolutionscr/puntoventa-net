@@ -12,7 +12,6 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
             builder.HasKey(p => p.IdProducto);
             builder.Ignore(p => p.IndExistencia);
             builder.Ignore(p => p.Existencias);
-            builder.Ignore(p => p.ImagenBase64);
             builder.HasOne(p => p.Linea).WithMany().HasForeignKey(p => p.IdLinea);
             builder.HasMany(p => p.MovimientoProducto).WithOne().HasForeignKey(p => p.IdProducto);
         }
