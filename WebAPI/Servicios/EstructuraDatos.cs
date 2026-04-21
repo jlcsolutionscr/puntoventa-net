@@ -44,8 +44,11 @@ namespace LeandroSoftware.ServicioWeb.EstructuraDatos
         public string TotalExonerado { get; set; }
         public string TotalExento { get; set; }
         public string Descuento { get; set; }
+        public string Subtotal { get; set; }
         public string Impuesto { get; set; }
         public string TotalGeneral { get; set; }
+        public string MontoPago { get; set; }
+        public string MontoCambio { get; set; }
         public string OtrosTextos { get; set; }
         public string LeyendaPiePagina { get; set; }
         public string CodigoMoneda { get; set; }

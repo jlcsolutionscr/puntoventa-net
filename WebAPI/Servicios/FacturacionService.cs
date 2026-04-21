@@ -3275,13 +3275,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.DetalleServicio = new List<EstructuraPDFDetalleServicio>();
             foreach (DetalleFactura linea in factura.DetalleFactura)
             {
-                decimal decTotalLinea = linea.Cantidad * linea.PrecioVenta;
+                decimal decPrecioConIva = linea.PrecioVenta * (1 + linea.PorcentajeIVA / 100);
+                decimal decTotalLinea = linea.Cantidad * decPrecioConIva;
                 EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
                 {
                     Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
                     Codigo = linea.Producto.CodigoClasificacion,
                     Detalle = linea.Descripcion,
-                    PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                    PrecioUnitario = decPrecioConIva.ToString("N2", CultureInfo.InvariantCulture),
                     TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
                 };
                 datos.DetalleServicio.Add(detalle);
@@ -3291,9 +3292,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.TotalGravado = factura.Gravado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExonerado = factura.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExento = factura.Excento.ToString("N2", CultureInfo.InvariantCulture);
+            decimal decSubTotal = factura.Gravado + factura.Exonerado + factura.Excento;
+            datos.Subtotal = decSubTotal.ToString("N2", CultureInfo.InvariantCulture);
             datos.Descuento = factura.Descuento.ToString("N2", CultureInfo.InvariantCulture);
             datos.Impuesto = factura.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
-            datos.TotalGeneral = (factura.Gravado + factura.Exonerado + factura.Excento + factura.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
+            decimal decTotalFactura = decSubTotal + factura.Impuesto;
+            datos.TotalGeneral = decTotalFactura.ToString("N2", CultureInfo.InvariantCulture);
+            datos.MontoPago = factura.MontoPagado.ToString("N2", CultureInfo.InvariantCulture);
+            datos.MontoCambio = (decTotalFactura - factura.MontoPagado).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = factura.IdTipoMoneda == 1 ? "CRC" : "USD";
             datos.TipoDeCambio = "1";
             return datos;
