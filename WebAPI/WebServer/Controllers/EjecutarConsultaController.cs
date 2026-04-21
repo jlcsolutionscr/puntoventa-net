@@ -1416,7 +1416,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     bolFiltraActivos = bool.Parse(parametrosJO.Property("FiltraActivos").Value.ToString());
                     strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";
-                    IList<LlaveDescripcion> listadoPuntoDeServicio = _servicioMantenimiento.ObtenerListadoPuntoDeServicio(intIdEmpresa, intIdSucursal, bolFiltraActivos, strDescripcion);
+                    IList<LlaveDescripcionValor> listadoPuntoDeServicio = _servicioMantenimiento.ObtenerListadoPuntoDeServicio(intIdEmpresa, intIdSucursal, bolFiltraActivos, strDescripcion);
                     if (listadoPuntoDeServicio.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoPuntoDeServicio);
                     break;

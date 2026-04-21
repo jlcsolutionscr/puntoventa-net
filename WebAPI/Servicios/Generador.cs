@@ -330,14 +330,14 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
                 lineaPos += 50;
             }
 
-            XFont font = new XFont("Courier New", 10, XFontStyle.Bold, options);
+            XFont font = new XFont("Arial", 10, XFontStyle.Bold, options);
             for (int intPos = 1; intPos <= lineasDescEmpresa.Count; intPos++)
             {
                 lineaPos += 12;
                 gfx.DrawString(lineasDescEmpresa[intPos - 1], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             }
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
             lineaPos += 12;
-            font = new XFont("Courier New", 10, XFontStyle.Regular, options);
             gfx.DrawString(datos.NombreEmpresa.ToUpper(), font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 12;
             gfx.DrawString("Ced: " + datos.IdentificacionEmisor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
@@ -348,12 +348,13 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             lineaPos += 12;
             gfx.DrawString(datos.TelefonoEmisor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 20;
-            font = new XFont("Arial", 10, XFontStyle.Regular, options);
+            font = new XFont("Arial", 10, XFontStyle.Bold, options);
             gfx.DrawString("Fact. Nro: " + datos.ConsecInterno, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 12;
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
             gfx.DrawString("Fecha: " + datos.Fecha, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 12;
-            gfx.DrawString("Cliente: " + datos.NombreReceptor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            gfx.DrawString(datos.NombreReceptor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 24;
             double dblMitadLinea = (pageWidth - 10) / 2;
             font = new XFont("Arial", 10, XFontStyle.Bold, options);
@@ -362,8 +363,8 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             tf.DrawString("Total", font, XBrushes.Black, new XRect(dblMitadLinea + 11, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
             lineaPos += 12;
             gfx.DrawString("Descripción", font, XBrushes.Black, new XRect(2, lineaPos, pageWidth, 12), XStringFormats.TopLeft);
-            font = new XFont("Arial", 10, XFontStyle.Regular, options);
             gfx.DrawLine(XPens.DarkGray, 1, lineaPos + 13, pageWidth - 1, lineaPos + 13);
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
             foreach (EstructuraPDFDetalleServicio linea in datos.DetalleServicio)
             {
                 lineaPos += 12;
@@ -374,10 +375,10 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
                 lineaPos += 12;
                 gfx.DrawString(strDescripcion, font, XBrushes.Black, new XRect(2, lineaPos, pageWidth, 12), XStringFormats.TopLeft);
             }
+            font = new XFont("Arial", 10, XFontStyle.Bold, options);
             gfx.DrawLine(XPens.DarkGray, 1, lineaPos + 13, pageWidth - 1, lineaPos + 13);
             dblMitadLinea = pageWidth / 2;
             lineaPos += 17;
-            font = new XFont("Arial", 10, XFontStyle.Bold, options);
             gfx.DrawString("Subtotal:", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
             font = new XFont("Arial", 10, XFontStyle.Regular, options);
             tf.DrawString(datos.Subtotal, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
@@ -389,18 +390,14 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             lineaPos += 12;
             font = new XFont("Arial", 10, XFontStyle.Bold, options);
             gfx.DrawString("Total a pagar:", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
-            font = new XFont("Arial", 10, XFontStyle.Regular, options);
             tf.DrawString(datos.TotalGeneral, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
             lineaPos += 22;
-            font = new XFont("Arial", 10, XFontStyle.Bold, options);
             gfx.DrawString("Pago - " + datos.MedioPago + ":", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
-            font = new XFont("Arial", 10, XFontStyle.Regular, options);
             tf.DrawString(datos.MontoPago, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
             lineaPos += 22;
-            font = new XFont("Arial", 10, XFontStyle.Bold, options);
             gfx.DrawString("Cambio:", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
-            font = new XFont("Arial", 10, XFontStyle.Regular, options);
             tf.DrawString(datos.MontoCambio, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
             if (datos.OtrosTextos != null) {
                 lineaPos += 12;
                 for (int intPos = 1; intPos <= lineasOtroTexto.Count; intPos++)
@@ -412,10 +409,8 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             if (datos.EsDocumentoElectronico)
             {
                 lineaPos += 20;
-                font = new XFont("Courier New", 10, XFontStyle.Bold, options);
                 gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
                 lineaPos += 12;
-                font = new XFont("Arial", 10, XFontStyle.Regular, options);
                 gfx.DrawString("Clave numérica:", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
                 lineaPos += 12;
                 gfx.DrawString(datos.Clave.Substring(0, 25), font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
@@ -426,7 +421,6 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
                 lineaPos += 12;
                 gfx.DrawString(datos.Consecutivo, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
                 lineaPos += 24;
-                font = new XFont("Arial", 8, XFontStyle.Bold, options);
                 gfx.DrawString("AUTORIZADO MEDIANTE RESOLUCION", font, XBrushes.Black, new XRect(1, lineaPos, pageWidth, 12), XStringFormats.Center);
                 lineaPos += 12;
                 gfx.DrawString("DGT-R-48-2016 DEL 07-OCT-2016", font, XBrushes.Black, new XRect(1, lineaPos, pageWidth, 12), XStringFormats.Center);

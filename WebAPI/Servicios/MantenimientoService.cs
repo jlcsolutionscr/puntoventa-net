@@ -118,7 +118,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarPuntoDeServicio(PuntoDeServicio puntoDeServicio);
         void EliminarPuntoDeServicio(int intIdPunto);
         PuntoDeServicio ObtenerPuntoDeServicio(int intIdPunto);
-        IList<LlaveDescripcion> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion);
+        IList<LlaveDescripcionValor> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion);
         void ValidarRegistroAutenticacion(string strToken, int intRole, int intHoras);
         void EliminarRegistroAutenticacionInvalidos();
         List<LlaveDescripcion> ObtenerListadoActividadEconomica(string strServicioURL, string strIdentificacion);
@@ -2816,12 +2816,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion)
+        public IList<LlaveDescripcionValor> ObtenerListadoPuntoDeServicio(int intIdEmpresa, int intIdSucursal, bool bolSoloActivo, string strDescripcion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listaPuntos = new List<LlaveDescripcion>();
+                var listaPuntos = new List<LlaveDescripcionValor>();
                 try
                 {
                     var listado = dbContext.PuntoDeServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
@@ -2831,7 +2831,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                     foreach (var value in listado)
                     {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdPunto, value.Descripcion);
+                        LlaveDescripcionValor item = new LlaveDescripcionValor(value.IdPunto, value.Descripcion, value.IdOrden);
                         listaPuntos.Add(item);
                     }
                     return listaPuntos;
