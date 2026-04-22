@@ -402,35 +402,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
         }
 
-        [HttpPost("actualizarlogoempresa")]
-        public void ActualizarLogoEmpresa([FromBody] string strDatos)
-        {
-            try
-            {
-                JObject parametrosJO = JObject.Parse(strDatos);
-                int intIdEmpresa = int.Parse(parametrosJO.Property("Id").Value.ToString());
-                string strLogotipo = parametrosJO.Property("Datos").Value.ToString();
-                _servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, strLogotipo);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        [HttpGet("removerlogoempresa")]
-        public void RemoverLogoEmpresa(int idempresa)
-        {
-            try
-            {
-                _servicioMantenimiento.ActualizarLogoEmpresa(idempresa, "");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         [HttpPost("agregarsucursalporempresa")]
         public void AgregarSucursalPorEmpresa([FromBody] string strDatos)
         {

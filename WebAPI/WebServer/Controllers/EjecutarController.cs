@@ -124,15 +124,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     empresa = JsonConvert.DeserializeObject<Empresa>(strEntidad);
                     _servicioMantenimiento.ActualizarEmpresa(empresa);
                     break;
-                case "ActualizarLogoEmpresa":
-                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                    string strLogotipo = parametrosJO.Property("Logotipo").Value.ToString();
-                    _servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, strLogotipo);
-                    break;
-                case "RemoverLogoEmpresa":
-                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                    _servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, "");
-                    break;
                 case "AgregarCredencialesHacienda":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     strUsuario = parametrosJO.Property("Usuario").Value.ToString();
@@ -426,8 +417,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     break;
                 case "ActualizarEstadoTiqueteOrdenServicio":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdTiquete").Value.ToString());
-                    bolAplicado = bool.Parse(parametrosJO.Property("Estado").Value.ToString());
-                    _servicioFacturacion.ActualizarEstadoTiqueteOrdenServicio(intIdLlave1, bolAplicado);
+                    bool bolImpreso = bool.Parse(parametrosJO.Property("Impreso").Value.ToString());
+                    _servicioFacturacion.ActualizarEstadoTiqueteOrdenServicio(intIdLlave1, bolImpreso);
                     break;
                 case "EliminarPuntoDeServicio":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdPuntoDeServicio").Value.ToString());
@@ -460,7 +451,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     _servicioFacturacion.GenerarNotificacionProforma(intIdLlave1, strCorreoReceptor, bytLogo);
                     break;
                 case "GenerarNotificacionOrdenServicio":
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdOrden").Value.ToString());
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
                     strCorreoReceptor = parametrosJO.Property("CorreoReceptor").Value.ToString();
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
                     _servicioFacturacion.GenerarNotificacionOrdenServicio(intIdLlave1, strCorreoReceptor, bytLogo);

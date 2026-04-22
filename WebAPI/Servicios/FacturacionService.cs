@@ -50,8 +50,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
         int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int intIdOrdenServicio, string strNombre, string strFechaFinal);
         IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal);
-        IList<ClsTiquete> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc);
-        void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado);
+        IList<TiqueteOrdenServicio> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc);
+        void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolImpreso);
         string AgregarDevolucionCliente(DevolucionCliente devolucion);
         void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion);
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
@@ -75,6 +75,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void GenerarNotificacionFactura(int intIdFactura, byte[] bytLogo);
         void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, byte[] bytLogo);
         void GenerarNotificacionOrdenServicio(int intIdOrden, string strCorreoReceptor, byte[] bytLogo);
+        byte[] GenerarTiqueteFacturaPDF(int intIdFactura, int intLargoLinea, byte[] bytLogo);
+        byte[] GenerarTiqueteOrdenServicioPDF(int intIdOrdenServicio, int intLargoLinea, byte[] bytLogo);
     }
 
     public class FacturacionService : IFacturacionService
@@ -367,6 +369,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(factura.IdOrdenServicio);
                         ordenServicio.Aplicado = true;
                         dbContext.NotificarModificacion(ordenServicio);
+                        PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdOrden == factura.IdOrdenServicio);
+                        if (puntoDeServicio != null)
+                        {
+                            puntoDeServicio.IdOrden = 0;
+                            dbContext.NotificarModificacion(puntoDeServicio);
+                        }
                     }
                     if (factura.IdProforma > 0)
                     {
@@ -1509,9 +1517,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(sucursal);
                     ordenServicio.ConsecOrdenServicio = sucursal.ConsecOrdenServicio;
                     dbContext.OrdenServicioRepository.Add(ordenServicio);
+                    dbContext.Commit();
                     if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
                     {
-                        AgregarTiqueteOrdenServicio(ordenServicio, ordenServicio.DetalleOrdenServicio);
+                        if (ordenServicio.IdPuntoServicio > 0)
+                        {
+                            PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoServicio);
+                            if (puntoDeServicio != null)
+                            {
+                                puntoDeServicio.IdOrden = ordenServicio.IdOrden;
+                                dbContext.NotificarModificacion(puntoDeServicio);
+                                AgregarTiqueteOrdenServicio(ordenServicio, ordenServicio.DetalleOrdenServicio, puntoDeServicio.Descripcion, dbContext);
+                            }
+                        }
                     }
                     dbContext.Commit();
                     return ordenServicio.IdOrden.ToString() + "-" + ordenServicio.ConsecOrdenServicio.ToString();
@@ -1544,7 +1562,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ordenNoTracking != null && ordenNoTracking.Aplicado) throw new BusinessException("La orden de servicio no puede ser modificada porque ya fue facturada.");
                     ordenServicio.Vendedor = null;
                     if (ordenServicio.MontoAdelanto != ordenNoTracking.MontoAdelanto) ordenServicio.MontoAdelanto = ordenNoTracking.MontoAdelanto;
-                    List<DetalleOrdenServicio> listadoDetalleAnterior = dbContext.DetalleOrdenServicioRepository.Where(x => x.IdOrden == ordenServicio.IdOrden).ToList();
+                    List<DetalleOrdenServicio> listadoDetalleAnterior = dbContext.DetalleOrdenServicioRepository.AsNoTracking().Where(x => x.IdOrden == ordenServicio.IdOrden).ToList();
                     List<DetalleOrdenServicio> listadoDetalle = ordenServicio.DetalleOrdenServicio.ToList();
                     if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
                     {
@@ -1569,7 +1587,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 nuevoDetalle.Add(detalle);
                             }
                         }
-                        if (nuevoDetalle.Count > 0) AgregarTiqueteOrdenServicio(ordenServicio, nuevoDetalle);
+                        PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoServicio);
+                        if (puntoDeServicio != null && nuevoDetalle.Count > 0)
+                        {
+                            AgregarTiqueteOrdenServicio(ordenServicio, nuevoDetalle, puntoDeServicio.Descripcion, dbContext);
+                        }
                     }
                     ordenServicio.DetalleOrdenServicio = null;
                     foreach (DetalleOrdenServicio detalle in listadoDetalleAnterior)
@@ -1593,82 +1615,65 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private void AgregarTiqueteOrdenServicio(OrdenServicio ordenServicio, ICollection<DetalleOrdenServicio> detalleOrdenServicio)
+        private void AgregarTiqueteOrdenServicio(OrdenServicio ordenServicio, ICollection<DetalleOrdenServicio> detalleOrdenServicio, string strPuntoServicio, LeandroContext dbContext)
         {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            DataTable dtbDetalleTiquete = new DataTable();
+            dtbDetalleTiquete.Columns.Add("Impresora", typeof(string));
+            dtbDetalleTiquete.Columns.Add("Descripcion", typeof(string));
+            dtbDetalleTiquete.Columns.Add("Cantidad", typeof(double));
+            foreach (DetalleOrdenServicio detalle in detalleOrdenServicio)
             {
-                DataTable dtbDetalleTiquete = new DataTable();
-                dtbDetalleTiquete.Columns.Add("Linea", typeof(string));
-                dtbDetalleTiquete.Columns.Add("Descripcion", typeof(string));
-                dtbDetalleTiquete.Columns.Add("Cantidad", typeof(string));
-                foreach (DetalleOrdenServicio detalle in detalleOrdenServicio)
+                Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
+                if (producto.Linea.ImpresoraTiquete != "")
                 {
-                    Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
                     DataRow data = dtbDetalleTiquete.NewRow();
-                    data["Linea"] = producto.Linea.Descripcion;
+                    data["Impresora"] = producto.Linea.ImpresoraTiquete;
                     data["Descripcion"] = detalle.Descripcion;
-                    data["Cantidad"] = detalle.Cantidad.ToString();
+                    data["Cantidad"] = detalle.Cantidad;
                     dtbDetalleTiquete.Rows.Add(data);
                 }
-                DataView view = new DataView(dtbDetalleTiquete)
-                {
-                    Sort = "Linea ASC"
-                };
-                string strLineaDesc = view[0].Row["Linea"].ToString();
-                IList<ClsLineaImpresion> lineasDetalle = new List<ClsLineaImpresion> { };
-                IList<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
-                TiqueteOrdenServicio tiquete;
-                foreach (DataRowView row in view)
-                {
-                    if (strLineaDesc != row["Linea"].ToString())
-                    {
-                        tiquete = GenerarTiqueteOrdenServicio(ordenServicio, lineasDetalle, strLineaDesc);
-                        dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
-                        lineasDetalle = new List<ClsLineaImpresion> { };
-                        strLineaDesc = row["Linea"].ToString();
-                    }
-                    string strLinea = row["Descripcion"].ToString();
-                    lineasDetalle.Add(new ClsLineaImpresion(0, strLinea.Substring(0, Math.Min(30, strLinea.Length)), 0, 95, 10, (int)StringAlignment.Near, false));
-                    lineasDetalle.Add(new ClsLineaImpresion(1, row["Cantidad"].ToString(), 95, 5, 10, (int)StringAlignment.Far, false));
-                    strLinea = strLinea.Substring(Math.Min(30, strLinea.Length));
-                    while (strLinea.Length > 30)
-                    {
-                        lineasDetalle.Add(new ClsLineaImpresion(1, strLinea.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
-                        strLinea = strLinea.Substring(30);
-                    }
-                    if (strLinea.Length > 0) lineasDetalle.Add(new ClsLineaImpresion(1, strLinea, 0, 100, 10, (int)StringAlignment.Near, false));
-                }
-                tiquete = GenerarTiqueteOrdenServicio(ordenServicio, lineasDetalle, strLineaDesc);
-                dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
             }
-        }
-
-        private TiqueteOrdenServicio GenerarTiqueteOrdenServicio(OrdenServicio ordenServicio, IList<ClsLineaImpresion> lineasDetalle, string strLineaDesc)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            DataView view = new DataView(dtbDetalleTiquete)
             {
-                List<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
-                lineas.Add(new ClsLineaImpresion(2, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true));
-                lineas.Add(new ClsLineaImpresion(2, Validador.ObtenerFechaHoraCostaRica().ToString(), 0, 100, 12, (int)StringAlignment.Center, false));
-                lineas.Add(new ClsLineaImpresion(2, ordenServicio.NombreCliente, 0, 100, 14, (int)StringAlignment.Center, true));
-                lineas.Add(new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false));
-                foreach (ClsLineaImpresion linea in lineasDetalle)
-                    lineas.Add(linea);
-                lineas.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
-                byte[] bytLineas = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(lineas));
-                return new TiqueteOrdenServicio
+                Sort = "Impresora ASC"
+            };
+            string strPrinterTarget = view[0].Row["Impresora"].ToString();
+            IList<DescripcionValor> lineasDetalle = new List<DescripcionValor> { };
+            TiqueteOrdenServicio tiquete;
+            foreach (DataRowView row in view)
+            {
+                if (strPrinterTarget != row["Impresora"].ToString())
                 {
-                    IdTiquete = 0,
-                    IdEmpresa = ordenServicio.IdEmpresa,
-                    IdSucursal = ordenServicio.IdSucursal,
-                    Descripcion = ordenServicio.NombreCliente,
-                    Impresora = strLineaDesc,
-                    Lineas = bytLineas,
-                    Impreso = false
-                };
+                    tiquete = new TiqueteOrdenServicio
+                    {
+                        IdTiquete = 0,
+                        IdOrden = ordenServicio.IdOrden,
+                        IdEmpresa = ordenServicio.IdEmpresa,
+                        IdSucursal = ordenServicio.IdSucursal,
+                        Descripcion = strPuntoServicio,
+                        Impresora = strPrinterTarget,
+                        DetalleTiqueteOrdenServicio = JsonConvert.SerializeObject(lineasDetalle),
+                        Impreso = false
+                    };
+                    dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
+                    lineasDetalle = new List<DescripcionValor> { };
+                    strPrinterTarget = row["Linea"].ToString();
+                }
+                DescripcionValor detalle = new DescripcionValor(row["Descripcion"].ToString(), Decimal.Parse(row["Cantidad"].ToString()));
+                lineasDetalle.Add(detalle);
             }
+            tiquete = new TiqueteOrdenServicio
+            {
+                IdTiquete = 0,
+                IdOrden = ordenServicio.IdOrden,
+                IdEmpresa = ordenServicio.IdEmpresa,
+                IdSucursal = ordenServicio.IdSucursal,
+                Descripcion = strPuntoServicio,
+                Impresora = strPrinterTarget,
+                DetalleTiqueteOrdenServicio = JsonConvert.SerializeObject(lineasDetalle),
+                Impreso = false
+            };
+            dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
         }
 
         public void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivoAnulacion)
@@ -1691,6 +1696,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     ordenServicio.IdAnuladoPor = intIdUsuario;
                     ordenServicio.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(ordenServicio);
+                    PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdOrden == ordenServicio.IdOrden);
+                    if (puntoDeServicio != null)
+                    {
+                        puntoDeServicio.IdOrden = 0;
+                        dbContext.NotificarModificacion(puntoDeServicio);
+                        List<TiqueteOrdenServicio> tiquetes = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdOrden == ordenServicio.IdOrden).ToList();
+                        dbContext.TiqueteOrdenServicioRepository.RemoveRange(tiquetes);
+                    }
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -1841,12 +1854,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<ClsTiquete> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc)
+        public IList<TiqueteOrdenServicio> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listaTiquete = new List<ClsTiquete>();
+                var listaTiquete = new List<TiqueteOrdenServicio>();
                 try
                 {
                     var listado = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Impreso == bolImpreso);
@@ -1854,13 +1867,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.OrderByDescending(x => x.IdTiquete);
                     else
                         listado = listado.OrderBy(x => x.IdTiquete);
-                    foreach (var tiquete in listado)
-                    {
-                        string strLineas = Encoding.UTF8.GetString(tiquete.Lineas);
-                        IList<ClsLineaImpresion> lineas = JsonConvert.DeserializeObject<List<ClsLineaImpresion>>(strLineas);
-                        ClsTiquete item = new ClsTiquete(tiquete.IdTiquete, tiquete.IdEmpresa, tiquete.IdSucursal, tiquete.Descripcion, tiquete.Impresora, lineas, tiquete.Impreso);
-                        listaTiquete.Add(item);
-                    }
                     return listaTiquete;
                 }
                 catch (Exception ex)
@@ -1872,7 +1878,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado)
+        public void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolImpreso)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1881,7 +1887,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     TiqueteOrdenServicio tiquete = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdTiquete == intIdTiquete).FirstOrDefault();
                     if (tiquete == null) throw new BusinessException("No se logró obtener la información del tiquete de orden de servicio. Por favor, pongase en contacto con su proveedor del servicio.");
-                    tiquete.Impreso = bolEstado;
+                    tiquete.Impreso = bolImpreso;
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -3175,6 +3181,40 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
+        public byte[] GenerarTiqueteFacturaPDF(int intIdFactura, int intLargoLinea, byte[] bytLogo)
+        {
+            if (_serviceScopeFactory == null || _servicioCorreo == null) throw new Exception("Service factory or email service not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    if (factura == null) throw new BusinessException("La registro de la factura no existe.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
+                    foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
+                    {
+                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        if (producto != null) detalleFactura.Producto = producto;
+                    }
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
+                    return Generador.generarTiqueteFacturaPDF(datos, intLargoLinea);
+                }
+                catch (BusinessException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al enviar por correo la factura con ID: " + intIdFactura, ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al enviar el documento por correo. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
         private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
             EstructuraPDF datos = new EstructuraPDF
@@ -3208,7 +3248,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 datos.Consecutivo = factura.IdDocElectronico.Substring(21, 20);
             }
             datos.CondicionVenta = CondicionDeVenta.ObtenerDescripcion(factura.IdCondicionVenta);
-            datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
+            datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy");
             if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
                 datos.MedioPago = "Crédito";
             else if (factura.DesglosePagoFactura.ToList().Count > 1)
@@ -3235,13 +3275,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.DetalleServicio = new List<EstructuraPDFDetalleServicio>();
             foreach (DetalleFactura linea in factura.DetalleFactura)
             {
-                decimal decTotalLinea = linea.Cantidad * linea.PrecioVenta;
+                decimal decPrecioConIva = linea.PrecioVenta * (1 + linea.PorcentajeIVA / 100);
+                decimal decTotalLinea = linea.Cantidad * decPrecioConIva;
                 EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
                 {
                     Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
                     Codigo = linea.Producto.CodigoClasificacion,
                     Detalle = linea.Descripcion,
-                    PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                    PrecioUnitario = decPrecioConIva.ToString("N2", CultureInfo.InvariantCulture),
                     TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
                 };
                 datos.DetalleServicio.Add(detalle);
@@ -3251,9 +3292,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.TotalGravado = factura.Gravado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExonerado = factura.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExento = factura.Excento.ToString("N2", CultureInfo.InvariantCulture);
+            decimal decSubTotal = factura.Gravado + factura.Exonerado + factura.Excento;
+            datos.Subtotal = decSubTotal.ToString("N2", CultureInfo.InvariantCulture);
             datos.Descuento = factura.Descuento.ToString("N2", CultureInfo.InvariantCulture);
             datos.Impuesto = factura.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
-            datos.TotalGeneral = (factura.Gravado + factura.Exonerado + factura.Excento + factura.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
+            decimal decTotalFactura = decSubTotal + factura.Impuesto;
+            datos.TotalGeneral = decTotalFactura.ToString("N2", CultureInfo.InvariantCulture);
+            datos.MontoPago = factura.MontoPagado.ToString("N2", CultureInfo.InvariantCulture);
+            datos.MontoCambio = (decTotalFactura - factura.MontoPagado).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = factura.IdTipoMoneda == 1 ? "CRC" : "USD";
             datos.TipoDeCambio = "1";
             return datos;
@@ -3748,6 +3794,40 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al enviar notificación del orden de servicio al receptor para el documento con ID: " + intIdOrden, ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al notificar la orden de servicio al cliente. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public byte[] GenerarTiqueteOrdenServicioPDF(int intIdOrdenServicio, int intLargoLinea, byte[] bytLogo)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente").Include("DetalleOrdenServicio.Producto").Where(x => x.IdOrden == intIdOrdenServicio).FirstOrDefault();
+                    if (ordenServicio == null) throw new BusinessException("No existe registro de orden de servicio para el identificador suministrado: " + intIdOrdenServicio);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la orden de servicio no existe.");
+                    foreach (DetalleOrdenServicio detalleOrden in ordenServicio.DetalleOrdenServicio)
+                    {
+                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleOrden.IdProducto);
+                        if (producto != null) detalleOrden.Producto = producto;
+                    }
+                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
+                    return Generador.generarTiqueteFacturaPDF(datos, intLargoLinea);
+                }
+                catch (BusinessException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al enviar notificación del orden de servicio al receptor para el documento con ID: " + intIdOrdenServicio, ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al notificar la orden de servicio al cliente. Por favor consulte con su proveedor.");
                 }
