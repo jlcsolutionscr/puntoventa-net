@@ -1558,11 +1558,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenServicio.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    OrdenServicio ordenNoTracking = dbContext.OrdenServicioRepository.AsNoTracking().Where(x => x.IdOrden == ordenServicio.IdOrden).FirstOrDefault();
+                    OrdenServicio ordenNoTracking = dbContext.OrdenServicioRepository.Where(x => x.IdOrden == ordenServicio.IdOrden).FirstOrDefault();
                     if (ordenNoTracking != null && ordenNoTracking.Aplicado) throw new BusinessException("La orden de servicio no puede ser modificada porque ya fue facturada.");
                     ordenServicio.Vendedor = null;
                     if (ordenServicio.MontoAdelanto != ordenNoTracking.MontoAdelanto) ordenServicio.MontoAdelanto = ordenNoTracking.MontoAdelanto;
-                    List<DetalleOrdenServicio> listadoDetalleAnterior = dbContext.DetalleOrdenServicioRepository.AsNoTracking().Where(x => x.IdOrden == ordenServicio.IdOrden).ToList();
+                    List<DetalleOrdenServicio> listadoDetalleAnterior = dbContext.DetalleOrdenServicioRepository.Where(x => x.IdOrden == ordenServicio.IdOrden).ToList();
                     List<DetalleOrdenServicio> listadoDetalle = ordenServicio.DetalleOrdenServicio.ToList();
                     if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
                     {
@@ -1594,11 +1594,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
                     ordenServicio.DetalleOrdenServicio = null;
-                    foreach (DetalleOrdenServicio detalle in listadoDetalleAnterior)
-                        dbContext.NotificarEliminacion(detalle);
-                    dbContext.NotificarModificacion(ordenServicio);
-                    foreach (DetalleOrdenServicio detalle in listadoDetalle)
-                        dbContext.DetalleOrdenServicioRepository.Add(detalle);
+                    dbContext.DetalleOrdenServicioRepository.RemoveRange(listadoDetalleAnterior);
+                    dbContext.DetalleOrdenServicioRepository.AddRange(listadoDetalle);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -1642,50 +1639,67 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 if (strPrinterTarget != row["Impresora"].ToString())
                 {
-                    tiquete = GenerarTiqueteOrdenServicio(ordenServicio, lineasDetalle, strPrinterTarget);
+                    tiquete = GenerarTiqueteOrdenServicio(ordenServicio, strPuntoServicio, lineasDetalle, strPrinterTarget, dbContext);
                     dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
                     lineasDetalle = new List<ClsLineaImpresion> { };
                     strPrinterTarget = row["Impresora"].ToString();
                 }
                 string strLinea = row["Descripcion"].ToString();
-                lineasDetalle.Add(new ClsLineaImpresion(0, strLinea.Substring(0, Math.Min(30, strLinea.Length)), 0, 95, 10, (int)StringAlignment.Near, false));
-                lineasDetalle.Add(new ClsLineaImpresion(1, row["Cantidad"].ToString(), 95, 5, 10, (int)StringAlignment.Far, false));
-                strLinea = strLinea.Substring(Math.Min(30, strLinea.Length));
-                while (strLinea.Length > 30)
+                while (strLinea.Length > 0)
                 {
-                    lineasDetalle.Add(new ClsLineaImpresion(1, strLinea.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
-                    strLinea = strLinea.Substring(30);
+                    if (strLinea.Length > 30)
+                    {
+                        lineasDetalle.Add(new ClsLineaImpresion(1, strLinea.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
+                        strLinea = strLinea.Substring(30);
+                    }
+                    else
+                    {
+                        lineasDetalle.Add(new ClsLineaImpresion(1, strLinea, 0, 100, 10, (int)StringAlignment.Near, false));
+                        strLinea = "";
+                    }
                 }
-                if (strLinea.Length > 0) lineasDetalle.Add(new ClsLineaImpresion(1, strLinea, 0, 100, 10, (int)StringAlignment.Near, false));
+                lineasDetalle.Add(new ClsLineaImpresion(1, row["Cantidad"].ToString(), 95, 5, 10, (int)StringAlignment.Far, false));
             }
-            tiquete = GenerarTiqueteOrdenServicio(ordenServicio, lineasDetalle, strPrinterTarget);
+            tiquete = GenerarTiqueteOrdenServicio(ordenServicio, strPuntoServicio, lineasDetalle, strPrinterTarget, dbContext);
             dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
         }
 
-        private TiqueteOrdenServicio GenerarTiqueteOrdenServicio(OrdenServicio ordenServicio, IList<ClsLineaImpresion> lineasDetalle, string strPrinterTarget)
+        private TiqueteOrdenServicio GenerarTiqueteOrdenServicio(OrdenServicio ordenServicio, string strPuntoServicio, IList<ClsLineaImpresion> lineasDetalle, string strPrinterTarget, LeandroContext dbContext)
         {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            List<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
+            lineas.Add(new ClsLineaImpresion(2, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true));
+            lineas.Add(new ClsLineaImpresion(2, Validador.ObtenerFechaHoraCostaRica().ToString(), 0, 100, 12, (int)StringAlignment.Center, false));
+            lineas.Add(new ClsLineaImpresion(2, strPuntoServicio, 0, 100, 14, (int)StringAlignment.Center, true));
+            lineas.Add(new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false));
+            foreach (ClsLineaImpresion linea in lineasDetalle)
+                lineas.Add(linea);
+            lineas.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
+            string strDetalle = ordenServicio.OtrosDetalles;
+            while (strDetalle.Length > 0)
             {
-                List<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
-                lineas.Add(new ClsLineaImpresion(2, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true));
-                lineas.Add(new ClsLineaImpresion(2, Validador.ObtenerFechaHoraCostaRica().ToString(), 0, 100, 12, (int)StringAlignment.Center, false));
-                lineas.Add(new ClsLineaImpresion(2, ordenServicio.NombreCliente, 0, 100, 14, (int)StringAlignment.Center, true));
-                lineas.Add(new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false));
-                foreach (ClsLineaImpresion linea in lineasDetalle)
-                    lineas.Add(linea);
-                lineas.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
-                return new TiqueteOrdenServicio
+                if (strDetalle.Length > 30)
                 {
-                    IdTiquete = 0,
-                    IdEmpresa = ordenServicio.IdEmpresa,
-                    IdSucursal = ordenServicio.IdSucursal,
-                    Descripcion = ordenServicio.NombreCliente,
-                    Impresora = strPrinterTarget,
-                    DetalleTiqueteOrdenServicio = JsonConvert.SerializeObject(lineas),
-                    Impreso = false
-                };
+                    lineas.Add(new ClsLineaImpresion(1, strDetalle.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
+                    strDetalle = strDetalle.Substring(30);
+                }
+                else
+                {
+                    lineas.Add(new ClsLineaImpresion(1, strDetalle, 0, 100, 10, (int)StringAlignment.Near, false));
+                    strDetalle = "";
+                }
             }
+            lineas.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
+            return new TiqueteOrdenServicio
+            {
+                IdTiquete = 0,
+                IdEmpresa = ordenServicio.IdEmpresa,
+                IdSucursal = ordenServicio.IdSucursal,
+                IdOrden = ordenServicio.IdOrden,
+                Descripcion = ordenServicio.NombreCliente,
+                Impresora = strPrinterTarget,
+                DetalleTiqueteOrdenServicio = JsonConvert.SerializeObject(lineas),
+                Impreso = false
+            };
         }
 
         public void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivoAnulacion)
