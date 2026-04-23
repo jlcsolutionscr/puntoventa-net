@@ -17,8 +17,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static IMantenimientoService _servicioMantenimiento;
         private static IFacturacionService _servicioFacturacion;
         private static Empresa? empresa;
-        private static int intIdEmpresa;
-        private static int intIdSucursal;
 
         public PuntoventaController
         (
@@ -41,9 +39,9 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpGet("obtenerlistadotiqueteordenserviciopendiente")]
-        public string ObtenerListadoTiqueteOrdenServicioPendiente(int idempresa, int idsucursal)
+        public string ObtenerListadoTiqueteOrdenServicioPendiente(int idempresa, int idsucursal, string impresora)
         {
-            IList<TiqueteOrdenServicio> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, false, false);
+            IList<TiqueteOrdenServicio> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(idempresa, idsucursal, false, false, impresora);
             string strRespuesta = "";
             if (listadoTiqueteOrdenServicio.Count > 0)
                 strRespuesta = JsonConvert.SerializeObject(listadoTiqueteOrdenServicio);

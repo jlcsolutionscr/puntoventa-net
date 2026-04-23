@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.serviceProcessInstaller = new System.ServiceProcess.ServiceProcessInstaller();
-            this.serviceInstaller1 = new System.ServiceProcess.ServiceInstaller();
+            this.serviceInstaller = new System.ServiceProcess.ServiceInstaller();
             // 
             // serviceProcessInstaller
             // 
@@ -37,23 +37,25 @@
             this.serviceProcessInstaller.Password = null;
             this.serviceProcessInstaller.Username = null;
             // 
-            // serviceInstaller1
+            // serviceInstaller
             // 
-            this.serviceInstaller1.Description = "Service in charge of searching for pending order tickets to be printed";
-            this.serviceInstaller1.DisplayName = "JLCOrderPrintingService";
-            this.serviceInstaller1.ServiceName = "JLCOrderPrintingService";
+            this.serviceInstaller.Description = "Service in charge of searching for pending printing tickets and send them to stab" +
+    "lished printer";
+            this.serviceInstaller.DisplayName = "JLC Printing Service";
+            this.serviceInstaller.ServiceName = "JLCPrintingService";
+            this.serviceInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller
             // 
             this.Installers.AddRange(new System.Configuration.Install.Installer[] {
             this.serviceProcessInstaller,
-            this.serviceInstaller1});
+            this.serviceInstaller});
 
         }
 
         #endregion
 
         private System.ServiceProcess.ServiceProcessInstaller serviceProcessInstaller;
-        private System.ServiceProcess.ServiceInstaller serviceInstaller1;
+        private System.ServiceProcess.ServiceInstaller serviceInstaller;
     }
 }

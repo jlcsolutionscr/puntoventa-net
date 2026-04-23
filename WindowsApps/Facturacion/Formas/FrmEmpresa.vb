@@ -302,6 +302,16 @@ Public Class FrmEmpresa
         Try
             btnCancelar.Focus()
             btnGuardar.Enabled = False
+            If bolLogoModificado Then
+                If picLogo.Image IsNot Nothing Then
+                    Dim bytLogotipo As Byte()
+                    Using stream As MemoryStream = New MemoryStream()
+                        picLogo.Image.Save(stream, Imaging.ImageFormat.Png)
+                        bytLogotipo = stream.ToArray()
+                    End Using
+                    datos.Logotipo = bytLogotipo
+                End If
+            End If
             Await Puntoventa.ActualizarEmpresa(datos, FrmPrincipal.usuarioGlobal.Token)
             FrmPrincipal.empresaGlobal.PrecioVentaIncluyeIVA = datos.PrecioVentaIncluyeIVA
             FrmPrincipal.empresaGlobal.MontoRedondeoDescuento = datos.MontoRedondeoDescuento
@@ -315,18 +325,6 @@ Public Class FrmEmpresa
                 End If
 
                 txtPinCertificado.ReadOnly = True
-            End If
-            If bolLogoModificado Then
-                If picLogo.Image IsNot Nothing Then
-                    Dim bytLogotipo As Byte()
-                    Using stream As MemoryStream = New MemoryStream()
-                        picLogo.Image.Save(stream, Imaging.ImageFormat.Png)
-                        bytLogotipo = stream.ToArray()
-                    End Using
-                    Await Puntoventa.ActualizarLogoEmpresa(txtIdEmpresa.Text, Convert.ToBase64String(bytLogotipo), FrmPrincipal.usuarioGlobal.Token)
-                Else
-                    Await Puntoventa.RemoverLogoEmpresa(txtIdEmpresa.Text, FrmPrincipal.usuarioGlobal.Token)
-                End If
             End If
             If bolSucursalActualizada Then
                 datosSucursal.NombreSucursal = txtNombreSucursal.Text

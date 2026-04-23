@@ -213,7 +213,6 @@ Public Class FrmPrincipal
             empresa.IdProvincia < 0 Or
             empresa.IdCanton < 0 Or
             empresa.IdDistrito < 0 Or
-            empresa.IdBarrio < 0 Or
             empresa.Direccion.Length = 0 Or
             empresa.Telefono1.Length = 0 Or
             empresa.CorreoNotificacion.Length = 0 Or

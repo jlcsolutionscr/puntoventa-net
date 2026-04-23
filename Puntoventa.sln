@@ -31,6 +31,8 @@ Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "Setup", "Setup\Setup.aiproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderPrinter", "WindowsApps\OrderPrinter\OrderPrinter.csproj", "{A6A9CA0D-4989-449B-9ACF-1FEC1050166B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintingService", "WindowsApps\PrintingService\PrintingService.csproj", "{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		All|.NET = All|.NET
@@ -371,6 +373,38 @@ Global
 		{A6A9CA0D-4989-449B-9ACF-1FEC1050166B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A6A9CA0D-4989-449B-9ACF-1FEC1050166B}.Release|x86.ActiveCfg = Release|Any CPU
 		{A6A9CA0D-4989-449B-9ACF-1FEC1050166B}.Release|x86.Build.0 = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.All|.NET.ActiveCfg = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.All|.NET.Build.0 = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.All|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.All|Any CPU.Build.0 = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.All|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.All|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.All|x86.ActiveCfg = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.All|x86.Build.0 = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Debug|.NET.Build.0 = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Debug|x86.Build.0 = Debug|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.DefaultBuild|.NET.ActiveCfg = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.DefaultBuild|.NET.Build.0 = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.DefaultBuild|Any CPU.ActiveCfg = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.DefaultBuild|Any CPU.Build.0 = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.DefaultBuild|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.DefaultBuild|Mixed Platforms.Build.0 = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.DefaultBuild|x86.ActiveCfg = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.DefaultBuild|x86.Build.0 = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Release|.NET.ActiveCfg = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Release|.NET.Build.0 = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Release|x86.ActiveCfg = Release|Any CPU
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -386,9 +420,10 @@ Global
 		{AC280306-B8E2-49BB-A997-A019A5E1FA57} = {1EE28990-FB8B-4CB1-AE40-CE2903135873}
 		{E64BF898-9568-43DE-A289-0E6381B5F5F3} = {23B7469F-E6D8-422F-A8DB-9C19E213915B}
 		{A6A9CA0D-4989-449B-9ACF-1FEC1050166B} = {23B7469F-E6D8-422F-A8DB-9C19E213915B}
+		{8F002338-C7AF-43BA-9D40-9C5B53D54CEB} = {23B7469F-E6D8-422F-A8DB-9C19E213915B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {D8133CC0-28D9-4CD6-8284-726C2C85E359}
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35;packages\Unity.2.1.505.0\lib\NET35
+		SolutionGuid = {D8133CC0-28D9-4CD6-8284-726C2C85E359}
 	EndGlobalSection
 EndGlobal
