@@ -1871,7 +1871,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listaTiquete = new List<TiqueteOrdenServicio>();
                 try
                 {
                     var listado = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Impreso == bolImpreso);
@@ -1881,7 +1880,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         listado = listado.OrderByDescending(x => x.IdTiquete);
                     else
                         listado = listado.OrderBy(x => x.IdTiquete);
-                    return listaTiquete.ToList();
+                    return listado.ToList();
                 }
                 catch (Exception ex)
                 {
