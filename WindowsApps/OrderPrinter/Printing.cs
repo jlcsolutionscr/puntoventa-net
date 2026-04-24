@@ -203,9 +203,9 @@ namespace OrderPrinter
                 rec.Height = 20;
                 rec.X = (float)(paperWith * linea.intPosicionX / 100);
                 rec.Y = positionY;
-                int intFontSize = linea.intFuente / 80 * charCount;
-                graphics.DrawString(linea.strTexto, new Font("Lucida Console", intFontSize, fontStyle), new SolidBrush(Color.Black), rec, sf);
-                positionY += (20 * linea.intSaltos);
+                float fltFontSize = (float)linea.intFuente / 80 * charCount;
+                graphics.DrawString(linea.strTexto, new Font("Lucida Console", fltFontSize, fontStyle), new SolidBrush(Color.Black), rec, sf);
+                positionY += 20 * linea.intSaltos;
                 i += 1;
             }
         }
