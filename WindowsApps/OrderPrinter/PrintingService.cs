@@ -40,7 +40,7 @@ namespace OrderPrinter
         public int dwWaitHint;
     };
 
-    public partial class Printing : ServiceBase
+    public partial class PrintingService : ServiceBase
     {
         [DllImport("advapi32.dll", SetLastError = true)]
         private static extern bool SetServiceStatus(System.IntPtr handle, ref ServiceStatus serviceStatus);
@@ -50,8 +50,10 @@ namespace OrderPrinter
         private List<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
         private CancellationTokenSource _cts;
         private Task _printingTask;
+        string strServicioURL = ConfigurationManager.AppSettings["ServicioURL"];
+        string strNombreImpresora = ConfigurationManager.AppSettings["NombreImpresora"];
 
-        public Printing()
+        public PrintingService()
         {
             InitializeComponent();
             eventLog = new EventLog();
@@ -106,23 +108,16 @@ namespace OrderPrinter
 
         public void TestInConsole(string[] args)
         {
-            Console.WriteLine($"Service starting...");
-            this.OnStart(args);
-            Console.WriteLine($"Service started. Press any key to stop.");
-            Console.ReadKey();
-            Console.WriteLine($"Service stopping...");
-            this.OnStop();
-            Console.WriteLine($"Service stopped. Closing in 5 seconds.");
-            Thread.Sleep(5000);
+            Console.WriteLine($"DEBUG Mode - Test pending tickets task execution just once...");
+            _cts = new CancellationTokenSource();
+            _printingTask = RequestPendingTickets(_cts.Token);
+            Task.Run(async () => await _printingTask);
         }
 
         public void OnTimer(object sender, ElapsedEventArgs args)
         {
-            // TODO: Insert monitoring activities here.
             eventLog.WriteEntry("OnTimer execution", EventLogEntryType.Information, eventId++);
-
             _cts = new CancellationTokenSource();
-            // Launch the task but do not 'await' it here
             _printingTask = RequestPendingTickets(_cts.Token);
             Task.Run(async () => await _printingTask);
         }
@@ -133,10 +128,8 @@ namespace OrderPrinter
             {
                 try
                 {
-                    string strServicioURL = ConfigurationManager.AppSettings["ServicioURL"];
                     int intIdEmpresa = int.Parse(ConfigurationManager.AppSettings["IdEmpresa"]);
                     int intIdSucursal = int.Parse(ConfigurationManager.AppSettings["IdSucursal"]);
-                    string strNombreImpresora = ConfigurationManager.AppSettings["NombreImpresora"];
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                     using (var httpClient = new HttpClient())
                     {
@@ -156,7 +149,15 @@ namespace OrderPrinter
                         foreach (TiqueteOrdenServicio tiquete in listado)
                         {
                             lineas = JsonConvert.DeserializeObject< List<ClsLineaImpresion>>(tiquete.DetalleTiqueteOrdenServicio);
-                            ImprimirTiquete(strNombreImpresora);
+                            ImprimirTiquete();
+                            await httpClient.GetAsync(strServicioURL + "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + tiquete.IdTiquete, cancelToken);
+                            if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
+                            {
+                                string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
+                                throw new Exception(strError);
+                            }
+                            if (httpResponse.StatusCode != HttpStatusCode.OK)
+                                throw new Exception(httpResponse.ReasonPhrase);
                         }
                     }
                 }
@@ -167,46 +168,51 @@ namespace OrderPrinter
             }
         }
 
-        private void ImprimirTiquete(string szPrinterName)
+        private void ImprimirTiquete()
         {
             try
             {
                 PrintDocument doc = new PrintDocument();
-                doc.PrinterSettings.PrinterName = szPrinterName;
+                doc.PrinterSettings.PrinterName = strNombreImpresora;
                 doc.PrintPage += new PrintPageEventHandler(ProvideContent);
                 doc.Print();
             }
             catch (Exception ex)
             {
-                eventLog.WriteEntry("Error sending ticket lines to Printer: " + szPrinterName + " Error message: " + ex.Message, EventLogEntryType.Error);
+                eventLog.WriteEntry("Error setting up Printer config: " + strNombreImpresora + " Error message: " + ex.Message, EventLogEntryType.Error);
             }
         }
 
         private void ProvideContent(object sender, PrintPageEventArgs e)
         {
-            //FontSize 8 41 Chars - FontSize 9 36 Chars - FontSize 10 32 Chars - FontSize 11 30 Chars - FontSize 12 27 Chars
-            //FontSize 13 25 Chars - FontSize 14 23 Chars - FontSize 15 22 Chars - FontSize 16 20 Chars
-            int i = 0;
-            int charCount = int.Parse(appSettings.Get("AnchoLinea"));
-            double paperWith = 3.5375 * charCount;
-            Graphics graphics = e.Graphics;
-            int positionY = 0;
-            StringFormat sf = new StringFormat();
-            while (i < lineas.Count)
+            try
             {
-                ClsLineaImpresion linea = lineas[i];
-                FontStyle fontStyle = linea.bolBold ? FontStyle.Bold : FontStyle.Regular;
-                sf.LineAlignment = StringAlignment.Center;
-                sf.Alignment = (StringAlignment)linea.intAlineado;
-                RectangleF rec = new RectangleF();
-                rec.Width = (float)(paperWith * linea.intAncho / 100);
-                rec.Height = 20;
-                rec.X = (float)(paperWith * linea.intPosicionX / 100);
-                rec.Y = positionY;
-                float fltFontSize = (float)linea.intFuente / 80 * charCount;
-                graphics.DrawString(linea.strTexto, new Font("Lucida Console", fltFontSize, fontStyle), new SolidBrush(Color.Black), rec, sf);
-                positionY += 20 * linea.intSaltos;
-                i += 1;
+                int i = 0;
+                int charCount = int.Parse(appSettings.Get("AnchoLinea"));
+                double paperWith = 3.5375 * charCount;
+                Graphics graphics = e.Graphics;
+                int positionY = 0;
+                StringFormat sf = new StringFormat();
+                while (i < lineas.Count)
+                {
+                    ClsLineaImpresion linea = lineas[i];
+                    FontStyle fontStyle = linea.bolBold ? FontStyle.Bold : FontStyle.Regular;
+                    sf.LineAlignment = StringAlignment.Center;
+                    sf.Alignment = (StringAlignment)linea.intAlineado;
+                    RectangleF rec = new RectangleF();
+                    rec.Width = (float)(paperWith * linea.intAncho / 100);
+                    rec.Height = 20;
+                    rec.X = (float)(paperWith * linea.intPosicionX / 100);
+                    rec.Y = positionY;
+                    float fltFontSize = (float)linea.intFuente / 80 * charCount;
+                    graphics.DrawString(linea.strTexto, new Font("Lucida Console", fltFontSize, fontStyle), new SolidBrush(Color.Black), rec, sf);
+                    positionY += 20 * linea.intSaltos;
+                    i += 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                eventLog.WriteEntry("Error sending ticket lines to Printer: " + strNombreImpresora + " Error message: " + ex.Message, EventLogEntryType.Error);
             }
         }
     }

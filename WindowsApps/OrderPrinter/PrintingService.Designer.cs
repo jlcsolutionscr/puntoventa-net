@@ -1,6 +1,6 @@
 ﻿namespace OrderPrinter
 {
-    partial class Printing
+    partial class PrintingService
     {
         /// <summary> 
         /// Required designer variable.

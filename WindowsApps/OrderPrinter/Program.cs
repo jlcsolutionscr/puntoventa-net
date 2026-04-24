@@ -9,12 +9,17 @@ namespace OrderPrinter
         /// </summary>
         static void Main(string[] args)
         {
+#if !DEBUG
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new Printing()
+                new PrintingService()
             };
             ServiceBase.Run(ServicesToRun);
+#else
+            PrintingService service = new PrintingService();
+            service.TestInConsole(args);
+#endif
         }
     }
 }

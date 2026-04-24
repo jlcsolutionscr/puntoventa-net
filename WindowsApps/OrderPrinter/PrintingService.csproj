@@ -86,11 +86,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Printing.cs">
+    <Compile Include="PrintingService.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Printing.Designer.cs">
-      <DependentUpon>Printing.cs</DependentUpon>
+    <Compile Include="PrintingService.Designer.cs">
+      <DependentUpon>PrintingService.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
