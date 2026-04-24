@@ -104,6 +104,18 @@ namespace OrderPrinter
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
         }
 
+        public void TestInConsole(string[] args)
+        {
+            Console.WriteLine($"Service starting...");
+            this.OnStart(args);
+            Console.WriteLine($"Service started. Press any key to stop.");
+            Console.ReadKey();
+            Console.WriteLine($"Service stopping...");
+            this.OnStop();
+            Console.WriteLine($"Service stopped. Closing in 5 seconds.");
+            Thread.Sleep(5000);
+        }
+
         public void OnTimer(object sender, ElapsedEventArgs args)
         {
             // TODO: Insert monitoring activities here.
@@ -143,7 +155,7 @@ namespace OrderPrinter
                             listado = JsonConvert.DeserializeObject<List<TiqueteOrdenServicio>>(response);
                         foreach (TiqueteOrdenServicio tiquete in listado)
                         {
-                            lineas = (List<ClsLineaImpresion>)JsonConvert.DeserializeObject(tiquete.DetalleTiqueteOrdenServicio);
+                            lineas = JsonConvert.DeserializeObject< List<ClsLineaImpresion>>(tiquete.DetalleTiqueteOrdenServicio);
                             ImprimirTiquete(strNombreImpresora);
                         }
                     }
