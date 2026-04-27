@@ -9,6 +9,8 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdOrden { get; set; }
         public int IdEmpresa { get; set; }
         public int IdSucursal { get; set; }
+        public string FechaEmision { get; set; }
+        public string Etiqueta { get; set; }
         public string Descripcion { get; set; }
         public string Impresora { get; set; }
         public string DetalleTiqueteOrdenServicio { get; set; }

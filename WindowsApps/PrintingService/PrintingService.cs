@@ -47,7 +47,7 @@ namespace OrderPrinter
         private System.Collections.Specialized.NameValueCollection appSettings;
         private EventLog eventLog;
         private int eventId = 1;
-        private List<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
+        private List<ClsLineaImpresion> ticketLines = new List<ClsLineaImpresion> { };
         private CancellationTokenSource _cts;
         private Task _printingTask;
         string strServicioURL = ConfigurationManager.AppSettings["ServicioURL"];
@@ -148,8 +148,8 @@ namespace OrderPrinter
                             listado = JsonConvert.DeserializeObject<List<TiqueteOrdenServicio>>(response);
                         foreach (TiqueteOrdenServicio tiquete in listado)
                         {
-                            lineas = JsonConvert.DeserializeObject< List<ClsLineaImpresion>>(tiquete.DetalleTiqueteOrdenServicio);
-                            ImprimirTiquete();
+                            ticketLines = GenerateWorkingOrderTicket(tiquete);
+                            PrintTicket();
                             await httpClient.GetAsync(strServicioURL + "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + tiquete.IdTiquete, cancelToken);
                             if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                             {
@@ -168,7 +168,7 @@ namespace OrderPrinter
             }
         }
 
-        private void ImprimirTiquete()
+        private void PrintTicket()
         {
             try
             {
@@ -187,33 +187,82 @@ namespace OrderPrinter
         {
             try
             {
-                int i = 0;
-                int charCount = int.Parse(appSettings.Get("AnchoLinea"));
-                double paperWith = 3.5375 * charCount;
-                Graphics graphics = e.Graphics;
-                int positionY = 0;
-                StringFormat sf = new StringFormat();
-                while (i < lineas.Count)
+                if (ticketLines.Count > 0)
                 {
-                    ClsLineaImpresion linea = lineas[i];
-                    FontStyle fontStyle = linea.bolBold ? FontStyle.Bold : FontStyle.Regular;
-                    sf.LineAlignment = StringAlignment.Center;
-                    sf.Alignment = (StringAlignment)linea.intAlineado;
-                    RectangleF rec = new RectangleF();
-                    rec.Width = (float)(paperWith * linea.intAncho / 100);
-                    rec.Height = 20;
-                    rec.X = (float)(paperWith * linea.intPosicionX / 100);
-                    rec.Y = positionY;
-                    float fltFontSize = (float)linea.intFuente / 80 * charCount;
-                    graphics.DrawString(linea.strTexto, new Font("Lucida Console", fltFontSize, fontStyle), new SolidBrush(Color.Black), rec, sf);
-                    positionY += 20 * linea.intSaltos;
-                    i += 1;
+                    int i = 0;
+                    int charCount = int.Parse(appSettings.Get("AnchoLinea"));
+                    double paperWith = 3.5375 * charCount;
+                    Graphics graphics = e.Graphics;
+                    int positionY = 0;
+                    StringFormat sf = new StringFormat();
+                    while (i < ticketLines.Count)
+                    {
+                        ClsLineaImpresion linea = ticketLines[i];
+                        FontStyle fontStyle = linea.bolBold ? FontStyle.Bold : FontStyle.Regular;
+                        sf.LineAlignment = StringAlignment.Center;
+                        sf.Alignment = (StringAlignment)linea.intAlineado;
+                        RectangleF rec = new RectangleF
+                        {
+                        Width = (float)(paperWith * linea.intAncho / 100),
+                        Height = 20,
+                        X = (float)(paperWith * linea.intPosicionX / 100),
+                        Y = positionY
+                        };
+                        float fltFontSize = (float)linea.intFuente / 80 * charCount;
+                        graphics.DrawString(linea.strTexto, new Font("Lucida Console", fltFontSize, fontStyle), new SolidBrush(Color.Black), rec, sf);
+                        positionY += 20 * linea.intSaltos;
+                        i += 1;
+                    }
                 }
             }
             catch (Exception ex)
             {
                 eventLog.WriteEntry("Error sending ticket lines to Printer: " + strNombreImpresora + " Error message: " + ex.Message, EventLogEntryType.Error);
             }
+        }
+
+        private void GenerateWorkingOrderTicket(TiqueteOrdenServicio tiquete)
+        {
+            ticketLines = new List<ClsLineaImpresion> { };
+            ticketLines.Add(new ClsLineaImpresion(1, tiquete.Etiqueta, 0, 100, 14, (int)StringAlignment.Center, true));
+            ticketLines.Add(new ClsLineaImpresion(1, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true));
+            ticketLines.Add(new ClsLineaImpresion(2, tiquete.FechaEmision, 0, 100, 12, (int)StringAlignment.Center, false));
+            
+            ticketLines.Add(new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false));
+            foreach (DescipcionValor linea in tiquete.DetalleTiqueteOrdenServicio)
+            {
+                string strDescription = linea.Descripcion;
+                while (strDescription.Length > 0)
+                {
+                    if (strDescription.Length > 30)
+                    {
+                        lineasDetalle.Add(new ClsLineaImpresion(1, strDescription.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
+                        strDescription = strDescription.Substring(30);
+                    }
+                    else
+                    {
+                        lineasDetalle.Add(new ClsLineaImpresion(1, strDescription, 0, 100, 10, (int)StringAlignment.Near, false));
+                        strDescription = "";
+                    }
+                }
+                lineasDetalle.Add(new ClsLineaImpresion(1, linea.Valor.ToString(), 0, 100, 10, (int)StringAlignment.Near, false));
+            }
+            ticketLines.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
+            string strDetails = tiquete.Descripcion;
+            while (strDetails.Length > 0)
+            {
+                if (strDetails.Length > 30)
+                {
+                    ticketLines.Add(new ClsLineaImpresion(1, strDetails.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
+                    strDetails = strDetails.Substring(30);
+                }
+                else
+                {
+                    ticketLines.Add(new ClsLineaImpresion(1, strDetails, 0, 100, 10, (int)StringAlignment.Near, false));
+                    strDetails = "";
+                }
+            }
+            ticketLines.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
         }
     }
 }
