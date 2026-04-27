@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServer", "WebAPI\WebServ
 EndProject
 Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "Setup", "Setup\Setup.aiproj", "{E64BF898-9568-43DE-A289-0E6381B5F5F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintingService", "WindowsApps\OrderPrinter\PrintingService.csproj", "{A6A9CA0D-4989-449B-9ACF-1FEC1050166B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintingService", "WindowsApps\PrintingService\PrintingService.csproj", "{A6A9CA0D-4989-449B-9ACF-1FEC1050166B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
