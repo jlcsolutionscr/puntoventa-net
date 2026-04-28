@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A6A9CA0D-4989-449B-9ACF-1FEC1050166B}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>OrderPrinter</RootNamespace>
-    <AssemblyName>OrderPrinter</AssemblyName>
+    <RootNamespace>JLCSolutionsCR</RootNamespace>
+    <AssemblyName>PrintingService</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>OrderPrinter.Program</StartupObject>
+    <StartupObject>JLCSolutionsCR.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">

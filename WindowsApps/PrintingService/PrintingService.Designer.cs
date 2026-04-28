@@ -1,4 +1,4 @@
-﻿namespace OrderPrinter
+﻿namespace JLCSolutionsCR
 {
     partial class PrintingService
     {

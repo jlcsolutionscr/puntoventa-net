@@ -15,7 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace OrderPrinter
+namespace JLCSolutionsCR
 {
     public enum ServiceState
     {
@@ -83,7 +83,7 @@ namespace OrderPrinter
             eventLog.WriteEntry("In OnStart.");
             System.Timers.Timer timer = new System.Timers.Timer
             {
-                Interval = 60000
+                Interval = 15000
             };
             timer.Elapsed += new ElapsedEventHandler(OnTimer);
             timer.Start();
@@ -100,18 +100,18 @@ namespace OrderPrinter
             };
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
             eventLog.WriteEntry("In OnStop.");
-            _cts.Cancel();
-            _printingTask.Wait(TimeSpan.FromSeconds(5));
+            try
+            {
+                _cts.Cancel();
+                _printingTask.Wait(TimeSpan.FromSeconds(5));
+                _cts.Dispose();
+            }
+            catch (Exception ex)
+            {
+                eventLog.WriteEntry("Token was not initialized..." + ex.Message, EventLogEntryType.Error);
+            }
             serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
-        }
-
-        public void TestInConsole(string[] args)
-        {
-            Console.WriteLine($"DEBUG Mode - Test pending tickets task execution just once...");
-            _cts = new CancellationTokenSource();
-            _printingTask = RequestPendingTickets(_cts.Token);
-            Task.Run(async () => await _printingTask);
         }
 
         public void OnTimer(object sender, ElapsedEventArgs args)
@@ -119,7 +119,11 @@ namespace OrderPrinter
             eventLog.WriteEntry("OnTimer execution", EventLogEntryType.Information, eventId++);
             _cts = new CancellationTokenSource();
             _printingTask = RequestPendingTickets(_cts.Token);
-            Task.Run(async () => await _printingTask);
+            Task.Run(async () =>
+            {
+                await _printingTask;
+                _cts.Dispose();
+            });
         }
 
         private async Task RequestPendingTickets(CancellationToken cancelToken)
@@ -133,24 +137,10 @@ namespace OrderPrinter
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                     using (var httpClient = new HttpClient())
                     {
-                        HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&impresora=" + strNombreImpresora, cancelToken);
-
-                        if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
+                        string response = "";
+                        try
                         {
-                            string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
-                            throw new Exception(strError);
-                        }
-                        if (httpResponse.StatusCode != HttpStatusCode.OK)
-                            throw new Exception(httpResponse.ReasonPhrase);
-                        string response = await httpResponse.Content.ReadAsStringAsync();
-                        List<TiqueteOrdenServicio> listado = new List<TiqueteOrdenServicio>();
-                        if (response != "")
-                            listado = JsonConvert.DeserializeObject<List<TiqueteOrdenServicio>>(response);
-                        foreach (TiqueteOrdenServicio tiquete in listado)
-                        {
-                            ticketLines = GenerateWorkingOrderTicket(tiquete);
-                            PrintTicket();
-                            await httpClient.GetAsync(strServicioURL + "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + tiquete.IdTiquete, cancelToken);
+                            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&impresora=" + strNombreImpresora, cancelToken);
                             if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                             {
                                 string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
@@ -158,12 +148,46 @@ namespace OrderPrinter
                             }
                             if (httpResponse.StatusCode != HttpStatusCode.OK)
                                 throw new Exception(httpResponse.ReasonPhrase);
+                            response = await httpResponse.Content.ReadAsStringAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            eventLog.WriteEntry("Error requesting tickets from server: " + ex.Message, EventLogEntryType.Error);
+                        }
+                        List<TiqueteOrdenServicio> listado = new List<TiqueteOrdenServicio>();
+                        if (response != "") listado = JsonConvert.DeserializeObject<List<TiqueteOrdenServicio>>(response);
+                        foreach (TiqueteOrdenServicio tiquete in listado)
+                        {
+                            try
+                            {
+                                GenerateWorkingOrderTicket(tiquete);
+                                PrintTicket();
+                            }
+                            catch (Exception ex)
+                            {
+                                eventLog.WriteEntry("Error printing ticket id: " + tiquete.IdTiquete + " Error: " + ex.Message, EventLogEntryType.Error);
+                            }
+                            try
+                            {
+                                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + tiquete.IdTiquete, cancelToken);
+                                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
+                                {
+                                    string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
+                                    throw new Exception(strError);
+                                }
+                                if (httpResponse.StatusCode != HttpStatusCode.OK)
+                                    throw new Exception(httpResponse.ReasonPhrase);
+                            }
+                            catch (Exception ex)
+                            {
+                                eventLog.WriteEntry("Error updating ticket status for ticket id: " + tiquete.IdTiquete + " Error: " + ex.Message, EventLogEntryType.Error);
+                            }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLog.WriteEntry("Error requesting tickets to be printed: " + ex.Message, EventLogEntryType.Error);
+                    eventLog.WriteEntry("Error on RequestPendingTickets: " + ex.Message, EventLogEntryType.Error);
                 }
             }
         }
@@ -223,46 +247,55 @@ namespace OrderPrinter
 
         private void GenerateWorkingOrderTicket(TiqueteOrdenServicio tiquete)
         {
-            ticketLines = new List<ClsLineaImpresion> { };
-            ticketLines.Add(new ClsLineaImpresion(1, tiquete.Etiqueta, 0, 100, 14, (int)StringAlignment.Center, true));
-            ticketLines.Add(new ClsLineaImpresion(1, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true));
-            ticketLines.Add(new ClsLineaImpresion(2, tiquete.FechaEmision, 0, 100, 12, (int)StringAlignment.Center, false));
-            
-            ticketLines.Add(new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false));
-            foreach (DescipcionValor linea in tiquete.DetalleTiqueteOrdenServicio)
+            try
             {
-                string strDescription = linea.Descripcion;
-                while (strDescription.Length > 0)
+                ticketLines = new List<ClsLineaImpresion>
                 {
-                    if (strDescription.Length > 30)
+                    new ClsLineaImpresion(1, tiquete.Etiqueta, 0, 100, 14, (int)StringAlignment.Center, true),
+                    new ClsLineaImpresion(1, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true),
+                    new ClsLineaImpresion(2, tiquete.FechaEmision, 0, 100, 12, (int)StringAlignment.Center, false),
+                    new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false)
+                };
+                IList<DescripcionValor> detalle = JsonConvert.DeserializeObject<IList<DescripcionValor>>(tiquete.DetalleTiqueteOrdenServicio);
+                foreach (DescripcionValor linea in detalle)
+                {
+                    string strDescription = linea.Descripcion;
+                    while (strDescription.Length > 0)
                     {
-                        lineasDetalle.Add(new ClsLineaImpresion(1, strDescription.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
-                        strDescription = strDescription.Substring(30);
+                        if (strDescription.Length > 30)
+                        {
+                            ticketLines.Add(new ClsLineaImpresion(1, strDescription.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Center, false));
+                            strDescription = strDescription.Substring(30);
+                        }
+                        else
+                        {
+                            ticketLines.Add(new ClsLineaImpresion(1, strDescription, 0, 100, 10, (int)StringAlignment.Center, false));
+                            strDescription = "";
+                        }
+                    }
+                    ticketLines.Add(new ClsLineaImpresion(1, linea.Valor.ToString(), 0, 100, 10, (int)StringAlignment.Center, false));
+                }
+                ticketLines.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Center, false));
+                string strDetails = tiquete.Descripcion;
+                while (strDetails.Length > 0)
+                {
+                    if (strDetails.Length > 30)
+                    {
+                        ticketLines.Add(new ClsLineaImpresion(1, strDetails.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
+                        strDetails = strDetails.Substring(30);
                     }
                     else
                     {
-                        lineasDetalle.Add(new ClsLineaImpresion(1, strDescription, 0, 100, 10, (int)StringAlignment.Near, false));
-                        strDescription = "";
+                        ticketLines.Add(new ClsLineaImpresion(1, strDetails, 0, 100, 10, (int)StringAlignment.Near, false));
+                        strDetails = "";
                     }
                 }
-                lineasDetalle.Add(new ClsLineaImpresion(1, linea.Valor.ToString(), 0, 100, 10, (int)StringAlignment.Near, false));
+                ticketLines.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
             }
-            ticketLines.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
-            string strDetails = tiquete.Descripcion;
-            while (strDetails.Length > 0)
+            catch (Exception ex)
             {
-                if (strDetails.Length > 30)
-                {
-                    ticketLines.Add(new ClsLineaImpresion(1, strDetails.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
-                    strDetails = strDetails.Substring(30);
-                }
-                else
-                {
-                    ticketLines.Add(new ClsLineaImpresion(1, strDetails, 0, 100, 10, (int)StringAlignment.Near, false));
-                    strDetails = "";
-                }
+                eventLog.WriteEntry("Error sending ticket lines to Printer: " + strNombreImpresora + " Error message: " + ex.Message, EventLogEntryType.Error);
             }
-            ticketLines.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
         }
     }
 }
