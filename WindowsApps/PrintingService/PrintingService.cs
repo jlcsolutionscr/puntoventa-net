@@ -1,10 +1,12 @@
 ﻿using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
 using Newtonsoft.Json;
+using log4net;
+using log4net.Config;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Net;
@@ -14,6 +16,8 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Reflection;
+using System.Xml;
 
 namespace JLCSolutionsCR
 {
@@ -45,31 +49,47 @@ namespace JLCSolutionsCR
         [DllImport("advapi32.dll", SetLastError = true)]
         private static extern bool SetServiceStatus(System.IntPtr handle, ref ServiceStatus serviceStatus);
         private System.Collections.Specialized.NameValueCollection appSettings;
-        private EventLog eventLog;
-        private int eventId = 1;
         private List<ClsLineaImpresion> ticketLines = new List<ClsLineaImpresion> { };
         private CancellationTokenSource _cts;
+        private readonly ILog _logger = LogManager.GetLogger(typeof(PrintingService));
         private Task _printingTask;
         string strServicioURL = ConfigurationManager.AppSettings["ServicioURL"];
-        string strNombreImpresora = ConfigurationManager.AppSettings["NombreImpresora"];
+        string strPrinterName = ConfigurationManager.AppSettings["NombreImpresora"];
 
         public PrintingService()
         {
             InitializeComponent();
-            eventLog = new EventLog();
-            if (!EventLog.SourceExists("JLC-Ticket-Printing"))
-            {
-                EventLog.CreateEventSource("JLC-Ticket-Printing", "ActivityLog");
-            }
-            eventLog.Source = "JLC-Ticket-Printing";
-            eventLog.Log = "ActivityLog";
             try
             {
                 appSettings = ConfigurationManager.AppSettings;
             } catch (Exception ex)
             {
-                eventLog.WriteEntry("Error reading configuration file: " + ex.Message, EventLogEntryType.Error);
+                _logger.Error("Error reading configuration file: " + ex.Message);
             }
+            try
+            {
+                XmlDocument log4netConfig = new XmlDocument();
+                using (var fs = File.OpenRead("log4net.config"))
+                {
+                    log4netConfig.Load(fs);
+                    var repo = LogManager.CreateRepository(
+                            Assembly.GetEntryAssembly(),
+                            typeof(log4net.Repository.Hierarchy.Hierarchy));
+                    XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error setting logger config", ex);
+            }
+        }
+
+        public void TestInConsole(string[] args)
+        {
+            OnStart(args);
+            Console.WriteLine("Press ENTER to exit...");
+            Console.ReadLine();
+            OnStop();
         }
 
         protected override void OnStart(string[] args)
@@ -80,10 +100,10 @@ namespace JLCSolutionsCR
                 dwWaitHint = 100000
             };
             SetServiceStatus(ServiceHandle, ref serviceStatus);
-            eventLog.WriteEntry("In OnStart.");
+            _logger.Info("In OnStart.");
             System.Timers.Timer timer = new System.Timers.Timer
             {
-                Interval = 15000
+                Interval = 10000
             };
             timer.Elapsed += new ElapsedEventHandler(OnTimer);
             timer.Start();
@@ -99,7 +119,7 @@ namespace JLCSolutionsCR
                 dwWaitHint = 100000
             };
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
-            eventLog.WriteEntry("In OnStop.");
+            _logger.Info("In OnStop.");
             try
             {
                 _cts.Cancel();
@@ -108,7 +128,7 @@ namespace JLCSolutionsCR
             }
             catch (Exception ex)
             {
-                eventLog.WriteEntry("Token was not initialized..." + ex.Message, EventLogEntryType.Error);
+                _logger.Info("Token was not initialized..." + ex.Message);
             }
             serviceStatus.dwCurrentState = ServiceState.SERVICE_STOPPED;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
@@ -116,7 +136,6 @@ namespace JLCSolutionsCR
 
         public void OnTimer(object sender, ElapsedEventArgs args)
         {
-            eventLog.WriteEntry("OnTimer execution", EventLogEntryType.Information, eventId++);
             _cts = new CancellationTokenSource();
             _printingTask = RequestPendingTickets(_cts.Token);
             Task.Run(async () =>
@@ -140,7 +159,7 @@ namespace JLCSolutionsCR
                         string response = "";
                         try
                         {
-                            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&impresora=" + strNombreImpresora, cancelToken);
+                            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&impresora=" + strPrinterName, cancelToken);
                             if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                             {
                                 string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
@@ -152,7 +171,7 @@ namespace JLCSolutionsCR
                         }
                         catch (Exception ex)
                         {
-                            eventLog.WriteEntry("Error requesting tickets from server: " + ex.Message, EventLogEntryType.Error);
+                            _logger.Error("Error requesting tickets from server: " + ex.Message);
                         }
                         List<TiqueteOrdenServicio> listado = new List<TiqueteOrdenServicio>();
                         if (response != "") listado = JsonConvert.DeserializeObject<List<TiqueteOrdenServicio>>(response);
@@ -165,7 +184,7 @@ namespace JLCSolutionsCR
                             }
                             catch (Exception ex)
                             {
-                                eventLog.WriteEntry("Error printing ticket id: " + tiquete.IdTiquete + " Error: " + ex.Message, EventLogEntryType.Error);
+                                _logger.Error("Error printing ticket id: " + tiquete.IdTiquete + " Error: " + ex.Message);
                             }
                             try
                             {
@@ -180,14 +199,14 @@ namespace JLCSolutionsCR
                             }
                             catch (Exception ex)
                             {
-                                eventLog.WriteEntry("Error updating ticket status for ticket id: " + tiquete.IdTiquete + " Error: " + ex.Message, EventLogEntryType.Error);
+                                _logger.Error("Error updating ticket status for ticket id: " + tiquete.IdTiquete + " Error: " + ex.Message);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    eventLog.WriteEntry("Error on RequestPendingTickets: " + ex.Message, EventLogEntryType.Error);
+                    _logger.Error("Error requesting tickets from server: " + ex.Message);
                 }
             }
         }
@@ -197,13 +216,13 @@ namespace JLCSolutionsCR
             try
             {
                 PrintDocument doc = new PrintDocument();
-                doc.PrinterSettings.PrinterName = strNombreImpresora;
+                doc.PrinterSettings.PrinterName = strPrinterName;
                 doc.PrintPage += new PrintPageEventHandler(ProvideContent);
                 doc.Print();
             }
             catch (Exception ex)
             {
-                eventLog.WriteEntry("Error setting up Printer config: " + strNombreImpresora + " Error message: " + ex.Message, EventLogEntryType.Error);
+                _logger.Error("Error setting up printer config: " + strPrinterName + " Error message: " + ex.Message);
             }
         }
 
@@ -241,7 +260,7 @@ namespace JLCSolutionsCR
             }
             catch (Exception ex)
             {
-                eventLog.WriteEntry("Error sending ticket lines to Printer: " + strNombreImpresora + " Error message: " + ex.Message, EventLogEntryType.Error);
+                _logger.Error("Error sending ticket lines to Printer: " + strPrinterName + " Error message: " + ex.Message);
             }
         }
 
@@ -294,7 +313,7 @@ namespace JLCSolutionsCR
             }
             catch (Exception ex)
             {
-                eventLog.WriteEntry("Error sending ticket lines to Printer: " + strNombreImpresora + " Error message: " + ex.Message, EventLogEntryType.Error);
+                _logger.Error("Error sending ticket lines to Printer: " + strPrinterName + " Error message: " + ex.Message);
             }
         }
     }

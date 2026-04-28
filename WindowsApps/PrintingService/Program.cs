@@ -13,6 +13,8 @@ namespace JLCSolutionsCR
                 new PrintingService()
             };
             ServiceBase.Run(ServicesToRun);
+            /*PrintingService service = new PrintingService();
+            service.TestInConsole(args);*/
         }
     }
 }
