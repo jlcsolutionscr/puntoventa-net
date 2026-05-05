@@ -54,7 +54,6 @@ namespace JLCSolutionsCR
         private readonly ILog _logger = LogManager.GetLogger(typeof(PrintingService));
         private Task _printingTask;
         string strServicioURL = ConfigurationManager.AppSettings["ServicioURL"];
-        string strPrinterName = ConfigurationManager.AppSettings["NombreImpresora"];
 
         public PrintingService()
         {
@@ -145,7 +144,7 @@ namespace JLCSolutionsCR
             });
         }
 
-        private async Task RequestPendingTickets(CancellationToken cancelToken)
+        private async Task RequestPendingTickets(int intIdOrden, CancellationToken cancelToken)
         {
             if (!cancelToken.IsCancellationRequested)
             {
@@ -159,7 +158,7 @@ namespace JLCSolutionsCR
                         string response = "";
                         try
                         {
-                            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&impresora=" + strPrinterName, cancelToken);
+                            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&idorden=" + intIdOrden, cancelToken);
                             if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                             {
                                 string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
@@ -180,7 +179,7 @@ namespace JLCSolutionsCR
                             try
                             {
                                 GenerateWorkingOrderTicket(tiquete);
-                                PrintTicket();
+                                PrintTicket(tiquete.Impresora);
                             }
                             catch (Exception ex)
                             {
@@ -211,7 +210,7 @@ namespace JLCSolutionsCR
             }
         }
 
-        private void PrintTicket()
+        private void PrintTicket(string strPrinterName)
         {
             try
             {
