@@ -1569,6 +1569,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     List<LineaPorSucursal> listadoDetalleAnterior = dbContext.LineaPorSucursalRepository.Where(x => x.IdLinea == linea.IdLinea).ToList();
                     List<LineaPorSucursal> listadoDetalle = linea.LineaPorSucursal.ToList();
+                    foreach (LineaPorSucursal detalle in listadoDetalle)
+                        detalle.SucursalPorEmpresa = null;
                     linea.LineaPorSucursal = null;
                     dbContext.LineaPorSucursalRepository.RemoveRange(listadoDetalleAnterior);
                     dbContext.LineaPorSucursalRepository.AddRange(listadoDetalle);
