@@ -1574,6 +1574,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     linea.LineaPorSucursal = null;
                     dbContext.LineaPorSucursalRepository.RemoveRange(listadoDetalleAnterior);
                     dbContext.LineaPorSucursalRepository.AddRange(listadoDetalle);
+                    dbContext.NotificarModificacion(linea);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
