@@ -2067,7 +2067,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdProducto == value.IdProducto).FirstOrDefault();
                                     decimal decCantidad = existencias != null ? existencias.Cantidad : 0;
                                     decimal decUtilidad = value.PrecioCosto > 0 ? (value.PrecioVenta1 / (1 + (tipoImpuesto.Valor / 100)) * 100 / value.PrecioCosto) - 100 : value.PrecioVenta1 > 0 ? 100 : 0;
-                                    ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, decUtilidad, value.Activo, bolIncluyeImagen && value.Imagen.Length > 0 ? Convert.ToBase64String(value.Imagen) : "");
+                                    ProductoDetalle item = new ProductoDetalle(value.IdProducto, value.Codigo, value.CodigoProveedor, value.IdLinea, value.Descripcion, decCantidad, value.PrecioCosto, value.PrecioVenta1, value.Observacion, decUtilidad, value.Activo, bolIncluyeImagen && value.Imagen.Length > 0 ? Convert.ToBase64String(value.Imagen) : "");
                                     listaProducto.Add(item);
                                 }
                             }
