@@ -645,7 +645,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     bolIncluyeServicios = parametrosJO.Property("IncluyeServicios") != null ? bool.Parse(parametrosJO.Property("IncluyeServicios").Value.ToString()) : true;
                     bolFiltraActivos = parametrosJO.Property("FiltraActivos") != null ? bool.Parse(parametrosJO.Property("FiltraActivos").Value.ToString()) : false;
                     bolFiltraExistencias = parametrosJO.Property("FiltraExistencias") != null ? bool.Parse(parametrosJO.Property("FiltraExistencias").Value.ToString()) : false;
-                    bolFiltraConDescuento = parametrosJO.Property("FiltraConDescuento") != null ? bool.Parse(parametrosJO.Property("IncluyeImagen").Value.ToString()) : false;
+                    bolFiltraConDescuento = parametrosJO.Property("FiltraConDescuento") != null ? bool.Parse(parametrosJO.Property("FiltraConDescuento").Value.ToString()) : false;
                     bool bolIncluyeImagen = parametrosJO.Property("IncluyeImagen") != null ? bool.Parse(parametrosJO.Property("IncluyeImagen").Value.ToString()) : false;
                     intIdLlave1 = parametrosJO.Property("IdLinea") != null ? int.Parse(parametrosJO.Property("IdLinea").Value.ToString()) : 0;
                     strCodigo = parametrosJO.Property("Codigo") != null ? parametrosJO.Property("Codigo").Value.ToString() : "";
