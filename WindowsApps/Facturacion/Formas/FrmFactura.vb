@@ -636,6 +636,8 @@ Public Class FrmFactura
 
     Private Async Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
+            lblActividadEconomica.Visible = FrmPrincipal.empresaGlobal.Modalidad = 1
+            cboActividadEconomica.Visible = FrmPrincipal.empresaGlobal.Modalidad = 1
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
             txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
@@ -1186,7 +1188,7 @@ Public Class FrmFactura
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
-                .CodigoActividad = cboActividadEconomica.SelectedValue,
+                .CodigoActividad = IIf(FrmPrincipal.empresaGlobal.Modalidad = 1, cboActividadEconomica.SelectedValue, ""),
                 .CodigoActividadReceptor = cliente.CodigoActividad,
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),

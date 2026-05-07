@@ -5,7 +5,7 @@ Public Class FrmListadoTiqueteOrdenServicio
 #Region "Variables"
 #End Region
 
-#Region "M�todos"
+#Region "Métodos"
     Private Sub EstablecerPropiedadesDataGridView()
         Dim dvcId As New DataGridViewTextBoxColumn
         Dim dvcDescripcion As New DataGridViewTextBoxColumn
@@ -15,7 +15,7 @@ Public Class FrmListadoTiqueteOrdenServicio
         dvcId.DataPropertyName = "IdTiquete"
         dvcId.Width = 50
         dgvListado.Columns.Add(dvcId)
-        dvcDescripcion.HeaderText = "Descripci�n"
+        dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.DataPropertyName = "Descripcion"
         dvcDescripcion.Width = 600
         dgvListado.Columns.Add(dvcDescripcion)

@@ -130,7 +130,6 @@ Public Class FrmEmpresa
             EstablecerPropiedadesDataGridView()
             datos = Await Puntoventa.ObtenerEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
             Await CargarCombos(datos.Identificacion)
-            Dim logotipo As Byte() = Await Puntoventa.ObtenerLogotipoEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
             credenciales = Await Puntoventa.ObtenerCredencialesHacienda(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
             datosSucursal = Await Puntoventa.ObtenerSucursalPorEmpresa(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
             datosTerminal = Await Puntoventa.ObtenerTerminalPorSucursal(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.equipoGlobal.IdTerminal, FrmPrincipal.usuarioGlobal.Token)
@@ -185,9 +184,9 @@ Public Class FrmEmpresa
             txtUltimoMR.Text = datosTerminal.UltimoDocMR
             txtUltimoFEC.Text = datosTerminal.UltimoDocFEC
             chkCierre.Checked = datosSucursal.CierreEnEjecucion
-            If logotipo IsNot Nothing Then
+            If datos.Logotipo IsNot Nothing And datos.Logotipo.Length > 0 Then
                 Dim logoImage As Image
-                Using ms As New MemoryStream(logotipo)
+                Using ms As New MemoryStream(datos.Logotipo)
                     logoImage = Image.FromStream(ms)
                 End Using
                 picLogo.Image = logoImage
@@ -310,6 +309,8 @@ Public Class FrmEmpresa
                         bytLogotipo = stream.ToArray()
                     End Using
                     datos.Logotipo = bytLogotipo
+                Else
+                    datos.Logotipo = Array.Empty(Of Byte)
                 End If
             End If
             Await Puntoventa.ActualizarEmpresa(datos, FrmPrincipal.usuarioGlobal.Token)
