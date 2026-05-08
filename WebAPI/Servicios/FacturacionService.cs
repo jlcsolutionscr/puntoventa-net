@@ -1567,10 +1567,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
                     {
                         List<DetalleOrdenServicio> nuevoDetalle = new List<DetalleOrdenServicio> { };
+                        int currentDetailsIndex = 1;
                         foreach (DetalleOrdenServicio detalle in listadoDetalle)
                         {
-                            DetalleOrdenServicio anterior = listadoDetalleAnterior.Where(x => x.IdOrden == detalle.IdOrden && x.IdProducto == detalle.IdProducto).FirstOrDefault();
-                            if (anterior == null) nuevoDetalle.Add(detalle);
+                            if (currentDetailsIndex > listadoDetalleAnterior.Count) nuevoDetalle.Add(detalle);
+                            currentDetailsIndex++;
                         }
                         PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoServicio);
                         if (puntoDeServicio != null && nuevoDetalle.Count > 0)
