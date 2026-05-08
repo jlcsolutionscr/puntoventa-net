@@ -1141,9 +1141,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<DetalleProforma> listadoDetalleAnterior = dbContext.DetalleProformaRepository.Where(x => x.IdProforma == proforma.IdProforma).ToList();
                     List<DetalleProforma> listadoDetalle = proforma.DetalleProforma.ToList();
                     proforma.DetalleProforma = null;
+                    dbContext.NotificarModificacion(proforma);
                     dbContext.DetalleProformaRepository.RemoveRange(listadoDetalleAnterior);
                     dbContext.DetalleProformaRepository.AddRange(listadoDetalle);
-                    dbContext.NotificarModificacion(proforma);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -1556,7 +1556,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenServicio.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    OrdenServicio ordenNoTracking = dbContext.OrdenServicioRepository.Where(x => x.IdOrden == ordenServicio.IdOrden).FirstOrDefault();
+                    OrdenServicio ordenNoTracking = dbContext.OrdenServicioRepository.AsNoTracking().Where(x => x.IdOrden == ordenServicio.IdOrden).FirstOrDefault();
                     if (ordenNoTracking != null && ordenNoTracking.Aplicado) throw new BusinessException("La orden de servicio no puede ser modificada porque ya fue facturada.");
                     ordenServicio.Vendedor = null;
                     if (ordenServicio.MontoAdelanto != ordenNoTracking.MontoAdelanto) ordenServicio.MontoAdelanto = ordenNoTracking.MontoAdelanto;
@@ -1578,9 +1578,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
                     ordenServicio.DetalleOrdenServicio = null;
+                    dbContext.NotificarModificacion(ordenServicio);
                     dbContext.DetalleOrdenServicioRepository.RemoveRange(listadoDetalleAnterior);
                     dbContext.DetalleOrdenServicioRepository.AddRange(listadoDetalle);
-                    dbContext.NotificarModificacion(ordenServicio);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
