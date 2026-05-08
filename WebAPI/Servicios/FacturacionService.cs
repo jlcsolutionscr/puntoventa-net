@@ -1141,11 +1141,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<DetalleProforma> listadoDetalleAnterior = dbContext.DetalleProformaRepository.Where(x => x.IdProforma == proforma.IdProforma).ToList();
                     List<DetalleProforma> listadoDetalle = proforma.DetalleProforma.ToList();
                     proforma.DetalleProforma = null;
-                    foreach (DetalleProforma detalle in listadoDetalleAnterior)
-                        dbContext.NotificarEliminacion(detalle);
+                    dbContext.DetalleProformaRepository.RemoveRange(listadoDetalleAnterior);
+                    dbContext.DetalleProformaRepository.AddRange(listadoDetalle);
                     dbContext.NotificarModificacion(proforma);
-                    foreach (DetalleProforma detalle in listadoDetalle)
-                        dbContext.DetalleProformaRepository.Add(detalle);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -1582,6 +1580,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     ordenServicio.DetalleOrdenServicio = null;
                     dbContext.DetalleOrdenServicioRepository.RemoveRange(listadoDetalleAnterior);
                     dbContext.DetalleOrdenServicioRepository.AddRange(listadoDetalle);
+                    dbContext.NotificarModificacion(ordenServicio);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -1872,6 +1871,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     TiqueteOrdenServicio tiquete = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdTiquete == intIdTiquete).FirstOrDefault();
                     if (tiquete == null) throw new BusinessException("No se logró obtener la información del tiquete de orden de servicio. Por favor, pongase en contacto con su proveedor del servicio.");
                     tiquete.Impreso = bolImpreso;
+                    dbContext.NotificarModificacion(tiquete);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
