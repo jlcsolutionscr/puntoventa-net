@@ -1570,22 +1570,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         foreach (DetalleOrdenServicio detalle in listadoDetalle)
                         {
                             DetalleOrdenServicio anterior = listadoDetalleAnterior.Where(x => x.IdOrden == detalle.IdOrden && x.IdProducto == detalle.IdProducto).FirstOrDefault();
-                            if (anterior != null)
-                            {
-                                if (anterior.Cantidad != detalle.Cantidad)
-                                {
-                                    nuevoDetalle.Add(new DetalleOrdenServicio
-                                    {
-                                        IdProducto = detalle.IdProducto,
-                                        Cantidad = detalle.Cantidad - anterior.Cantidad,
-                                        Descripcion = detalle.Descripcion
-                                    });
-                                }
-                            }
-                            else
-                            {
-                                nuevoDetalle.Add(detalle);
-                            }
+                            if (anterior == null) nuevoDetalle.Add(detalle);
                         }
                         PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoServicio);
                         if (puntoDeServicio != null && nuevoDetalle.Count > 0)
