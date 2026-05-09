@@ -313,7 +313,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             availableChars = (int) Math.Floor(intLargoLinea / 2.5);
             List<string> lineasOtroTexto = datos.OtrosTextos != null ? obtenerLineasPorAnchoDeLinea(datos.OtrosTextos.Split(" "), availableChars) : new List<string>();
             List<string> lineasLeyenda = datos.LeyendaPiePagina != null ? obtenerLineasPorAnchoDeLinea(datos.LeyendaPiePagina.Split(" "), availableChars) : new List<string>();
-            page.Height = 316 + (lineasDescEmpresa.Count * 12) + (datos.Logotipo != null ? 45 : 0) + (datos.DetalleServicio.Count * 24) + (datos.Clave != null ? 90 : 0) + (datos.EsDocumentoElectronico ? 36 : 0) + (datos.OtrosTextos != null ? 12 + (lineasOtroTexto.Count * 12) : 0) + (datos.LeyendaPiePagina != null ? 12 + (lineasLeyenda.Count * 12) : 0);
+            page.Height = 316 + (datos.PoseeReceptor ? 12 : 0) + (lineasDescEmpresa.Count * 12) + (datos.Logotipo != null ? 45 : 0) + (datos.DetalleServicio.Count * 24) + (datos.Clave != null ? 90 : 0) + (datos.EsDocumentoElectronico ? 36 : 0) + (datos.OtrosTextos != null ? 12 + (lineasOtroTexto.Count * 12) : 0) + (datos.LeyendaPiePagina != null ? 12 + (lineasLeyenda.Count * 12) : 0);
             double pageWidth = page.Width;
             double pageHeight = page.Height;
             XGraphics gfx = XGraphics.FromPdfPage(page);
@@ -355,6 +355,11 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             gfx.DrawString("Fecha: " + datos.Fecha, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 12;
             gfx.DrawString(datos.NombreReceptor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            if (datos.PoseeReceptor)
+            {
+                lineaPos += 12;
+                gfx.DrawString(datos.IdentificacionReceptor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            }
             lineaPos += 24;
             double dblMitadLinea = (pageWidth - 10) / 2;
             font = new XFont("Arial", 10, XFontStyle.Bold, options);
