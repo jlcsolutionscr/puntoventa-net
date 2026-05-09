@@ -1383,7 +1383,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                         strRespuesta = JsonConvert.SerializeObject(apartadoPdf);
                     break;
                 case "ObtenerOrdenServicioPDF":
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdOrden").Value.ToString());
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
                     byte[] ordenPdf = _servicioFacturacion.GenerarOrdenServicioPDF(intIdLlave1, bytLogo);
                     if (ordenPdf.Length > 0)
