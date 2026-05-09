@@ -377,12 +377,12 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             foreach (EstructuraPDFDetalleServicio linea in datos.DetalleServicio)
             {
                 lineaPos += 12;
+                string strDescripcion = linea.Detalle.Length > availableChars ? linea.Detalle.Substring(0, availableChars) : linea.Detalle;
                 gfx.DrawString(strDescripcion, font, XBrushes.Black, new XRect(2, lineaPos, pageWidth, 12), XStringFormats.TopLeft);
                 lineaPos += 12;
                 gfx.DrawString(linea.Cantidad, font, XBrushes.Black, new XRect(2, lineaPos, 10, 12), XStringFormats.TopLeft);
                 tf.DrawString(linea.PrecioUnitario, font, XBrushes.Black, new XRect(13, lineaPos, dblMitadLinea + 10, 12), XStringFormats.TopLeft);
                 tf.DrawString(linea.TotalLinea, font, XBrushes.Black, new XRect(dblMitadLinea + 11, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
-                string strDescripcion = linea.Detalle.Length > availableChars ? linea.Detalle.Substring(0, availableChars) : linea.Detalle;
             }
             font = new XFont("Arial", 10, XFontStyle.Bold, options);
             gfx.DrawLine(XPens.DarkGray, 1, lineaPos + 13, pageWidth - 1, lineaPos + 13);
