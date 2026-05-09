@@ -1506,6 +1506,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     ordenServicio.Fecha = Validador.ObtenerFechaHoraCostaRica();
+                    foreach (DetalleOrdenServicio detalle in ordenServicio.DetalleOrdenServicio)
+                    {
+                        if (detalle.InformacionAdicional == null) detalle.InformacionAdicional = "";
+                    }
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenServicio.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
@@ -1568,6 +1572,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         int currentDetailsIndex = 1;
                         foreach (DetalleOrdenServicio detalle in listadoDetalle)
                         {
+                            if (detalle.InformacionAdicional == null) detalle.InformacionAdicional = "";
                             if (currentDetailsIndex > listadoDetalleAnterior.Count) nuevoDetalle.Add(detalle);
                             currentDetailsIndex++;
                         }
@@ -1608,7 +1613,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
                 DataRow data = dtbDetalleTiquete.NewRow();
                 data["Impresora"] = producto.Linea.ImpresoraTiquete;
-                data["Descripcion"] = detalle.Descripcion;
+                data["Descripcion"] = detalle.Descripcion + " - " + detalle.InformacionAdicional;
                 data["Cantidad"] = detalle.Cantidad.ToString();
                 dtbDetalleTiquete.Rows.Add(data);
             }
