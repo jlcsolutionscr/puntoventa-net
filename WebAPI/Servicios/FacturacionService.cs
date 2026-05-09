@@ -3191,7 +3191,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
-                    return Generador.generarTiqueteFacturaPDF(datos, intLargoLinea);
+                    return Generador.generarTiquetePDF(datos, intLargoLinea);
                 }
                 catch (BusinessException)
                 {
@@ -3810,7 +3810,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (producto != null) detalleOrden.Producto = producto;
                     }
                     EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
-                    return Generador.generarTiqueteFacturaPDF(datos, intLargoLinea);
+                    return Generador.generarTiquetePDF(datos, intLargoLinea);
                 }
                 catch (BusinessException)
                 {

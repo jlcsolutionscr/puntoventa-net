@@ -301,7 +301,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             return stream.ToArray();
         }
 
-        public static byte[] generarTiqueteFacturaPDF(EstructuraPDF datos, int intLargoLinea)
+        public static byte[] generarTiquetePDF(EstructuraPDF datos, int intLargoLinea)
         {
             PdfDocument document = new PdfDocument();
             XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
@@ -311,9 +311,10 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             int availableChars = (int) Math.Floor(intLargoLinea / 3.0);
             List<string> lineasDescEmpresa = obtenerLineasPorAnchoDeLinea(datos.NombreComercial.ToUpper().Split(" "), availableChars);
             availableChars = (int) Math.Floor(intLargoLinea / 2.5);
+            List<string> lineasDireccion = obtenerLineasPorAnchoDeLinea(datos.DireccionEmisor.ToUpper().Split(" "), availableChars);
             List<string> lineasOtroTexto = datos.OtrosTextos != null ? obtenerLineasPorAnchoDeLinea(datos.OtrosTextos.Split(" "), availableChars) : new List<string>();
             List<string> lineasLeyenda = datos.LeyendaPiePagina != null ? obtenerLineasPorAnchoDeLinea(datos.LeyendaPiePagina.Split(" "), availableChars) : new List<string>();
-            page.Height = 316 + (datos.PoseeReceptor ? 12 : 0) + (lineasDescEmpresa.Count * 12) + (datos.Logotipo != null ? 45 : 0) + (datos.DetalleServicio.Count * 24) + (datos.Clave != null ? 90 : 0) + (datos.EsDocumentoElectronico ? 36 : 0) + (datos.OtrosTextos != null ? 12 + (lineasOtroTexto.Count * 12) : 0) + (datos.LeyendaPiePagina != null ? 12 + (lineasLeyenda.Count * 12) : 0);
+            page.Height = 304 + (datos.PoseeReceptor ? 12 : 0) + (lineasDescEmpresa.Count * 12) + (datos.Logotipo != null ? 45 : 0) + (lineasDireccion.Count * 12) + (datos.DetalleServicio.Count * 24) + (datos.Clave != null ? 90 : 0) + (datos.EsDocumentoElectronico ? 36 : 0) + (datos.OtrosTextos != null ? 12 + (lineasOtroTexto.Count * 12) : 0) + (datos.LeyendaPiePagina != null ? 12 + (lineasLeyenda.Count * 12) : 0);
             double pageWidth = page.Width;
             double pageHeight = page.Height;
             XGraphics gfx = XGraphics.FromPdfPage(page);
@@ -331,18 +332,21 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             }
 
             XFont font = new XFont("Arial", 10, XFontStyle.Bold, options);
-            for (int intPos = 1; intPos <= lineasDescEmpresa.Count; intPos++)
+            for (int intPos = 0; intPos < lineasDescEmpresa.Count; intPos++)
             {
                 lineaPos += 12;
-                gfx.DrawString(lineasDescEmpresa[intPos - 1], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+                gfx.DrawString(lineasDescEmpresa[intPos], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             }
             font = new XFont("Arial", 10, XFontStyle.Regular, options);
             lineaPos += 12;
             gfx.DrawString(datos.NombreEmpresa.ToUpper(), font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 12;
             gfx.DrawString("Ced: " + datos.IdentificacionEmisor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
-            lineaPos += 12;
-            gfx.DrawString(datos.DireccionEmisor, font, XBrushes.Black, new XRect(1, lineaPos, pageWidth - 2, 12), XStringFormats.Center);
+            for (int intPos = 0; intPos < lineasDireccion.Count; intPos++)
+            {
+                lineaPos += 12;
+                gfx.DrawString(lineasDireccion[intPos], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            }
             lineaPos += 12;
             gfx.DrawString(datos.CorreoElectronicoEmisor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 12;
@@ -405,10 +409,10 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             font = new XFont("Arial", 10, XFontStyle.Regular, options);
             if (datos.OtrosTextos != null) {
                 lineaPos += 12;
-                for (int intPos = 1; intPos <= lineasOtroTexto.Count; intPos++)
+                for (int intPos = 0; intPos < lineasOtroTexto.Count; intPos++)
                 {
                     lineaPos += 12;
-                    gfx.DrawString(lineasOtroTexto[intPos - 1], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+                    gfx.DrawString(lineasOtroTexto[intPos], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
                 }
             }
             if (datos.EsDocumentoElectronico)
@@ -432,10 +436,10 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             }
             if (datos.LeyendaPiePagina != null) {
                 lineaPos += 12;
-                for (int intPos = 1; intPos <= lineasLeyenda.Count; intPos++)
+                for (int intPos = 0; intPos < lineasLeyenda.Count; intPos++)
                 {
                     lineaPos += 12;
-                    gfx.DrawString(lineasLeyenda[intPos - 1], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+                    gfx.DrawString(lineasLeyenda[intPos], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
                 }
             }
             lineaPos += 24;
