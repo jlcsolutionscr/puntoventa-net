@@ -1430,8 +1430,9 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     int intIdOrden = parametrosJO.Property("IdOrden") != null ? int.Parse(parametrosJO.Property("IdOrden").Value.ToString()) : 0;
-                    bolFiltraActivos = bool.Parse(parametrosJO.Property("Impreso").Value.ToString());
-                    IList<TiqueteOrdenServicio> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, intIdOrden, bolFiltraActivos, true);
+                    bool bolFiltrarPendientes = bool.Parse(parametrosJO.Property("Impreso").Value.ToString());
+                    bool bolOrdenDescendente = parametrosJO.Property("Descendente") != null ? bool.Parse(parametrosJO.Property("Descendente").Value.ToString()) : true;
+                    IList<TiqueteOrdenServicio> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, intIdOrden, bolFiltrarPendientes, bolOrdenDescendente);
                     if (listadoTiqueteOrdenServicio.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoTiqueteOrdenServicio);
                     break;
