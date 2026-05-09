@@ -1566,6 +1566,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ordenServicio.MontoAdelanto != ordenNoTracking.MontoAdelanto) ordenServicio.MontoAdelanto = ordenNoTracking.MontoAdelanto;
                     List<DetalleOrdenServicio> listadoDetalleAnterior = dbContext.DetalleOrdenServicioRepository.Where(x => x.IdOrden == ordenServicio.IdOrden).ToList();
                     List<DetalleOrdenServicio> listadoDetalle = ordenServicio.DetalleOrdenServicio.ToList();
+                    foreach (DetalleOrdenServicio detalle in listadoDetalle)
+                    {
+                        if (detalle.InformacionAdicional == null) detalle.InformacionAdicional = "";
+                    }
                     if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
                     {
                         List<DetalleOrdenServicio> nuevoDetalle = new List<DetalleOrdenServicio> { };
