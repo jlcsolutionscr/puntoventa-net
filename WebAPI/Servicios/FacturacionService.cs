@@ -1101,7 +1101,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
                             if (producto == null)
                                 throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la proforma no existe.");
-                            if (producto.CodigoClasificacion == "")
+                            if (!empresa.RegimenSimplificado && producto.CodigoClasificacion == "")
                                 throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la proforma no posee clasificación CABYS.");
                         }
                     }
