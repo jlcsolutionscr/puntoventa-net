@@ -1522,9 +1522,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
                     {
-                        if (ordenServicio.IdPuntoServicio > 0)
+                        if (ordenServicio.IdPuntoDeServicio > 0)
                         {
-                            PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoServicio);
+                            PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoDeServicio);
                             if (puntoDeServicio != null)
                             {
                                 puntoDeServicio.IdOrden = ordenServicio.IdOrden;
@@ -1580,7 +1580,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (currentDetailsIndex > listadoDetalleAnterior.Count) nuevoDetalle.Add(detalle);
                             currentDetailsIndex++;
                         }
-                        PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoServicio);
+                        PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoDeServicio);
                         if (puntoDeServicio != null && nuevoDetalle.Count > 0)
                         {
                             AgregarTiqueteOrdenServicio(ordenServicio, nuevoDetalle, puntoDeServicio.Descripcion, dbContext);
