@@ -469,7 +469,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Include("SucursalPorEmpresa").Include("RolePorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                 empresa.ListadoTipoIdentificacion = ObtenerListadoTipoIdentificacion();
                 empresa.ListadoFormaPagoCliente = ObtenerListadoFormaPagoCliente();
                 empresa.ListadoFormaPagoEmpresa = ObtenerListadoFormaPagoEmpresa();
