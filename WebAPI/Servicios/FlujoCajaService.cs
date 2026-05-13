@@ -762,7 +762,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.Include("Empresa").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                 try
                 {
                     CultureInfo provider = CultureInfo.InvariantCulture;
@@ -781,6 +781,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         cierre.FondoInicio = cierreAnterior.FondoCierre;
                     else
                         cierre.FondoInicio = 0;
+                    cierre.FondoCierre = sucursal.Empresa.MontoCierreEfectivo;
                     cierre.AdelantosApartadoEfectivo = 0;
                     cierre.AdelantosApartadoTarjeta = 0;
                     cierre.AdelantosApartadoBancos = 0;
@@ -1262,6 +1263,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
                     cierre.DetalleMovimientoCierreCaja = listaMovimientos;
+                    cierre.RetiroEfectivo = cierre.FondoInicio + cierre.VentasEfectivo + cierre.AdelantosApartadoEfectivo + cierre.AdelantosOrdenEfectivo + cierre.PagosCxCEfectivo + cierre.IngresosEfectivo - cierre.ComprasEfectivo - cierre.PagosCxPEfectivo - cierre.EgresosEfectivo - cierre.FondoCierre;
                     return cierre;
                 }
                 catch (BusinessException)

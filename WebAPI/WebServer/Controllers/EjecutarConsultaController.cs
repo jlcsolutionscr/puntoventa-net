@@ -1411,6 +1411,13 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (tiqueteOrdenServicioPdf.Length > 0)
                         strRespuesta = JsonConvert.SerializeObject(tiqueteOrdenServicioPdf);
                     break;
+                case "GenerarTiqueteCierreCajaPDF":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdCierreCaja").Value.ToString());
+                    intLargoLinea = int.Parse(parametrosJO.Property("LargoLinea").Value.ToString());
+                    byte[] tiqueteCierreCajaPdf = _servicioFacturacion.GenerarTiqueteCierreCajaPDF(intIdLlave1, intLargoLinea);
+                    if (tiqueteCierreCajaPdf.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(tiqueteCierreCajaPdf);
+                    break;
                 case "ObtenerListadoPuntoDeServicio":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());

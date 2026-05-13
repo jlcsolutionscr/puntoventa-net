@@ -77,6 +77,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void GenerarNotificacionOrdenServicio(int intIdOrden, string strCorreoReceptor, byte[] bytLogo);
         byte[] GenerarTiqueteFacturaPDF(int intIdFactura, int intLargoLinea, byte[] bytLogo);
         byte[] GenerarTiqueteOrdenServicioPDF(int intIdOrdenServicio, int intLargoLinea, byte[] bytLogo);
+        byte[] GenerarTiqueteCierreCajaPDF(int intIdCierre, int intLargoLinea);
     }
 
     public class FacturacionService : IFacturacionService
@@ -3179,7 +3180,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public byte[] GenerarTiqueteFacturaPDF(int intIdFactura, int intLargoLinea, byte[] bytLogo)
         {
             if (_serviceScopeFactory == null || _servicioCorreo == null) throw new Exception("Service factory or email service not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            using (var dbContext = _serviceScopeFactory .CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
@@ -3195,7 +3196,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
-                    return Generador.generarTiquetePDF(datos, intLargoLinea);
+                    return Generador.GenerarTiquetePDF(datos, intLargoLinea);
                 }
                 catch (BusinessException)
                 {
@@ -3206,6 +3207,28 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al enviar por correo la factura con ID: " + intIdFactura, ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al enviar el documento por correo. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public byte[] GenerarTiqueteCierreCajaPDF(int intIdCierre, int intLargoLinea)
+        {
+            if (_serviceScopeFactory == null || _servicioCorreo == null) throw new Exception("Service factory or email service not set");
+            using (var dbContext = _serviceScopeFactory .CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    CierreCaja cierreCaja = dbContext.CierreCajaRepository.FirstOrDefault(x => x.IdCierre == intIdCierre);
+                    if (cierreCaja == null) throw new BusinessException("El registro del cierre de caja no existe.");
+                    Empresa empresa = dbContext.EmpresaRepository.Include("RolePorEmpresa").Where(x => x.IdEmpresa == cierreCaja.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    return Generador.GenerarTiqueteCierreCaja(empresa, cierreCaja, intLargoLinea);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al generar el tiquete de cierre de caja: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al generar el tiquete de cierre de caja. Por favor consulte con su proveedor.");
                 }
             }
         }
@@ -3814,7 +3837,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (producto != null) detalleOrden.Producto = producto;
                     }
                     EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
-                    return Generador.generarTiquetePDF(datos, intLargoLinea);
+                    return Generador.GenerarTiquetePDF(datos, intLargoLinea);
                 }
                 catch (BusinessException)
                 {
