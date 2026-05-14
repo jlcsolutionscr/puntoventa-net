@@ -778,9 +778,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<DetalleMovimientoCierreCaja> listaMovimientos = new List<DetalleMovimientoCierreCaja>();
                     CierreCaja cierreAnterior = cierreAnterior = dbContext.CierreCajaRepository.OrderByDescending(b => b.IdCierre).FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (cierreAnterior != null)
+                    {
                         cierre.FondoInicio = cierreAnterior.FondoCierre;
+                        cierre.EfectivoCierreAnterior = cierreAnterior.EfectivoCierreSiguiente;
+                    }
                     else
+                    {
                         cierre.FondoInicio = 0;
+                        cierre.EfectivoCierreAnterior = 0;
+                    }
                     cierre.FondoCierre = sucursal.MontoCierreEfectivo;
                     cierre.AdelantosApartadoEfectivo = 0;
                     cierre.AdelantosApartadoTarjeta = 0;
@@ -804,7 +810,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.ComisionTarjeta = 0;
                     cierre.VentasCredito = 0;
                     cierre.ComprasCredito = 0;
-                    cierre.EfectivoCierreAnterior = 0;
+                    cierre.EfectivoCierreSiguiente = 0;
                     cierre.RetiroEfectivo = 0;
                     cierre.LiquidacionTarjeta = 0;
 
@@ -1264,7 +1270,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
                     cierre.DetalleMovimientoCierreCaja = listaMovimientos;
-                    cierre.RetiroEfectivo = cierre.FondoInicio + cierre.VentasEfectivo + cierre.AdelantosApartadoEfectivo + cierre.AdelantosOrdenEfectivo + cierre.PagosCxCEfectivo + cierre.IngresosEfectivo - cierre.ComprasEfectivo - cierre.PagosCxPEfectivo - cierre.EgresosEfectivo - cierre.FondoCierre;
+                    cierre.RetiroEfectivo = cierre.FondoInicio + cierre.EfectivoCierreAnterior + cierre.VentasEfectivo + cierre.AdelantosApartadoEfectivo + cierre.AdelantosOrdenEfectivo + cierre.PagosCxCEfectivo + cierre.IngresosEfectivo - cierre.ComprasEfectivo - cierre.PagosCxPEfectivo - cierre.EgresosEfectivo - cierre.FondoCierre;
                     return cierre;
                 }
                 catch (BusinessException)
