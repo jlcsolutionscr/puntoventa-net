@@ -132,7 +132,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                         sucursal = parametrosJO.Property("Sucursal") != null ? JsonConvert.DeserializeObject<SucursalPorEmpresa>(parametrosJO.Property("Sucursal").Value.ToString()) : null;
                         credenciales = parametrosJO.Property("Credenciales") != null ? JsonConvert.DeserializeObject<CredencialesHacienda>(parametrosJO.Property("Credenciales").Value.ToString()) : null;
                     }
-                    intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     _servicioMantenimiento.ActualizarEmpresa(empresa, sucursal, credenciales);
                     break;
                 case "AgregarCredencialesHacienda":
