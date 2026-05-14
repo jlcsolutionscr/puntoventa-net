@@ -781,7 +781,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         cierre.FondoInicio = cierreAnterior.FondoCierre;
                     else
                         cierre.FondoInicio = 0;
-                    cierre.FondoCierre = sucursal.Empresa.MontoCierreEfectivo;
+                    cierre.FondoCierre = sucursal.MontoCierreEfectivo;
                     cierre.AdelantosApartadoEfectivo = 0;
                     cierre.AdelantosApartadoTarjeta = 0;
                     cierre.AdelantosApartadoBancos = 0;
@@ -804,6 +804,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.ComisionTarjeta = 0;
                     cierre.VentasCredito = 0;
                     cierre.ComprasCredito = 0;
+                    cierre.EfectivoCierreAnterior = 0;
                     cierre.RetiroEfectivo = 0;
                     cierre.LiquidacionTarjeta = 0;
 

@@ -33,6 +33,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal LiquidacionTarjeta { get; set; }
         public decimal VentasCredito { get; set; }
         public decimal ComprasCredito { get; set; }
+         public decimal EfectivoCierreAnterior { get; set; }
         public decimal RetiroEfectivo { get; set; }
         public decimal FondoCierre { get; set; }
         public string Observaciones { get; set; }
