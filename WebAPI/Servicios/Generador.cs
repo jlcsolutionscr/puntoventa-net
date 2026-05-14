@@ -465,7 +465,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             bool bolGeneraOrdenServicio = empresa.RolePorEmpresa.Where(role => new List<int> { 1, 202 }.Contains(role.IdRole)).Count() > 0;
             bool bolAplicaPagosCxC = empresa.RolePorEmpresa.Where(role => new List<int> { 1, 300 }.Contains(role.IdRole)).Count() > 0;
             bool bolAplicaPagosCxP = empresa.RolePorEmpresa.Where(role => new List<int> { 1, 301 }.Contains(role.IdRole)).Count() > 0;
-            page.Height = 440 + (bolGeneraApartado ? 20 : 0) + (bolGeneraOrdenServicio ? 20 : 0) + (bolAplicaPagosCxC ? 20 : 0) + (bolAplicaPagosCxP ? 20 : 0);
+            page.Height = 480 + (bolGeneraApartado ? 20 : 0) + (bolGeneraOrdenServicio ? 20 : 0) + (bolAplicaPagosCxC ? 20 : 0) + (bolAplicaPagosCxP ? 20 : 0);
             double pageWidth = page.Width;
             double pageHeight = page.Height;
             XGraphics gfx = XGraphics.FromPdfPage(page);
@@ -482,6 +482,8 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             lineaPos += 24;
             font = new XFont("Arial", 10, XFontStyle.Bold, options);
             AgregarLineaDescripcionValor(gfx, tf, font, "Inicio de efectivo", cierreCaja.FondoInicio, pageWidth, lineaPos);
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Efectivo del cierre anterior", cierreCaja.EfectivoCierreAnterior, pageWidth, lineaPos);
             lineaPos += 24;
             gfx.DrawString("Detalle de Ingresos", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 4;
@@ -521,9 +523,10 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             font = new XFont("Arial", 10, XFontStyle.Bold);
             lineaPos += 30;
             AgregarLineaDescripcionValor(gfx, tf, font, "Cierre de efectivo de caja", cierreCaja.FondoCierre, pageWidth, lineaPos);
-            lineaPos += 30;
+            lineaPos += 20;
             AgregarLineaDescripcionValor(gfx, tf, font, "Retiro de efectivo de caja", cierreCaja.RetiroEfectivo, pageWidth, lineaPos);
-            font = new XFont("Arial", 10, XFontStyle.Bold);
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Efectivo para el siguiente cierre", cierreCaja.EfectivoCierreSiguiente, pageWidth, lineaPos);
             lineaPos += 30;
             gfx.DrawString("Detalle de ventas", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             font = new XFont("Arial", 10, XFontStyle.Regular);
