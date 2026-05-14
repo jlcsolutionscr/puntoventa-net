@@ -19,6 +19,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static ITrasladoService _servicioTraslado;
         private static ICuentaPorProcesarService _servicioCuentaPorProcesar;
         private static Empresa? empresa;
+        private static string? logotipo;
         private static CredencialesHacienda? credenciales;
         private static SucursalPorEmpresa? sucursal;
         private static TerminalPorSucursal? terminal;
@@ -124,15 +125,17 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (strEntidad != null)
                     {
                         empresa = JsonConvert.DeserializeObject<Empresa>(strEntidad);
+                        logotipo = null;
                         sucursal = null;
                         credenciales = null;
                     } else
                     {
                         empresa = JsonConvert.DeserializeObject<Empresa>(parametrosJO.Property("Empresa").Value.ToString());
+                        logotipo = parametrosJO.Property("Logotipo") != null ? parametrosJO.Property("Logotipo").Value.ToString() : null;
                         sucursal = parametrosJO.Property("Sucursal") != null ? JsonConvert.DeserializeObject<SucursalPorEmpresa>(parametrosJO.Property("Sucursal").Value.ToString()) : null;
                         credenciales = parametrosJO.Property("Credenciales") != null ? JsonConvert.DeserializeObject<CredencialesHacienda>(parametrosJO.Property("Credenciales").Value.ToString()) : null;
                     }
-                    _servicioMantenimiento.ActualizarEmpresa(empresa, sucursal, credenciales);
+                    _servicioMantenimiento.ActualizarEmpresa(empresa, logotipo, sucursal, credenciales);
                     break;
                 case "AgregarCredencialesHacienda":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

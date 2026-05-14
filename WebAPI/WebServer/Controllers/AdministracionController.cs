@@ -360,7 +360,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 JObject parametrosJO = JObject.Parse(strDatos);
                 string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
                 Empresa empresa = JsonConvert.DeserializeObject<Empresa>(strEntidad);
-                _servicioMantenimiento.ActualizarEmpresa(empresa, null, null);
+                _servicioMantenimiento.ActualizarEmpresa(empresa, null, null, null);
             }
             catch (Exception ex)
             {

@@ -35,7 +35,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal);
         string AgregarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
-        void ActualizarEmpresa(Empresa empresa, SucursalPorEmpresa? sucursal, CredencialesHacienda? credenciales);
+        void ActualizarEmpresa(Empresa empresa, string? logotipo, SucursalPorEmpresa? sucursal, CredencialesHacienda? credenciales);
         void ValidarCredencialesHacienda(string strCodigoUsuario, string strClave);
         void ValidarCertificadoHacienda(string strPin, string strCertificado);
         void AgregarCredencialesHacienda(CredencialesHacienda credenciales);
@@ -746,7 +746,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarEmpresa(Empresa empresa, SucursalPorEmpresa? sucursal, CredencialesHacienda? credenciales)
+        public void ActualizarEmpresa(Empresa empresa, string? logotipo, SucursalPorEmpresa? sucursal, CredencialesHacienda? credenciales)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -763,7 +763,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         throw new BusinessException(ex.Message);
                     }
                     Empresa noTracking = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
-                    empresa.Distrito = null;
+                    if (logotipo != null)
+                    {
+                        if (logotipo == "") empresa.Logotipo = new byte[0];
+                        else empresa.Logotipo = Convert.FromBase64String(logotipo);
+                    }
+                    else
+                    {
+                        empresa.Logotipo = noTracking.Logotipo;
+                    }
                     List<ActividadEconomicaEmpresa> listadoDetalle = empresa.ActividadEconomicaEmpresa.ToList();
                     empresa.ActividadEconomicaEmpresa = null;
                     dbContext.ActividadEconomicaEmpresaRepository.RemoveRange(noTracking.ActividadEconomicaEmpresa);
