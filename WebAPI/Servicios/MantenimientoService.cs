@@ -787,7 +787,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (sucursal != null)
                     {
-                        dbContext.NotificarModificacion(sucursal);
+                        SucursalPorEmpresa sucursalTracking = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == sucursal.IdSucursal).FirstOrDefault();
+                        sucursalTracking.NombreSucursal = sucursal.NombreSucursal;
+                        sucursalTracking.Direccion = sucursal.Direccion;
+                        sucursalTracking.Telefono = sucursal.Telefono;
+                        sucursalTracking.CorreoElectronico = sucursal.CorreoElectronico;
+                        sucursalTracking.MontoCierreEfectivo = sucursal.MontoCierreEfectivo;
+                        dbContext.NotificarModificacion(sucursalTracking);
                     }
                     dbContext.Commit();
                 }
