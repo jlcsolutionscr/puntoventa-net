@@ -35,7 +35,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoTerminales(int intIdEmpresa, int intIdSucursal);
         string AgregarEmpresa(Empresa empresa);
         Empresa ObtenerEmpresa(int intIdEmpresa);
-        void ActualizarEmpresa(Empresa empresa);
+        void ActualizarEmpresa(Empresa empresa, SucursalPorEmpresa? sucursal, CredencialesHacienda? credenciales);
         void ValidarCredencialesHacienda(string strCodigoUsuario, string strClave);
         void ValidarCertificadoHacienda(string strPin, string strCertificado);
         void AgregarCredencialesHacienda(CredencialesHacienda credenciales);
@@ -746,7 +746,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarEmpresa(Empresa empresa)
+        public void ActualizarEmpresa(Empresa empresa, SucursalPorEmpresa? sucursal, CredencialesHacienda? credenciales)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -769,6 +769,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.ActividadEconomicaEmpresaRepository.RemoveRange(noTracking.ActividadEconomicaEmpresa);
                     dbContext.NotificarModificacion(empresa);
                     dbContext.ActividadEconomicaEmpresaRepository.AddRange(listadoDetalle);
+                    if (credenciales != null)
+                    {
+                        CredencialesHacienda credTracking = dbContext.CredencialesHaciendaRepository.AsNoTracking().Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+                        if (credTracking != null)
+                            dbContext.NotificarModificacion(credenciales);
+                        else
+                            dbContext.CredencialesHaciendaRepository.Add(credenciales);
+                    }
+                    if (sucursal != null)
+                    {
+                        dbContext.NotificarModificacion(sucursal);
+                    }
                     dbContext.Commit();
                 }
                 catch (BusinessException)

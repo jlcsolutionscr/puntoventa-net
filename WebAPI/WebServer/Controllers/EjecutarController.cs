@@ -19,7 +19,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static ITrasladoService _servicioTraslado;
         private static ICuentaPorProcesarService _servicioCuentaPorProcesar;
         private static Empresa? empresa;
-        private static CredencialesHacienda credenciales;
+        private static CredencialesHacienda? credenciales;
         private static SucursalPorEmpresa? sucursal;
         private static TerminalPorSucursal? terminal;
         private static BancoAdquiriente? bancoAdquiriente;
@@ -121,8 +121,19 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     _servicioFlujoCaja.AbortarCierreCaja(intIdEmpresa, intIdSucursal);
                     break;
                 case "ActualizarEmpresa":
-                    empresa = JsonConvert.DeserializeObject<Empresa>(strEntidad);
-                    _servicioMantenimiento.ActualizarEmpresa(empresa);
+                    if (strEntidad != null)
+                    {
+                        empresa = JsonConvert.DeserializeObject<Empresa>(strEntidad);
+                        sucursal = null;
+                        credenciales = null;
+                    } else
+                    {
+                        empresa = JsonConvert.DeserializeObject<Empresa>(parametrosJO.Property("Empresa").Value.ToString());
+                        sucursal = parametrosJO.Property("Sucursal") != null ? JsonConvert.DeserializeObject<SucursalPorEmpresa>(parametrosJO.Property("Sucursal").Value.ToString()) : null;
+                        credenciales = parametrosJO.Property("Credenciales") != null ? JsonConvert.DeserializeObject<CredencialesHacienda>(parametrosJO.Property("Credenciales").Value.ToString()) : null;
+                    }
+                    intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                    _servicioMantenimiento.ActualizarEmpresa(empresa, sucursal, credenciales);
                     break;
                 case "AgregarCredencialesHacienda":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
@@ -132,13 +143,15 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     strPin = parametrosJO.Property("PinCertificado").Value.ToString();
                     strCertificado = parametrosJO.Property("Certificado").Value.ToString();
                     byte[] bytCertificado = Convert.FromBase64String(strCertificado);
-                    credenciales = new CredencialesHacienda();
-                    credenciales.IdEmpresa = intIdEmpresa;
-                    credenciales.UsuarioHacienda = strUsuario;
-                    credenciales.ClaveHacienda = strClave;
-                    credenciales.NombreCertificado = strNombreCertificado;
-                    credenciales.PinCertificado = strPin;
-                    credenciales.Certificado = bytCertificado;
+                    credenciales = new CredencialesHacienda
+                    {
+                        IdEmpresa = intIdEmpresa,
+                        UsuarioHacienda = strUsuario,
+                        ClaveHacienda = strClave,
+                        NombreCertificado = strNombreCertificado,
+                        PinCertificado = strPin,
+                        Certificado = bytCertificado
+                    };
                     _servicioMantenimiento.AgregarCredencialesHacienda(credenciales);
                     break;
                 case "ActualizarCredencialesHacienda":
