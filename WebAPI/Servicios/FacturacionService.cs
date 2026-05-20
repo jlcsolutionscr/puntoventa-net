@@ -3317,7 +3317,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             decimal decTotalFactura = decSubTotal + factura.Impuesto;
             datos.TotalGeneral = decTotalFactura.ToString("N2", CultureInfo.InvariantCulture);
             datos.MontoPago = factura.MontoPagado.ToString("N2", CultureInfo.InvariantCulture);
-            datos.MontoCambio = (decTotalFactura - factura.MontoPagado).ToString("N2", CultureInfo.InvariantCulture);
+            datos.MontoCambio = (factura.MontoPagado - decTotalFactura).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = factura.IdTipoMoneda == 1 ? "CRC" : "USD";
             datos.TipoDeCambio = "1";
             return datos;
