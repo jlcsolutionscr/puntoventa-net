@@ -368,13 +368,26 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (factura.IdOrdenServicio > 0)
                     {
                         OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(factura.IdOrdenServicio);
-                        ordenServicio.Aplicado = true;
-                        dbContext.NotificarModificacion(ordenServicio);
-                        PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdOrden == factura.IdOrdenServicio);
-                        if (puntoDeServicio != null)
+
+                        foreach (var detalle in factura.DetalleFactura)
                         {
-                            puntoDeServicio.IdOrden = 0;
-                            dbContext.NotificarModificacion(puntoDeServicio);
+                            DetalleOrdenServicio detalleOrden = dbContext.DetalleOrdenServicioRepository.FirstOrDefault(x => x.IdOrden == factura.IdOrdenServicio && x.IdProducto == detalle.IdProducto);
+                            if (detalleOrden != null)
+                            {
+                                detalleOrden.Pagado = true;
+                                dbContext.NotificarModificacion(detalleOrden);
+                            }
+                        }
+                        if (factura.CerrarOrdenServicio)
+                        {
+                            ordenServicio.Aplicado = true;
+                            dbContext.NotificarModificacion(ordenServicio);
+                            PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdOrden == factura.IdOrdenServicio);
+                            if (puntoDeServicio != null)
+                            {
+                                puntoDeServicio.IdOrden = 0;
+                                dbContext.NotificarModificacion(puntoDeServicio);
+                            }
                         }
                     }
                     if (factura.IdProforma > 0)
