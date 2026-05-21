@@ -199,6 +199,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (empresa.Contabiliza)
                     {
+                        trasladosParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Traslados && x.IdProducto == traslado.IdSucursalOrigen).FirstOrDefault();
+                        if (trasladosParam == null)
+                            throw new BusinessException("No existe parametrización contable para la sucursal origen " + traslado.IdSucursalOrigen + " y no se puede continuar. Por favor verificar.");
+                        trasladosParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Traslados && x.IdProducto == traslado.IdSucursalDestino).FirstOrDefault();
+                        if (trasladosParam == null)
+                            throw new BusinessException("No existe parametrización contable para la sucursal destino " + traslado.IdSucursalOrigen + " y no se puede continuar. Por favor verificar.");
                         decimal decTotalDiff = decTotalInventario - traslado.Total;
                         if (decTotalDiff != 0)
                         {
@@ -216,56 +222,55 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Detalle = "Registro de traslado de mercancías entre sucursales."
                         };
                         //Detalle asiento sucursal origen
-                        DetalleAsiento detalleAsiento = new DetalleAsiento();
                         int intLineaDetalleAsiento = 1;
-                        detalleAsiento.Linea = intLineaDetalleAsiento;
-                        trasladosParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Traslados && x.IdProducto == traslado.IdSucursalOrigen).FirstOrDefault();
-                        if (trasladosParam == null)
-                            throw new BusinessException("No existe parametrización contable para la sucursal origen " + traslado.IdSucursalOrigen + " y no se puede continuar. Por favor verificar.");
-                        detalleAsiento.IdCuenta = trasladosParam.IdCuenta;
-                        detalleAsiento.Debito = traslado.Total;
-                        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                        DetalleAsiento detalleAsiento = new DetalleAsiento
+                        {
+                            Linea = intLineaDetalleAsiento,
+                            IdCuenta = trasladosParam.IdCuenta,
+                            Debito = traslado.Total,
+                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(trasladosParam.IdCuenta).SaldoActual
+                        };
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalDebito += detalleAsiento.Debito;
                         foreach (DataRow data in dtbInventarios.Rows)
                         {
-                            detalleAsiento = new DetalleAsiento();
-                            intLineaDetalleAsiento += 1;
-                            detalleAsiento.Linea = intLineaDetalleAsiento;
                             int intIdLinea = (int)data["IdLinea"];
                             lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
                             if (lineaParam == null)
                                 throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
-                            detalleAsiento.IdCuenta = lineaParam.IdCuenta;
-                            detalleAsiento.Credito = (decimal)data["Total"];
-                            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                            detalleAsiento = new DetalleAsiento
+                            {
+                                Linea = intLineaDetalleAsiento += 1,
+                                IdCuenta = lineaParam.IdCuenta,
+                                Credito = (decimal)data["Total"],
+                                SaldoAnterior = dbContext.CatalogoContableRepository.Find(lineaParam.IdCuenta).SaldoActual
+                            };
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalCredito += detalleAsiento.Credito;
                         }
                         //Detalle asiento sucursal destino
-                        detalleAsiento = new DetalleAsiento();
-                        intLineaDetalleAsiento = 2;
-                        detalleAsiento.Linea = intLineaDetalleAsiento;
-                        trasladosParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Traslados && x.IdProducto == traslado.IdSucursalDestino).FirstOrDefault();
-                        if (trasladosParam == null)
-                            throw new BusinessException("No existe parametrización contable para la sucursal destino " + traslado.IdSucursalOrigen + " y no se puede continuar. Por favor verificar.");
-                        detalleAsiento.IdCuenta = trasladosParam.IdCuenta;
-                        detalleAsiento.Credito = traslado.Total;
-                        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                        detalleAsiento = new DetalleAsiento
+                        {
+                            Linea = intLineaDetalleAsiento += 1,
+                            IdCuenta = trasladosParam.IdCuenta,
+                            Credito = traslado.Total,
+                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(trasladosParam.IdCuenta).SaldoActual
+                        };
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalCredito += detalleAsiento.Credito;
                         foreach (DataRow data in dtbInventarios.Rows)
                         {
-                            detalleAsiento = new DetalleAsiento();
-                            intLineaDetalleAsiento += 1;
-                            detalleAsiento.Linea = intLineaDetalleAsiento;
                             int intIdLinea = (int)data["IdLinea"];
                             lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
                             if (lineaParam == null)
                                 throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
-                            detalleAsiento.IdCuenta = lineaParam.IdCuenta;
-                            detalleAsiento.Debito = (decimal)data["Total"];
-                            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                            detalleAsiento = new DetalleAsiento
+                            {
+                                Linea = intLineaDetalleAsiento += 1,
+                                IdCuenta = lineaParam.IdCuenta,
+                                Debito = (decimal)data["Total"],
+                                SaldoAnterior = dbContext.CatalogoContableRepository.Find(lineaParam.IdCuenta).SaldoActual
+                            };
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalDebito += detalleAsiento.Debito;
                         }

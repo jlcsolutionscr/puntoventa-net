@@ -130,12 +130,10 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly int CuentasPorCobrarTarjeta = 10;
         public static readonly int GastoComisionTarjeta = 11;
         public static readonly int CuentasPorPagarProveedores = 12;
-        public static readonly int CuentasPorPagarParticulares = 13;
-        public static readonly int CuentaDeIngresos = 14;
-        public static readonly int CuentaDeEgresos = 15;
-        public static readonly int Traslados = 16;
-        public static readonly int PerdidasyGanancias = 17;
-        public static readonly int CuentasPorCobrarParticulares = 18;
+        public static readonly int CuentaDeIngresos = 13;
+        public static readonly int CuentaDeEgresos = 14;
+        public static readonly int Traslados = 15;
+        public static readonly int PerdidasyGanancias = 16;
     };
 
     public static class StaticTipoMovimientoBanco

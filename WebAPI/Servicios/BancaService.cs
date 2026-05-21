@@ -18,7 +18,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoTipoMovimientoBanco();
         string AgregarMovimientoBanco(MovimientoBanco movimiento);
         string AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext);
-        void ActualizarMovimientoBanco(MovimientoBanco movimiento);
         void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion, LeandroContext dbContext);
         MovimientoBanco ObtenerMovimientoBanco(int intIdMovimiento);
@@ -271,35 +270,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (_logger != null) _logger.LogError("Error al agregar el movimiento bancario: ", ex);
                 if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                 else throw new Exception("Se produjo un error agregando el movimiento bancario. Por favor consulte con su proveedor..");
-            }
-        }
-
-        public void ActualizarMovimientoBanco(MovimientoBanco movimiento)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                    if (cuenta == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe.");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    dbContext.NotificarModificacion(movimiento);
-                    dbContext.Commit();
-                }
-                catch (BusinessException)
-                {
-                    dbContext.RollBack();
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    if (_logger != null) _logger.LogError("Error al actualizar el movimiento bancario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error actualizando el movimiento bancario. Por favor consulte con su proveedor..");
-                }
             }
         }
 
