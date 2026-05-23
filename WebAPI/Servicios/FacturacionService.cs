@@ -1521,7 +1521,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     sucursal.ConsecOrdenServicio += 1;
                     dbContext.NotificarModificacion(sucursal);
                     ordenServicio.ConsecOrdenServicio = sucursal.ConsecOrdenServicio;
@@ -3036,7 +3035,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     Empresa empresa = dbContext.EmpresaRepository.Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
+                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, "", bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
                 catch (BusinessException)
@@ -3157,7 +3156,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CorreoNotificacion != "")
                     {
-                        EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
+                        EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, "", bytLogo);
                         byte[] pdfAttactment = Generador.GenerarPDF(datos);
                         JObject jobDatosAdjuntos1 = new JObject
                         {
@@ -3201,7 +3200,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
+                    Usuario usuario = dbContext.UsuarioRepository.Where(x => x.IdUsuario == factura.IdUsuario).FirstOrDefault();
+                    string strUsuario = "";
+                    if (usuario != null) strUsuario = usuario.CodigoUsuario;
+                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, strUsuario, bytLogo);
                     return Generador.GenerarTiquetePDF(datos, intLargoLinea);
                 }
                 catch (BusinessException)
@@ -3239,8 +3241,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, SucursalPorEmpresa sucursal, byte[] bytLogo)
+        private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, SucursalPorEmpresa sucursal, string codigoUsuario, byte[] bytLogo)
         {
+            decimal decSubTotal = factura.Gravado + factura.Exonerado + factura.Excento;
+            decimal decTotalFactura = decSubTotal + factura.Impuesto;
             EstructuraPDF datos = new EstructuraPDF
             {
                 PoweredByLogotipo = bytLogo,
@@ -3273,12 +3277,33 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             datos.CondicionVenta = CondicionDeVenta.ObtenerDescripcion(factura.IdCondicionVenta);
             datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy");
+            datos.Usuario = codigoUsuario;
+            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
             if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
-                datos.MedioPago = "Crédito";
-            else if (factura.DesglosePagoFactura.ToList().Count > 1)
-                datos.MedioPago = "Otros";
+            {
+                EstructuraPDFFormaPago detalleFormaPago = new EstructuraPDFFormaPago
+                {
+                    Descripcion = "Crédito",
+                    Monto = decTotalFactura.ToString("N2", CultureInfo.InvariantCulture)
+                };
+                datos.DetalleFormaPago.Add(detalleFormaPago);
+                datos.MontoPagado = decTotalFactura.ToString("N2", CultureInfo.InvariantCulture);
+            }
             else
-                datos.MedioPago = FormaDePago.ObtenerDescripcion(factura.DesglosePagoFactura.FirstOrDefault().IdFormaPago);
+            {
+                decimal decMontoPagado = 0;
+                foreach (DesglosePagoFactura desglosePago in factura.DesglosePagoFactura)
+                {
+                    EstructuraPDFFormaPago detalleFormaPago = new EstructuraPDFFormaPago
+                    {
+                        Descripcion = FormaDePago.ObtenerDescripcion(desglosePago.IdFormaPago),
+                        Monto = desglosePago.MontoLocal.ToString("N2", CultureInfo.InvariantCulture)
+                    };
+                    datos.DetalleFormaPago.Add(detalleFormaPago);
+                    decMontoPagado += desglosePago.MontoLocal;
+                }
+                datos.MontoPagado = decMontoPagado.ToString("N2", CultureInfo.InvariantCulture);
+            }
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
@@ -3316,13 +3341,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.TotalGravado = factura.Gravado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExonerado = factura.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExento = factura.Excento.ToString("N2", CultureInfo.InvariantCulture);
-            decimal decSubTotal = factura.Gravado + factura.Exonerado + factura.Excento;
             datos.Subtotal = decSubTotal.ToString("N2", CultureInfo.InvariantCulture);
             datos.Descuento = factura.Descuento.ToString("N2", CultureInfo.InvariantCulture);
             datos.Impuesto = factura.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
-            decimal decTotalFactura = decSubTotal + factura.Impuesto;
             datos.TotalGeneral = decTotalFactura.ToString("N2", CultureInfo.InvariantCulture);
-            datos.MontoPago = factura.MontoPagado.ToString("N2", CultureInfo.InvariantCulture);
+            datos.MontoPagado = factura.MontoPagado.ToString("N2", CultureInfo.InvariantCulture);
             datos.MontoCambio = (factura.MontoPagado - decTotalFactura).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = factura.IdTipoMoneda == 1 ? "CRC" : "USD";
             datos.TipoDeCambio = "1";
@@ -3361,7 +3384,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CondicionVenta = "Proforma";
             datos.PlazoCredito = "";
             datos.Fecha = apartado.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-            datos.MedioPago = "";
+            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
@@ -3438,7 +3461,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CondicionVenta = "Efectivo";
             datos.PlazoCredito = "";
             datos.Fecha = ordenServicio.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-            datos.MedioPago = "";
+            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
@@ -3514,7 +3537,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CondicionVenta = "Proforma";
             datos.PlazoCredito = "";
             datos.Fecha = proforma.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-            datos.MedioPago = "";
+            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
@@ -3722,13 +3745,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
             XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
+            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
             if (documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/"))
             {
-                datos.MedioPago = FormaDePago.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
+                EstructuraPDFFormaPago detalleFormaPago = new EstructuraPDFFormaPago
+                {
+                    Descripcion = FormaDePago.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText)),
+                    Monto = resumenFacturaNode["MedioPago"].ChildNodes.Item(1).InnerText
+                };
+                datos.DetalleFormaPago.Add(detalleFormaPago);
             }
             else
             {
-                datos.MedioPago = resumenFacturaNode["MedioPago"] != null ? FormaDePago.ObtenerDescripcion(int.Parse(resumenFacturaNode["MedioPago"].ChildNodes.Item(0).InnerText)) : "Sin especificar";
+                if (resumenFacturaNode["MedioPago"] != null)
+                {
+                    EstructuraPDFFormaPago detalleFormaPago = new EstructuraPDFFormaPago
+                    {
+                        Descripcion =  FormaDePago.ObtenerDescripcion(int.Parse(resumenFacturaNode["MedioPago"].ChildNodes.Item(0).InnerText)),
+                        Monto = resumenFacturaNode["MedioPago"].ChildNodes.Item(1).InnerText
+                    };
+                    datos.DetalleFormaPago.Add(detalleFormaPago);
+                }
             }
             datos.TotalGravado = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
             datos.TotalExonerado = resumenFacturaNode["TotalExonerado"] != null && resumenFacturaNode["TotalExonerado"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExonerado"].InnerText, CultureInfo.InvariantCulture)) : "0.00";

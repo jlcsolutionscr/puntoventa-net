@@ -25,7 +25,7 @@ namespace LeandroSoftware.ServicioWeb.EstructuraDatos
         public string Clave { get; set; }
         public string CondicionVenta { get; set; }
         public string Fecha { get; set; }
-        public string MedioPago { get; set; }
+        public string Usuario { get; set; }
         public string NombreEmisor { get; set; }
         public string IdentificacionEmisor { get; set; }
         public string NombreComercialEmisor { get; set; }
@@ -47,7 +47,7 @@ namespace LeandroSoftware.ServicioWeb.EstructuraDatos
         public string Subtotal { get; set; }
         public string Impuesto { get; set; }
         public string TotalGeneral { get; set; }
-        public string MontoPago { get; set; }
+        public string MontoPagado { get; set; }
         public string MontoCambio { get; set; }
         public string OtrosTextos { get; set; }
         public string LeyendaPiePagina { get; set; }
@@ -58,6 +58,7 @@ namespace LeandroSoftware.ServicioWeb.EstructuraDatos
         public bool EsDocumentoElectronico { get; set; }
 
         public List<EstructuraPDFDetalleServicio> DetalleServicio { get; set; }
+        public List<EstructuraPDFFormaPago> DetalleFormaPago { get; set; }
     }
 
     public class EstructuraPDFDetalleServicio
@@ -67,6 +68,12 @@ namespace LeandroSoftware.ServicioWeb.EstructuraDatos
         public string Detalle { get; set; }
         public string PrecioUnitario { get; set; }
         public string TotalLinea { get; set; }
+    }
+
+    public class EstructuraPDFFormaPago
+    {
+        public string Descripcion { get; set; }
+        public string Monto { get; set; }
     }
 
     public class EstructuraListadoProductosPDF

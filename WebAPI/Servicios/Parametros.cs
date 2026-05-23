@@ -27,7 +27,7 @@ namespace LeandroSoftware.ServicioWeb.Parametros
     {
         private static readonly List<LlaveDescripcion> listado = new List<LlaveDescripcion>()
         {
-            new LlaveDescripcion(1, "Contado"),
+            new LlaveDescripcion(1, "Efectivo"),
             new LlaveDescripcion(2, "Tarjeta"),
             new LlaveDescripcion(3, "Cheque"),
             new LlaveDescripcion(4, "Transferencia"),

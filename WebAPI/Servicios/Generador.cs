@@ -86,8 +86,13 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             gfx.DrawString("Fecha: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
             gfx.DrawString(datos.Fecha, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
             gfx.DrawString("Medio de Pago: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
-            gfx.DrawString(datos.MedioPago, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
-
+            string strMediosPago = "";
+            foreach (EstructuraPDFFormaPago desglosePago in datos.DetalleFormaPago)
+            {
+                if (strMediosPago != "") strMediosPago += ", ";
+                strMediosPago += desglosePago.Descripcion;
+            }
+            gfx.DrawString(strMediosPago, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
             lineaPos += 12;
             gfx.DrawString("Codigo Moneda:", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
             gfx.DrawString(datos.CodigoMoneda, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
@@ -316,7 +321,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             List<string> lineasDireccion = obtenerLineasPorAnchoDeLinea(datos.DireccionEmisor.ToUpper().Split(" "), availableChars);
             List<string> lineasOtroTexto = datos.OtrosTextos != null ? obtenerLineasPorAnchoDeLinea(datos.OtrosTextos.Split(" "), availableChars) : new List<string>();
             List<string> lineasLeyenda = datos.LeyendaPiePagina != null ? obtenerLineasPorAnchoDeLinea(datos.LeyendaPiePagina.Split(" "), availableChars) : new List<string>();
-            page.Height = 304 + (datos.PoseeReceptor ? 12 : 0) + (lineasDescEmpresa.Count * 12) + (datos.Logotipo != null ? 45 : 0) + (lineasDireccion.Count * 12) + (datos.DetalleServicio.Count * 24) + (datos.Clave != null ? 90 : 0) + (datos.EsDocumentoElectronico ? 36 : 0) + (datos.OtrosTextos != null ? 12 + (lineasOtroTexto.Count * 12) : 0) + (datos.LeyendaPiePagina != null ? 12 + (lineasLeyenda.Count * 12) : 0);
+            page.Height = 326 + (datos.PoseeReceptor ? 12 : 0) + (lineasDescEmpresa.Count * 12) + (datos.Logotipo != null ? 45 : 0) + (lineasDireccion.Count * 12) + (datos.DetalleServicio.Count * 24) + (datos.DetalleFormaPago.Count * 12) + (datos.Clave != null ? 90 : 0) + (datos.EsDocumentoElectronico ? 36 : 0) + (datos.OtrosTextos != null ? 12 + (lineasOtroTexto.Count * 12) : 0) + (datos.LeyendaPiePagina != null ? 12 + (lineasLeyenda.Count * 12) : 0);
             double pageWidth = page.Width;
             double pageHeight = page.Height;
             XGraphics gfx = XGraphics.FromPdfPage(page);
@@ -357,6 +362,8 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             lineaPos += 12;
             font = new XFont("Arial", 10, XFontStyle.Regular, options);
             gfx.DrawString("Fecha: " + datos.Fecha, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            lineaPos += 12;
+            gfx.DrawString("Atentido por: " + datos.Usuario, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 12;
             gfx.DrawString(datos.NombreReceptor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             if (datos.PoseeReceptor)
@@ -401,8 +408,19 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             gfx.DrawString("Total a pagar:", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
             tf.DrawString(datos.TotalGeneral, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
             lineaPos += 22;
-            gfx.DrawString("Pago - " + datos.MedioPago + ":", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
-            tf.DrawString(datos.MontoPago, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
+            gfx.DrawString("Desglose de pago", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
+            
+            foreach (EstructuraPDFFormaPago desglosePago in datos.DetalleFormaPago)
+            {
+                lineaPos += 12;
+                gfx.DrawString(desglosePago.Descripcion, font, XBrushes.Black, new XRect(48, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
+                tf.DrawString(desglosePago.Monto, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 48, 12), XStringFormats.TopLeft);
+            }
+            font = new XFont("Arial", 10, XFontStyle.Bold, options);
+            lineaPos += 22;
+            gfx.DrawString("Pago con: ", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
+            tf.DrawString(datos.MontoPagado, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
             lineaPos += 22;
             gfx.DrawString("Cambio:", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
             tf.DrawString(datos.MontoCambio, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
