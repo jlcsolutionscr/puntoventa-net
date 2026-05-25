@@ -116,17 +116,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(cliente.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     try
                     {
                         Validador.ValidaFormatoIdentificacion(cliente.IdTipoIdentificacion, cliente.Identificacion);
-                        Validador.ValidaFormatoEmail(cliente.CorreoElectronico);
+                        if (cliente.CorreoElectronico != "") Validador.ValidaFormatoEmail(cliente.CorreoElectronico);
                     }
                     catch (Exception ex)
                     {
                         throw new BusinessException(ex.Message);
                     }
-                    Empresa empresa = dbContext.EmpresaRepository.Find(cliente.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     bool existe = dbContext.ClienteRepository.AsNoTracking().FirstOrDefault(x => x.Identificacion == cliente.Identificacion && x.IdEmpresa == empresa.IdEmpresa) != null;
                     if (existe) throw new BusinessException("El cliente con identificación " + cliente.Identificacion + " ya se encuentra registrado en la empresa. Por favor verifique.");
                     if (cliente.PorcentajeExoneracion > 0)
@@ -161,17 +161,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(cliente.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     try
                     {
                         Validador.ValidaFormatoIdentificacion(cliente.IdTipoIdentificacion, cliente.Identificacion);
-                        Validador.ValidaFormatoEmail(cliente.CorreoElectronico);
+                         if (cliente.CorreoElectronico != "") Validador.ValidaFormatoEmail(cliente.CorreoElectronico);
                     }
                     catch (Exception ex)
                     {
                         throw new BusinessException(ex.Message);
                     }
-                    Empresa empresa = dbContext.EmpresaRepository.Find(cliente.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     bool existe = dbContext.ClienteRepository.AsNoTracking().FirstOrDefault(x => x.Identificacion == cliente.Identificacion && x.IdEmpresa == empresa.IdEmpresa && x.IdCliente != cliente.IdCliente) != null;
                     if (existe) throw new BusinessException("El número de identificación " + cliente.Identificacion + " corresponde a otro cliente registrado en la empresa. Por favor verifique.");
                     if (cliente.PorcentajeExoneracion > 0)
