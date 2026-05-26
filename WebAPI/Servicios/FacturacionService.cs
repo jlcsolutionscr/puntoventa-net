@@ -378,7 +378,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 dbContext.NotificarModificacion(detalleOrden);
                             }
                         }
-                        if (factura.CerrarOrdenServicio)
+                        if (factura.CerrarOrdenServicio != false)
                         {
                             ordenServicio.Aplicado = true;
                             dbContext.NotificarModificacion(ordenServicio);
