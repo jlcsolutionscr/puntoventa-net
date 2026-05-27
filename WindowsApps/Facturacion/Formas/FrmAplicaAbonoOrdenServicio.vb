@@ -440,7 +440,7 @@ Public Class FrmAplicaAbonoOrdenServicio
     Private Async Sub btnBuscarOrdenServicio_Click(sender As Object, e As EventArgs) Handles btnBuscarOrdenServicio.Click
         Dim formBusqueda As New FrmBusquedaOrdenServicio()
         FrmPrincipal.intBusqueda = 0
-        formBusqueda.bolExcluyeCancelados = True
+        formBusqueda.bolExcluyeAplicados = True
         formBusqueda.bolExcluyeNulos = True
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then

@@ -439,7 +439,7 @@ Public Class FrmAplicaAbonoApartado
     Private Async Sub btnBuscarApartado_Click(sender As Object, e As EventArgs) Handles btnBuscarApartado.Click
         Dim formBusqueda As New FrmBusquedaApartado()
         FrmPrincipal.intBusqueda = 0
-        formBusqueda.bolExcluyeCancelados = True
+        formBusqueda.bolExcluyeAplicados = True
         formBusqueda.bolExcluyeNulos = True
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then

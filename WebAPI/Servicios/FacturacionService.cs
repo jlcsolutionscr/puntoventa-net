@@ -1435,7 +1435,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                         listado = listado.Where(x => !x.Aplicado);
                     if (bolExcluyeAplicados)
-                        listado = listado.Where(x => !x.Aplicado || x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
+                        listado = listado.Where(x => !x.Aplicado && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
                     if (intIdApartado > 0)
@@ -1472,7 +1472,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                         listado = listado.Where(x => !x.Aplicado);
                     if (bolExcluyeAplicados)
-                        listado = listado.Where(x => !x.Aplicado || x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
+                        listado = listado.Where(x => !x.Aplicado && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
                     if (intIdApartado > 0)
@@ -1774,7 +1774,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             listado = listado.Where(x => !x.Aplicado);
                     }
                     if (bolExcluyeAplicados)
-                        listado = listado.Where(x => !x.Aplicado || x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
+                        listado = listado.Where(x => !x.Aplicado && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
                     if (intIdOrdenServicio > 0)
@@ -1814,7 +1814,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             listado = listado.Where(x => !x.Aplicado);
                     }
                     if (bolExcluyeAplicados)
-                        listado = listado.Where(x => !x.Aplicado || x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
+                        listado = listado.Where(x => !x.Aplicado && x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
                     if (intIdOrdenServicio > 0)
