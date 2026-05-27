@@ -1215,7 +1215,8 @@ Public Class FrmFactura
                 .IncisoExoneracion = cliente.IncisoExoneracion,
                 .FechaEmisionDoc = cliente.FechaEmisionDoc,
                 .PorcentajeExoneracion = cliente.PorcentajeExoneracion,
-                .TipoDeCambioDolar = decTipoDeCambioDolar
+                .TipoDeCambioDolar = decTipoDeCambioDolar,
+                .CerrarOrdenServicio = True
             }
             factura.DetalleFactura = New List(Of DetalleFactura)
             For I As Short = 0 To dtbDetalleFactura.Rows.Count - 1
