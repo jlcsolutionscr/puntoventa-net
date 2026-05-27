@@ -19,7 +19,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         int ObtenerTotalListaProveedores(int intIdEmpresa, string strNombre);
         IList<LlaveDescripcion> ObtenerListadoProveedores(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
         string AgregarCompra(Compra compra);
-        void ActualizarCompra(Compra compra);
         void AnularCompra(int intIdCompra, int intIdUsuario, string strMotivoAnulacion);
         Compra ObtenerCompra(int intIdCompra);
         int ObtenerTotalListaCompras(int intIdEmpresa, int intIdSucursal, int intIdCompra, string strRefFactura, string strNombre, string strFechaFinal);
@@ -417,10 +416,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         };
                         if (decTotalImpuesto > 0)
                         {
-                            intLineaDetalleAsiento += 1;
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento,
+                                Linea = intLineaDetalleAsiento += 1,
                                 IdCuenta = ivaPorPagarParam.IdCuenta,
                                 Debito = decTotalImpuesto,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(ivaPorPagarParam.IdCuenta).SaldoActual
@@ -430,10 +428,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (compra.IdCondicionVenta == StaticCondicionVenta.Credito)
                         {
-                            intLineaDetalleAsiento += 1;
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento,
+                                Linea = intLineaDetalleAsiento += 1,
                                 IdCuenta = cuentasPorPagarProveedoresParam.IdCuenta,
                                 Credito = compra.Total,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(cuentasPorPagarProveedoresParam.IdCuenta).SaldoActual
@@ -447,10 +444,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
                                 {
-                                    intLineaDetalleAsiento += 1;
                                     detalleAsiento = new DetalleAsiento
                                     {
-                                        Linea = intLineaDetalleAsiento,
+                                        Linea = intLineaDetalleAsiento += 1,
                                         IdCuenta = efectivoParam.IdCuenta,
                                         Credito = desglosePago.MontoLocal,
                                         SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoParam.IdCuenta).SaldoActual
@@ -463,10 +459,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeBancos & x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                     if (bancoParam == null)
                                         throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
-                                    intLineaDetalleAsiento += 1;
                                     detalleAsiento = new DetalleAsiento
                                     {
-                                        Linea = intLineaDetalleAsiento,
+                                        Linea = intLineaDetalleAsiento += 1,
                                         IdCuenta = bancoParam.IdCuenta,
                                         Credito = desglosePago.MontoLocal,
                                         SaldoAnterior = dbContext.CatalogoContableRepository.Find(bancoParam.IdCuenta).SaldoActual
@@ -478,10 +473,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         else
                         {
-                            intLineaDetalleAsiento += 1;
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento,
+                                Linea = intLineaDetalleAsiento += 1,
                                 IdCuenta = otraCondicionVentaParam.IdCuenta,
                                 Credito = compra.Total,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(otraCondicionVentaParam.IdCuenta).SaldoActual
@@ -495,10 +489,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.LineaDeProductos & x.IdProducto == intIdLinea).FirstOrDefault();
                             if (lineaParam == null)
                                 throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
-                            intLineaDetalleAsiento += 1;
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento,
+                                Linea = intLineaDetalleAsiento += 1,
                                 IdCuenta = lineaParam.IdCuenta,
                                 Debito = (decimal)data["Total"],
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(lineaParam.IdCuenta).SaldoActual
@@ -545,36 +538,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al agregar el registro de compra: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información de la compra. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public void ActualizarCompra(Compra compra)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    Empresa empresa = dbContext.EmpresaRepository.Find(compra.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == compra.IdEmpresa && x.IdSucursal == compra.IdSucursal);
-                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    dbContext.NotificarModificacion(compra);
-                    dbContext.Commit();
-                }
-                catch (BusinessException)
-                {
-                    dbContext.RollBack();
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    if (_logger != null) _logger.LogError("Error al actualizar el registro de compra: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error actualizando la información de la compra. Por favor consulte con su proveedor.");
                 }
             }
         }

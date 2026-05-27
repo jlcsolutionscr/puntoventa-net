@@ -263,12 +263,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
                             {
-                                detalleAsiento = new DetalleAsiento();
-                                intLineaDetalleAsiento += 1;
-                                detalleAsiento.Linea = intLineaDetalleAsiento;
-                                detalleAsiento.IdCuenta = efectivoParam.IdCuenta;
-                                detalleAsiento.Debito = desglosePago.MontoLocal;
-                                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                                detalleAsiento = new DetalleAsiento
+                                {
+                                    Linea = intLineaDetalleAsiento += 1,
+                                    IdCuenta = efectivoParam.IdCuenta,
+                                    Debito = desglosePago.MontoLocal,
+                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoParam.IdCuenta).SaldoActual
+                                };
                                 asiento.DetalleAsiento.Add(detalleAsiento);
                                 asiento.TotalDebito += detalleAsiento.Debito;
                             }
@@ -280,59 +281,64 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 decTotalGastoComisionTarjeta = Math.Round(desglosePago.MontoLocal - decTotalIngresosTarjeta - decTotalImpuestoRetenido, 2, MidpointRounding.AwayFromZero);
                                 if (decTotalIngresosTarjeta > 0)
                                 {
-                                    detalleAsiento = new DetalleAsiento();
-                                    intLineaDetalleAsiento += 1;
-                                    detalleAsiento.Linea = intLineaDetalleAsiento;
-                                    detalleAsiento.IdCuenta = cuentaPorCobrarTarjetaParam.IdCuenta;
-                                    detalleAsiento.Debito = decTotalIngresosTarjeta;
-                                    detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                                    detalleAsiento = new DetalleAsiento
+                                    {
+                                        Linea = intLineaDetalleAsiento += 1,
+                                        IdCuenta = cuentaPorCobrarTarjetaParam.IdCuenta,
+                                        Debito = decTotalIngresosTarjeta,
+                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(cuentaPorCobrarTarjetaParam.IdCuenta).SaldoActual
+                                    };
                                     asiento.DetalleAsiento.Add(detalleAsiento);
                                     asiento.TotalDebito += detalleAsiento.Debito;
                                 }
                                 if (decTotalImpuestoRetenido > 0)
                                 {
-                                    detalleAsiento = new DetalleAsiento();
-                                    intLineaDetalleAsiento += 1;
-                                    detalleAsiento.Linea = intLineaDetalleAsiento;
-                                    detalleAsiento.IdCuenta = ivaPorPagarParam.IdCuenta;
-                                    detalleAsiento.Debito = decTotalImpuestoRetenido;
-                                    detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                                    detalleAsiento = new DetalleAsiento
+                                    {
+                                        Linea = intLineaDetalleAsiento += 1,
+                                        IdCuenta = ivaPorPagarParam.IdCuenta,
+                                        Debito = decTotalImpuestoRetenido,
+                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(ivaPorPagarParam.IdCuenta).SaldoActual
+                                    };
                                     asiento.DetalleAsiento.Add(detalleAsiento);
                                     asiento.TotalDebito += detalleAsiento.Debito;
                                 }
                                 if (decTotalGastoComisionTarjeta > 0)
                                 {
-                                    detalleAsiento = new DetalleAsiento();
-                                    intLineaDetalleAsiento += 1;
-                                    detalleAsiento.Linea = intLineaDetalleAsiento;
-                                    detalleAsiento.IdCuenta = gastoComisionParam.IdCuenta;
-                                    detalleAsiento.Debito = decTotalGastoComisionTarjeta;
-                                    detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                                    detalleAsiento = new DetalleAsiento
+                                    {
+                                        Linea = intLineaDetalleAsiento += 1,
+                                        IdCuenta = gastoComisionParam.IdCuenta,
+                                        Debito = decTotalGastoComisionTarjeta,
+                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(gastoComisionParam.IdCuenta).SaldoActual
+                                    };
                                     asiento.DetalleAsiento.Add(detalleAsiento);
                                     asiento.TotalDebito += detalleAsiento.Debito;
                                 }
                             }
                             else
                             {
-                                detalleAsiento = new DetalleAsiento();
-                                intLineaDetalleAsiento += 1;
-                                detalleAsiento.Linea = intLineaDetalleAsiento;
                                 bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                 if (bancoParam == null)
                                     throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
-                                detalleAsiento.IdCuenta = bancoParam.IdCuenta;
-                                detalleAsiento.Debito = desglosePago.MontoLocal;
-                                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                                detalleAsiento = new DetalleAsiento
+                                {
+                                    Linea = intLineaDetalleAsiento += 1,
+                                    IdCuenta = bancoParam.IdCuenta,
+                                    Debito = desglosePago.MontoLocal,
+                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(bancoParam.IdCuenta).SaldoActual
+                                };
                                 asiento.DetalleAsiento.Add(detalleAsiento);
                                 asiento.TotalDebito += detalleAsiento.Debito;
                             }
                         }
-                        detalleAsiento = new DetalleAsiento();
-                        intLineaDetalleAsiento += 1;
-                        detalleAsiento.Linea = intLineaDetalleAsiento;
-                        detalleAsiento.IdCuenta = cuentaPorCobrarClientesParam.IdCuenta;
-                        detalleAsiento.Credito = movimiento.Monto;
-                        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                        detalleAsiento = new DetalleAsiento
+                        {
+                            Linea = intLineaDetalleAsiento += 1,
+                            IdCuenta = cuentaPorCobrarClientesParam.IdCuenta,
+                            Credito = movimiento.Monto,
+                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(cuentaPorCobrarClientesParam.IdCuenta).SaldoActual
+                        };
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalCredito += detalleAsiento.Credito;
                         IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
@@ -659,38 +665,42 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             TotalDebito = 0,
                             Detalle = "Movimiento de abono a cuenta por Pagar recibo nro. "
                         };
-                        DetalleAsiento detalleAsiento = new DetalleAsiento();
-                        intLineaDetalleAsiento += 1;
-                        detalleAsiento.Linea = intLineaDetalleAsiento;
-                        detalleAsiento.IdCuenta = cuentaPorPagarProveedoresParam.IdCuenta;
-                        detalleAsiento.Debito = movimiento.Monto;
-                        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                        DetalleAsiento detalleAsiento = new DetalleAsiento
+                        {
+                            Linea = intLineaDetalleAsiento += 1,
+                            IdCuenta = cuentaPorPagarProveedoresParam.IdCuenta,
+                            Debito = movimiento.Monto,
+                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(cuentaPorPagarProveedoresParam.IdCuenta).SaldoActual
+                        };
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalDebito += detalleAsiento.Debito;
                         foreach (var desglosePago in movimiento.DesglosePagoMovimientoCuentaPorPagar)
                         {
                             if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
                             {
-                                detalleAsiento = new DetalleAsiento();
-                                intLineaDetalleAsiento += 1;
-                                detalleAsiento.Linea = intLineaDetalleAsiento;
-                                detalleAsiento.IdCuenta = efectivoParam.IdCuenta;
-                                detalleAsiento.Credito = desglosePago.MontoLocal;
-                                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                                detalleAsiento = new DetalleAsiento
+                                {
+                                    Linea = intLineaDetalleAsiento += 1,
+                                    IdCuenta = efectivoParam.IdCuenta,
+                                    Credito = desglosePago.MontoLocal,
+                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoParam.IdCuenta).SaldoActual
+                                };
                                 asiento.DetalleAsiento.Add(detalleAsiento);
                                 asiento.TotalCredito += detalleAsiento.Credito;
                             }
                             else
                             {
-                                detalleAsiento = new DetalleAsiento();
-                                intLineaDetalleAsiento += 1;
-                                detalleAsiento.Linea = intLineaDetalleAsiento;
+
                                 bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                 if (bancoParam == null)
                                     throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
-                                detalleAsiento.IdCuenta = bancoParam.IdCuenta;
-                                detalleAsiento.Credito = desglosePago.MontoLocal;
-                                detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                                detalleAsiento = new DetalleAsiento
+                                {
+                                    Linea = intLineaDetalleAsiento += 1,
+                                    IdCuenta = bancoParam.IdCuenta,
+                                    Credito = desglosePago.MontoLocal,
+                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(bancoParam.IdCuenta).SaldoActual
+                                };
                                 asiento.DetalleAsiento.Add(detalleAsiento);
                                 asiento.TotalCredito += detalleAsiento.Credito;
                             }

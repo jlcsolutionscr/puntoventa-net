@@ -333,11 +333,12 @@ namespace LeandroSoftware.Common.DatosComunes
     {
         public ProductoDetalle() { }
 
-        public ProductoDetalle(int id, string codigo, string codigoProveedor, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta1, string observacion, decimal utilidad, bool activo)
+        public ProductoDetalle(int id, string codigo, string codigoProveedor, int categoryId, string descripcion, decimal cantidad, decimal precioCosto, decimal precioVenta1, string observacion, decimal utilidad, bool activo, string imagen)
         {
             Id = id;
             Codigo = codigo;
             CodigoProveedor = codigoProveedor;
+            IdLinea = categoryId;
             Descripcion = descripcion;
             Cantidad = cantidad;
             PrecioCosto = precioCosto;
@@ -345,10 +346,12 @@ namespace LeandroSoftware.Common.DatosComunes
             Observacion = observacion;
             Utilidad = utilidad;
             Activo = activo;
+            Imagen = imagen;
         }
         public int Id { get; set; }
         public string Codigo { get; set; }
         public string CodigoProveedor { get; set; }
+        public int IdLinea { get; set; }
         public string Descripcion { get; set; }
         public decimal Cantidad { get; set; }
         public decimal PrecioCosto { get; set; }
@@ -356,6 +359,7 @@ namespace LeandroSoftware.Common.DatosComunes
         public string Observacion { get; set; }
         public decimal Utilidad { get; set; }
         public bool Activo { get; set; }
+        public string Imagen { get; set; }
     }
 
     public class FacturaDetalle
@@ -568,29 +572,6 @@ namespace LeandroSoftware.Common.DatosComunes
         public int intFuente { get; set; }
         public int intAlineado { get; set; }
         public bool bolBold { get; set; }
-    }
-
-    public class ClsTiquete
-    {
-        public ClsTiquete() { }
-
-        public ClsTiquete(int idTiquete, int idEmpresa, int idSucursal, string descripcion, string impresora, IList<ClsLineaImpresion> lineas, bool impreso)
-        {
-            IdTiquete = idTiquete;
-            IdEmpresa = idEmpresa;
-            IdSucursal = idSucursal;
-            Descripcion = descripcion;
-            Impresora = impresora;
-            Lineas = lineas;
-            Impreso = impreso;
-        }
-        public int IdTiquete { get; set; }
-        public int IdEmpresa { get; set; }
-        public int IdSucursal { get; set; }
-        public string Descripcion { get; set; }
-        public string Impresora { get; set; }
-        public IList<ClsLineaImpresion> Lineas { get; set; }
-        public bool Impreso { get; set; }
     }
 
     public class ContribuyenteHacienda

@@ -112,6 +112,7 @@ Public Class FrmLinea
                 End If
                 txtIdLinea.Text = datos.IdLinea
                 txtDescripcion.Text = datos.Descripcion
+                txtImpresoraTiquete.Text = datos.ImpresoraTiquete
                 CargarDetalleSucursal(datos)
             Else
                 datos = New Linea
@@ -139,6 +140,7 @@ Public Class FrmLinea
             datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
         datos.Descripcion = txtDescripcion.Text
+        datos.ImpresoraTiquete = txtImpresoraTiquete.Text
         If datos.LineaPorSucursal IsNot Nothing Then
             datos.LineaPorSucursal.Clear()
         Else

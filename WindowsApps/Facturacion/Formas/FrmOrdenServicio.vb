@@ -948,6 +948,10 @@ Public Class FrmOrdenServicio
     Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdOrdenServicio.Text <> "" Then
             Try
+                Dim strDocumento As String = ""
+                If ordenServicio.FechaEntrega <> "" Then
+                    strDocumento = ObtenerLeyendaEntrega(Date.ParseExact(ordenServicio.FechaEntrega, "dd/MM/yyyy", Nothing), ordenServicio.HoraEntrega)
+                End If
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                     .usuario = FrmPrincipal.usuarioGlobal,
                     .empresa = FrmPrincipal.empresaGlobal,
@@ -960,7 +964,7 @@ Public Class FrmOrdenServicio
                     .strDireccion = ordenServicio.Direccion,
                     .strDescripcion = ordenServicio.Descripcion,
                     .strDetalle = ordenServicio.OtrosDetalles,
-                    .strDocumento = ObtenerLeyendaEntrega(Date.ParseExact(ordenServicio.FechaEntrega, "dd/MM/yyyy", Nothing), ordenServicio.HoraEntrega),
+                    .strDocumento = strDocumento,
                     .strSubTotal = FormatNumber(ordenServicio.Gravado + ordenServicio.Excento + ordenServicio.Exonerado + ordenServicio.Descuento, 2),
                     .strDescuento = FormatNumber(ordenServicio.Descuento, 2),
                     .strImpuesto = FormatNumber(ordenServicio.Impuesto, 2),

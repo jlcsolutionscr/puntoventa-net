@@ -42,16 +42,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarApartado(Apartado apartado);
         void AnularApartado(int intIdApartado, int intIdUsuario, string strMotivoAnulacion);
         Apartado ObtenerApartado(int intIdApartado);
-        int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int intIdApartado, string strNombre, string strFechaFinal);
-        IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal);
+        int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int intIdApartado, string strNombre, string strFechaFinal);
+        IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal);
         string AgregarOrdenServicio(OrdenServicio ordenServicio);
         void ActualizarOrdenServicio(OrdenServicio ordenServicio);
         void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivoAnulacion);
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
-        int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int intIdOrdenServicio, string strNombre, string strFechaFinal);
-        IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal);
-        IList<ClsTiquete> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc);
-        void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado);
+        int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int intIdOrdenServicio, string strNombre, string strFechaFinal);
+        IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal);
+        IList<TiqueteOrdenServicio> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden, bool bolFiltrarPendientes, bool bolSortedDesc);
+        void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolImpreso);
         string AgregarDevolucionCliente(DevolucionCliente devolucion);
         void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion);
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
@@ -75,6 +75,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void GenerarNotificacionFactura(int intIdFactura, byte[] bytLogo);
         void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, byte[] bytLogo);
         void GenerarNotificacionOrdenServicio(int intIdOrden, string strCorreoReceptor, byte[] bytLogo);
+        byte[] GenerarTiqueteFacturaPDF(int intIdFactura, int intLargoLinea, byte[] bytLogo);
+        byte[] GenerarTiqueteOrdenServicioPDF(int intIdOrdenServicio, int intLargoLinea, byte[] bytLogo);
+        byte[] GenerarTiqueteCierreCajaPDF(int intIdCierre, int intLargoLinea);
     }
 
     public class FacturacionService : IFacturacionService
@@ -113,17 +116,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(cliente.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     try
                     {
                         Validador.ValidaFormatoIdentificacion(cliente.IdTipoIdentificacion, cliente.Identificacion);
-                        Validador.ValidaFormatoEmail(cliente.CorreoElectronico);
+                        if (cliente.CorreoElectronico != "") Validador.ValidaFormatoEmail(cliente.CorreoElectronico);
                     }
                     catch (Exception ex)
                     {
                         throw new BusinessException(ex.Message);
                     }
-                    Empresa empresa = dbContext.EmpresaRepository.Find(cliente.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     bool existe = dbContext.ClienteRepository.AsNoTracking().FirstOrDefault(x => x.Identificacion == cliente.Identificacion && x.IdEmpresa == empresa.IdEmpresa) != null;
                     if (existe) throw new BusinessException("El cliente con identificación " + cliente.Identificacion + " ya se encuentra registrado en la empresa. Por favor verifique.");
                     if (cliente.PorcentajeExoneracion > 0)
@@ -158,17 +161,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(cliente.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     try
                     {
                         Validador.ValidaFormatoIdentificacion(cliente.IdTipoIdentificacion, cliente.Identificacion);
-                        Validador.ValidaFormatoEmail(cliente.CorreoElectronico);
+                         if (cliente.CorreoElectronico != "") Validador.ValidaFormatoEmail(cliente.CorreoElectronico);
                     }
                     catch (Exception ex)
                     {
                         throw new BusinessException(ex.Message);
                     }
-                    Empresa empresa = dbContext.EmpresaRepository.Find(cliente.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     bool existe = dbContext.ClienteRepository.AsNoTracking().FirstOrDefault(x => x.Identificacion == cliente.Identificacion && x.IdEmpresa == empresa.IdEmpresa && x.IdCliente != cliente.IdCliente) != null;
                     if (existe) throw new BusinessException("El número de identificación " + cliente.Identificacion + " corresponde a otro cliente registrado en la empresa. Por favor verifique.");
                     if (cliente.PorcentajeExoneracion > 0)
@@ -365,8 +368,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (factura.IdOrdenServicio > 0)
                     {
                         OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(factura.IdOrdenServicio);
-                        ordenServicio.Aplicado = true;
-                        dbContext.NotificarModificacion(ordenServicio);
+
+                        foreach (var detalle in factura.DetalleFactura)
+                        {
+                            DetalleOrdenServicio detalleOrden = dbContext.DetalleOrdenServicioRepository.FirstOrDefault(x => x.IdOrden == factura.IdOrdenServicio && x.IdProducto == detalle.IdProducto);
+                            if (detalleOrden != null)
+                            {
+                                detalleOrden.Pagado = true;
+                                dbContext.NotificarModificacion(detalleOrden);
+                            }
+                        }
+                        if (factura.CerrarOrdenServicio == true)
+                        {
+                            ordenServicio.Aplicado = true;
+                            dbContext.NotificarModificacion(ordenServicio);
+                            PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdOrden == factura.IdOrdenServicio);
+                            if (puntoDeServicio != null)
+                            {
+                                puntoDeServicio.IdOrden = 0;
+                                dbContext.NotificarModificacion(puntoDeServicio);
+                            }
+                        }
                     }
                     if (factura.IdProforma > 0)
                     {
@@ -549,32 +571,33 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         DetalleAsiento detalleAsiento = null;
                         if (decTotalIngresosMercancia > 0 || decTotalIngresosServicios > 0)
                         {
-                            detalleAsiento = new DetalleAsiento();
-                            intLineaDetalleAsiento += 1;
-                            detalleAsiento.Linea = intLineaDetalleAsiento;
-                            detalleAsiento.IdCuenta = ingresosVentasParam.IdCuenta;
-                            detalleAsiento.Credito = decTotalIngresosMercancia + decTotalIngresosServicios;
-                            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                            detalleAsiento = new DetalleAsiento
+                            {
+                                Linea = intLineaDetalleAsiento += 1,
+                                IdCuenta = ingresosVentasParam.IdCuenta,
+                                Credito = decTotalIngresosMercancia + decTotalIngresosServicios,
+                                SaldoAnterior = dbContext.CatalogoContableRepository.Find(ingresosVentasParam.IdCuenta).SaldoActual
+                            };
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalCredito += detalleAsiento.Credito;
                         }
                         if (decTotalImpuesto > 0)
                         {
-                            detalleAsiento = new DetalleAsiento();
-                            intLineaDetalleAsiento += 1;
-                            detalleAsiento.Linea = intLineaDetalleAsiento;
-                            detalleAsiento.IdCuenta = ivaPorPagarParam.IdCuenta;
-                            detalleAsiento.Credito = decTotalImpuesto;
+                            detalleAsiento = new DetalleAsiento
+                            {
+                                Linea = intLineaDetalleAsiento += 1,
+                                IdCuenta = ivaPorPagarParam.IdCuenta,
+                                Credito = decTotalImpuesto,
+                                SaldoAnterior = dbContext.CatalogoContableRepository.Find(ivaPorPagarParam.IdCuenta).SaldoActual
+                            };
                             asiento.DetalleAsiento.Add(detalleAsiento);
-                            detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
                             asiento.TotalCredito += detalleAsiento.Credito;
                         }
                         if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
                         {
-                            intLineaDetalleAsiento += 1;
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento,
+                                Linea = intLineaDetalleAsiento += 1,
                                 IdCuenta = cuentasPorCobrarClientesParam.IdCuenta,
                                 Debito = factura.Total,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(cuentasPorCobrarClientesParam.IdCuenta).SaldoActual
@@ -588,10 +611,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
                                 {
-                                    intLineaDetalleAsiento += 1;
                                     detalleAsiento = new DetalleAsiento
                                     {
-                                        Linea = intLineaDetalleAsiento,
+                                        Linea = intLineaDetalleAsiento += 1,
                                         IdCuenta = efectivoParam.IdCuenta,
                                         Debito = desglosePago.MontoLocal,
                                         SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoParam.IdCuenta).SaldoActual
@@ -605,10 +627,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     decimal decTotalGastoComisionTarjeta = Math.Round(desglosePago.MontoLocal * (bancoAdquiriente.PorcentajeComision / 100), 2, MidpointRounding.AwayFromZero);
                                     decimal decTotalImpuestoRetenido = Math.Round(desglosePago.MontoLocal * (bancoAdquiriente.PorcentajeRetencion / 100), 2, MidpointRounding.AwayFromZero);
                                     decimal decTotalIngresosTarjeta = Math.Round(desglosePago.MontoLocal - decTotalGastoComisionTarjeta - decTotalImpuestoRetenido, 2, MidpointRounding.AwayFromZero);
-                                    intLineaDetalleAsiento += 1;
                                     detalleAsiento = new DetalleAsiento
                                     {
-                                        Linea = intLineaDetalleAsiento,
+                                        Linea = intLineaDetalleAsiento += 1,
                                         IdCuenta = cuentaPorCobrarTarjetaParam.IdCuenta,
                                         Debito = decTotalIngresosTarjeta,
                                         SaldoAnterior = dbContext.CatalogoContableRepository.Find(cuentaPorCobrarTarjetaParam.IdCuenta).SaldoActual
@@ -617,10 +638,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     asiento.TotalDebito += detalleAsiento.Debito;
                                     if (decTotalImpuestoRetenido > 0)
                                     {
-                                        intLineaDetalleAsiento += 1;
                                         detalleAsiento = new DetalleAsiento
                                         {
-                                            Linea = intLineaDetalleAsiento,
+                                            Linea = intLineaDetalleAsiento += 1,
                                             IdCuenta = ivaPorPagarParam.IdCuenta,
                                             Debito = decTotalImpuestoRetenido,
                                             SaldoAnterior = dbContext.CatalogoContableRepository.Find(ivaPorPagarParam.IdCuenta).SaldoActual
@@ -630,10 +650,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     }
                                     if (decTotalGastoComisionTarjeta > 0)
                                     {
-                                        intLineaDetalleAsiento += 1;
                                         detalleAsiento = new DetalleAsiento
                                         {
-                                            Linea = intLineaDetalleAsiento,
+                                            Linea = intLineaDetalleAsiento += 1,
                                             IdCuenta = gastoComisionParam.IdCuenta,
                                             Debito = decTotalGastoComisionTarjeta,
                                             SaldoAnterior = dbContext.CatalogoContableRepository.Find(gastoComisionParam.IdCuenta).SaldoActual
@@ -647,10 +666,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeBancos && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
                                     if (bancoParam == null)
                                         throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
-                                    intLineaDetalleAsiento += 1;
                                     detalleAsiento = new DetalleAsiento
                                     {
-                                        Linea = intLineaDetalleAsiento,
+                                        Linea = intLineaDetalleAsiento += 1,
                                         IdCuenta = bancoParam.IdCuenta,
                                         Debito = desglosePago.MontoLocal,
                                         SaldoAnterior = dbContext.CatalogoContableRepository.Find(bancoParam.IdCuenta).SaldoActual
@@ -663,10 +681,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         else
                         {
-                            intLineaDetalleAsiento += 1;
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento,
+                                Linea = intLineaDetalleAsiento += 1,
                                 IdCuenta = otraCondicionVentaParam.IdCuenta,
                                 Debito = factura.Total,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(otraCondicionVentaParam.IdCuenta).SaldoActual
@@ -676,10 +693,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (decTotalCostoVentas > 0)
                         {
-                            intLineaDetalleAsiento += 1;
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento,
+                                Linea = intLineaDetalleAsiento += 1,
                                 IdCuenta = costoVentasParam.IdCuenta,
                                 Debito = decTotalCostoVentas,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(costoVentasParam.IdCuenta).SaldoActual
@@ -692,10 +708,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.LineaDeProductos && x.IdProducto == intIdLinea).FirstOrDefault();
                                 if (lineaParam == null)
                                     throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
-                                intLineaDetalleAsiento += 1;
                                 detalleAsiento = new DetalleAsiento
                                 {
-                                    Linea = intLineaDetalleAsiento,
+                                    Linea = intLineaDetalleAsiento += 1,
                                     IdCuenta = lineaParam.IdCuenta,
                                     Credito = (decimal)data["Total"],
                                     SaldoAnterior = dbContext.CatalogoContableRepository.Find(lineaParam.IdCuenta).SaldoActual
@@ -1093,7 +1108,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
                             if (producto == null)
                                 throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la proforma no existe.");
-                            if (producto.CodigoClasificacion == "")
+                            if (!empresa.RegimenSimplificado && producto.CodigoClasificacion == "")
                                 throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la proforma no posee clasificación CABYS.");
                         }
                     }
@@ -1133,11 +1148,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<DetalleProforma> listadoDetalleAnterior = dbContext.DetalleProformaRepository.Where(x => x.IdProforma == proforma.IdProforma).ToList();
                     List<DetalleProforma> listadoDetalle = proforma.DetalleProforma.ToList();
                     proforma.DetalleProforma = null;
-                    foreach (DetalleProforma detalle in listadoDetalleAnterior)
-                        dbContext.NotificarEliminacion(detalle);
                     dbContext.NotificarModificacion(proforma);
-                    foreach (DetalleProforma detalle in listadoDetalle)
-                        dbContext.DetalleProformaRepository.Add(detalle);
+                    dbContext.DetalleProformaRepository.RemoveRange(listadoDetalleAnterior);
+                    dbContext.DetalleProformaRepository.AddRange(listadoDetalle);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -1408,7 +1421,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int intIdApartado, string strNombre, string strFechaFinal)
+        public int ObtenerTotalListaApartados(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int intIdApartado, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1421,11 +1434,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                         listado = listado.Where(x => !x.Aplicado);
                     if (bolExcluyeAplicados)
-                        listado = listado.Where(x => !x.Aplicado);
+                        listado = listado.Where(x => !x.Aplicado || x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
-                    if (bolExcluyeCancelados)
-                        listado = listado.Where(x => x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (intIdApartado > 0)
                             listado = listado.Where(x => x.ConsecApartado == intIdApartado);
                     if (!strNombre.Equals(string.Empty))
@@ -1446,7 +1457,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal)
+        public IList<FacturaDetalle> ObtenerListadoApartados(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int numPagina, int cantRec, int intIdApartado, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1460,11 +1471,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                         listado = listado.Where(x => !x.Aplicado);
                     if (bolExcluyeAplicados)
-                        listado = listado.Where(x => !x.Aplicado);
+                        listado = listado.Where(x => !x.Aplicado || x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
-                    if (bolExcluyeCancelados)
-                        listado = listado.Where(x => x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (intIdApartado > 0)
                         listado = listado.Where(x => x.ConsecApartado == intIdApartado);
                     if (!strNombre.Equals(string.Empty))
@@ -1500,18 +1509,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     ordenServicio.Fecha = Validador.ObtenerFechaHoraCostaRica();
+                    foreach (DetalleOrdenServicio detalle in ordenServicio.DetalleOrdenServicio)
+                    {
+                        if (detalle.InformacionAdicional == null) detalle.InformacionAdicional = "";
+                    }
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenServicio.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     sucursal.ConsecOrdenServicio += 1;
                     dbContext.NotificarModificacion(sucursal);
                     ordenServicio.ConsecOrdenServicio = sucursal.ConsecOrdenServicio;
                     dbContext.OrdenServicioRepository.Add(ordenServicio);
+                    dbContext.Commit();
                     if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
                     {
-                        AgregarTiqueteOrdenServicio(ordenServicio, ordenServicio.DetalleOrdenServicio);
+                        if (ordenServicio.IdPuntoDeServicio > 0)
+                        {
+                            PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoDeServicio);
+                            if (puntoDeServicio != null)
+                            {
+                                puntoDeServicio.IdOrden = ordenServicio.IdOrden;
+                                dbContext.NotificarModificacion(puntoDeServicio);
+                                AgregarTiqueteOrdenServicio(ordenServicio, ordenServicio.DetalleOrdenServicio, puntoDeServicio.Descripcion, dbContext);
+                            }
+                        }
                     }
                     dbContext.Commit();
                     return ordenServicio.IdOrden.ToString() + "-" + ordenServicio.ConsecOrdenServicio.ToString();
@@ -1546,37 +1568,30 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ordenServicio.MontoAdelanto != ordenNoTracking.MontoAdelanto) ordenServicio.MontoAdelanto = ordenNoTracking.MontoAdelanto;
                     List<DetalleOrdenServicio> listadoDetalleAnterior = dbContext.DetalleOrdenServicioRepository.Where(x => x.IdOrden == ordenServicio.IdOrden).ToList();
                     List<DetalleOrdenServicio> listadoDetalle = ordenServicio.DetalleOrdenServicio.ToList();
+                    foreach (DetalleOrdenServicio detalle in listadoDetalle)
+                    {
+                        if (detalle.InformacionAdicional == null) detalle.InformacionAdicional = "";
+                    }
                     if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
                     {
                         List<DetalleOrdenServicio> nuevoDetalle = new List<DetalleOrdenServicio> { };
+                        int currentDetailsIndex = 1;
                         foreach (DetalleOrdenServicio detalle in listadoDetalle)
                         {
-                            DetalleOrdenServicio anterior = listadoDetalleAnterior.Where(x => x.IdOrden == detalle.IdOrden && x.IdProducto == detalle.IdProducto).FirstOrDefault();
-                            if (anterior != null)
-                            {
-                                if (anterior.Cantidad != detalle.Cantidad)
-                                {
-                                    nuevoDetalle.Add(new DetalleOrdenServicio
-                                    {
-                                        IdProducto = detalle.IdProducto,
-                                        Cantidad = detalle.Cantidad - anterior.Cantidad,
-                                        Descripcion = detalle.Descripcion
-                                    });
-                                }
-                            }
-                            else
-                            {
-                                nuevoDetalle.Add(detalle);
-                            }
+                            if (detalle.InformacionAdicional == null) detalle.InformacionAdicional = "";
+                            if (currentDetailsIndex > listadoDetalleAnterior.Count) nuevoDetalle.Add(detalle);
+                            currentDetailsIndex++;
                         }
-                        if (nuevoDetalle.Count > 0) AgregarTiqueteOrdenServicio(ordenServicio, nuevoDetalle);
+                        PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdPunto == ordenServicio.IdPuntoDeServicio);
+                        if (puntoDeServicio != null && nuevoDetalle.Count > 0)
+                        {
+                            AgregarTiqueteOrdenServicio(ordenServicio, nuevoDetalle, puntoDeServicio.Descripcion, dbContext);
+                        }
                     }
                     ordenServicio.DetalleOrdenServicio = null;
-                    foreach (DetalleOrdenServicio detalle in listadoDetalleAnterior)
-                        dbContext.NotificarEliminacion(detalle);
                     dbContext.NotificarModificacion(ordenServicio);
-                    foreach (DetalleOrdenServicio detalle in listadoDetalle)
-                        dbContext.DetalleOrdenServicioRepository.Add(detalle);
+                    dbContext.DetalleOrdenServicioRepository.RemoveRange(listadoDetalleAnterior);
+                    dbContext.DetalleOrdenServicioRepository.AddRange(listadoDetalle);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -1593,82 +1608,65 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private void AgregarTiqueteOrdenServicio(OrdenServicio ordenServicio, ICollection<DetalleOrdenServicio> detalleOrdenServicio)
+        private void AgregarTiqueteOrdenServicio(OrdenServicio ordenServicio, ICollection<DetalleOrdenServicio> detalleOrdenServicio, string strPuntoServicio, LeandroContext dbContext)
         {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            DataTable dtbDetalleTiquete = new DataTable();
+            dtbDetalleTiquete.Columns.Add("Impresora", typeof(string));
+            dtbDetalleTiquete.Columns.Add("Descripcion", typeof(string));
+            dtbDetalleTiquete.Columns.Add("Cantidad", typeof(string));
+            foreach (DetalleOrdenServicio detalle in detalleOrdenServicio)
             {
-                DataTable dtbDetalleTiquete = new DataTable();
-                dtbDetalleTiquete.Columns.Add("Linea", typeof(string));
-                dtbDetalleTiquete.Columns.Add("Descripcion", typeof(string));
-                dtbDetalleTiquete.Columns.Add("Cantidad", typeof(string));
-                foreach (DetalleOrdenServicio detalle in detalleOrdenServicio)
-                {
-                    Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
-                    DataRow data = dtbDetalleTiquete.NewRow();
-                    data["Linea"] = producto.Linea.Descripcion;
-                    data["Descripcion"] = detalle.Descripcion;
-                    data["Cantidad"] = detalle.Cantidad.ToString();
-                    dtbDetalleTiquete.Rows.Add(data);
-                }
-                DataView view = new DataView(dtbDetalleTiquete)
-                {
-                    Sort = "Linea ASC"
-                };
-                string strLineaDesc = view[0].Row["Linea"].ToString();
-                IList<ClsLineaImpresion> lineasDetalle = new List<ClsLineaImpresion> { };
-                IList<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
-                TiqueteOrdenServicio tiquete;
-                foreach (DataRowView row in view)
-                {
-                    if (strLineaDesc != row["Linea"].ToString())
-                    {
-                        tiquete = GenerarTiqueteOrdenServicio(ordenServicio, lineasDetalle, strLineaDesc);
-                        dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
-                        lineasDetalle = new List<ClsLineaImpresion> { };
-                        strLineaDesc = row["Linea"].ToString();
-                    }
-                    string strLinea = row["Descripcion"].ToString();
-                    lineasDetalle.Add(new ClsLineaImpresion(0, strLinea.Substring(0, Math.Min(30, strLinea.Length)), 0, 95, 10, (int)StringAlignment.Near, false));
-                    lineasDetalle.Add(new ClsLineaImpresion(1, row["Cantidad"].ToString(), 95, 5, 10, (int)StringAlignment.Far, false));
-                    strLinea = strLinea.Substring(Math.Min(30, strLinea.Length));
-                    while (strLinea.Length > 30)
-                    {
-                        lineasDetalle.Add(new ClsLineaImpresion(1, strLinea.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
-                        strLinea = strLinea.Substring(30);
-                    }
-                    if (strLinea.Length > 0) lineasDetalle.Add(new ClsLineaImpresion(1, strLinea, 0, 100, 10, (int)StringAlignment.Near, false));
-                }
-                tiquete = GenerarTiqueteOrdenServicio(ordenServicio, lineasDetalle, strLineaDesc);
-                dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
+                Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
+                DataRow data = dtbDetalleTiquete.NewRow();
+                data["Impresora"] = producto.Linea.ImpresoraTiquete;
+                data["Descripcion"] = detalle.Descripcion + " - " + detalle.InformacionAdicional;
+                data["Cantidad"] = detalle.Cantidad.ToString();
+                dtbDetalleTiquete.Rows.Add(data);
             }
-        }
-
-        private TiqueteOrdenServicio GenerarTiqueteOrdenServicio(OrdenServicio ordenServicio, IList<ClsLineaImpresion> lineasDetalle, string strLineaDesc)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            DataView view = new DataView(dtbDetalleTiquete)
             {
-                List<ClsLineaImpresion> lineas = new List<ClsLineaImpresion> { };
-                lineas.Add(new ClsLineaImpresion(2, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true));
-                lineas.Add(new ClsLineaImpresion(2, Validador.ObtenerFechaHoraCostaRica().ToString(), 0, 100, 12, (int)StringAlignment.Center, false));
-                lineas.Add(new ClsLineaImpresion(2, ordenServicio.NombreCliente, 0, 100, 14, (int)StringAlignment.Center, true));
-                lineas.Add(new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false));
-                foreach (ClsLineaImpresion linea in lineasDetalle)
-                    lineas.Add(linea);
-                lineas.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
-                byte[] bytLineas = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(lineas));
-                return new TiqueteOrdenServicio
+                Sort = "Impresora ASC"
+            };
+            string strPrinterTarget = view[0].Row["Impresora"].ToString();
+            IList<DescripcionValor> lineasDetalle = new List<DescripcionValor> { };
+            TiqueteOrdenServicio tiquete;
+            foreach (DataRowView row in view)
+            {
+                if (strPrinterTarget != row["Impresora"].ToString())
                 {
-                    IdTiquete = 0,
-                    IdEmpresa = ordenServicio.IdEmpresa,
-                    IdSucursal = ordenServicio.IdSucursal,
-                    Descripcion = ordenServicio.NombreCliente,
-                    Impresora = strLineaDesc,
-                    Lineas = bytLineas,
-                    Impreso = false
-                };
+                    tiquete = new TiqueteOrdenServicio
+                    {
+                        IdTiquete = 0,
+                        IdEmpresa = ordenServicio.IdEmpresa,
+                        IdSucursal = ordenServicio.IdSucursal,
+                        IdOrden = ordenServicio.IdOrden,
+                        FechaEmision = Validador.ObtenerFechaHoraCostaRica().ToString(),
+                        Etiqueta = strPuntoServicio,
+                        Descripcion = ordenServicio.OtrosDetalles,
+                        Impresora = strPrinterTarget,
+                        DetalleTiqueteOrdenServicio = JsonConvert.SerializeObject(lineasDetalle),
+                        Impreso = false
+                    };
+                    dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
+                    lineasDetalle = new List<DescripcionValor> { };
+                    strPrinterTarget = row["Impresora"].ToString();
+                }
+                lineasDetalle.Add(new DescripcionValor(row["Descripcion"].ToString(), decimal.Parse(row["Cantidad"].ToString())));
             }
+            tiquete = new TiqueteOrdenServicio
+            {
+                IdTiquete = 0,
+                IdEmpresa = ordenServicio.IdEmpresa,
+                IdSucursal = ordenServicio.IdSucursal,
+                IdOrden = ordenServicio.IdOrden,
+                FechaEmision = Validador.ObtenerFechaHoraCostaRica().ToString(),
+                Etiqueta = strPuntoServicio,
+                Descripcion = ordenServicio.OtrosDetalles,
+                Impresora = strPrinterTarget,
+                DetalleTiqueteOrdenServicio = JsonConvert.SerializeObject(lineasDetalle),
+                Impreso = false
+            };
+            dbContext.TiqueteOrdenServicioRepository.Add(tiquete);
         }
 
         public void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivoAnulacion)
@@ -1691,6 +1689,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     ordenServicio.IdAnuladoPor = intIdUsuario;
                     ordenServicio.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(ordenServicio);
+                    PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdOrden == ordenServicio.IdOrden);
+                    if (puntoDeServicio != null)
+                    {
+                        puntoDeServicio.IdOrden = 0;
+                        dbContext.NotificarModificacion(puntoDeServicio);
+                        List<TiqueteOrdenServicio> tiquetes = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdOrden == ordenServicio.IdOrden).ToList();
+                        dbContext.TiqueteOrdenServicioRepository.RemoveRange(tiquetes);
+                    }
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -1751,7 +1757,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int intIdOrdenServicio, string strNombre, string strFechaFinal)
+        public int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int intIdOrdenServicio, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1767,11 +1773,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             listado = listado.Where(x => !x.Aplicado);
                     }
                     if (bolExcluyeAplicados)
-                        listado = listado.Where(x => !x.Aplicado);
+                        listado = listado.Where(x => !x.Aplicado || x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
-                    if (bolExcluyeCancelados)
-                        listado = listado.Where(x => x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (intIdOrdenServicio > 0)
                         listado = listado.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                     if (!strNombre.Equals(string.Empty))
@@ -1792,7 +1796,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, bool bolExcluyeCancelados, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal)
+        public IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1809,11 +1813,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             listado = listado.Where(x => !x.Aplicado);
                     }
                     if (bolExcluyeAplicados)
-                        listado = listado.Where(x => !x.Aplicado);
+                        listado = listado.Where(x => !x.Aplicado || x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
-                    if (bolExcluyeCancelados)
-                        listado = listado.Where(x => x.Excento + x.Gravado + x.Exonerado + x.Impuesto - x.MontoAdelanto > 0);
                     if (intIdOrdenServicio > 0)
                         listado = listado.Where(x => x.ConsecOrdenServicio == intIdOrdenServicio);
                     if (!strNombre.Equals(string.Empty))
@@ -1841,27 +1843,23 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<ClsTiquete> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, bool bolSortedDesc)
+        public IList<TiqueteOrdenServicio> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden, bool bolFiltrarPendientes, bool bolSortedDesc)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listaTiquete = new List<ClsTiquete>();
                 try
                 {
-                    var listado = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Impreso == bolImpreso);
+                    var listado = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    if (intIdOrden > 0)
+                        listado = listado.Where(x => x.IdOrden == intIdOrden);
+                    if (bolFiltrarPendientes)
+                        listado = listado.Where(x => x.Impreso == false);
                     if (bolSortedDesc)
                         listado = listado.OrderByDescending(x => x.IdTiquete);
                     else
                         listado = listado.OrderBy(x => x.IdTiquete);
-                    foreach (var tiquete in listado)
-                    {
-                        string strLineas = Encoding.UTF8.GetString(tiquete.Lineas);
-                        IList<ClsLineaImpresion> lineas = JsonConvert.DeserializeObject<List<ClsLineaImpresion>>(strLineas);
-                        ClsTiquete item = new ClsTiquete(tiquete.IdTiquete, tiquete.IdEmpresa, tiquete.IdSucursal, tiquete.Descripcion, tiquete.Impresora, lineas, tiquete.Impreso);
-                        listaTiquete.Add(item);
-                    }
-                    return listaTiquete;
+                    return listado.ToList();
                 }
                 catch (Exception ex)
                 {
@@ -1872,7 +1870,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado)
+        public void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolImpreso)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1881,7 +1879,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     TiqueteOrdenServicio tiquete = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdTiquete == intIdTiquete).FirstOrDefault();
                     if (tiquete == null) throw new BusinessException("No se logró obtener la información del tiquete de orden de servicio. Por favor, pongase en contacto con su proveedor del servicio.");
-                    tiquete.Impreso = bolEstado;
+                    tiquete.Impreso = bolImpreso;
+                    dbContext.NotificarModificacion(tiquete);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
@@ -3028,7 +3027,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     Empresa empresa = dbContext.EmpresaRepository.Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
+                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, "", bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
                 catch (BusinessException)
@@ -3149,7 +3148,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CorreoNotificacion != "")
                     {
-                        EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, bytLogo);
+                        EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, "", bytLogo);
                         byte[] pdfAttactment = Generador.GenerarPDF(datos);
                         JObject jobDatosAdjuntos1 = new JObject
                         {
@@ -3175,8 +3174,69 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, SucursalPorEmpresa sucursal, byte[] bytLogo)
+        public byte[] GenerarTiqueteFacturaPDF(int intIdFactura, int intLargoLinea, byte[] bytLogo)
         {
+            if (_serviceScopeFactory == null || _servicioCorreo == null) throw new Exception("Service factory or email service not set");
+            using (var dbContext = _serviceScopeFactory .CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    if (factura == null) throw new BusinessException("La registro de la factura no existe.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe.");
+                    foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
+                    {
+                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        if (producto != null) detalleFactura.Producto = producto;
+                    }
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    Usuario usuario = dbContext.UsuarioRepository.Where(x => x.IdUsuario == factura.IdUsuario).FirstOrDefault();
+                    string strUsuario = "";
+                    if (usuario != null) strUsuario = usuario.CodigoUsuario;
+                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, strUsuario, bytLogo);
+                    return Generador.GenerarTiquetePDF(datos, intLargoLinea);
+                }
+                catch (BusinessException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al enviar por correo la factura con ID: " + intIdFactura, ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al enviar el documento por correo. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public byte[] GenerarTiqueteCierreCajaPDF(int intIdCierre, int intLargoLinea)
+        {
+            if (_serviceScopeFactory == null || _servicioCorreo == null) throw new Exception("Service factory or email service not set");
+            using (var dbContext = _serviceScopeFactory .CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    CierreCaja cierreCaja = dbContext.CierreCajaRepository.FirstOrDefault(x => x.IdCierre == intIdCierre);
+                    if (cierreCaja == null) throw new BusinessException("El registro del cierre de caja no existe.");
+                    Empresa empresa = dbContext.EmpresaRepository.Include("RolePorEmpresa").Where(x => x.IdEmpresa == cierreCaja.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    return Generador.GenerarTiqueteCierreCaja(empresa, cierreCaja, intLargoLinea);
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al generar el tiquete de cierre de caja: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al generar el tiquete de cierre de caja. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, SucursalPorEmpresa sucursal, string codigoUsuario, byte[] bytLogo)
+        {
+            decimal decSubTotal = factura.Gravado + factura.Exonerado + factura.Excento;
+            decimal decTotalFactura = decSubTotal + factura.Impuesto;
             EstructuraPDF datos = new EstructuraPDF
             {
                 PoweredByLogotipo = bytLogo,
@@ -3208,13 +3268,34 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 datos.Consecutivo = factura.IdDocElectronico.Substring(21, 20);
             }
             datos.CondicionVenta = CondicionDeVenta.ObtenerDescripcion(factura.IdCondicionVenta);
-            datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
+            datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy");
+            datos.Usuario = codigoUsuario;
+            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
             if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
-                datos.MedioPago = "Crédito";
-            else if (factura.DesglosePagoFactura.ToList().Count > 1)
-                datos.MedioPago = "Otros";
+            {
+                EstructuraPDFFormaPago detalleFormaPago = new EstructuraPDFFormaPago
+                {
+                    Descripcion = "Crédito",
+                    Monto = decTotalFactura.ToString("N2", CultureInfo.InvariantCulture)
+                };
+                datos.DetalleFormaPago.Add(detalleFormaPago);
+                datos.MontoPagado = decTotalFactura.ToString("N2", CultureInfo.InvariantCulture);
+            }
             else
-                datos.MedioPago = FormaDePago.ObtenerDescripcion(factura.DesglosePagoFactura.FirstOrDefault().IdFormaPago);
+            {
+                decimal decMontoPagado = 0;
+                foreach (DesglosePagoFactura desglosePago in factura.DesglosePagoFactura)
+                {
+                    EstructuraPDFFormaPago detalleFormaPago = new EstructuraPDFFormaPago
+                    {
+                        Descripcion = FormaDePago.ObtenerDescripcion(desglosePago.IdFormaPago),
+                        Monto = desglosePago.MontoLocal.ToString("N2", CultureInfo.InvariantCulture)
+                    };
+                    datos.DetalleFormaPago.Add(detalleFormaPago);
+                    decMontoPagado += desglosePago.MontoLocal;
+                }
+                datos.MontoPagado = decMontoPagado.ToString("N2", CultureInfo.InvariantCulture);
+            }
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
@@ -3235,13 +3316,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.DetalleServicio = new List<EstructuraPDFDetalleServicio>();
             foreach (DetalleFactura linea in factura.DetalleFactura)
             {
-                decimal decTotalLinea = linea.Cantidad * linea.PrecioVenta;
+                decimal decPrecioConIva = linea.PrecioVenta * (1 + linea.PorcentajeIVA / 100);
+                decimal decTotalLinea = linea.Cantidad * decPrecioConIva;
                 EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
                 {
                     Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
                     Codigo = linea.Producto.CodigoClasificacion,
                     Detalle = linea.Descripcion,
-                    PrecioUnitario = linea.PrecioVenta.ToString("N2", CultureInfo.InvariantCulture),
+                    PrecioUnitario = decPrecioConIva.ToString("N2", CultureInfo.InvariantCulture),
                     TotalLinea = decTotalLinea.ToString("N2", CultureInfo.InvariantCulture)
                 };
                 datos.DetalleServicio.Add(detalle);
@@ -3251,9 +3333,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.TotalGravado = factura.Gravado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExonerado = factura.Exonerado.ToString("N2", CultureInfo.InvariantCulture);
             datos.TotalExento = factura.Excento.ToString("N2", CultureInfo.InvariantCulture);
+            datos.Subtotal = decSubTotal.ToString("N2", CultureInfo.InvariantCulture);
             datos.Descuento = factura.Descuento.ToString("N2", CultureInfo.InvariantCulture);
             datos.Impuesto = factura.Impuesto.ToString("N2", CultureInfo.InvariantCulture);
-            datos.TotalGeneral = (factura.Gravado + factura.Exonerado + factura.Excento + factura.Impuesto).ToString("N2", CultureInfo.InvariantCulture);
+            datos.TotalGeneral = decTotalFactura.ToString("N2", CultureInfo.InvariantCulture);
+            datos.MontoPagado = factura.MontoPagado.ToString("N2", CultureInfo.InvariantCulture);
+            datos.MontoCambio = (factura.MontoPagado - decTotalFactura).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = factura.IdTipoMoneda == 1 ? "CRC" : "USD";
             datos.TipoDeCambio = "1";
             return datos;
@@ -3291,7 +3376,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CondicionVenta = "Proforma";
             datos.PlazoCredito = "";
             datos.Fecha = apartado.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-            datos.MedioPago = "";
+            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
@@ -3368,7 +3453,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CondicionVenta = "Efectivo";
             datos.PlazoCredito = "";
             datos.Fecha = ordenServicio.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-            datos.MedioPago = "";
+            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
@@ -3444,7 +3529,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CondicionVenta = "Proforma";
             datos.PlazoCredito = "";
             datos.Fecha = proforma.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-            datos.MedioPago = "";
+            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
@@ -3652,13 +3737,27 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
             XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
+            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
             if (documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/"))
             {
-                datos.MedioPago = FormaDePago.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText));
+                EstructuraPDFFormaPago detalleFormaPago = new EstructuraPDFFormaPago
+                {
+                    Descripcion = FormaDePago.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText)),
+                    Monto = resumenFacturaNode["MedioPago"].ChildNodes.Item(1).InnerText
+                };
+                datos.DetalleFormaPago.Add(detalleFormaPago);
             }
             else
             {
-                datos.MedioPago = resumenFacturaNode["MedioPago"] != null ? FormaDePago.ObtenerDescripcion(int.Parse(resumenFacturaNode["MedioPago"].ChildNodes.Item(0).InnerText)) : "Sin especificar";
+                if (resumenFacturaNode["MedioPago"] != null)
+                {
+                    EstructuraPDFFormaPago detalleFormaPago = new EstructuraPDFFormaPago
+                    {
+                        Descripcion =  FormaDePago.ObtenerDescripcion(int.Parse(resumenFacturaNode["MedioPago"].ChildNodes.Item(0).InnerText)),
+                        Monto = resumenFacturaNode["MedioPago"].ChildNodes.Item(1).InnerText
+                    };
+                    datos.DetalleFormaPago.Add(detalleFormaPago);
+                }
             }
             datos.TotalGravado = string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalGravado"].InnerText, CultureInfo.InvariantCulture));
             datos.TotalExonerado = resumenFacturaNode["TotalExonerado"] != null && resumenFacturaNode["TotalExonerado"].ChildNodes.Count > 0 ? string.Format("{0:N2}", Convert.ToDouble(resumenFacturaNode["TotalExonerado"].InnerText, CultureInfo.InvariantCulture)) : "0.00";
@@ -3748,6 +3847,40 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 catch (Exception ex)
                 {
                     if (_logger != null) _logger.LogError("Error al enviar notificación del orden de servicio al receptor para el documento con ID: " + intIdOrden, ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al notificar la orden de servicio al cliente. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public byte[] GenerarTiqueteOrdenServicioPDF(int intIdOrdenServicio, int intLargoLinea, byte[] bytLogo)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente").Include("DetalleOrdenServicio.Producto").Where(x => x.IdOrden == intIdOrdenServicio).FirstOrDefault();
+                    if (ordenServicio == null) throw new BusinessException("No existe registro de orden de servicio para el identificador suministrado: " + intIdOrdenServicio);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == ordenServicio.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La sucursal registrada en la orden de servicio no existe.");
+                    foreach (DetalleOrdenServicio detalleOrden in ordenServicio.DetalleOrdenServicio)
+                    {
+                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleOrden.IdProducto);
+                        if (producto != null) detalleOrden.Producto = producto;
+                    }
+                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
+                    return Generador.GenerarTiquetePDF(datos, intLargoLinea);
+                }
+                catch (BusinessException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al enviar notificación del orden de servicio al receptor para el documento con ID: " + intIdOrdenServicio, ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al notificar la orden de servicio al cliente. Por favor consulte con su proveedor.");
                 }

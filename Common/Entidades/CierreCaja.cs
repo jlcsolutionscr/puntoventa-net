@@ -10,6 +10,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdCierre { get; set; }
         public DateTime FechaCierre { get; set; }
         public decimal FondoInicio { get; set; }
+        public decimal EfectivoCierreAnterior { get; set; }
         public decimal AdelantosApartadoEfectivo { get; set; }
         public decimal AdelantosApartadoTarjeta { get; set; }
         public decimal AdelantosApartadoBancos { get; set; }
@@ -33,6 +34,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal LiquidacionTarjeta { get; set; }
         public decimal VentasCredito { get; set; }
         public decimal ComprasCredito { get; set; }
+        public decimal EfectivoCierreSiguiente { get; set; }
         public decimal RetiroEfectivo { get; set; }
         public decimal FondoCierre { get; set; }
         public string Observaciones { get; set; }

@@ -201,7 +201,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                ParametroContable efectivo = null;
+                ParametroContable efectivoParam = null;
                 ParametroContable ingresoParam = null;
                 ParametroContable cuentaPorCobrarTarjetaParam = null;
                 ParametroContable gastoComisionParam = null;
@@ -216,11 +216,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
-                        efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
+                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
                         cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentasPorCobrarTarjeta).FirstOrDefault();
                         gastoComisionParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.GastoComisionTarjeta).FirstOrDefault();
                         ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.IVAPorPagar).FirstOrDefault();
-                        if (efectivo == null || cuentaPorCobrarTarjetaParam == null || gastoComisionParam == null || ivaPorPagarParam == null)
+                        if (efectivoParam == null || cuentaPorCobrarTarjetaParam == null || gastoComisionParam == null || ivaPorPagarParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                     }
                     CuentaIngreso cuentaIngreso = dbContext.CuentaIngresoRepository.Find(ingreso.IdCuenta);
@@ -231,6 +231,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.IngresoRepository.Add(ingreso);
                     if (empresa.Contabiliza)
                     {
+                        ingresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeIngresos & x.IdProducto == cuentaIngreso.IdCuenta).FirstOrDefault();
+                        if (ingresoParam == null)
+                            throw new BusinessException("No existe parametrización contable para la cuenta de ingresos " + cuentaIngreso.IdCuenta + " y no se puede continuar. Por favor verificar.");
                         int intLineaDetalleAsiento = 0;
                         asiento = new Asiento
                         {
@@ -241,23 +244,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Detalle = "Registro de ingreso nro. "
                         };
                         DetalleAsiento detalleAsiento = null;
-                        detalleAsiento = new DetalleAsiento();
-                        intLineaDetalleAsiento += 1;
-                        detalleAsiento.Linea = intLineaDetalleAsiento;
-                        detalleAsiento.IdCuenta = efectivo.IdCuenta;
-                        detalleAsiento.Debito = ingreso.Monto;
-                        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                        detalleAsiento = new DetalleAsiento
+                        {
+                            Linea = intLineaDetalleAsiento += 1,
+                            IdCuenta = efectivoParam.IdCuenta,
+                            Debito = ingreso.Monto,
+                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoParam.IdCuenta).SaldoActual
+                        };
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalDebito += detalleAsiento.Debito;
-                        detalleAsiento = new DetalleAsiento();
-                        intLineaDetalleAsiento += 1;
-                        detalleAsiento.Linea = intLineaDetalleAsiento;
-                        ingresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeIngresos & x.IdProducto == cuentaIngreso.IdCuenta).FirstOrDefault();
-                        if (ingresoParam == null)
-                            throw new BusinessException("No existe parametrización contable para la cuenta de ingresos " + cuentaIngreso.IdCuenta + " y no se puede continuar. Por favor verificar.");
-                        detalleAsiento.IdCuenta = ingresoParam.IdCuenta;
-                        detalleAsiento.Credito = ingreso.Monto;
-                        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                        detalleAsiento = new DetalleAsiento
+                        {
+                            Linea = intLineaDetalleAsiento += 1,
+                            IdCuenta = ingresoParam.IdCuenta,
+                            Credito = ingreso.Monto,
+                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(ingresoParam.IdCuenta).SaldoActual
+                        };
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalCredito += detalleAsiento.Credito;
                         IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
@@ -551,7 +553,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                ParametroContable efectivo = null;
+                ParametroContable efectivoParam = null;
                 ParametroContable egresoParam = null;
                 Asiento asiento = null;
                 try
@@ -563,8 +565,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
-                        efectivo = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
-                        if (efectivo == null)
+                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.Efectivo).FirstOrDefault();
+                        if (efectivoParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                     }
                     CuentaEgreso cuentaEgreso = dbContext.CuentaEgresoRepository.Find(egreso.IdCuenta);
@@ -575,6 +577,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.EgresoRepository.Add(egreso);
                     if (empresa.Contabiliza)
                     {
+                        egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeEgresos & x.IdProducto == cuentaEgreso.IdCuenta).FirstOrDefault();
+                        if (egresoParam == null)
+                            throw new BusinessException("No existe parametrización contable para la cuenta de ingresos " + cuentaEgreso.IdCuenta + " y no se puede continuar. Por favor verificar.");
                         int intLineaDetalleAsiento = 0;
                         asiento = new Asiento
                         {
@@ -584,23 +589,22 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             TotalDebito = 0,
                             Detalle = "Registro de egreso nro. "
                         };
-                        DetalleAsiento detalleAsiento = new DetalleAsiento();
-                        intLineaDetalleAsiento += 1;
-                        detalleAsiento.Linea = intLineaDetalleAsiento;
-                        egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == StaticTipoParametroContable.CuentaDeEgresos & x.IdProducto == cuentaEgreso.IdCuenta).FirstOrDefault();
-                        if (egresoParam == null)
-                            throw new BusinessException("No existe parametrización contable para la cuenta de ingresos " + cuentaEgreso.IdCuenta + " y no se puede continuar. Por favor verificar.");
-                        detalleAsiento.IdCuenta = egresoParam.IdCuenta;
-                        detalleAsiento.Debito = egreso.Monto;
-                        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                        DetalleAsiento detalleAsiento = new DetalleAsiento
+                        {
+                            Linea = intLineaDetalleAsiento += 1,
+                            IdCuenta = egresoParam.IdCuenta,
+                            Debito = egreso.Monto,
+                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(egresoParam.IdCuenta).SaldoActual
+                        };
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalDebito += detalleAsiento.Debito;
-                        detalleAsiento = new DetalleAsiento();
-                        intLineaDetalleAsiento += 1;
-                        detalleAsiento.Linea = intLineaDetalleAsiento;
-                        detalleAsiento.IdCuenta = efectivo.IdCuenta;
-                        detalleAsiento.Credito = egreso.Monto;
-                        detalleAsiento.SaldoAnterior = dbContext.CatalogoContableRepository.Find(detalleAsiento.IdCuenta).SaldoActual;
+                        detalleAsiento = new DetalleAsiento
+                        {
+                            Linea = intLineaDetalleAsiento += 1,
+                            IdCuenta = efectivoParam.IdCuenta,
+                            Credito = egreso.Monto,
+                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoParam.IdCuenta).SaldoActual
+                        };
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalCredito += detalleAsiento.Credito;
                         IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
@@ -762,7 +766,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.Include("Empresa").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                 try
                 {
                     CultureInfo provider = CultureInfo.InvariantCulture;
@@ -778,9 +782,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<DetalleMovimientoCierreCaja> listaMovimientos = new List<DetalleMovimientoCierreCaja>();
                     CierreCaja cierreAnterior = cierreAnterior = dbContext.CierreCajaRepository.OrderByDescending(b => b.IdCierre).FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (cierreAnterior != null)
+                    {
                         cierre.FondoInicio = cierreAnterior.FondoCierre;
+                        cierre.EfectivoCierreAnterior = cierreAnterior.EfectivoCierreSiguiente;
+                    }
                     else
+                    {
                         cierre.FondoInicio = 0;
+                        cierre.EfectivoCierreAnterior = 0;
+                    }
+                    cierre.FondoCierre = sucursal.MontoCierreEfectivo;
                     cierre.AdelantosApartadoEfectivo = 0;
                     cierre.AdelantosApartadoTarjeta = 0;
                     cierre.AdelantosApartadoBancos = 0;
@@ -803,6 +814,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.ComisionTarjeta = 0;
                     cierre.VentasCredito = 0;
                     cierre.ComprasCredito = 0;
+                    cierre.EfectivoCierreSiguiente = 0;
                     cierre.RetiroEfectivo = 0;
                     cierre.LiquidacionTarjeta = 0;
 
@@ -1262,6 +1274,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
                     cierre.DetalleMovimientoCierreCaja = listaMovimientos;
+                    cierre.RetiroEfectivo = cierre.FondoInicio + cierre.EfectivoCierreAnterior + cierre.VentasEfectivo + cierre.AdelantosApartadoEfectivo + cierre.AdelantosOrdenEfectivo + cierre.PagosCxCEfectivo + cierre.IngresosEfectivo - cierre.ComprasEfectivo - cierre.PagosCxPEfectivo - cierre.EgresosEfectivo - cierre.FondoCierre;
                     return cierre;
                 }
                 catch (BusinessException)

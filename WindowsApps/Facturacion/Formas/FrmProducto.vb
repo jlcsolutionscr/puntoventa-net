@@ -148,7 +148,7 @@ Public Class FrmProducto
                 txtPorcDescuento.Text = FormatoPrecio(datos.PorcDescuento, 2)
                 cboTipoImpuesto.SelectedValue = datos.IdImpuesto
                 txtIndExistencia.Text = FormatoPrecio(datos.IndExistencia, 2)
-                If datos.Imagen IsNot Nothing Then
+                If datos.Imagen IsNot Nothing And datos.Imagen.Length > 0 Then
                     ptbImagen.Image = Bytes_Imagen(datos.Imagen)
                 End If
                 txtMarca.Text = datos.Marca
@@ -215,11 +215,11 @@ Public Class FrmProducto
         datos.Tipo = cboTipoProducto.SelectedValue
         datos.IdImpuesto = cboTipoImpuesto.SelectedValue
         datos.IndExistencia = txtIndExistencia.Text
-        'If ptbImagen.Image IsNot Nothing Then
-        '    datos.Imagen = Imagen_Bytes(ptbImagen.Image)
-        'Else
-        '    datos.Imagen = Nothing
-        'End If
+        If ptbImagen.Image IsNot Nothing Then
+            datos.Imagen = Imagen_Bytes(ptbImagen.Image)
+        Else
+            datos.Imagen = Array.Empty(Of Byte)
+        End If
         datos.Marca = txtMarca.Text
         datos.Observacion = txtObservacion.Text
         datos.Activo = chkActivo.Checked

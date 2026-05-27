@@ -124,7 +124,7 @@ Partial Class FrmFactura
         Me.txtDescuento = New System.Windows.Forms.TextBox()
         Me.Label17 = New System.Windows.Forms.Label()
         Me.cboActividadEconomica = New System.Windows.Forms.ComboBox()
-        Me.Label18 = New System.Windows.Forms.Label()
+        Me.lblActividadEconomica = New System.Windows.Forms.Label()
         Me.Label19 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleFactura, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1243,18 +1243,18 @@ Partial Class FrmFactura
         Me.cboActividadEconomica.TabIndex = 204
         Me.cboActividadEconomica.TabStop = False
         '
-        'Label18
+        'lblActividadEconomica
         '
-        Me.Label18.BackColor = System.Drawing.Color.Transparent
-        Me.Label18.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label18.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label18.Location = New System.Drawing.Point(9, 118)
-        Me.Label18.Name = "Label18"
-        Me.Label18.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label18.Size = New System.Drawing.Size(87, 19)
-        Me.Label18.TabIndex = 205
-        Me.Label18.Text = "Actividad Econ:"
-        Me.Label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.lblActividadEconomica.BackColor = System.Drawing.Color.Transparent
+        Me.lblActividadEconomica.Cursor = System.Windows.Forms.Cursors.Default
+        Me.lblActividadEconomica.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblActividadEconomica.Location = New System.Drawing.Point(9, 118)
+        Me.lblActividadEconomica.Name = "lblActividadEconomica"
+        Me.lblActividadEconomica.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.lblActividadEconomica.Size = New System.Drawing.Size(87, 19)
+        Me.lblActividadEconomica.TabIndex = 205
+        Me.lblActividadEconomica.Text = "Actividad Econ:"
+        Me.lblActividadEconomica.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label19
         '
@@ -1278,7 +1278,7 @@ Partial Class FrmFactura
         Me.ClientSize = New System.Drawing.Size(817, 642)
         Me.Controls.Add(Me.Label19)
         Me.Controls.Add(Me.cboActividadEconomica)
-        Me.Controls.Add(Me.Label18)
+        Me.Controls.Add(Me.lblActividadEconomica)
         Me.Controls.Add(Me.txtDescuento)
         Me.Controls.Add(Me.Label17)
         Me.Controls.Add(Me.txtTelefono)
@@ -1427,6 +1427,6 @@ Partial Class FrmFactura
     Public WithEvents txtDescuento As TextBox
     Public WithEvents Label17 As Label
     Public WithEvents cboActividadEconomica As ComboBox
-    Public WithEvents Label18 As Label
+    Public WithEvents lblActividadEconomica As Label
     Public WithEvents Label19 As Label
 End Class

@@ -7,11 +7,13 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdProducto { get; set; }
         public string Codigo { get; set; }
         public string Descripcion { get; set; }
+        public string InformacionAdicional { get; set; }
         public decimal Cantidad { get; set; }
         public decimal PrecioVenta { get; set; }
         public bool Excento { get; set; }
         public decimal PorcentajeIVA { get; set; }
         public decimal PorcDescuento { get; set; }
+        public bool Pagado { get; set; }
         public Producto Producto { get; set; }
     }
 }

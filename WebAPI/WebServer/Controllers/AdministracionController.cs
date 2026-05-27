@@ -360,7 +360,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 JObject parametrosJO = JObject.Parse(strDatos);
                 string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
                 Empresa empresa = JsonConvert.DeserializeObject<Empresa>(strEntidad);
-                _servicioMantenimiento.ActualizarEmpresa(empresa);
+                _servicioMantenimiento.ActualizarEmpresa(empresa, null, null, null);
             }
             catch (Exception ex)
             {
@@ -395,35 +395,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 string strListado = parametrosJO.Property("Datos").Value.ToString();
                 List<RolePorEmpresa> listado = JsonConvert.DeserializeObject<List<RolePorEmpresa>>(strListado);
                 _servicioMantenimiento.ActualizarRolePorEmpresa(intIdEmpresa, listado);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        [HttpPost("actualizarlogoempresa")]
-        public void ActualizarLogoEmpresa([FromBody] string strDatos)
-        {
-            try
-            {
-                JObject parametrosJO = JObject.Parse(strDatos);
-                int intIdEmpresa = int.Parse(parametrosJO.Property("Id").Value.ToString());
-                string strLogotipo = parametrosJO.Property("Datos").Value.ToString();
-                _servicioMantenimiento.ActualizarLogoEmpresa(intIdEmpresa, strLogotipo);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        [HttpGet("removerlogoempresa")]
-        public void RemoverLogoEmpresa(int idempresa)
-        {
-            try
-            {
-                _servicioMantenimiento.ActualizarLogoEmpresa(idempresa, "");
             }
             catch (Exception ex)
             {

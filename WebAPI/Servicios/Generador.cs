@@ -1,4 +1,6 @@
 ﻿using LeandroSoftware.ServicioWeb.EstructuraDatos;
+using LeandroSoftware.Common.Dominio.Entidades;
+using System.Globalization;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Drawing.Layout;
 using PdfSharpCore.Pdf;
@@ -41,21 +43,21 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             if (direccionArray.Length > 0)
             {
                 intLineasDireccion = 1;
-                string lineaDireccion = "";
+                string lineaTexto = "";
                 do
                 {
                     string strPalabra = direccionArray[0];
                     direccionArray = direccionArray.Skip(1).ToArray();
-                    if (lineaDireccion.Length > 50) {
-                        gfx.DrawString(lineaDireccion, font, XBrushes.Black, new XRect(210, 100 + (intLineasDireccion * 15), 200, 15), XStringFormats.TopLeft);
-                        lineaDireccion = strPalabra;
+                    if (lineaTexto.Length > 50) {
+                        gfx.DrawString(lineaTexto, font, XBrushes.Black, new XRect(210, 100 + (intLineasDireccion * 15), 200, 15), XStringFormats.TopLeft);
+                        lineaTexto = strPalabra;
                         intLineasDireccion++;
                     } else {
-                        lineaDireccion += (lineaDireccion == "" ? "" : " ") + strPalabra;
+                        lineaTexto += (lineaTexto == "" ? "" : " ") + strPalabra;
                     }
                 } while (direccionArray.Length > 0);
-                if (lineaDireccion.Length > 0) {
-                    gfx.DrawString(lineaDireccion, font, XBrushes.Black, new XRect(210, 100 + (intLineasDireccion * 15), 200, 15), XStringFormats.TopLeft);
+                if (lineaTexto.Length > 0) {
+                    gfx.DrawString(lineaTexto, font, XBrushes.Black, new XRect(210, 100 + (intLineasDireccion * 15), 200, 15), XStringFormats.TopLeft);
                 }
             }
             gfx.DrawString("CORREO: " + datos.CorreoElectronicoEmisor, font, XBrushes.Black, new XRect(210, 115 + (intLineasDireccion * 15), 200, 15), XStringFormats.TopLeft);
@@ -84,8 +86,13 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             gfx.DrawString("Fecha: ", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
             gfx.DrawString(datos.Fecha, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
             gfx.DrawString("Medio de Pago: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
-            gfx.DrawString(datos.MedioPago, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
-
+            string strMediosPago = "";
+            foreach (EstructuraPDFFormaPago desglosePago in datos.DetalleFormaPago)
+            {
+                if (strMediosPago != "") strMediosPago += ", ";
+                strMediosPago += desglosePago.Descripcion;
+            }
+            gfx.DrawString(strMediosPago, font, XBrushes.Black, new XRect(470, lineaPos, 80, 12), XStringFormats.TopLeft);
             lineaPos += 12;
             gfx.DrawString("Codigo Moneda:", font, XBrushes.Black, new XRect(20, lineaPos, 80, 12), XStringFormats.TopLeft);
             gfx.DrawString(datos.CodigoMoneda, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
@@ -299,6 +306,293 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             MemoryStream stream = new MemoryStream();
             document.Save(stream, false);
             return stream.ToArray();
+        }
+
+        public static byte[] GenerarTiquetePDF(EstructuraPDF datos, int intLargoLinea)
+        {
+            PdfDocument document = new PdfDocument();
+            XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
+            document.Info.Title = datos.TituloDocumento;
+            PdfPage page = document.AddPage();
+            page.Width = XUnit.FromCentimeter(intLargoLinea / 10);
+            int availableChars = (int) Math.Floor(intLargoLinea / 3.0);
+            List<string> lineasDescEmpresa = obtenerLineasPorAnchoDeLinea(datos.NombreComercial.ToUpper().Split(" "), availableChars);
+            availableChars = (int) Math.Floor(intLargoLinea / 2.5);
+            List<string> lineasDireccion = obtenerLineasPorAnchoDeLinea(datos.DireccionEmisor.ToUpper().Split(" "), availableChars);
+            List<string> lineasOtroTexto = datos.OtrosTextos != null ? obtenerLineasPorAnchoDeLinea(datos.OtrosTextos.Split(" "), availableChars) : new List<string>();
+            List<string> lineasLeyenda = datos.LeyendaPiePagina != null ? obtenerLineasPorAnchoDeLinea(datos.LeyendaPiePagina.Split(" "), availableChars) : new List<string>();
+            page.Height = 326 + (datos.PoseeReceptor ? 12 : 0) + (lineasDescEmpresa.Count * 12) + (datos.Logotipo != null ? 45 : 0) + (lineasDireccion.Count * 12) + (datos.DetalleServicio.Count * 24) + (datos.DetalleFormaPago.Count * 12) + (datos.Clave != null ? 90 : 0) + (datos.EsDocumentoElectronico ? 36 : 0) + (datos.OtrosTextos != null ? 12 + (lineasOtroTexto.Count * 12) : 0) + (datos.LeyendaPiePagina != null ? 12 + (lineasLeyenda.Count * 12) : 0);
+            double pageWidth = page.Width;
+            double pageHeight = page.Height;
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XTextFormatter tf = new XTextFormatter(gfx)
+            {
+                Alignment = XParagraphAlignment.Right
+            };
+            int lineaPos = 20;
+            if (datos.Logotipo != null)
+            {
+                double x =  (pageWidth - 120) / 2;
+                XImage logoImage = XImage.FromStream(() => new MemoryStream(datos.Logotipo));
+                gfx.DrawImage(logoImage, x, lineaPos, 120, 50);
+                lineaPos += 50;
+            }
+
+            XFont font = new XFont("Arial", 10, XFontStyle.Bold, options);
+            for (int intPos = 0; intPos < lineasDescEmpresa.Count; intPos++)
+            {
+                lineaPos += 12;
+                gfx.DrawString(lineasDescEmpresa[intPos], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            }
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
+            lineaPos += 12;
+            gfx.DrawString("Ced: " + datos.IdentificacionEmisor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            for (int intPos = 0; intPos < lineasDireccion.Count; intPos++)
+            {
+                lineaPos += 12;
+                gfx.DrawString(lineasDireccion[intPos], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            }
+            lineaPos += 12;
+            gfx.DrawString(datos.CorreoElectronicoEmisor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            lineaPos += 12;
+            gfx.DrawString("Tel: " +datos.TelefonoEmisor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            lineaPos += 20;
+            font = new XFont("Arial", 10, XFontStyle.Bold, options);
+            gfx.DrawString("Fact. Nro: " + datos.ConsecInterno, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            lineaPos += 12;
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
+            gfx.DrawString("Fecha: " + datos.Fecha, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            lineaPos += 12;
+            gfx.DrawString("Atentido por: " + datos.Usuario, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            lineaPos += 12;
+            gfx.DrawString(datos.NombreReceptor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            if (datos.PoseeReceptor)
+            {
+                lineaPos += 12;
+                gfx.DrawString(datos.IdentificacionReceptor, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            }
+            lineaPos += 24;
+            double dblMitadLinea = (pageWidth - 10) / 2;
+            font = new XFont("Arial", 10, XFontStyle.Bold, options);
+            gfx.DrawString("Descripción", font, XBrushes.Black, new XRect(2, lineaPos, pageWidth, 12), XStringFormats.TopLeft);
+            lineaPos += 12;
+            gfx.DrawString("Cant.", font, XBrushes.Black, new XRect(2, lineaPos, 10, 12), XStringFormats.TopLeft);
+            tf.DrawString("Precio Unit.", font, XBrushes.Black, new XRect(13, lineaPos, dblMitadLinea + 10, 12), XStringFormats.TopLeft);
+            tf.DrawString("Total", font, XBrushes.Black, new XRect(dblMitadLinea + 11, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
+            gfx.DrawLine(XPens.DarkGray, 1, lineaPos + 13, pageWidth - 1, lineaPos + 13);
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
+            foreach (EstructuraPDFDetalleServicio linea in datos.DetalleServicio)
+            {
+                lineaPos += 12;
+                string strDescripcion = linea.Detalle.Length > availableChars ? linea.Detalle.Substring(0, availableChars) : linea.Detalle;
+                gfx.DrawString(strDescripcion, font, XBrushes.Black, new XRect(2, lineaPos, pageWidth, 12), XStringFormats.TopLeft);
+                lineaPos += 12;
+                gfx.DrawString(linea.Cantidad, font, XBrushes.Black, new XRect(2, lineaPos, 10, 12), XStringFormats.TopLeft);
+                tf.DrawString(linea.PrecioUnitario, font, XBrushes.Black, new XRect(13, lineaPos, dblMitadLinea + 10, 12), XStringFormats.TopLeft);
+                tf.DrawString(linea.TotalLinea, font, XBrushes.Black, new XRect(dblMitadLinea + 11, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
+            }
+            font = new XFont("Arial", 10, XFontStyle.Bold, options);
+            gfx.DrawLine(XPens.DarkGray, 1, lineaPos + 13, pageWidth - 1, lineaPos + 13);
+            dblMitadLinea = pageWidth / 2;
+            lineaPos += 17;
+            gfx.DrawString("Subtotal:", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
+            tf.DrawString(datos.Subtotal, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
+            lineaPos += 12;
+            font = new XFont("Arial", 10, XFontStyle.Bold, options);
+            gfx.DrawString("Total Impuesto:", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
+            tf.DrawString(datos.Impuesto, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
+            lineaPos += 12;
+            font = new XFont("Arial", 10, XFontStyle.Bold, options);
+            gfx.DrawString("Total a pagar:", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
+            tf.DrawString(datos.TotalGeneral, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
+            lineaPos += 22;
+            gfx.DrawString("Desglose de pago", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
+            
+            foreach (EstructuraPDFFormaPago desglosePago in datos.DetalleFormaPago)
+            {
+                lineaPos += 12;
+                gfx.DrawString(desglosePago.Descripcion, font, XBrushes.Black, new XRect(48, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
+                tf.DrawString(desglosePago.Monto, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 48, 12), XStringFormats.TopLeft);
+            }
+            font = new XFont("Arial", 10, XFontStyle.Bold, options);
+            lineaPos += 22;
+            gfx.DrawString("Pago con: ", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
+            tf.DrawString(datos.MontoPagado, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
+            lineaPos += 22;
+            gfx.DrawString("Cambio:", font, XBrushes.Black, new XRect(12, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
+            tf.DrawString(datos.MontoCambio, font, XBrushes.Black, new XRect(dblMitadLinea + 1, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
+            if (datos.OtrosTextos != null) {
+                lineaPos += 12;
+                for (int intPos = 0; intPos < lineasOtroTexto.Count; intPos++)
+                {
+                    lineaPos += 12;
+                    gfx.DrawString(lineasOtroTexto[intPos], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+                }
+            }
+            if (datos.EsDocumentoElectronico)
+            {
+                lineaPos += 20;
+                gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+                lineaPos += 12;
+                gfx.DrawString("Clave numérica:", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+                lineaPos += 12;
+                gfx.DrawString(datos.Clave.Substring(0, 25), font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+                lineaPos += 12;
+                gfx.DrawString(datos.Clave.Substring(25, 25), font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+                lineaPos += 12;
+                gfx.DrawString("Consecutivo:", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+                lineaPos += 12;
+                gfx.DrawString(datos.Consecutivo, font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+                lineaPos += 24;
+                gfx.DrawString("AUTORIZADO MEDIANTE RESOLUCION", font, XBrushes.Black, new XRect(1, lineaPos, pageWidth, 12), XStringFormats.Center);
+                lineaPos += 12;
+                gfx.DrawString("DGT-R-48-2016 DEL 07-OCT-2016", font, XBrushes.Black, new XRect(1, lineaPos, pageWidth, 12), XStringFormats.Center);
+            }
+            if (datos.LeyendaPiePagina != null) {
+                lineaPos += 12;
+                for (int intPos = 0; intPos < lineasLeyenda.Count; intPos++)
+                {
+                    lineaPos += 12;
+                    gfx.DrawString(lineasLeyenda[intPos], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+                }
+            }
+            lineaPos += 24;
+            font = new XFont("Arial", 8, XFontStyle.BoldItalic, options);
+            tf.DrawString("Powered by", font, XBrushes.Black, new XRect(1, lineaPos + 13, pageWidth - 100, 12), XStringFormats.TopLeft);
+            XImage poweredByImage = XImage.FromStream(() => new MemoryStream(datos.PoweredByLogotipo));
+            gfx.DrawImage(poweredByImage, pageWidth - 90, lineaPos, 88, 40);
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream, false);
+            byte[] bytes = stream.ToArray();
+            return bytes;
+        }
+
+        public static byte[] GenerarTiqueteCierreCaja(Empresa empresa, CierreCaja cierreCaja, int intLargoLinea)
+        {
+            PdfDocument document = new PdfDocument();
+            XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
+            document.Info.Title = "Cierre de Efectivo de Caja";
+            PdfPage page = document.AddPage();
+            page.Width = XUnit.FromCentimeter(intLargoLinea / 10);
+            int availableChars = (int) Math.Floor(intLargoLinea / 3.0);
+            bool bolGeneraApartado  = empresa.RolePorEmpresa.Where(role => new List<int> { 1, 201 }.Contains(role.IdRole)).Count() > 0;
+            bool bolGeneraOrdenServicio = empresa.RolePorEmpresa.Where(role => new List<int> { 1, 202 }.Contains(role.IdRole)).Count() > 0;
+            bool bolAplicaPagosCxC = empresa.RolePorEmpresa.Where(role => new List<int> { 1, 300 }.Contains(role.IdRole)).Count() > 0;
+            bool bolAplicaPagosCxP = empresa.RolePorEmpresa.Where(role => new List<int> { 1, 301 }.Contains(role.IdRole)).Count() > 0;
+            page.Height = 480 + (bolGeneraApartado ? 20 : 0) + (bolGeneraOrdenServicio ? 20 : 0) + (bolAplicaPagosCxC ? 20 : 0) + (bolAplicaPagosCxP ? 20 : 0);
+            double pageWidth = page.Width;
+            double pageHeight = page.Height;
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XTextFormatter tf = new XTextFormatter(gfx)
+            {
+                Alignment = XParagraphAlignment.Right
+            };
+            int lineaPos = 20;
+            XFont font = new XFont("Arial", 10, XFontStyle.Bold, options);
+            gfx.DrawString("Cierre de Efectivo de Caja", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
+            lineaPos += 24;
+            gfx.DrawString("Fecha: " + cierreCaja.FechaCierre.ToString("dd/MM/yyyy hh:mm:ss tt"), font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            lineaPos += 24;
+            font = new XFont("Arial", 10, XFontStyle.Bold, options);
+            AgregarLineaDescripcionValor(gfx, tf, font, "Inicio de efectivo", cierreCaja.FondoInicio, pageWidth, lineaPos);
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Efectivo del cierre anterior", cierreCaja.EfectivoCierreAnterior, pageWidth, lineaPos);
+            lineaPos += 24;
+            gfx.DrawString("Detalle de Ingresos", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            lineaPos += 4;
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
+            if (bolGeneraApartado)
+            {
+                lineaPos += 20;
+                AgregarLineaDescripcionValor(gfx, tf, font, "Ingresos adelanto de apartados", cierreCaja.AdelantosApartadoEfectivo, pageWidth, lineaPos);
+            }
+            if (bolGeneraOrdenServicio)
+            {
+                lineaPos += 20;
+                AgregarLineaDescripcionValor(gfx, tf, font, "Ingresos adelantos de ordenes de servicio", cierreCaja.AdelantosOrdenEfectivo, pageWidth, lineaPos);
+            }   
+            if (bolAplicaPagosCxC)
+            {
+                lineaPos += 20;
+                AgregarLineaDescripcionValor(gfx, tf, font, "Pagos de CxC en efectivo", cierreCaja.PagosCxCEfectivo, pageWidth, lineaPos);
+            }
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Ingresos por ventas en efectivo", cierreCaja.VentasEfectivo, pageWidth, lineaPos);
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Otros ingresos en efectivo", cierreCaja.IngresosEfectivo, pageWidth, lineaPos);
+            font = new XFont("Arial", 10, XFontStyle.Bold);
+            lineaPos += 30;
+            gfx.DrawString("Detalle de Egresos", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            font = new XFont("Arial", 10, XFontStyle.Regular);
+            lineaPos += 30;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Compras en efectivo", cierreCaja.ComprasEfectivo, pageWidth, lineaPos);
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Otros egresos en efectivo", cierreCaja.EgresosEfectivo, pageWidth, lineaPos);
+            if (bolAplicaPagosCxP)
+            {
+                lineaPos += 20;
+                AgregarLineaDescripcionValor(gfx, tf, font, "Pagos a CxP en efectivo", cierreCaja.PagosCxPEfectivo, pageWidth, lineaPos);
+            }
+            font = new XFont("Arial", 10, XFontStyle.Bold);
+            lineaPos += 30;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Cierre de efectivo de caja", cierreCaja.FondoCierre, pageWidth, lineaPos);
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Retiro de efectivo de caja", cierreCaja.RetiroEfectivo, pageWidth, lineaPos);
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Efectivo para el siguiente cierre", cierreCaja.EfectivoCierreSiguiente, pageWidth, lineaPos);
+            lineaPos += 30;
+            gfx.DrawString("Detalle de ventas", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            font = new XFont("Arial", 10, XFontStyle.Regular);
+            lineaPos += 30;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Ventas en efectivo", cierreCaja.VentasEfectivo, pageWidth, lineaPos);
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Ventas en tarjeta", cierreCaja.VentasTarjeta, pageWidth, lineaPos);
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Ventas en transferencia", cierreCaja.VentasBancos, pageWidth, lineaPos);
+            font = new XFont("Arial", 10, XFontStyle.Bold);
+            lineaPos += 30;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Total de ventas", cierreCaja.VentasEfectivo + cierreCaja.VentasTarjeta + cierreCaja.VentasBancos, pageWidth, lineaPos);
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream, false);
+            byte[] bytes = stream.ToArray();
+            return bytes;
+        }
+
+        private static void AgregarLineaDescripcionValor(XGraphics gfx, XTextFormatter tf, XFont font, string strEtiqueta, decimal decMonto, double pageWidth, int lineaPos)
+        {
+            gfx.DrawString(strEtiqueta, font, XBrushes.Black, new XRect(2, lineaPos, pageWidth - 100, 12), XStringFormats.TopLeft);
+            tf.DrawString(decMonto.ToString("N2", CultureInfo.InvariantCulture), font, XBrushes.Black, new XRect(pageWidth - 101, lineaPos, 100, 12), XStringFormats.TopLeft);
+        }
+
+        private static List<string> obtenerLineasPorAnchoDeLinea(string[] palabras, int cantidadPorLinea)
+        {
+            List<string> lineas = new List<string>();
+            if (palabras.Length > 0)
+            {
+                int intCantidadLineas = 1;
+                string lineaTexto = "";
+                do
+                {
+                    string strPalabra = palabras[0];
+                    palabras = palabras.Skip(1).ToArray();
+                    if (lineaTexto.Length > cantidadPorLinea) {
+                        lineas.Add(lineaTexto);
+                        lineaTexto = strPalabra;
+                        intCantidadLineas++;
+                    } else {
+                        lineaTexto += (lineaTexto == "" ? "" : " ") + strPalabra;
+                    }
+                } while (palabras.Length > 0);
+                if (lineaTexto.Length > 0) {
+                    lineas.Add(lineaTexto);
+                }
+            }
+            return lineas;
         }
     }
 }

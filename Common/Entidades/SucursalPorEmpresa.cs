@@ -9,6 +9,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public string Telefono { get; set; }
         public string CorreoElectronico { get; set; }
         public bool CierreEnEjecucion { get; set; }
+        public decimal MontoCierreEfectivo { get; set; }
         public int ConsecFactura { get; set; }
         public int ConsecProforma { get; set; }
         public int ConsecOrdenServicio { get; set; }

@@ -30,6 +30,8 @@ Partial Class FrmLinea
         Me.btnInsertar = New System.Windows.Forms.Button()
         Me.dgvLineaPorSucursal = New System.Windows.Forms.DataGridView()
         Me.Label4 = New System.Windows.Forms.Label()
+        Me.txtImpresoraTiquete = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         CType(Me.ClienteBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvLineaPorSucursal, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -114,18 +116,18 @@ Partial Class FrmLinea
         Me.cboSucursal.Location = New System.Drawing.Point(92, 105)
         Me.cboSucursal.Name = "cboSucursal"
         Me.cboSucursal.Size = New System.Drawing.Size(360, 21)
-        Me.cboSucursal.TabIndex = 63
+        Me.cboSucursal.TabIndex = 3
         '
         'btnEliminar
         '
         Me.btnEliminar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnEliminar.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnEliminar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnEliminar.Location = New System.Drawing.Point(388, 264)
+        Me.btnEliminar.Location = New System.Drawing.Point(389, 290)
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnEliminar.Size = New System.Drawing.Size(64, 21)
-        Me.btnEliminar.TabIndex = 60
+        Me.btnEliminar.TabIndex = 7
         Me.btnEliminar.TabStop = False
         Me.btnEliminar.Text = "&Eliminar"
         Me.btnEliminar.UseVisualStyleBackColor = False
@@ -135,11 +137,11 @@ Partial Class FrmLinea
         Me.btnInsertar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnInsertar.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnInsertar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnInsertar.Location = New System.Drawing.Point(322, 264)
+        Me.btnInsertar.Location = New System.Drawing.Point(323, 290)
         Me.btnInsertar.Name = "btnInsertar"
         Me.btnInsertar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnInsertar.Size = New System.Drawing.Size(64, 21)
-        Me.btnInsertar.TabIndex = 61
+        Me.btnInsertar.TabIndex = 6
         Me.btnInsertar.TabStop = False
         Me.btnInsertar.Text = "&Insertar"
         Me.btnInsertar.UseVisualStyleBackColor = False
@@ -152,7 +154,7 @@ Partial Class FrmLinea
         Me.dgvLineaPorSucursal.AllowUserToResizeRows = False
         Me.dgvLineaPorSucursal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvLineaPorSucursal.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
-        Me.dgvLineaPorSucursal.Location = New System.Drawing.Point(12, 132)
+        Me.dgvLineaPorSucursal.Location = New System.Drawing.Point(13, 158)
         Me.dgvLineaPorSucursal.MultiSelect = False
         Me.dgvLineaPorSucursal.Name = "dgvLineaPorSucursal"
         Me.dgvLineaPorSucursal.ReadOnly = True
@@ -160,7 +162,7 @@ Partial Class FrmLinea
         Me.dgvLineaPorSucursal.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
         Me.dgvLineaPorSucursal.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.dgvLineaPorSucursal.Size = New System.Drawing.Size(440, 126)
-        Me.dgvLineaPorSucursal.TabIndex = 62
+        Me.dgvLineaPorSucursal.TabIndex = 5
         Me.dgvLineaPorSucursal.TabStop = False
         '
         'Label4
@@ -176,12 +178,40 @@ Partial Class FrmLinea
         Me.Label4.Text = "Sucursal:"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'txtImpresoraTiquete
+        '
+        Me.txtImpresoraTiquete.AcceptsReturn = True
+        Me.txtImpresoraTiquete.BackColor = System.Drawing.SystemColors.Window
+        Me.txtImpresoraTiquete.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtImpresoraTiquete.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtImpresoraTiquete.Location = New System.Drawing.Point(94, 132)
+        Me.txtImpresoraTiquete.MaxLength = 0
+        Me.txtImpresoraTiquete.Name = "txtImpresoraTiquete"
+        Me.txtImpresoraTiquete.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtImpresoraTiquete.Size = New System.Drawing.Size(358, 20)
+        Me.txtImpresoraTiquete.TabIndex = 4
+        '
+        'Label1
+        '
+        Me.Label1.BackColor = System.Drawing.Color.Transparent
+        Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label1.Location = New System.Drawing.Point(10, 132)
+        Me.Label1.Name = "Label1"
+        Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label1.Size = New System.Drawing.Size(78, 17)
+        Me.Label1.TabIndex = 66
+        Me.Label1.Text = "Imp-Tiquete:"
+        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmLinea
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(464, 299)
+        Me.ClientSize = New System.Drawing.Size(464, 323)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.txtImpresoraTiquete)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.cboSucursal)
         Me.Controls.Add(Me.btnEliminar)
@@ -198,9 +228,9 @@ Partial Class FrmLinea
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(480, 338)
+        Me.MaximumSize = New System.Drawing.Size(480, 362)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(480, 338)
+        Me.MinimumSize = New System.Drawing.Size(480, 362)
         Me.Name = "FrmLinea"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -223,4 +253,6 @@ Partial Class FrmLinea
     Public WithEvents btnInsertar As Button
     Friend WithEvents dgvLineaPorSucursal As DataGridView
     Public WithEvents Label4 As Label
+    Public WithEvents txtImpresoraTiquete As TextBox
+    Public WithEvents Label1 As Label
 End Class

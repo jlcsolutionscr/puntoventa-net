@@ -911,12 +911,6 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task ActualizarLogoEmpresa(int intIdEmpresa, string strLogotipo, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ActualizarLogoEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + ", Logotipo: '" + strLogotipo + "'}}";
-            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
-        }
-
         public static async Task RemoverLogoEmpresa(int intIdEmpresa, string strToken)
         {
             string strDatos = "{NombreMetodo: 'RemoverLogoEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
@@ -2089,7 +2083,7 @@ namespace LeandroSoftware.ClienteWCF
 
         public static async Task<List<EfectivoDetalle>> ObtenerListadoMovimientosOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrdenServicio, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoMovimientosOrdenServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdOrden: " + intIdOrdenServicio + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoMovimientosOrdenServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdOrdenServicio: " + intIdOrdenServicio + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<EfectivoDetalle> listado = new List<EfectivoDetalle>();
             if (respuesta != "")
@@ -2223,7 +2217,7 @@ namespace LeandroSoftware.ClienteWCF
 
         public static async Task<bool> GenerarNotificacionOrdenServicio(int intIdOrden, string strCorreoReceptor, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'GenerarNotificacionOrdenServicio', Parametros: {IdOrden: " + intIdOrden + ", CorreoReceptor: '" + strCorreoReceptor + "'}}";
+            string strDatos = "{NombreMetodo: 'GenerarNotificacionOrdenServicio', Parametros: {IdOrdenServicio: " + intIdOrden + ", CorreoReceptor: '" + strCorreoReceptor + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
             return true;
         }
@@ -2285,19 +2279,19 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<List<ClsTiquete>> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, string strToken)
+        public static async Task<List<TiqueteOrdenServicio>> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerListadoTiqueteOrdenServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Impreso: '" + bolImpreso + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<ClsTiquete> listado = new List<ClsTiquete>();
+            List<TiqueteOrdenServicio> listado = new List<TiqueteOrdenServicio>();
             if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<ClsTiquete>>(respuesta);
+                listado = JsonConvert.DeserializeObject<List<TiqueteOrdenServicio>>(respuesta);
             return listado;
         }
 
-        public static async Task ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolEstado, string strToken)
+        public static async Task ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolImpreso, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ActualizarEstadoTiqueteOrdenServicio', Parametros: {IdTiquete: " + intIdTiquete + ", Estado: '" + bolEstado + "'}}";
+            string strDatos = "{NombreMetodo: 'ActualizarEstadoTiqueteOrdenServicio', Parametros: {IdTiquete: " + intIdTiquete + ", Impreso: '" + bolImpreso + "'}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
     }

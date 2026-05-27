@@ -51,6 +51,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool Procesado { get; set; }
         public string IdDocElectronico { get; set; }
         public string IdDocElectronicoRev { get; set; }
+        public bool CerrarOrdenServicio{ get; set; }
 
         public Cliente Cliente { get; set; }
         public Vendedor Vendedor { get; set; }

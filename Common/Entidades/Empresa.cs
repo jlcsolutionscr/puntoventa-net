@@ -14,7 +14,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdProvincia { get; set; }
         public int IdCanton { get; set; }
         public int IdDistrito { get; set; }
-        public int IdBarrio { get; set; }
         public int IdTipoMoneda { get; set; }
         public string Direccion { get; set; }
         public string Telefono1 { get; set; }
