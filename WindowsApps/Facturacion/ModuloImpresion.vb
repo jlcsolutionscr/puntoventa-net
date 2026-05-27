@@ -920,6 +920,15 @@ Public Class ModuloImpresion
                 observaciones = observaciones.Substring(32)
             End While
             lineas.Add(New ClsLineaImpresion(2, observaciones, 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "Detalle de ventas", 0, 100, 10, StringAlignment.Center, False))
+            lineas.Add(New ClsLineaImpresion(0, "Ventas efectivo", 0, 100, 10, StringAlignment.Near, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasEfectivo, 0, 100, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Ventas tarjeta", 0, 100, 10, StringAlignment.Near, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasTarjeta, 0, 100, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Ventas transfer", 0, 100, 10, StringAlignment.Near, True))
+            lineas.Add(New ClsLineaImpresion(1, objImpresion.strVentasTransferencia, 0, 100, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(0, "Total de ventas", 0, 100, 10, StringAlignment.Near, True))
+            lineas.Add(New ClsLineaImpresion(2, objImpresion.strTotalVentas, 0, 100, 10, StringAlignment.Far, False))
             lineas.Add(New ClsLineaImpresion(2, "Procesado por: _________________", 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, ".", 0, 100, 10, StringAlignment.Near, False))
         Catch ex As Exception
