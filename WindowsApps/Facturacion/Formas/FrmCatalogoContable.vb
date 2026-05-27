@@ -6,13 +6,13 @@ Public Class FrmCatalogoContable
     Private datos As CatalogoContable
 #End Region
 
-#Region "Métodos"
+#Region "Mï¿½todos"
     Private Function ValidarCampos(ByRef pCampo As String) As Boolean
         If txtNivel_1.Text = "" Then
             pCampo = "Nivel 1"
             Return False
         ElseIf txtDescripcion.Text = "" Then
-            pCampo = "Descripción"
+            pCampo = "Descripciï¿½n"
             Return False
         ElseIf cboTipoSaldo.Text = "" Then
             pCampo = "Tipo de Saldo"
@@ -24,7 +24,7 @@ Public Class FrmCatalogoContable
 
     Private Sub CargarComboBox()
         'cboTipoSaldo.DataSource = servicioContabilidad.ObtenerTiposCuentaContable()
-        cboTipoSaldo.ValueMember = "IdTipoCuenta"
+        cboTipoSaldo.ValueMember = "IdClaseCuenta"
         cboTipoSaldo.DisplayMember = "Descripcion"
         'cboCuentaGrupo.DataSource = servicioContabilidad.ObtenerListaCuentasPrimerOrden(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
         cboCuentaGrupo.ValueMember = "IdCuenta"
@@ -81,7 +81,7 @@ Public Class FrmCatalogoContable
             cboCuentaGrupo.SelectedValue = IIf(datos.IdCuentaGrupo Is Nothing, 0, datos.IdCuentaGrupo)
             chkCuentaBalance.Checked = datos.EsCuentaBalance
             txtDescripcion.Text = datos.Descripcion
-            cboTipoSaldo.SelectedValue = datos.IdTipoCuenta
+            cboTipoSaldo.SelectedValue = datos.IdClaseCuenta
             chkPermiteMovimiento.Checked = datos.PermiteMovimiento
             chkPermiteSobrejiro.Checked = datos.PermiteSobrejiro
             txtSaldoActual.Text = FormatNumber(datos.SaldoActual, 2)
@@ -118,7 +118,7 @@ Public Class FrmCatalogoContable
         datos.IdCuentaGrupo = cboCuentaGrupo.SelectedValue
         datos.EsCuentaBalance = chkCuentaBalance.Checked
         datos.Descripcion = txtDescripcion.Text
-        datos.IdTipoCuenta = cboTipoSaldo.SelectedValue
+        datos.IdClaseCuenta = cboTipoSaldo.SelectedValue
         datos.PermiteMovimiento = chkPermiteMovimiento.Checked
         datos.PermiteSobrejiro = chkPermiteSobrejiro.Checked
         datos.SaldoActual = txtSaldoActual.Text

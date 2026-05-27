@@ -261,7 +261,6 @@ CREATE TABLE catalogocontable (
   IdCuentaGrupo int DEFAULT NULL,
   EsCuentaBalance bit(1) NOT NULL,
   Descripcion varchar(200) NOT NULL,
-  IdTipoCuenta int NOT NULL,
   IdClaseCuenta int NOT NULL,
   PermiteMovimiento bit(1) NOT NULL,
   PermiteSobrejiro bit(1) NOT NULL,
@@ -1683,7 +1682,7 @@ CREATE TABLE terminalporsucursal (
 --
 
 CREATE TABLE tipocuentacontable (
-  IdTipoCuenta int NOT NULL,
+  IdClaseCuenta int NOT NULL,
   TipoSaldo varchar(1) NOT NULL,
   Descripcion varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
@@ -1893,7 +1892,7 @@ ALTER TABLE canton
 ALTER TABLE catalogocontable
   ADD PRIMARY KEY (IdCuenta),
   ADD KEY IdEmpresa (IdEmpresa),
-  ADD KEY IdTipoCuenta (IdTipoCuenta),
+  ADD KEY IdClaseCuenta (IdClaseCuenta),
   ADD KEY IdClaseCuenta (IdClaseCuenta);
 
 --
@@ -2473,7 +2472,7 @@ ALTER TABLE terminalporsucursal
 -- Indexes for table tipocuentacontable
 --
 ALTER TABLE tipocuentacontable
-  ADD PRIMARY KEY (IdTipoCuenta);
+  ADD PRIMARY KEY (IdClaseCuenta);
 
 --
 -- Indexes for table tipodecambiodolar
@@ -2958,7 +2957,7 @@ ALTER TABLE canton
 --
 ALTER TABLE catalogocontable
   ADD CONSTRAINT catalogocontable_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
-  ADD CONSTRAINT catalogocontable_ibfk_2 FOREIGN KEY (IdTipoCuenta) REFERENCES tipocuentacontable (IdTipoCuenta),
+  ADD CONSTRAINT catalogocontable_ibfk_2 FOREIGN KEY (IdClaseCuenta) REFERENCES tipocuentacontable (IdClaseCuenta),
   ADD CONSTRAINT catalogocontable_ibfk_3 FOREIGN KEY (IdClaseCuenta) REFERENCES clasecuentacontable (IdClaseCuenta);
 
 --

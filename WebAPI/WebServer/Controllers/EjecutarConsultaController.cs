@@ -19,6 +19,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static IReporteService _servicioReportes;
         private static ITrasladoService _servicioTraslado;
         private static ICuentaPorProcesarService _servicioCuentaPorProcesar;
+        private static IContabilidadService _servicioContabilidad;
         private static Empresa? empresa;
         private static CredencialesHacienda credenciales;
         private static BancoAdquiriente? bancoAdquiriente;
@@ -100,7 +101,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             IBancaService servicioBanca,
             IReporteService servicioReportes,
             ITrasladoService servicioTraslado,
-            ICuentaPorProcesarService servicioCuentaPorProcesar
+            ICuentaPorProcesarService servicioCuentaPorProcesar,
+            IContabilidadService servicioContabilidad
         )
         {
             _servicioMantenimiento = servicioMantenimiento;
@@ -397,7 +399,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                     strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                    IList<ReporteMovimientosContables> listadoReporteMovimientosContables = _servicioReportes.ObtenerReporteMovimientosContables(intIdEmpresa, strFechaInicial, strFechaFinal);
+                    IList<ReporteMovimientosContables> listadoReporteMovimientosContables = _servicioContabilidad.ObtenerReporteMovimientosContables(intIdEmpresa, strFechaInicial, strFechaFinal);
                     if (listadoReporteMovimientosContables.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoReporteMovimientosContables);
                     break;
@@ -405,14 +407,14 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     int intMes = int.Parse(parametrosJO.Property("Mes").Value.ToString());
                     int intAnnio = int.Parse(parametrosJO.Property("Annio").Value.ToString());
-                    IList<ReporteBalanceComprobacion> listadoReporteBalanceComprobacion = _servicioReportes.ObtenerReporteBalanceComprobacion(intIdEmpresa, intMes, intAnnio);
+                    IList<ReporteBalanceComprobacion> listadoReporteBalanceComprobacion = _servicioContabilidad.ObtenerReporteBalanceComprobacion(intIdEmpresa, intMes, intAnnio);
                     if (listadoReporteBalanceComprobacion.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoReporteBalanceComprobacion);
                     break;
                 case "ObtenerReportePerdidasyGanancias":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                    IList<ReportePerdidasyGanancias> listadoReportePerdidasyGanancias = _servicioReportes.ObtenerReportePerdidasyGanancias(intIdEmpresa, intIdSucursal);
+                    IList<ReportePerdidasyGanancias> listadoReportePerdidasyGanancias = _servicioContabilidad.ObtenerReportePerdidasyGanancias(intIdEmpresa, intIdSucursal);
                     if (listadoReportePerdidasyGanancias.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoReportePerdidasyGanancias);
                     break;
@@ -421,7 +423,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     int intIdCuentaGrupo = int.Parse(parametrosJO.Property("IdCuentaGrupo").Value.ToString());
                     strFechaInicial = parametrosJO.Property("FechaInicial").Value.ToString();
                     strFechaFinal = parametrosJO.Property("FechaFinal").Value.ToString();
-                    IList<ReporteDetalleMovimientosCuentasDeBalance> listadoReporteDetalleMovimientosCuentasDeBalance = _servicioReportes.ObtenerReporteDetalleMovimientosCuentasDeBalance(intIdEmpresa, intIdCuentaGrupo, strFechaInicial, strFechaFinal);
+                    IList<ReporteDetalleMovimientosCuentasDeBalance> listadoReporteDetalleMovimientosCuentasDeBalance = _servicioContabilidad.ObtenerReporteDetalleMovimientosCuentasDeBalance(intIdEmpresa, intIdCuentaGrupo, strFechaInicial, strFechaFinal);
                     if (listadoReporteDetalleMovimientosCuentasDeBalance.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoReporteDetalleMovimientosCuentasDeBalance);
                     break;

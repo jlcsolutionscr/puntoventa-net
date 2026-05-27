@@ -6,7 +6,7 @@ using LeandroSoftware.ServicioWeb.Contexto;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore;
-using LeandroSoftware.ServicioWeb.Parametros;
+using LeandroSoftware.Common.Parametros;
 using LeandroSoftware.ServicioWeb.Utilitario;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.DependencyInjection;
@@ -1702,7 +1702,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         IList<LlaveDescripcion> ObtenerListadoTipoProducto(string strCodigoUsuario)
         {
-            var tiposProducto = strCodigoUsuario.ToUpper() == "ADMIN" ? new int[] { 1, 2, 3, 4, 5 } : new int[] { 1, 2, 3 };
+            IList<int> tiposProducto = new List<int> {1, 2, 3 };
+            if (strCodigoUsuario.ToUpper() == "ADMIN") tiposProducto = new List<int> {1, 2, 3, 4, 5 };
             return TipoDeProducto.ObtenerListado().Where(x => tiposProducto.Contains(x.Id)).ToList();
         }
 

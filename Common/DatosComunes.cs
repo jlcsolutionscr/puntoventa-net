@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LeandroSoftware.Common;
 
 namespace LeandroSoftware.Common.DatosComunes
 {
@@ -197,7 +198,7 @@ namespace LeandroSoftware.Common.DatosComunes
     public class ReportePerdidasyGanancias
     {
         public string Descripcion { get; set; }
-        public int IdTipoCuenta { get; set; }
+        public int IdClaseCuenta { get; set; }
         public string DescGrupo { get; set; }
         public decimal SaldoDebe { get; set; }
         public decimal SaldoHaber { get; set; }
@@ -327,6 +328,36 @@ namespace LeandroSoftware.Common.DatosComunes
         public int Id { get; set; }
         public string Descripcion { get; set; }
         public decimal Valor { get; set; }
+    }
+
+    public class TipoParametroContableElemento
+    {
+        public TipoParametroContableElemento() { }
+
+        public TipoParametroContableElemento(int id, string descripcion, bool multiCuenta)
+        {
+            Id = id;
+            Descripcion = descripcion;
+            MultiCuenta = multiCuenta;
+        }
+        public int Id { get; set; }
+        public string Descripcion { get; set; }
+        public bool MultiCuenta { get; set; }
+    }
+
+    public class ClaseCuentaContableElemento
+    {
+        public ClaseCuentaContableElemento() { }
+
+        public ClaseCuentaContableElemento(int id, string descripcion, string tipoSaldo)
+        {
+            Id = id;
+            Descripcion = descripcion;
+            TipoSaldo = tipoSaldo;
+        }
+        public int Id { get; set; }
+        public string Descripcion { get; set; }
+        public string TipoSaldo { get; set; }
     }
 
     public class ProductoDetalle

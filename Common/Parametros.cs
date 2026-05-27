@@ -1,6 +1,10 @@
-﻿using LeandroSoftware.Common.DatosComunes;
+﻿using System;
+using System.Data;
+using System.Collections.Generic;
+using System.Linq;
+using LeandroSoftware.Common.DatosComunes;
 
-namespace LeandroSoftware.ServicioWeb.Parametros
+namespace LeandroSoftware.Common.Parametros
 {
     public static class CondicionDeVenta
     {
@@ -232,6 +236,82 @@ namespace LeandroSoftware.ServicioWeb.Parametros
         public static IList<LlaveDescripcion> ObtenerListado()
         {
             return listado;
+        }
+    }
+
+    public static class TipoParametroContable
+    {
+        private static readonly List<TipoParametroContableElemento> listado = new List<TipoParametroContableElemento>()
+        {
+            new TipoParametroContableElemento(1, "IngresosPorVentas", false),
+            new TipoParametroContableElemento(2, "CostosDeVentas", false),
+            new TipoParametroContableElemento(3, "IvaPorAcreditar", false),
+            new TipoParametroContableElemento(4, "IvaPorLiquidar", false),
+            new TipoParametroContableElemento(5, "LineaDeProductos", true),
+            new TipoParametroContableElemento(6, "LineaDeServicios", true),
+            new TipoParametroContableElemento(7, "CuentaDeBancos", true),
+            new TipoParametroContableElemento(8, "Efectivo", false),
+            new TipoParametroContableElemento(9, "OtraCondicionVenta", false),
+            new TipoParametroContableElemento(10, "CuentasPorCobrarClientes", false),
+            new TipoParametroContableElemento(11, "CuentasPorCobrarTarjeta", false),
+            new TipoParametroContableElemento(12, "GastoComisionTarjeta", false),
+            new TipoParametroContableElemento(13, "CuentasPorPagarProveedores", false),
+            new TipoParametroContableElemento(14, "CuentaDeIngresos", true),
+            new TipoParametroContableElemento(15, "CuentaDeEgresos", true),
+            new TipoParametroContableElemento(16, "Traslados", true),
+            new TipoParametroContableElemento(17, "PerdidasyGanancias", false)
+        };
+
+        public static IList<TipoParametroContableElemento> ObtenerListado()
+        {
+            return listado;
+        }
+
+        public static string ObtenerDescripcion(int intId)
+        {
+            TipoParametroContableElemento item = listado.FirstOrDefault(x => x.Id == intId);
+            if (item != null) return item.Descripcion;
+            return "";
+        }
+
+        public static int ObtenerId(string strDescripcion)
+        {
+            TipoParametroContableElemento item = listado.FirstOrDefault(x => x.Descripcion == strDescripcion);
+            if (item != null) return item.Id;
+            return 0;
+        }
+
+        public static TipoParametroContableElemento Encontrar(int intId)
+        {
+            return listado.FirstOrDefault(x => x.Id == intId);
+        }
+    }
+
+    public static class ClaseCuentaContable
+    {
+        private static readonly List<ClaseCuentaContableElemento> listado = new List<ClaseCuentaContableElemento>()
+        {
+            new ClaseCuentaContableElemento(1, "Activo", "Deudor"),
+            new ClaseCuentaContableElemento(2, "Pasivo", "Deudor"),
+            new ClaseCuentaContableElemento(3, "Resultado", "Deudor"),
+            new ClaseCuentaContableElemento(4, "Mayor", "Deudor")
+        };
+
+        public static IList<ClaseCuentaContableElemento> ObtenerListado()
+        {
+            return listado;
+        }
+
+        public static string ObtenerDescripcion(int intId)
+        {
+            ClaseCuentaContableElemento item = listado.FirstOrDefault(x => x.Id == intId);
+            if (item != null) return item.Descripcion;
+            return "";
+        }
+
+        public static ClaseCuentaContableElemento Encontrar(int intId)
+        {
+            return listado.FirstOrDefault(x => x.Id == intId);
         }
     }
 }

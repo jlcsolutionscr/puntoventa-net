@@ -116,26 +116,6 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly short NotaCredito = 2;
     };
 
-    public static class StaticTipoParametroContable
-    {
-        public static readonly int IngresosPorVentas = 1;
-        public static readonly int CostosDeVentas = 2;
-        public static readonly int IVAPorPagar = 3;
-        public static readonly int LineaDeProductos = 4;
-        public static readonly int LineaDeServicios = 5;
-        public static readonly int CuentaDeBancos = 6;
-        public static readonly int Efectivo = 7;
-        public static readonly int OtraCondicionVenta = 8;
-        public static readonly int CuentasPorCobrarClientes = 9;
-        public static readonly int CuentasPorCobrarTarjeta = 10;
-        public static readonly int GastoComisionTarjeta = 11;
-        public static readonly int CuentasPorPagarProveedores = 12;
-        public static readonly int CuentaDeIngresos = 13;
-        public static readonly int CuentaDeEgresos = 14;
-        public static readonly int Traslados = 15;
-        public static readonly int PerdidasyGanancias = 16;
-    };
-
     public static class StaticTipoMovimientoBanco
     {
         public static readonly int ChequeSaliente = 1;
@@ -151,14 +131,6 @@ namespace LeandroSoftware.Common.Constantes
     {
         public static readonly string Debito = "D";
         public static readonly string Credito = "C";
-    };
-
-    public static class StaticClaseCuentaContable
-    {
-        public static readonly int Activo = 1;
-        public static readonly int Pasivo = 2;
-        public static readonly int Resultado = 3;
-        public static readonly int Patrimonio = 4;
     };
 
     public static class StaticEstadoDocumentoElectronico
