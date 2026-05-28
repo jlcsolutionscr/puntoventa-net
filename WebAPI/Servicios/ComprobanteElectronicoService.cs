@@ -2218,7 +2218,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             int intTipoDocumentoElectronico = (int)tipoDocumento;
             int intIdConsecutivo = 1;
-            TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdSucursal == intSucursal & x.IdTerminal == intTerminal).FirstOrDefault();
+            SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa).FirstOrDefault();
+            if (sucursal == null) throw new BusinessException("La empresa no posee registro de sucursal alguna. Por favor contacte con su proveedor del servicio.");
+            TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == empresa.IdEmpresa & x.IdSucursal == sucursal.IdSucursal).FirstOrDefault();
+            if (sucursal == null) throw new BusinessException("La empresa no posee registro de terminal para la sucursal " + sucursal.NombreSucursal + ". Por favor contacte con su proveedor del servicio.");
             switch (tipoDocumento)
             {
                 case TipoDocumento.FacturaElectronica:
