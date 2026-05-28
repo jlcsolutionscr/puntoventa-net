@@ -61,7 +61,6 @@ Public Class FrmCliente
 
     Private Async Sub FrmCliente_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            'contribuyente = Nothing
             chkPermiteCredito.Enabled = FrmPrincipal.bolModificaCliente
             txtActividadEconomica.ReadOnly = FrmPrincipal.empresaGlobal.RegimenSimplificado
             CargarCombos()
@@ -71,12 +70,6 @@ Public Class FrmCliente
                 If datos Is Nothing Then
                     Throw New Exception("El cliente seleccionado no existe")
                 End If
-                'Try
-                '    contribuyente = Await Puntoventa.ObtenerInformacionContribuyente(datos.Identificacion)
-                '    If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas
-                'Catch
-                '    MessageBox.Show("No se logró obtener la información del contribuyente en el Ministerio de Hacienda!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                'End Try
                 ChangeEnableInputs(True)
                 txtIdCliente.Text = datos.IdCliente
                 cboTipoIdentificacion.SelectedValue = datos.IdTipoIdentificacion
@@ -197,6 +190,26 @@ Public Class FrmCliente
                     txtFechaExoneracion.Text = datos.FechaEmisionDoc.ToString()
                     txtPorcentajeExoneracion.Text = datos.PorcentajeExoneracion
                     txtActividadEconomica.Text = datos.CodigoActividad
+                End If
+                If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And txtActividadEconomica.Text = "" Then
+                    Try
+                        Dim contribuyente = Await Puntoventa.ObtenerInformacionContribuyente(txtIdentificacion.Text)
+                        txtNombre.Text = contribuyente.Nombre
+                        If contribuyente.ActividadesEconomicas.Count = 0 Then
+                            MessageBox.Show("El cliente no posee actividades económicas activas!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        ElseIf contribuyente.ActividadesEconomicas.Count = 1 Then
+                            txtActividadEconomica.Text = contribuyente.ActividadesEconomicas(0).Llave
+                        Else
+                            Dim strActividades = ""
+                            For Each actividad As LlaveTextoDescripcion In contribuyente.ActividadesEconomicas
+                                If strActividades <> "" Then strActividades += ", "
+                                strActividades += actividad.Llave
+                            Next
+                            MessageBox.Show("El cliente ingresado posee más de una actividad económica!: " + strActividades, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        End If
+                    Catch
+                        MessageBox.Show("No se logró obtener la información del contribuyente en el Ministerio de Hacienda!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    End Try
                 End If
             End If
         Catch ex As Exception
