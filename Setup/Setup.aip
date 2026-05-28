@@ -33,10 +33,10 @@
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
     <ROW Property="ARPCONTACT" Value="ventas@jlcsolutionscr.com"/>
     <ROW Property="Manufacturer" Value="JLC Solutions CR"/>
-    <ROW Property="ProductCode" Value="1033:{A30B8DF0-1A62-493D-9453-904A4429C42D} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{901429D6-1735-4D5D-A65D-AA9973FBBD1B} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="puntoventaJLC"/>
-    <ROW Property="ProductVersion" Value="5.11.2" Options="32"/>
+    <ROW Property="ProductVersion" Value="5.11.3" Options="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{6DE6977F-E27E-4C68-8B91-EDDB74510900}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -79,8 +79,8 @@
     <ROW File="Microsoft.ReportViewer.ProcessingObjectModel.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="MICROS~4.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.ProcessingObjectModel.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Microsoft.ReportViewer.ProcessingObjectModel.dll&gt;" SelfReg="false"/>
     <ROW File="Microsoft.ReportViewer.WinForms.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="MICROS~5.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.ReportViewer.WinForms.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Microsoft.ReportViewer.WinForms.dll&gt;" SelfReg="false"/>
     <ROW File="Microsoft.SqlServer.Types.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="MICROS~6.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_Microsoft.SqlServer.Types.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Microsoft.SqlServer.Types.dll&gt;" SelfReg="false"/>
-    <ROW File="Newtonsoft.Json.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="NEWTON~1.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_Newtonsoft.Json.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Newtonsoft.Json.dll&gt;" SelfReg="false"/>
     <ROW File="EnvDTE.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="[|AI_PROPPATH_FILENAME_PERBUILD_EnvDTE.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_EnvDTE.dll&gt;" SelfReg="false"/>
+    <ROW File="Newtonsoft.Json.dll" Component_="AI_PROPPATH_FILENAME_PERBUILD_ClienteWCF.dll" FileName="NEWTON~2.DLL|[|AI_PROPPATH_FILENAME_PERBUILD_Newtonsoft.Json.dll]" Attributes="0" SourcePath="&lt;AI_APPPATH_PERBUILD_Newtonsoft.Json.dll&gt;" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AppPathsComponent">
     <ROW Name="AI_APPPATH_PERBUILD_App.exe" Path="[|AI_PROPPATH_DIR_PERBUILD_App.exe]\[|AI_PROPPATH_FILENAME_PERBUILD_App.exe]" Type="2" Content="0"/>
@@ -230,7 +230,7 @@
     <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Microsoft.ReportViewer.ProcessingObjectModel.dll"/>
     <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Microsoft.ReportViewer.WinForms.dll"/>
     <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Microsoft.SqlServer.Types.dll"/>
-    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Newtonsoft.Json.dll"/>
     <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="EnvDTE.dll"/>
+    <ROW ProjectId="{9e0ff35a-3da7-4051-83d0-c97ace18d0f8}" ProjectName="Facturacion" OutputGroup="References" OutputFile="Newtonsoft.Json.dll"/>
   </COMPONENT>
 </DOCUMENT>
