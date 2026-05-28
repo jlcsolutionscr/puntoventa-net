@@ -5,6 +5,7 @@ using System.Xml;
 using System.Text;
 using Newtonsoft.Json;
 using System.Drawing;
+using System.Text.RegularExpressions;
 using LeandroSoftware.Common.Constantes;
 using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Dominio.Entidades;
@@ -2505,11 +2506,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
                                 strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
+                                Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+                                string strSubject = rgx.Replace(correo.Subject, "");
                                 Notificacion notificacion = new Notificacion
                                 {
                                     CorreoNotificacion = strFrom,
                                     Titulo = "Notificación de error en recepción de documento electrónico",
-                                    Mensaje = "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message,
+                                    Mensaje = "El correo del envio del documento electrónico con asunto " + strSubject + " presenta el siguiente error de procesamiento: " + ex.Message,
                                     Estado = StaticEstadoNotificacion.Pendiente,
                                     FechaEnvio = Validador.ObtenerFechaHoraCostaRica(),
                                     ErrorEnvio = ""
@@ -2544,11 +2547,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 string strFrom = correo.From.ToString().Substring(correo.From.ToString().IndexOf("'") + 8);
                                 strFrom = strFrom.Substring(0, strFrom.IndexOf("'"));
+                                Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+                                string strSubject = rgx.Replace(correo.Subject, "");
                                 Notificacion notificacion = new Notificacion
                                 {
                                     CorreoNotificacion = strFrom,
                                     Titulo = "Notificación de error en recepción de documento electrónico",
-                                    Mensaje = "El correo del envio del documento electrónico con asunto " + correo.Subject + " presenta el siguiente error de procesamiento: " + ex.Message,
+                                    Mensaje = "El correo del envio del documento electrónico con asunto " + strSubject + " presenta el siguiente error de procesamiento: " + ex.Message,
                                     Estado = StaticEstadoNotificacion.Pendiente,
                                     FechaEnvio = Validador.ObtenerFechaHoraCostaRica(),
                                     ErrorEnvio = ""
@@ -2608,7 +2613,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             string strDatos = "";
             string strError = "";
             string strIdentificacion = "";
-            if (correo.Attachments.Count == 0) throw new BusinessException("El correo no contiene ningún archivo adjunto para poder procesar el mensaje de recepción");
+            if (correo.Attachments.Count == 0) throw new BusinessException("El correo no contiene ningún archivo adjunto para poder procesar el mensaje de recepción. Por favor verifique la información adjunta al correo electrónico.");
             XmlDocument documentoXml = new XmlDocument();
             foreach (Attachment archivo in correo.Attachments)
             {
@@ -2632,7 +2637,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         catch (Exception)
                         {
-                            strError = "El archivo XML del documento electrónico no se posee el formato adecuado para ser procesado";
+                            strError = "El archivo XML del documento electrónico no se posee el formato adecuado para ser procesado. Por favor verifique la información adjunta al correo electrónico.";
                         }
                     }
                     if (strError == "")
@@ -2654,7 +2659,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     XmlNode emisorNode = documentoXml.GetElementsByTagName("Receptor").Item(0);
                                     if (emisorNode["Identificacion"] == null)
                                     {
-                                        strError = "El documento electrónico no contiene el valor de 'Identificacion' en el Nodo del Receptor, necesario para ser procesado. Por favor verifique la información";
+                                        strError = "El documento electrónico no contiene el valor de 'Identificacion' en el Nodo del Receptor, necesario para ser procesado.  Por favor verifique la información adjunta al correo electrónico.";
                                     }
                                     else
                                         strIdentificacion = emisorNode["Identificacion"]["Numero"].InnerText;
@@ -2664,14 +2669,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         else
                         {
-                            strError = "El documento electrónico no corresponde a una factura o nota de crédito/débito electrónica. Consulte con el emisor de su factura de gastos";
+                            strError = "El documento electrónico no corresponde a una factura o nota de crédito/débito electrónica. Consulte con el emisor de su factura de gastos. Por favor verifique la información adjunta al correo electrónico.";
                         }
                     }
                 }
             }
             if (strDatos == "")
             {
-                if (strError == "") strError = "No se logró extraer la  información requerida para procesar el documento eletrónico adjunto. Por favor comuniquese con su proveedor.";
+                if (strError == "") strError = "No se logró extraer la  información requerida para procesar el documento eletrónico adjunto. Por favor verifique la información adjunta al correo electrónico.";
                 throw new BusinessException(strError);
             }
             Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.Identificacion == strIdentificacion).FirstOrDefault();
