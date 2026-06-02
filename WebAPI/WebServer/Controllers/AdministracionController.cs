@@ -467,6 +467,40 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
         }
 
+        [HttpGet("obtenerlistadousuariosporempresa")]
+        public string obtenerlistadousuariosporempresa(int idempresa)
+        {
+            try
+            {
+                IList<LlaveDescripcion> listadoUsuarios = _servicioMantenimiento.ObtenerListadoUsuarios(idempresa, "");
+                string strRespuesta = "";
+                if (listadoUsuarios.Count > 0)
+                    strRespuesta = JsonConvert.SerializeObject(listadoUsuarios);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpGet("obtenerusuario")]
+        public string ObtenerUsuario(int idusuario)
+        {
+            try
+            {
+                Usuario usuario = _servicioMantenimiento.ObtenerUsuario(idusuario);
+                string strRespuesta = "";
+                if (usuario != null)
+                    strRespuesta = JsonConvert.SerializeObject(usuario);
+                return strRespuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         [HttpPost("agregarusuario")]
         public void AgregarUsuario([FromBody] string strDatos)
         {
