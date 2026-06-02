@@ -467,6 +467,38 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
         }
 
+        [HttpPost("agregarusuario")]
+        public void AgregarUsuario([FromBody] string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
+                Usuario usuario = JsonConvert.DeserializeObject<Usuario>(strEntidad);
+                _servicioMantenimiento.AgregarUsuario(usuario);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpPost("actualizarusuario")]
+        public void ActualizarUsuario([FromBody] string strDatos)
+        {
+            try
+            {
+                JObject parametrosJO = JObject.Parse(strDatos);
+                string strEntidad = parametrosJO.Property("Entidad").Value.ToString();
+                Usuario usuario = JsonConvert.DeserializeObject<Usuario>(strEntidad);
+                _servicioMantenimiento.ActualizarUsuario(usuario);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         [HttpGet("eliminarregistrosporempresa")]
         public void EliminarRegistrosPorEmpresa(int idempresa)
         {
