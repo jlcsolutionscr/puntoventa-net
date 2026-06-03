@@ -1210,10 +1210,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     List<RolePorUsuario> listadoDetalleAnterior = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
                     List<RolePorUsuario> listadoDetalle = usuario.RolePorUsuario.ToList();
-                    usuario.RolePorUsuario = null;
+                    foreach (RolePorUsuario role in listadoDetalle)
+                        role.Role = null;
                     dbContext.RolePorUsuarioRepository.RemoveRange(listadoDetalleAnterior);
-                    dbContext.NotificarModificacion(usuario);
                     dbContext.RolePorUsuarioRepository.AddRange(listadoDetalle);
+                    usuario.RolePorUsuario = null;
+                    dbContext.NotificarModificacion(usuario);
                     dbContext.Commit();
                 }
                 catch (BusinessException)
