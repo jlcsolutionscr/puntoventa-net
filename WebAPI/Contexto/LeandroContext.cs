@@ -89,7 +89,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<RegistroAutenticacion> RegistroAutenticacionRepository { get; set; }
         public DbSet<ReportePorEmpresa> ReportePorEmpresaRepository { get; set; }
         public DbSet<Role> RoleRepository { get; set; }
-        public DbSet<RolePorEmpresa> RolePorEmpresaRepository { get; set; }
         public DbSet<RolePorUsuario> RolePorUsuarioRepository { get; set; }
         public DbSet<SaldoMensualContable> SaldoMensualContableRepository { get; set; }
         public DbSet<SucursalPorEmpresa> SucursalPorEmpresaRepository { get; set; }

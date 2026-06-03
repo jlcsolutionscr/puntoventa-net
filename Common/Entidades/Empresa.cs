@@ -43,7 +43,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public Distrito Distrito { get; set; }
         public PlanFacturacion PlanFacturacion { get; set; }
         public List<ReportePorEmpresa> ReportePorEmpresa { get; set; }
-        public List<RolePorEmpresa> RolePorEmpresa { get; set; }
         public List<ActividadEconomicaEmpresa> ActividadEconomicaEmpresa { get; set; }
         public List<SucursalPorEmpresa> SucursalPorEmpresa { get; set; }
         public IList<LlaveDescripcion> ListadoTipoIdentificacion { get; set; }

@@ -42,9 +42,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         CredencialesHacienda ObtenerCredencialesHacienda(int intIdEmpresa);
         void ActualizarCredencialesHacienda(int intIdEmpresa, string strCodigoUsuario, string strClave, string strNombreCertificado, string strPin, string strCertificado);
         List<LlaveDescripcion> ObtenerListadoReportePorEmpresa(int intIdEmpresa);
-        List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa, bool bolAdministrator);
         void ActualizarReportePorEmpresa(int intIdEmpresa, List<ReportePorEmpresa> listado);
-        void ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado);
         string ObtenerLogotipoEmpresa(int intIdEmpresa);
         // Métodos para administrar las sucursales
         SucursalPorEmpresa ObtenerSucursalPorEmpresa(int intIdEmpresa, int intIdSucursal);
@@ -469,7 +467,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Include("SucursalPorEmpresa").Include("RolePorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
+                Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
                 empresa.ListadoTipoIdentificacion = ObtenerListadoTipoIdentificacion();
                 empresa.ListadoFormaPagoCliente = ObtenerListadoFormaPagoCliente();
                 empresa.ListadoFormaPagoEmpresa = ObtenerListadoFormaPagoEmpresa();
@@ -842,32 +840,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<LlaveDescripcion> ObtenerListadoRolePorEmpresa(int intIdEmpresa, bool bolAdministrator)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                var listaRoles = new List<LlaveDescripcion>();
-                try
-                {
-                    var intIdLowerRole = bolAdministrator ? 0 : 2;
-                    var listado = dbContext.RolePorEmpresaRepository.Include("Role").Where(x => x.IdEmpresa == intIdEmpresa && x.IdRole > intIdLowerRole);
-                    foreach (var value in listado)
-                    {
-                        LlaveDescripcion item = new LlaveDescripcion(value.IdRole, value.Role.Descripcion);
-                        listaRoles.Add(item);
-                    }
-                    return listaRoles;
-                }
-                catch (Exception ex)
-                {
-                    if (_logger != null) _logger.LogError("Error al obtener el listado de registros de roles de usuario: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error consultando el listado de roles de acceso. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
         public void ActualizarReportePorEmpresa(int intIdEmpresa, List<ReportePorEmpresa> listado)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
@@ -885,27 +857,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al actualizar el listado de reportes por empresa: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error al actualizar el listado de reportes por empresa. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public void ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    List<RolePorEmpresa> listadoReportePorEmpresaAnt = dbContext.RolePorEmpresaRepository.Where(x => x.IdEmpresa == intIdEmpresa).ToList();
-                    dbContext.RolePorEmpresaRepository.RemoveRange(listadoReportePorEmpresaAnt);
-                    dbContext.RolePorEmpresaRepository.AddRange(listado);
-                    dbContext.Commit();
-                }
-                catch (Exception ex)
-                {
-                    if (_logger != null) _logger.LogError("Error al actualizar el listado de roles por empresa: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error al actualizar el listado de roles por empresa. Por favor consulte con su proveedor.");
                 }
             }
         }

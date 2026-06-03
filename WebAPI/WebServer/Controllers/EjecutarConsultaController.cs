@@ -146,12 +146,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (listadoActividades.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoActividades);
                     break;
-                case "ObtenerListadoRolesPorEmpresa":
-                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                    IList<LlaveDescripcion> listadoRoles = _servicioMantenimiento.ObtenerListadoRolePorEmpresa(intIdEmpresa, false);
-                    if (listadoRoles.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoRoles);
-                    break;
                 case "ObtenerListadoTipoMovimientoBanco":
                     IList<LlaveDescripcion> listadoTipoMovimiento = _servicioBanca.ObtenerListadoTipoMovimientoBanco();
                     if (listadoTipoMovimiento.Count > 0)

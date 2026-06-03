@@ -182,23 +182,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
         }
 
-        [HttpGet("obtenerlistadoroleporempresa")]
-        public string ObtenerListadoRolePorEmpresa(int idempresa)
-        {
-            try
-            {
-                IList<LlaveDescripcion> listadoEmpresas = _servicioMantenimiento.ObtenerListadoRolePorEmpresa(idempresa, true);
-                string strRespuesta = "";
-                if (listadoEmpresas.Count > 0)
-                    strRespuesta = JsonConvert.SerializeObject(listadoEmpresas);
-                return strRespuesta;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         [HttpGet("obtenersucursalporempresa")]
         public string ObtenerSucursalPorEmpresa(int idempresa, int idsucursal)
         {
@@ -385,22 +368,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             }
         }
 
-        [HttpPost("actualizarlistadoroles")]
-        public void ActualizarListadoRoles([FromBody] string strDatos)
-        {
-            try
-            {
-                JObject parametrosJO = JObject.Parse(strDatos);
-                int intIdEmpresa = int.Parse(parametrosJO.Property("Id").Value.ToString());
-                string strListado = parametrosJO.Property("Datos").Value.ToString();
-                List<RolePorEmpresa> listado = JsonConvert.DeserializeObject<List<RolePorEmpresa>>(strListado);
-                _servicioMantenimiento.ActualizarRolePorEmpresa(intIdEmpresa, listado);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
 
         [HttpPost("agregarsucursalporempresa")]
         public void AgregarSucursalPorEmpresa([FromBody] string strDatos)
