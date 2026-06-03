@@ -479,11 +479,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             PdfPage page = document.AddPage();
             page.Width = XUnit.FromCentimeter(intLargoLinea / 10);
             int availableChars = (int) Math.Floor(intLargoLinea / 3.0);
-            bool bolGeneraApartado  = empresa.RolePorEmpresa.Where(role => new List<int> { 1, 201 }.Contains(role.IdRole)).Count() > 0;
-            bool bolGeneraOrdenServicio = empresa.RolePorEmpresa.Where(role => new List<int> { 1, 202 }.Contains(role.IdRole)).Count() > 0;
-            bool bolAplicaPagosCxC = empresa.RolePorEmpresa.Where(role => new List<int> { 1, 300 }.Contains(role.IdRole)).Count() > 0;
-            bool bolAplicaPagosCxP = empresa.RolePorEmpresa.Where(role => new List<int> { 1, 301 }.Contains(role.IdRole)).Count() > 0;
-            page.Height = 480 + (bolGeneraApartado ? 20 : 0) + (bolGeneraOrdenServicio ? 20 : 0) + (bolAplicaPagosCxC ? 20 : 0) + (bolAplicaPagosCxP ? 20 : 0);
+            page.Height = 560;
             double pageWidth = page.Width;
             double pageHeight = page.Height;
             XGraphics gfx = XGraphics.FromPdfPage(page);
@@ -506,21 +502,12 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             gfx.DrawString("Detalle de Ingresos", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 4;
             font = new XFont("Arial", 10, XFontStyle.Regular, options);
-            if (bolGeneraApartado)
-            {
-                lineaPos += 20;
-                AgregarLineaDescripcionValor(gfx, tf, font, "Ingresos adelanto de apartados", cierreCaja.AdelantosApartadoEfectivo, pageWidth, lineaPos);
-            }
-            if (bolGeneraOrdenServicio)
-            {
-                lineaPos += 20;
-                AgregarLineaDescripcionValor(gfx, tf, font, "Ingresos adelantos de ordenes de servicio", cierreCaja.AdelantosOrdenEfectivo, pageWidth, lineaPos);
-            }   
-            if (bolAplicaPagosCxC)
-            {
-                lineaPos += 20;
-                AgregarLineaDescripcionValor(gfx, tf, font, "Pagos de CxC en efectivo", cierreCaja.PagosCxCEfectivo, pageWidth, lineaPos);
-            }
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Ingresos adelanto de apartados", cierreCaja.AdelantosApartadoEfectivo, pageWidth, lineaPos);
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Ingresos adelantos de ordenes de servicio", cierreCaja.AdelantosOrdenEfectivo, pageWidth, lineaPos);
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Pagos de CxC en efectivo", cierreCaja.PagosCxCEfectivo, pageWidth, lineaPos);
             lineaPos += 20;
             AgregarLineaDescripcionValor(gfx, tf, font, "Ingresos por ventas en efectivo", cierreCaja.VentasEfectivo, pageWidth, lineaPos);
             lineaPos += 20;
@@ -533,11 +520,8 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             AgregarLineaDescripcionValor(gfx, tf, font, "Compras en efectivo", cierreCaja.ComprasEfectivo, pageWidth, lineaPos);
             lineaPos += 20;
             AgregarLineaDescripcionValor(gfx, tf, font, "Otros egresos en efectivo", cierreCaja.EgresosEfectivo, pageWidth, lineaPos);
-            if (bolAplicaPagosCxP)
-            {
-                lineaPos += 20;
-                AgregarLineaDescripcionValor(gfx, tf, font, "Pagos a CxP en efectivo", cierreCaja.PagosCxPEfectivo, pageWidth, lineaPos);
-            }
+            lineaPos += 20;
+            AgregarLineaDescripcionValor(gfx, tf, font, "Pagos a CxP en efectivo", cierreCaja.PagosCxPEfectivo, pageWidth, lineaPos);
             font = new XFont("Arial", 10, XFontStyle.Bold);
             lineaPos += 30;
             AgregarLineaDescripcionValor(gfx, tf, font, "Cierre de efectivo de caja", cierreCaja.FondoCierre, pageWidth, lineaPos);

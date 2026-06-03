@@ -3225,7 +3225,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     CierreCaja cierreCaja = dbContext.CierreCajaRepository.FirstOrDefault(x => x.IdCierre == intIdCierre);
                     if (cierreCaja == null) throw new BusinessException("El registro del cierre de caja no existe.");
-                    Empresa empresa = dbContext.EmpresaRepository.Include("RolePorEmpresa").Where(x => x.IdEmpresa == cierreCaja.IdEmpresa).FirstOrDefault();
+                    Empresa empresa = dbContext.EmpresaRepository.Where(x => x.IdEmpresa == cierreCaja.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     return Generador.GenerarTiqueteCierreCaja(empresa, cierreCaja, intLargoLinea);
                 }
