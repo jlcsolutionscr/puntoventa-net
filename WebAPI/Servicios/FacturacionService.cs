@@ -895,22 +895,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
                             {
-                                CuentaEgreso cuenta = dbContext.CuentaEgresoRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
-                                if (cuenta == null) throw new BusinessException("La empresa no posee ninguna cuenta de egresos parametrizada para devoluciones de clientes");
-                                Egreso egreso = new Egreso
+                                NotaCreditoCliente notaCredito = new NotaCreditoCliente
                                 {
                                     IdEmpresa = factura.IdEmpresa,
-                                    IdSucursal = factura.IdSucursal,
+                                    IdCliente = factura.IdCliente,
                                     IdUsuario = factura.IdUsuario,
                                     Fecha = Validador.ObtenerFechaHoraCostaRica(),
-                                    IdCuenta = cuenta.IdCuenta,
-                                    Beneficiario = factura.NombreCliente,
-                                    Detalle = "Anulación de factura posterior a cierre de efectivo " + factura.ConsecFactura,
-                                    Monto = desglosePago.MontoLocal,
-                                    Nulo = false,
-                                    Procesado = false
+                                    Detalle = "Nota de crédito por devolución de mercancía de factura: " + factura.ConsecFactura,
+                                    Referencia = factura.ConsecFactura,
+                                    MontoOriginal = desglosePago.MontoLocal,
+                                    Saldo = desglosePago.MontoLocal,
+                                    Nulo = false
                                 };
-                                dbContext.EgresoRepository.Add(egreso);
+                                dbContext.NotaCreditoClienteRepository.Add(notaCredito);
                             }
                         }
                     }

@@ -1,6 +1,46 @@
-ALTER TABLE catalogocontable DROP COLUMN IdTipoCuenta;
 ALTER TABLE catalogocontable DROP CONSTRAINT catalogocontable_ibfk_2;
+ALTER TABLE catalogocontable DROP COLUMN IdTipoCuenta;
 ALTER TABLE parametrocontable DROP CONSTRAINT parametrocontable_ibfk_1;
 DROP TABLE clasecuentacontable;
 DROP TABLE tipocuentacontable;
 DROP TABLE tipoparametrocontable;
+
+ALTER TABLE empresa ADD DevolucionEnEfectivo bit(1) NOT NULL;
+
+CREATE TABLE notacreditocliente (
+  IdEmpresa int NOT NULL,
+  IdCliente int NOT NULL,
+  IdNotaCredito int NOT NULL, 
+  IdUsuario int NOT NULL,
+  Fecha datetime NOT NULL,
+  Detalle varchar(200) DEFAULT NULL,
+  Referencia int NOT NULL,
+  MontoOriginal double NOT NULL,
+  Saldo double NOT NULL,
+  Nulo bit(1) NOT NULL,
+  IdAnuladoPor int DEFAULT NULL
+);
+
+ALTER TABLE notacreditocliente
+  ADD PRIMARY KEY (IdNotaCredito),
+  ADD CONSTRAINT notacreditocliente_ibfk_1 FOREIGN KEY (IdEmpresa) REFERENCES empresa (IdEmpresa),
+  ADD CONSTRAINT notacreditocliente_ibfk_2 FOREIGN KEY (IdCliente) REFERENCES cliente (IdCliente);
+
+ALTER TABLE notacreditocliente MODIFY IdNotaCredito int NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE movimientonotacreditocliente (
+  IdNotaCredito int NOT NULL,
+  Consecutivo int NOT NULL,
+  IdUsuario int NOT NULL,
+  Fecha datetime NOT NULL,
+  Monto double NOT NULL,
+  IdFactura int NOT NULL,
+  Nulo bit(1) NOT NULL,
+  IdAnuladoPor int DEFAULT NULL
+);
+
+ALTER TABLE movimientonotacreditocliente
+  ADD PRIMARY KEY (Consecutivo),
+  ADD CONSTRAINT movimientonotacreditocliente_ibfk_1 FOREIGN KEY (IdNotaCredito) REFERENCES notacreditocliente (IdNotaCredito);
+
+ALTER TABLE movimientonotacreditocliente MODIFY Consecutivo int NOT NULL AUTO_INCREMENT;

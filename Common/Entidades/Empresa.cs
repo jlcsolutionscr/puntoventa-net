@@ -30,6 +30,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool AsignaVendedorPorDefecto { get; set; }
         public bool IngresaPagoCliente { get; set; }
         public bool PrecioVentaIncluyeIVA { get; set; }
+        public bool DevolucionEnEfectivo { get; set; }
         public string CorreoNotificacion { get; set; }
         public decimal MontoRedondeoDescuento { get; set; }
         public string LeyendaFactura { get; set; }
