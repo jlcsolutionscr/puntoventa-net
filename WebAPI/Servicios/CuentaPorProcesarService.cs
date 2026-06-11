@@ -203,7 +203,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
                         cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentasPorCobrarTarjeta")).FirstOrDefault();
-                        // REVISAR
+                        // TODO Revisar que se acredite el IVA correctamente
                         ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("IvaPorAcreditar")).FirstOrDefault();
                         gastoComisionParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("GastoComisionTarjeta")).FirstOrDefault();
                         cuentaPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentasPorCobrarClientes")).FirstOrDefault();

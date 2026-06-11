@@ -111,7 +111,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
-                        // REVISAR
+                        // TODO Revisar que se acredite el IVA correctamente
                         ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("IVAPorAcreditar")).FirstOrDefault();
                         efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
                         if (ivaPorPagarParam == null || efectivoParam == null)

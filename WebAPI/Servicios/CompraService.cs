@@ -226,7 +226,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 ParametroContable efectivoParam = null;
                 ParametroContable cuentasPorPagarProveedoresParam = null;
                 ParametroContable otraCondicionVentaParam = null;
-                ParametroContable ivaPorPagarParam = null;
+                ParametroContable ivaSoportadoParam = null;
                 ParametroContable lineaParam = null;
                 DataTable dtbInventarios = new DataTable();
                 dtbInventarios.Columns.Add("IdLinea", typeof(int));
@@ -256,9 +256,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
                         cuentasPorPagarProveedoresParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentasPorPagarProveedores")).FirstOrDefault();
                         otraCondicionVentaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("OtraCondicionVenta")).FirstOrDefault();
-                        // REVISAR
-                        ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("IVAPorLiquidar")).FirstOrDefault();
-                        if (efectivoParam == null || cuentasPorPagarProveedoresParam == null || otraCondicionVentaParam == null || ivaPorPagarParam == null)
+                        ivaSoportadoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("IvaSoportado")).FirstOrDefault();
+                        if (efectivoParam == null || cuentasPorPagarProveedoresParam == null || otraCondicionVentaParam == null || ivaSoportadoParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                     }
                     compra.IdCxP = 0;
@@ -421,9 +420,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             detalleAsiento = new DetalleAsiento
                             {
                                 Linea = intLineaDetalleAsiento += 1,
-                                IdCuenta = ivaPorPagarParam.IdCuenta,
+                                IdCuenta = ivaSoportadoParam.IdCuenta,
                                 Debito = decTotalImpuesto,
-                                SaldoAnterior = dbContext.CatalogoContableRepository.Find(ivaPorPagarParam.IdCuenta).SaldoActual
+                                SaldoAnterior = dbContext.CatalogoContableRepository.Find(ivaSoportadoParam.IdCuenta).SaldoActual
                             };
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalDebito += detalleAsiento.Debito;

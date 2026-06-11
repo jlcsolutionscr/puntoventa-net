@@ -204,9 +204,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 ParametroContable efectivoParam = null;
                 ParametroContable ingresoParam = null;
-                ParametroContable cuentaPorCobrarTarjetaParam = null;
-                ParametroContable gastoComisionParam = null;
-                ParametroContable ivaPorPagarParam = null;
                 Asiento asiento = null;
                 try
                 {
@@ -218,11 +215,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.Contabiliza)
                     {
                         efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
-                        cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentasPorCobrarTarjeta")).FirstOrDefault();
-                        gastoComisionParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("GastoComisionTarjeta")).FirstOrDefault();
-                        // REVISAR
-                        ivaPorPagarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("IVAPorAcreditar")).FirstOrDefault();
-                        if (efectivoParam == null || cuentaPorCobrarTarjetaParam == null || gastoComisionParam == null || ivaPorPagarParam == null)
+                        if (efectivoParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                     }
                     CuentaIngreso cuentaIngreso = dbContext.CuentaIngresoRepository.Find(ingreso.IdCuenta);
