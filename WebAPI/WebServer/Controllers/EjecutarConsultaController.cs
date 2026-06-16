@@ -1426,10 +1426,10 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     int intIdOrden = parametrosJO.Property("IdOrden") != null ? int.Parse(parametrosJO.Property("IdOrden").Value.ToString()) : 0;
-                    string strImpresora = parametrosJO.Property("Impresora") != null ? parametrosJO.Property("Impresora").Value.ToString() : "";
+                    string strCategoria = parametrosJO.Property("Categoria") != null ? parametrosJO.Property("Categoria").Value.ToString() : "";
                     bool bolFiltrarPendientes = parametrosJO.Property("FiltrarPendientes") != null ? bool.Parse(parametrosJO.Property("FiltrarPendientes").Value.ToString()) : false;
                     bool bolOrdenDescendente = parametrosJO.Property("OrdenDescendente") != null ? bool.Parse(parametrosJO.Property("OrdenDescendente").Value.ToString()) : true;
-                    IList<TiqueteOrdenServicio> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, intIdOrden, strImpresora, bolFiltrarPendientes, bolOrdenDescendente);
+                    IList<TiqueteOrdenServicio> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, intIdOrden, strCategoria, bolFiltrarPendientes, bolOrdenDescendente);
                     if (listadoTiqueteOrdenServicio.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoTiqueteOrdenServicio);
                     break;
