@@ -154,6 +154,7 @@ namespace JLCSolutionsCR
                 {
                     int intIdEmpresa = int.Parse(ConfigurationManager.AppSettings["IdEmpresa"]);
                     int intIdSucursal = int.Parse(ConfigurationManager.AppSettings["IdSucursal"]);
+                    string strCategoria = ConfigurationManager.AppSettings["Categoria"];
                     string strImpresora = ConfigurationManager.AppSettings["Impresora"];
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                     using (var httpClient = new HttpClient())
@@ -161,7 +162,7 @@ namespace JLCSolutionsCR
                         string response = "";
                         try
                         {
-                            string strRequest = strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&impresora=" + strImpresora;
+                            string strRequest = strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&categoria=" + strCategoria;
                             HttpResponseMessage httpResponse = await httpClient.GetAsync(strRequest);
                             if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                             {
@@ -185,7 +186,7 @@ namespace JLCSolutionsCR
                             {
                                 _logger.Info("Processing ticket: " + tiquete.IdTiquete);
                                 GenerateWorkingOrderTicket(tiquete);
-                                PrintTicket(tiquete.Impresora);
+                                PrintTicket(strImpresora);
                             }
                             catch (Exception ex)
                             {
@@ -277,11 +278,11 @@ namespace JLCSolutionsCR
             {
                 ticketLines = new List<ClsLineaImpresion>
                 {
-                    new ClsLineaImpresion(1, tiquete.Etiqueta, 0, 100, 14, (int)StringAlignment.Center, true),
+                    new ClsLineaImpresion(2, tiquete.Etiqueta, 0, 100, 14, (int)StringAlignment.Center, true),
                     new ClsLineaImpresion(1, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true),
                     new ClsLineaImpresion(2, tiquete.FechaEmision, 0, 100, 12, (int)StringAlignment.Center, false),
-                    new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false),
-                    new ClsLineaImpresion(1, new string('-', 46), 0, 100, 12, (int)StringAlignment.Center, false)
+                    new ClsLineaImpresion(2, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false),
+                    new ClsLineaImpresion(1, new string('-', 31), 0, 100, 12, (int)StringAlignment.Center, false)
                 };
                 IList<DescripcionValor> detalle = JsonConvert.DeserializeObject<IList<DescripcionValor>>(tiquete.DetalleTiqueteOrdenServicio);
                 foreach (DescripcionValor linea in detalle)
@@ -289,20 +290,19 @@ namespace JLCSolutionsCR
                     string strDescription = linea.Descripcion;
                     while (strDescription.Length > 0)
                     {
-                        if (strDescription.Length > 46)
+                        if (strDescription.Length > 26)
                         {
-                            ticketLines.Add(new ClsLineaImpresion(1, strDescription.Substring(0, 46), 0, 100, 10, (int)StringAlignment.Center, false));
-                            strDescription = strDescription.Substring(46);
+                            ticketLines.Add(new ClsLineaImpresion(1, strDescription.Substring(0, 26), 0, 100, 12, (int)StringAlignment.Center, true));
+                            strDescription = strDescription.Substring(26);
                         }
                         else
                         {
-                            ticketLines.Add(new ClsLineaImpresion(1, strDescription, 0, 100, 10, (int)StringAlignment.Center, false));
+                            ticketLines.Add(new ClsLineaImpresion(1, strDescription, 0, 100, 10, (int)StringAlignment.Center, true));
                             strDescription = "";
                         }
                     }
-                    ticketLines.Add(new ClsLineaImpresion(1, linea.Valor.ToString(), 0, 100, 10, (int)StringAlignment.Center, false));
                 }
-                ticketLines.Add(new ClsLineaImpresion(1, new string('-', 46), 0, 100, 12, (int)StringAlignment.Center, false));
+                ticketLines.Add(new ClsLineaImpresion(1, new string('-', 31), 0, 100, 12, (int)StringAlignment.Center, false));
                 ticketLines.Add(new ClsLineaImpresion(2, "FIN DEL PEDIDO", 0, 100, 10, (int)StringAlignment.Center, false));
             }
             catch (Exception ex)
