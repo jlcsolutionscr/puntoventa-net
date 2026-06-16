@@ -281,7 +281,7 @@ namespace JLCSolutionsCR
                     new ClsLineaImpresion(1, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true),
                     new ClsLineaImpresion(2, tiquete.FechaEmision, 0, 100, 12, (int)StringAlignment.Center, false),
                     new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false),
-                    new ClsLineaImpresion(1, "-".repeat(46), 0, 100, 12, (int)StringAlignment.Center, false)
+                    new ClsLineaImpresion(1, new string('-', 46), 0, 100, 12, (int)StringAlignment.Center, false)
                 };
                 IList<DescripcionValor> detalle = JsonConvert.DeserializeObject<IList<DescripcionValor>>(tiquete.DetalleTiqueteOrdenServicio);
                 foreach (DescripcionValor linea in detalle)
@@ -302,7 +302,7 @@ namespace JLCSolutionsCR
                     }
                     ticketLines.Add(new ClsLineaImpresion(1, linea.Valor.ToString(), 0, 100, 10, (int)StringAlignment.Center, false));
                 }
-                ticketLines.Add(new ClsLineaImpresion(1, "-".repeat(46), 0, 100, 12, (int)StringAlignment.Center, false));
+                ticketLines.Add(new ClsLineaImpresion(1, new string('-', 46), 0, 100, 12, (int)StringAlignment.Center, false));
                 ticketLines.Add(new ClsLineaImpresion(2, "FIN DEL PEDIDO", 0, 100, 10, (int)StringAlignment.Center, false));
             }
             catch (Exception ex)
