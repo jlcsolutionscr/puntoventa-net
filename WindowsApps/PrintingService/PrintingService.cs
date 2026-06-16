@@ -71,9 +71,7 @@ namespace JLCSolutionsCR
                 using (var fs = File.OpenRead("log4net.config"))
                 {
                     log4netConfig.Load(fs);
-                    var repo = LogManager.CreateRepository(
-                            Assembly.GetEntryAssembly(),
-                            typeof(log4net.Repository.Hierarchy.Hierarchy));
+                    var repo = LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
                     XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
                 }
             }
@@ -85,10 +83,14 @@ namespace JLCSolutionsCR
 
         public void TestInConsole(string[] args)
         {
-            OnStart(args);
+            _cts = new CancellationTokenSource();
+            Task.Run(async () =>
+            {
+                await ProcesstPendingTickets(_cts.Token);
+                _cts.Dispose();
+            });
             Console.WriteLine("Press ENTER to exit...");
             Console.ReadLine();
-            OnStop();
         }
 
         protected override void OnStart(string[] args)
@@ -102,7 +104,7 @@ namespace JLCSolutionsCR
             _logger.Info("In OnStart.");
             System.Timers.Timer timer = new System.Timers.Timer
             {
-                Interval = int.Parse(ConfigurationManager.AppSettings["ServicioURL"])
+                Interval = int.Parse(ConfigurationManager.AppSettings["Intervalo"])
             };
             timer.Elapsed += new ElapsedEventHandler(OnTimer);
             timer.Start();
@@ -136,7 +138,7 @@ namespace JLCSolutionsCR
         public void OnTimer(object sender, ElapsedEventArgs args)
         {
             _cts = new CancellationTokenSource();
-            _printingTask = RequestPendingTickets(_cts.Token);
+            _printingTask = ProcesstPendingTickets(_cts.Token);
             Task.Run(async () =>
             {
                 await _printingTask;
@@ -144,7 +146,7 @@ namespace JLCSolutionsCR
             });
         }
 
-        private async Task RequestPendingTickets(CancellationToken cancelToken)
+        private async Task ProcesstPendingTickets(CancellationToken cancelToken)
         {
             if (!cancelToken.IsCancellationRequested)
             {
@@ -152,13 +154,15 @@ namespace JLCSolutionsCR
                 {
                     int intIdEmpresa = int.Parse(ConfigurationManager.AppSettings["IdEmpresa"]);
                     int intIdSucursal = int.Parse(ConfigurationManager.AppSettings["IdSucursal"]);
+                    string strImpresora = ConfigurationManager.AppSettings["Impresora"];
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                     using (var httpClient = new HttpClient())
                     {
                         string response = "";
                         try
                         {
-                            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal, cancelToken);
+                            string strRequest = strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&impresora=" + strImpresora;
+                            HttpResponseMessage httpResponse = await httpClient.GetAsync(strRequest);
                             if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                             {
                                 string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
@@ -170,6 +174,7 @@ namespace JLCSolutionsCR
                         }
                         catch (Exception ex)
                         {
+                            Console.WriteLine("Error requesting tickets from server:", ex.Message);
                             _logger.Error("Error requesting tickets from server: " + ex.Message);
                         }
                         List<TiqueteOrdenServicio> listado = new List<TiqueteOrdenServicio>();
@@ -178,6 +183,7 @@ namespace JLCSolutionsCR
                         {
                             try
                             {
+                                _logger.Info("Processing ticket: " + tiquete.IdTiquete);
                                 GenerateWorkingOrderTicket(tiquete);
                                 PrintTicket(tiquete.Impresora);
                             }
@@ -205,6 +211,7 @@ namespace JLCSolutionsCR
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine("Error requesting tickets from server", ex.Message);
                     _logger.Error("Error requesting tickets from server: " + ex.Message);
                 }
             }
@@ -221,7 +228,8 @@ namespace JLCSolutionsCR
             }
             catch (Exception ex)
             {
-                _logger.Error("Error setting up printer config: " + strPrinterName + " Error message: " + ex.Message);
+                Console.WriteLine("Error printing ticket on printer: " + strPrinterName + " Error message: " + ex.Message);
+                _logger.Error("Error printing ticket on printer: " + strPrinterName + " Error message: " + ex.Message);
             }
         }
 

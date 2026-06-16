@@ -2277,9 +2277,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<List<TiqueteOrdenServicio>> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolImpreso, string strToken)
+        public static async Task<List<TiqueteOrdenServicio>> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltrarPendientes, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoTiqueteOrdenServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", Impreso: '" + bolImpreso + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoTiqueteOrdenServicio', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FiltrarPendientes: '" + bolFiltrarPendientes + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<TiqueteOrdenServicio> listado = new List<TiqueteOrdenServicio>();
             if (respuesta != "")
