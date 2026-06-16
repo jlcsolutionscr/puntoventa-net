@@ -102,7 +102,7 @@ namespace JLCSolutionsCR
             _logger.Info("In OnStart.");
             System.Timers.Timer timer = new System.Timers.Timer
             {
-                Interval = 10000
+                Interval = int.Parse(ConfigurationManager.AppSettings["ServicioURL"])
             };
             timer.Elapsed += new ElapsedEventHandler(OnTimer);
             timer.Start();
