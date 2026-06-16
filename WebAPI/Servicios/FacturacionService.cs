@@ -1851,7 +1851,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var listado = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    var listado = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Impresora != "");
                     if (strCategoria != "")
                         listado = listado.Where(x => x.Impresora == strCategoria);
                     if (intIdOrden > 0)
