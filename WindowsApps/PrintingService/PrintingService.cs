@@ -144,7 +144,7 @@ namespace JLCSolutionsCR
             });
         }
 
-        private async Task RequestPendingTickets(int intIdOrden, CancellationToken cancelToken)
+        private async Task RequestPendingTickets(CancellationToken cancelToken)
         {
             if (!cancelToken.IsCancellationRequested)
             {
@@ -158,7 +158,7 @@ namespace JLCSolutionsCR
                         string response = "";
                         try
                         {
-                            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&idorden=" + intIdOrden, cancelToken);
+                            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal, cancelToken);
                             if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                             {
                                 string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
@@ -259,7 +259,7 @@ namespace JLCSolutionsCR
             }
             catch (Exception ex)
             {
-                _logger.Error("Error sending ticket lines to Printer: " + strPrinterName + " Error message: " + ex.Message);
+                _logger.Error("Error creating printing content. Error message: " + ex.Message);
             }
         }
 
@@ -312,7 +312,7 @@ namespace JLCSolutionsCR
             }
             catch (Exception ex)
             {
-                _logger.Error("Error sending ticket lines to Printer: " + strPrinterName + " Error message: " + ex.Message);
+                _logger.Error("Error generating ticket stream. Error message: " + ex.Message);
             }
         }
     }
