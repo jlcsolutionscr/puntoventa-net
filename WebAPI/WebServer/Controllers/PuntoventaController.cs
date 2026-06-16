@@ -49,9 +49,10 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpGet("cambiarestadoaimpresotiqueteordenservicio")]
-        public void CambiarEstadoAImpresoTiqueteOrdenServicio(int idtiquete)
+        public void CambiarEstadoAImpresoTiqueteOrdenServicio(int idtiquete, string status)
         {
-            _servicioFacturacion.ActualizarEstadoTiqueteOrdenServicio(idtiquete, true);
+            bool bolStatus = status == "pendiente" ? false : true;
+            _servicioFacturacion.ActualizarEstadoTiqueteOrdenServicio(idtiquete, bolStatus);
         }
 
         [HttpGet("descargaractualizacion")]

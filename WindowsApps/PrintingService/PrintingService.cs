@@ -193,7 +193,7 @@ namespace JLCSolutionsCR
                             }
                             try
                             {
-                                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + tiquete.IdTiquete, cancelToken);
+                                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + tiquete.IdTiquete + "&status=impreso", cancelToken);
                                 if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                                 {
                                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
