@@ -280,7 +280,8 @@ namespace JLCSolutionsCR
                     new ClsLineaImpresion(1, tiquete.Etiqueta, 0, 100, 14, (int)StringAlignment.Center, true),
                     new ClsLineaImpresion(1, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true),
                     new ClsLineaImpresion(2, tiquete.FechaEmision, 0, 100, 12, (int)StringAlignment.Center, false),
-                    new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false)
+                    new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false),
+                    new ClsLineaImpresion(1, "-".repeat(46), 0, 100, 12, (int)StringAlignment.Center, false)
                 };
                 IList<DescripcionValor> detalle = JsonConvert.DeserializeObject<IList<DescripcionValor>>(tiquete.DetalleTiqueteOrdenServicio);
                 foreach (DescripcionValor linea in detalle)
@@ -288,10 +289,10 @@ namespace JLCSolutionsCR
                     string strDescription = linea.Descripcion;
                     while (strDescription.Length > 0)
                     {
-                        if (strDescription.Length > 30)
+                        if (strDescription.Length > 46)
                         {
-                            ticketLines.Add(new ClsLineaImpresion(1, strDescription.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Center, false));
-                            strDescription = strDescription.Substring(30);
+                            ticketLines.Add(new ClsLineaImpresion(1, strDescription.Substring(0, 46), 0, 100, 10, (int)StringAlignment.Center, false));
+                            strDescription = strDescription.Substring(46);
                         }
                         else
                         {
@@ -301,22 +302,8 @@ namespace JLCSolutionsCR
                     }
                     ticketLines.Add(new ClsLineaImpresion(1, linea.Valor.ToString(), 0, 100, 10, (int)StringAlignment.Center, false));
                 }
-                ticketLines.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Center, false));
-                string strDetails = tiquete.Descripcion;
-                while (strDetails.Length > 0)
-                {
-                    if (strDetails.Length > 30)
-                    {
-                        ticketLines.Add(new ClsLineaImpresion(1, strDetails.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
-                        strDetails = strDetails.Substring(30);
-                    }
-                    else
-                    {
-                        ticketLines.Add(new ClsLineaImpresion(1, strDetails, 0, 100, 10, (int)StringAlignment.Near, false));
-                        strDetails = "";
-                    }
-                }
-                ticketLines.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
+                ticketLines.Add(new ClsLineaImpresion(1, "-".repeat(46), 0, 100, 12, (int)StringAlignment.Center, false));
+                ticketLines.Add(new ClsLineaImpresion(2, "FIN DEL PEDIDO", 0, 100, 10, (int)StringAlignment.Center, false));
             }
             catch (Exception ex)
             {
