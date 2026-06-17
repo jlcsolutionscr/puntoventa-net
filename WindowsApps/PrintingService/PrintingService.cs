@@ -71,9 +71,7 @@ namespace JLCSolutionsCR
                 using (var fs = File.OpenRead("log4net.config"))
                 {
                     log4netConfig.Load(fs);
-                    var repo = LogManager.CreateRepository(
-                            Assembly.GetEntryAssembly(),
-                            typeof(log4net.Repository.Hierarchy.Hierarchy));
+                    var repo = LogManager.CreateRepository(Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
                     XmlConfigurator.Configure(repo, log4netConfig["log4net"]);
                 }
             }
@@ -85,10 +83,14 @@ namespace JLCSolutionsCR
 
         public void TestInConsole(string[] args)
         {
-            OnStart(args);
+            _cts = new CancellationTokenSource();
+            Task.Run(async () =>
+            {
+                await ProcesstPendingTickets(_cts.Token);
+                _cts.Dispose();
+            });
             Console.WriteLine("Press ENTER to exit...");
             Console.ReadLine();
-            OnStop();
         }
 
         protected override void OnStart(string[] args)
@@ -102,7 +104,7 @@ namespace JLCSolutionsCR
             _logger.Info("In OnStart.");
             System.Timers.Timer timer = new System.Timers.Timer
             {
-                Interval = 10000
+                Interval = int.Parse(ConfigurationManager.AppSettings["Intervalo"])
             };
             timer.Elapsed += new ElapsedEventHandler(OnTimer);
             timer.Start();
@@ -136,7 +138,7 @@ namespace JLCSolutionsCR
         public void OnTimer(object sender, ElapsedEventArgs args)
         {
             _cts = new CancellationTokenSource();
-            _printingTask = RequestPendingTickets(_cts.Token);
+            _printingTask = ProcesstPendingTickets(_cts.Token);
             Task.Run(async () =>
             {
                 await _printingTask;
@@ -144,7 +146,7 @@ namespace JLCSolutionsCR
             });
         }
 
-        private async Task RequestPendingTickets(int intIdOrden, CancellationToken cancelToken)
+        private async Task ProcesstPendingTickets(CancellationToken cancelToken)
         {
             if (!cancelToken.IsCancellationRequested)
             {
@@ -152,13 +154,16 @@ namespace JLCSolutionsCR
                 {
                     int intIdEmpresa = int.Parse(ConfigurationManager.AppSettings["IdEmpresa"]);
                     int intIdSucursal = int.Parse(ConfigurationManager.AppSettings["IdSucursal"]);
+                    string strCategoria = ConfigurationManager.AppSettings["Categoria"];
+                    string strImpresora = ConfigurationManager.AppSettings["Impresora"];
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                     using (var httpClient = new HttpClient())
                     {
                         string response = "";
                         try
                         {
-                            HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&idorden=" + intIdOrden, cancelToken);
+                            string strRequest = strServicioURL + "/obtenerlistadotiqueteordenserviciopendiente?idempresa=" + intIdEmpresa + "&idsucursal=" + intIdSucursal + "&categoria=" + strCategoria;
+                            HttpResponseMessage httpResponse = await httpClient.GetAsync(strRequest);
                             if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                             {
                                 string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
@@ -170,6 +175,7 @@ namespace JLCSolutionsCR
                         }
                         catch (Exception ex)
                         {
+                            Console.WriteLine("Error requesting tickets from server:", ex.Message);
                             _logger.Error("Error requesting tickets from server: " + ex.Message);
                         }
                         List<TiqueteOrdenServicio> listado = new List<TiqueteOrdenServicio>();
@@ -178,8 +184,9 @@ namespace JLCSolutionsCR
                         {
                             try
                             {
+                                _logger.Info("Processing ticket: " + tiquete.IdTiquete);
                                 GenerateWorkingOrderTicket(tiquete);
-                                PrintTicket(tiquete.Impresora);
+                                PrintTicket(strImpresora);
                             }
                             catch (Exception ex)
                             {
@@ -187,7 +194,7 @@ namespace JLCSolutionsCR
                             }
                             try
                             {
-                                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + tiquete.IdTiquete, cancelToken);
+                                HttpResponseMessage httpResponse = await httpClient.GetAsync(strServicioURL + "/cambiarestadoaimpresotiqueteordenservicio?idtiquete=" + tiquete.IdTiquete + "&status=impreso", cancelToken);
                                 if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
                                 {
                                     string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
@@ -205,6 +212,7 @@ namespace JLCSolutionsCR
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine("Error requesting tickets from server", ex.Message);
                     _logger.Error("Error requesting tickets from server: " + ex.Message);
                 }
             }
@@ -221,7 +229,8 @@ namespace JLCSolutionsCR
             }
             catch (Exception ex)
             {
-                _logger.Error("Error setting up printer config: " + strPrinterName + " Error message: " + ex.Message);
+                Console.WriteLine("Error printing ticket on printer: " + strPrinterName + " Error message: " + ex.Message);
+                _logger.Error("Error printing ticket on printer: " + strPrinterName + " Error message: " + ex.Message);
             }
         }
 
@@ -259,7 +268,7 @@ namespace JLCSolutionsCR
             }
             catch (Exception ex)
             {
-                _logger.Error("Error sending ticket lines to Printer: " + strPrinterName + " Error message: " + ex.Message);
+                _logger.Error("Error creating printing content. Error message: " + ex.Message);
             }
         }
 
@@ -269,10 +278,11 @@ namespace JLCSolutionsCR
             {
                 ticketLines = new List<ClsLineaImpresion>
                 {
-                    new ClsLineaImpresion(1, tiquete.Etiqueta, 0, 100, 14, (int)StringAlignment.Center, true),
+                    new ClsLineaImpresion(2, tiquete.Etiqueta, 0, 100, 14, (int)StringAlignment.Center, true),
                     new ClsLineaImpresion(1, "PEDIDO EN PROCESO", 0, 100, 14, (int)StringAlignment.Center, true),
                     new ClsLineaImpresion(2, tiquete.FechaEmision, 0, 100, 12, (int)StringAlignment.Center, false),
-                    new ClsLineaImpresion(1, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false)
+                    new ClsLineaImpresion(2, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false),
+                    new ClsLineaImpresion(1, new string('-', 31), 0, 100, 12, (int)StringAlignment.Center, false)
                 };
                 IList<DescripcionValor> detalle = JsonConvert.DeserializeObject<IList<DescripcionValor>>(tiquete.DetalleTiqueteOrdenServicio);
                 foreach (DescripcionValor linea in detalle)
@@ -280,39 +290,24 @@ namespace JLCSolutionsCR
                     string strDescription = linea.Descripcion;
                     while (strDescription.Length > 0)
                     {
-                        if (strDescription.Length > 30)
+                        if (strDescription.Length > 26)
                         {
-                            ticketLines.Add(new ClsLineaImpresion(1, strDescription.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Center, false));
-                            strDescription = strDescription.Substring(30);
+                            ticketLines.Add(new ClsLineaImpresion(1, strDescription.Substring(0, 26), 0, 100, 12, (int)StringAlignment.Center, true));
+                            strDescription = strDescription.Substring(26);
                         }
                         else
                         {
-                            ticketLines.Add(new ClsLineaImpresion(1, strDescription, 0, 100, 10, (int)StringAlignment.Center, false));
+                            ticketLines.Add(new ClsLineaImpresion(1, strDescription, 0, 100, 10, (int)StringAlignment.Center, true));
                             strDescription = "";
                         }
                     }
-                    ticketLines.Add(new ClsLineaImpresion(1, linea.Valor.ToString(), 0, 100, 10, (int)StringAlignment.Center, false));
                 }
-                ticketLines.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Center, false));
-                string strDetails = tiquete.Descripcion;
-                while (strDetails.Length > 0)
-                {
-                    if (strDetails.Length > 30)
-                    {
-                        ticketLines.Add(new ClsLineaImpresion(1, strDetails.Substring(0, 30), 0, 100, 10, (int)StringAlignment.Near, false));
-                        strDetails = strDetails.Substring(30);
-                    }
-                    else
-                    {
-                        ticketLines.Add(new ClsLineaImpresion(1, strDetails, 0, 100, 10, (int)StringAlignment.Near, false));
-                        strDetails = "";
-                    }
-                }
-                ticketLines.Add(new ClsLineaImpresion(2, "", 0, 100, 10, (int)StringAlignment.Near, false));
+                ticketLines.Add(new ClsLineaImpresion(1, new string('-', 31), 0, 100, 12, (int)StringAlignment.Center, false));
+                ticketLines.Add(new ClsLineaImpresion(2, "FIN DEL PEDIDO", 0, 100, 10, (int)StringAlignment.Center, false));
             }
             catch (Exception ex)
             {
-                _logger.Error("Error sending ticket lines to Printer: " + strPrinterName + " Error message: " + ex.Message);
+                _logger.Error("Error generating ticket stream. Error message: " + ex.Message);
             }
         }
     }

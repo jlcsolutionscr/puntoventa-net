@@ -39,9 +39,9 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpGet("obtenerlistadotiqueteordenserviciopendiente")]
-        public string ObtenerListadoTiqueteOrdenServicioPendiente(int idempresa, int idsucursal, int idorden)
+        public string ObtenerListadoTiqueteOrdenServicioPendiente(int idempresa, int idsucursal, string categoria)
         {
-            IList<TiqueteOrdenServicio> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(idempresa, idsucursal, idorden, false, false);
+            IList<TiqueteOrdenServicio> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(idempresa, idsucursal, 0, categoria, true, false);
             string strRespuesta = "";
             if (listadoTiqueteOrdenServicio.Count > 0)
                 strRespuesta = JsonConvert.SerializeObject(listadoTiqueteOrdenServicio);
@@ -49,9 +49,10 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         }
 
         [HttpGet("cambiarestadoaimpresotiqueteordenservicio")]
-        public void CambiarEstadoAImpresoTiqueteOrdenServicio(int idtiquete)
+        public void CambiarEstadoAImpresoTiqueteOrdenServicio(int idtiquete, string status)
         {
-            _servicioFacturacion.ActualizarEstadoTiqueteOrdenServicio(idtiquete, true);
+            bool bolStatus = status == "pendiente" ? false : true;
+            _servicioFacturacion.ActualizarEstadoTiqueteOrdenServicio(idtiquete, bolStatus);
         }
 
         [HttpGet("descargaractualizacion")]

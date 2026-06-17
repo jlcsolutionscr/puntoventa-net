@@ -51,7 +51,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         OrdenServicio ObtenerOrdenServicio(int intIdOrdenServicio);
         int ObtenerTotalListaOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int intIdOrdenServicio, string strNombre, string strFechaFinal);
         IList<FacturaDetalle> ObtenerListadoOrdenServicio(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int numPagina, int cantRec, int intIdOrdenServicio, string strNombre, string strFechaFinal);
-        IList<TiqueteOrdenServicio> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden, bool bolFiltrarPendientes, bool bolSortedDesc);
+        IList<TiqueteOrdenServicio> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden, string strCategoria, bool bolFiltrarPendientes, bool bolSortedDesc);
         void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolImpreso);
         string AgregarDevolucionCliente(DevolucionCliente devolucion);
         void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion);
@@ -1934,14 +1934,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<TiqueteOrdenServicio> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden, bool bolFiltrarPendientes, bool bolSortedDesc)
+        public IList<TiqueteOrdenServicio> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden, string strCategoria, bool bolFiltrarPendientes, bool bolSortedDesc)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
-                    var listado = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                    var listado = dbContext.TiqueteOrdenServicioRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Impresora != "");
+                    if (strCategoria != "")
+                        listado = listado.Where(x => x.Impresora == strCategoria);
                     if (intIdOrden > 0)
                         listado = listado.Where(x => x.IdOrden == intIdOrden);
                     if (bolFiltrarPendientes)
