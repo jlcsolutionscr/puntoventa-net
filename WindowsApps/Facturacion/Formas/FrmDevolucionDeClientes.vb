@@ -17,7 +17,7 @@ Public Class FrmDevolucionDeClientes
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
 #End Region
 
-#Region "Métodos"
+#Region "Mï¿½todos"
     Private Sub IniciaDetalleDevolucion()
         dtbDetalleDevolucion = New DataTable()
         dtbDetalleDevolucion.Columns.Add("IDPRODUCTO", GetType(Integer))
@@ -54,14 +54,14 @@ Public Class FrmDevolucionDeClientes
         grdDetalleDevolucion.Columns.Add(dvcIdProducto)
 
         dvcCodigo.DataPropertyName = "CODIGO"
-        dvcCodigo.HeaderText = "Código"
+        dvcCodigo.HeaderText = "Cï¿½digo"
         dvcCodigo.Width = 125
         dvcCodigo.ReadOnly = True
         dvcCodigo.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleDevolucion.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
-        dvcDescripcion.HeaderText = "Descripción"
+        dvcDescripcion.HeaderText = "Descripciï¿½n"
         dvcDescripcion.Width = 340
         dvcDescripcion.ReadOnly = True
         dvcDescripcion.SortMode = DataGridViewColumnSortMode.NotSortable
@@ -198,7 +198,7 @@ Public Class FrmDevolucionDeClientes
             CargarTotales()
         Else
             txtIdFactura.Text = ""
-            MessageBox.Show("El número de factura ingresado no existe. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("El nï¿½mero de factura ingresadno existe!e. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 #End Region
@@ -258,7 +258,7 @@ Public Class FrmDevolucionDeClientes
         Else
             If grdDetalleDevolucion.CurrentCell.ColumnIndex = 8 Then
                 If grdDetalleDevolucion.CurrentCell.Value > grdDetalleDevolucion.CurrentRow.Cells(3).Value Then
-                    MessageBox.Show("La cantidad ingresada de artículos por devolver excede la cantidad de artículos de la factura.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show("La cantidad ingresada de artï¿½culos por devolver excede la cantidad de artï¿½culos de la factura.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     grdDetalleDevolucion.CurrentCell.Value = 0
                 End If
             End If
@@ -299,7 +299,7 @@ Public Class FrmDevolucionDeClientes
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacciï¿½n procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -346,7 +346,7 @@ Public Class FrmDevolucionDeClientes
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If cliente Is Nothing Or txtFecha.Text = "" Or factura Is Nothing Or CDbl(txtTotal.Text) = 0 Then
-            MessageBox.Show("Información incompleta.  Favor verificar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Informaciï¿½n incompleta.  Favor verificar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         btnGuardar.Enabled = False
@@ -386,7 +386,7 @@ Public Class FrmDevolucionDeClientes
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacciï¿½n efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         grdDetalleDevolucion.ReadOnly = True
         btnImprimir.Enabled = True
         btnAgregar.Enabled = True

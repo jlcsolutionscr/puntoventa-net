@@ -175,7 +175,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     CatalogoContable cuenta = dbContext.CatalogoContableRepository.Find(intIdCuenta);
-                    if (cuenta == null) throw new BusinessException("La cuenta contable por eliminar no existe.");
+                    if (cuenta == null) throw new BusinessException("La cuenta contable por eliminar no existe!");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.CatalogoContableRepository.Remove(cuenta);

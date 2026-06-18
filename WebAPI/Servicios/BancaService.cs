@@ -126,7 +126,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(intIdCuenta);
-                    if (cuentaBanco == null) throw new BusinessException("La cuenta bancaria por eliminar no existe.");
+                    if (cuentaBanco == null) throw new BusinessException("La cuenta bancaria por eliminar no existe!");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuentaBanco.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.CuentaBancoRepository.Remove(cuentaBanco);
@@ -244,11 +244,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             try
             {
                 CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                if (cuenta == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe.");
+                if (cuenta == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe!");
                 Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 TipoMovimientoBanco tipo = dbContext.TipoMovimientoBancoRepository.Find(movimiento.IdTipo);
-                if (tipo == null) throw new BusinessException("El tipo de movimiento no existe.");
+                if (tipo == null) throw new BusinessException("El tipo de movimiento no existe!");
                 movimiento.SaldoAnterior = cuenta.Saldo;
                 if (tipo.DebeHaber == StaticTipoDebitoCredito.Debito)
                     cuenta.Saldo -= movimiento.Monto;
@@ -292,9 +292,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             try
             {
                 MovimientoBanco movimiento = dbContext.MovimientoBancoRepository.Find(intIdMovimiento);
-                if (movimiento == null) throw new BusinessException("El movimiento por eliminar no existe.");
+                if (movimiento == null) throw new BusinessException("El movimiento por eliminar no existe!");
                 CuentaBanco cuenta = dbContext.CuentaBancoRepository.Find(movimiento.IdCuenta);
-                if (cuenta == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe.");
+                if (cuenta == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe!");
                 Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                 if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 movimiento.Nulo = true;

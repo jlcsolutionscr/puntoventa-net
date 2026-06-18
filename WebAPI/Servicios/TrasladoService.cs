@@ -95,7 +95,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Traslado traslado = dbContext.TrasladoRepository.Include("DetalleTraslado").Where(x => x.IdTraslado == intIdTraslado).FirstOrDefault();
-                    if (traslado == null) throw new BusinessException("El registro de traslado por aplicar no existe.");
+                    if (traslado == null) throw new BusinessException("El registro de traslado por aplicar no existe!");
                     if (traslado.Nulo) throw new BusinessException("El registro de traslado se encuentra anulado.");
                     if (traslado.Aplicado) throw new BusinessException("El registro de traslado ya ha sido aplicado.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
@@ -194,7 +194,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Traslado traslado = dbContext.TrasladoRepository.Include("DetalleTraslado").FirstOrDefault(x => x.IdTraslado == intIdTraslado);
-                    if (traslado == null) throw new Exception("El registro de traslado por anular no existe.");
+                    if (traslado == null) throw new Exception("El registro de traslado por anular no existe!");
                     if (traslado.Nulo) throw new Exception("El registro de traslado ya ha sido anulado.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(traslado.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");

@@ -696,7 +696,7 @@ Public Class FrmApartado
                 Exit Sub
             End Try
             If vendedor Is Nothing Then
-                MessageBox.Show("El vendedor seleccionado no existe. Consulte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El vendedor seleccionado no existe! Consulte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
         End If

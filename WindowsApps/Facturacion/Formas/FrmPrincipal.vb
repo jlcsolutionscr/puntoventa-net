@@ -136,7 +136,7 @@ Public Class FrmPrincipal
         End If
     End Function
 
-    Public Function ObtenerDescripcionFormaPagoCliente(intIdTipo) As String
+    Public Function ObtenerDescripcionFormaPagoCliente(intIdTipo As Integer) As String
         Dim tipo As LlaveDescripcion = listaFormaPagoCliente.FirstOrDefault(Function(x) x.Id = intIdTipo)
         If tipo.Descripcion <> Nothing Then
             Return tipo.Descripcion

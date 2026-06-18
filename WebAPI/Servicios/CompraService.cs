@@ -118,7 +118,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Proveedor proveedor = dbContext.ProveedorRepository.Find(intIdProveedor);
-                    if (proveedor == null) throw new BusinessException("El proveedor por eliminar no existe.");
+                    if (proveedor == null) throw new BusinessException("El proveedor por eliminar no existe!");
                     Empresa empresa = dbContext.EmpresaRepository.Find(proveedor.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.ProveedorRepository.Remove(proveedor);
@@ -289,7 +289,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.Find(detalleCompra.IdProducto);
                         if (producto == null)
-                            throw new BusinessException("El producto asignado al detalle de la compra no existe.");
+                            throw new BusinessException("El producto asignado al detalle de la compra no existe!");
                         if (producto.Tipo != StaticTipoProducto.Producto && producto.Tipo != StaticTipoProducto.Transitorio)
                             throw new BusinessException("El tipo del producto " + producto.Descripcion + " no puede ser un servicio. Por favor verificar.");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
@@ -369,7 +369,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             };
                             CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdReferencia);
                             if (cuentaBanco == null)
-                                throw new BusinessException("La cuenta bancaria asignada al movimiento no existe.");
+                                throw new BusinessException("La cuenta bancaria asignada al movimiento no existe!");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
                             movimientoBanco.IdUsuario = compra.IdUsuario;
                             movimientoBanco.Fecha = compra.Fecha;
@@ -565,7 +565,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleCompra.IdProducto);
                         if (producto == null)
-                            throw new BusinessException("El producto asignado al detalle de la compra no existe.");
+                            throw new BusinessException("El producto asignado al detalle de la compra no existe!");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
                         if (producto.Tipo == StaticTipoProducto.Producto)
                         {
@@ -598,7 +598,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         CuentaPorPagar cuentaPorPagar = dbContext.CuentaPorPagarRepository.Find(compra.IdCxP);
                         if (cuentaPorPagar == null)
-                            throw new BusinessException("La cuenta por pagar correspondiente a la compra no existe.");
+                            throw new BusinessException("La cuenta por pagar correspondiente a la compra no existe!");
                         cuentaPorPagar.Nulo = true;
                         cuentaPorPagar.IdAnuladoPor = intIdUsuario;
                         dbContext.NotificarModificacion(cuentaPorPagar);
@@ -754,7 +754,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     devolucion.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     Compra compra = dbContext.CompraRepository.AsNoTracking().Where(x => x.IdCompra == devolucion.IdCompra).FirstOrDefault();
-                    if (compra == null) throw new BusinessException("La compra asignada a la devolución no existe.");
+                    if (compra == null) throw new BusinessException("La compra asignada a la devolución no existe!");
                     if (compra.Nulo) throw new BusinessException("La compra asingada a la devolución está anulada.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(devolucion.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -766,7 +766,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                             if (producto == null)
-                                throw new BusinessException("El producto asignado al detalle de la devolución no existe.");
+                                throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                             if (producto.Tipo != StaticTipoProducto.Producto)
                                 throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
@@ -813,13 +813,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     DevolucionProveedor devolucion = dbContext.DevolucionProveedorRepository.Include("DetalleDevolucionProveedor").FirstOrDefault(x => x.IdDevolucion == intIdDevolucion);
-                    if (devolucion == null) throw new BusinessException("La devolución por anular no existe.");
+                    if (devolucion == null) throw new BusinessException("La devolución por anular no existe!");
                     Empresa empresa = dbContext.EmpresaRepository.Find(devolucion.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     //if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (devolucion.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
                     Compra compra = dbContext.CompraRepository.AsNoTracking().Where(x => x.IdCompra == devolucion.IdCompra).FirstOrDefault();
-                    if (compra == null) throw new BusinessException("La compra asignada a la devolución no existe.");
+                    if (compra == null) throw new BusinessException("La compra asignada a la devolución no existe!");
                     if (compra.Nulo) throw new BusinessException("La compra asingada a la devolución está anulada.");
                     devolucion.Nulo = true;
                     devolucion.IdAnuladoPor = intIdUsuario;
@@ -828,7 +828,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                         if (producto == null)
-                            throw new BusinessException("El producto asignado al detalle de la devolución no existe.");
+                            throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                         if (producto.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
@@ -852,7 +852,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("DesgloseMovimientoCuentaPorPagar").FirstOrDefault(x => x.IdMovCxP == devolucion.IdMovimientoCxP);
                         if (movimiento == null)
-                            throw new BusinessException("El movimiento de la cuenta por pagar correspondiente a la devolución no existe.");
+                            throw new BusinessException("El movimiento de la cuenta por pagar correspondiente a la devolución no existe!");
                         movimiento.Nulo = true;
                         movimiento.IdAnuladoPor = intIdUsuario;
                         dbContext.NotificarModificacion(movimiento);

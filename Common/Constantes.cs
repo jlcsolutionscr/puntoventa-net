@@ -90,7 +90,7 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly int RacaudadoPorTerceros = 5;
         public static readonly int SinpeMovil = 6;
         public static readonly int PlataformaDigital = 7;
-        public static readonly int Otros = 99;
+        public static readonly int NotaCredito = 99;
     };
 
     public static class StaticReporteCondicionVentaFormaPago

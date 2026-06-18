@@ -507,7 +507,9 @@ Public Class FrmFactura
         cboCondicionVenta.DataSource = FrmPrincipal.ObtenerListadoCondicionVenta()
         cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        cboFormaPago.DataSource = FrmPrincipal.ObtenerListadoFormaPagoCliente()
+        Dim listadoFormaPago = FrmPrincipal.ObtenerListadoFormaPagoCliente()
+        listadoFormaPago.Add(StaticFormaPago.NotaCredito)
+        cboFormaPago.DataSource = listadoFormaPago
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
         cboTipoMoneda.DataSource = FrmPrincipal.ObtenerListadoTipoMoneda()
@@ -1078,7 +1080,7 @@ Public Class FrmFactura
                 Exit Sub
             End Try
             If vendedor Is Nothing Then
-                MessageBox.Show("El vendedor seleccionado no existe. Consulte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El vendedor seleccionado no existe! Consulte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
         End If

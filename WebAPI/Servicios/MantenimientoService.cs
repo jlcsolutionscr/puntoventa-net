@@ -358,9 +358,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Por favor verifique la información suministrada.");
                     if (!usuario.PermiteRegistrarDispositivo) throw new BusinessException("El usuario suministrado no esta autorizado para registrar el punto de venta. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == intIdSucursal);
-                    if (sucursal == null) throw new BusinessException("La sucursal donde desea registrar su punto de venta no existe. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal == null) throw new BusinessException("La sucursal donde desea registrar su punto de venta no existe! Por favor, pongase en contacto con su proveedor del servicio.");
                     TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == intIdSucursal && x.IdTerminal == intIdTerminal && x.IdTipoDispositivo == intTipoDispositivo);
-                    if (terminal == null) throw new BusinessException("La terminal donde desea registrar su punto de venta no existe. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (terminal == null) throw new BusinessException("La terminal donde desea registrar su punto de venta no existe! Por favor, pongase en contacto con su proveedor del servicio.");
                     terminal.ValorRegistro = strDispositivoId;
                     dbContext.NotificarModificacion(terminal);
                     dbContext.Commit();
@@ -1191,7 +1191,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Usuario usuario = usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdUsuario == intIdUsuario);
-                    if (usuario == null) throw new BusinessException("El usuario seleccionado para la actualización de la clave no existe.");
+                    if (usuario == null) throw new BusinessException("El usuario seleccionado para la actualización de la clave no existe!");
                     if (usuario.IdEmpresa == null || usuario.IdSucursal == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -1218,7 +1218,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Usuario usuario = dbContext.UsuarioRepository.Where(x => x.IdUsuario == intIdUsuario).FirstOrDefault();
-                    if (usuario == null) throw new BusinessException("El usuario por eliminar no existe.");
+                    if (usuario == null) throw new BusinessException("El usuario por eliminar no existe!");
                     if (usuario.IdEmpresa == null || usuario.IdSucursal == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -1363,7 +1363,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Vendedor vendedor = dbContext.VendedorRepository.Find(intIdVendedor);
                     if (vendedor == null)
-                        throw new BusinessException("El vendedor por eliminar no existe.");
+                        throw new BusinessException("El vendedor por eliminar no existe!");
                     Empresa empresa = dbContext.EmpresaRepository.Find(vendedor.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.VendedorRepository.Remove(vendedor);
@@ -1580,7 +1580,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Linea linea = dbContext.LineaRepository.Find(intIdLinea);
                     if (linea == null)
-                        throw new BusinessException("La línea por eliminar no existe.");
+                        throw new BusinessException("La línea por eliminar no existe!");
                     Empresa empresa = dbContext.EmpresaRepository.Find(linea.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.LineaRepository.Remove(linea);
@@ -1812,7 +1812,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Producto producto = dbContext.ProductoRepository.Find(intIdProducto);
-                    if (producto == null) throw new BusinessException("El producto por eliminar no existe.");
+                    if (producto == null) throw new BusinessException("El producto por eliminar no existe!");
                     dbContext.ProductoRepository.Remove(producto);
                     dbContext.Commit();
                 }
@@ -2216,7 +2216,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(intIdBanco);
-                    if (banco == null) throw new BusinessException("El banco adquiriente por eliminar no existe.");
+                    if (banco == null) throw new BusinessException("El banco adquiriente por eliminar no existe!");
                     Empresa empresa = dbContext.EmpresaRepository.Find(banco.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.BancoAdquirienteRepository.Remove(banco);
@@ -2312,7 +2312,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
                         if (producto == null)
-                            throw new BusinessException("El producto asignado al detalle de la devolución no existe.");
+                            throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                         if (producto.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
@@ -2380,7 +2380,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     AjusteInventario ajusteInventario = dbContext.AjusteInventarioRepository.Include("DetalleAjusteInventario").FirstOrDefault(x => x.IdAjuste == intIdAjusteInventario);
-                    if (ajusteInventario == null) throw new BusinessException("El registro de ajuste de inventario por anular no existe.");
+                    if (ajusteInventario == null) throw new BusinessException("El registro de ajuste de inventario por anular no existe!");
                     if (ajusteInventario.Nulo) throw new BusinessException("El registro de ajuste de inventario ya ha sido anulado.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(ajusteInventario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -2395,7 +2395,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
                         if (producto == null)
-                            throw new BusinessException("El producto asignado al detalle de la devolución no existe.");
+                            throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                         if (producto.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
@@ -2758,7 +2758,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.Find(intIdPunto);
                     if (puntoDeServicio == null)
-                        throw new BusinessException("El punto de servicio por eliminar no existe.");
+                        throw new BusinessException("El punto de servicio por eliminar no existe!");
                     dbContext.PuntoDeServicioRepository.Remove(puntoDeServicio);
                     dbContext.Commit();
                 }

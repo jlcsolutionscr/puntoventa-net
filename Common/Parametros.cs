@@ -38,7 +38,7 @@ namespace LeandroSoftware.Common.Parametros
             new LlaveDescripcion(5, "Recaudado por terceros"),
             new LlaveDescripcion(6, "Sinpe Móvil"),
             new LlaveDescripcion(7, "Plataforma digital"),
-            new LlaveDescripcion(99, "Otros")
+            new LlaveDescripcion(99, "Nota crédito")
         };
 
         public static IList<LlaveDescripcion> ObtenerListado()

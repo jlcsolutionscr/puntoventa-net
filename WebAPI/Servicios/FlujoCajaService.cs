@@ -125,7 +125,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     CuentaIngreso cuenta = dbContext.CuentaIngresoRepository.Find(intIdCuenta);
-                    if (cuenta == null) throw new BusinessException("La cuenta de ingreso por eliminar no existe.");
+                    if (cuenta == null) throw new BusinessException("La cuenta de ingreso por eliminar no existe!");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuenta.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.CuentaIngresoRepository.Remove(cuenta);
@@ -471,7 +471,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     CuentaEgreso cuentaEgreso = dbContext.CuentaEgresoRepository.Find(intIdCuenta);
-                    if (cuentaEgreso == null) throw new BusinessException("La cuenta de egreso por eliminar no existe.");
+                    if (cuentaEgreso == null) throw new BusinessException("La cuenta de egreso por eliminar no existe!");
                     Empresa empresa = dbContext.EmpresaRepository.Find(cuentaEgreso.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     dbContext.CuentaEgresoRepository.Remove(cuentaEgreso);
