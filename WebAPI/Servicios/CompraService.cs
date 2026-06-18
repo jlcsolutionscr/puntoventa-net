@@ -223,7 +223,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decTotalImpuesto = 0;
                 decimal decSubTotalCompra = 0;
                 decimal decTotalInventario = 0;
-                ParametroContable efectivoParam = null;
+                ParametroContable efectivoPorLiquidarParam = null;
                 ParametroContable cuentasPorPagarProveedoresParam = null;
                 ParametroContable otraCondicionVentaParam = null;
                 ParametroContable ivaSoportadoParam = null;
@@ -253,11 +253,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (empresa.Contabiliza)
                     {
-                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
+                        efectivoPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
                         cuentasPorPagarProveedoresParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentasPorPagarProveedores")).FirstOrDefault();
                         otraCondicionVentaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("OtraCondicionVenta")).FirstOrDefault();
                         ivaSoportadoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("IvaSoportado")).FirstOrDefault();
-                        if (efectivoParam == null || cuentasPorPagarProveedoresParam == null || otraCondicionVentaParam == null || ivaSoportadoParam == null)
+                        if (efectivoPorLiquidarParam == null || cuentasPorPagarProveedoresParam == null || otraCondicionVentaParam == null || ivaSoportadoParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                     }
                     compra.IdCxP = 0;
@@ -448,9 +448,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     detalleAsiento = new DetalleAsiento
                                     {
                                         Linea = intLineaDetalleAsiento += 1,
-                                        IdCuenta = efectivoParam.IdCuenta,
+                                        IdCuenta = efectivoPorLiquidarParam.IdCuenta,
                                         Credito = desglosePago.MontoLocal,
-                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoParam.IdCuenta).SaldoActual
+                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoPorLiquidarParam.IdCuenta).SaldoActual
                                     };
                                     asiento.DetalleAsiento.Add(detalleAsiento);
                                     asiento.TotalCredito += detalleAsiento.Credito;

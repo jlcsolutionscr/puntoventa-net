@@ -202,7 +202,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                ParametroContable efectivoParam = null;
+                ParametroContable efectivoPorLiquidarParam = null;
                 ParametroContable ingresoParam = null;
                 Asiento asiento = null;
                 try
@@ -214,8 +214,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
-                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
-                        if (efectivoParam == null)
+                        efectivoPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
+                        if (efectivoPorLiquidarParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                     }
                     CuentaIngreso cuentaIngreso = dbContext.CuentaIngresoRepository.Find(ingreso.IdCuenta);
@@ -242,9 +242,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleAsiento = new DetalleAsiento
                         {
                             Linea = intLineaDetalleAsiento += 1,
-                            IdCuenta = efectivoParam.IdCuenta,
+                            IdCuenta = efectivoPorLiquidarParam.IdCuenta,
                             Debito = ingreso.Monto,
-                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoParam.IdCuenta).SaldoActual
+                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoPorLiquidarParam.IdCuenta).SaldoActual
                         };
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalDebito += detalleAsiento.Debito;
@@ -548,7 +548,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                ParametroContable efectivoParam = null;
+                ParametroContable efectivoPorLiquidarParam = null;
                 ParametroContable egresoParam = null;
                 Asiento asiento = null;
                 try
@@ -560,8 +560,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
-                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
-                        if (efectivoParam == null)
+                        efectivoPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
+                        if (efectivoPorLiquidarParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                     }
                     CuentaEgreso cuentaEgreso = dbContext.CuentaEgresoRepository.Find(egreso.IdCuenta);
@@ -596,9 +596,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleAsiento = new DetalleAsiento
                         {
                             Linea = intLineaDetalleAsiento += 1,
-                            IdCuenta = efectivoParam.IdCuenta,
+                            IdCuenta = efectivoPorLiquidarParam.IdCuenta,
                             Credito = egreso.Monto,
-                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoParam.IdCuenta).SaldoActual
+                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoPorLiquidarParam.IdCuenta).SaldoActual
                         };
                         asiento.DetalleAsiento.Add(detalleAsiento);
                         asiento.TotalCredito += detalleAsiento.Credito;

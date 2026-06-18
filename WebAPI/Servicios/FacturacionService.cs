@@ -338,11 +338,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 ParametroContable ingresosVentasParam = null;
                 ParametroContable costoVentasParam = null;
                 ParametroContable ivaDevengadoParam = null;
-                ParametroContable efectivoParam = null;
+                ParametroContable efectivoPorLiquidarParam = null;
                 ParametroContable cuentasPorCobrarClientesParam = null;
                 ParametroContable otraCondicionVentaParam = null;
                 ParametroContable lineaParam = null;
-                ParametroContable cuentaPorCobrarTarjetaParam = null;
+                ParametroContable tarjetasPorLiquidarParam = null;
                 DataTable dtbInventarios = new DataTable();
                 dtbInventarios.Columns.Add("IdLinea", typeof(int));
                 dtbInventarios.Columns.Add("Total", typeof(decimal));
@@ -404,11 +404,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         ingresosVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("IngresosPorVentas")).FirstOrDefault();
                         costoVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CostosDeVentas")).FirstOrDefault();
                         ivaDevengadoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("IVAPorAcreditar")).FirstOrDefault();
-                        efectivoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
+                        efectivoPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
                         cuentasPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentasPorCobrarClientes")).FirstOrDefault();
-                        cuentaPorCobrarTarjetaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentasPorCobrarTarjeta")).FirstOrDefault();
+                        tarjetasPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentasPorCobrarTarjeta")).FirstOrDefault();
                         
-                        if (ingresosVentasParam == null || costoVentasParam == null || ivaDevengadoParam == null || efectivoParam == null || cuentasPorCobrarClientesParam == null || otraCondicionVentaParam == null || cuentaPorCobrarTarjetaParam == null)
+                        if (ingresosVentasParam == null || costoVentasParam == null || ivaDevengadoParam == null || efectivoPorLiquidarParam == null || cuentasPorCobrarClientesParam == null || otraCondicionVentaParam == null || tarjetasPorLiquidarParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                     }
                     factura.IdCxC = 0;
@@ -590,9 +590,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     detalleAsiento = new DetalleAsiento
                                     {
                                         Linea = intLineaDetalleAsiento += 1,
-                                        IdCuenta = efectivoParam.IdCuenta,
+                                        IdCuenta = efectivoPorLiquidarParam.IdCuenta,
                                         Debito = desglosePago.MontoLocal,
-                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoParam.IdCuenta).SaldoActual
+                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoPorLiquidarParam.IdCuenta).SaldoActual
                                     };
                                     asiento.DetalleAsiento.Add(detalleAsiento);
                                     asiento.TotalDebito += detalleAsiento.Debito;
@@ -602,9 +602,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     detalleAsiento = new DetalleAsiento
                                     {
                                         Linea = intLineaDetalleAsiento += 1,
-                                        IdCuenta = cuentaPorCobrarTarjetaParam.IdCuenta,
+                                        IdCuenta = tarjetasPorLiquidarParam.IdCuenta,
                                         Debito = desglosePago.MontoLocal,
-                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(cuentaPorCobrarTarjetaParam.IdCuenta).SaldoActual
+                                        SaldoAnterior = dbContext.CatalogoContableRepository.Find(tarjetasPorLiquidarParam.IdCuenta).SaldoActual
                                     };
                                     asiento.DetalleAsiento.Add(detalleAsiento);
                                     asiento.TotalDebito += detalleAsiento.Debito;

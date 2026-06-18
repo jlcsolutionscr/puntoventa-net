@@ -258,9 +258,8 @@ namespace LeandroSoftware.Common.Parametros
             new TipoParametroContableElemento(13, "CuentasPorPagarProveedores", false),
             new TipoParametroContableElemento(14, "CuentaDeIngresos", true),
             new TipoParametroContableElemento(15, "CuentaDeEgresos", true),
-            new TipoParametroContableElemento(16, "Traslados", true),
-            new TipoParametroContableElemento(17, "NotaCreditoClientes", true),
-            new TipoParametroContableElemento(18, "PerdidasyGanancias", false)
+            new TipoParametroContableElemento(16, "NotaCreditoClientes", true),
+            new TipoParametroContableElemento(17, "PerdidasyGanancias", false)
         };
 
         public static IList<TipoParametroContableElemento> ObtenerListado()
