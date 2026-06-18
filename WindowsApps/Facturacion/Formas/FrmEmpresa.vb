@@ -93,11 +93,15 @@ Public Class FrmEmpresa
         cboProvincia.DataSource = Await Puntoventa.ObtenerListadoProvincias(FrmPrincipal.usuarioGlobal.Token)
         cboActividadEconomica.ValueMember = "Llave"
         cboActividadEconomica.DisplayMember = "Descripcion"
-        Dim contribuyente As ContribuyenteHacienda = Await Puntoventa.ObtenerInformacionContribuyente(strIdentificacion)
-        cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas
+        Try
+            Dim contribuyente As ContribuyenteHacienda = Await Puntoventa.ObtenerInformacionContribuyente(strIdentificacion)
+            cboActividadEconomica.DataSource = contribuyente.ActividadesEconomicas
+        Catch
+            MessageBox.Show("Ocurrió un error al consultar la información de la empresa en el Ministerio de Hacienda!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
         Dim comboSource As New Dictionary(Of Integer, String)()
         comboSource.Add(80, "80MM THERMAL RECEIPT PRINTER")
-        comboSource.Add(52, "58MM THERMAL RECEIPT PRINTER")
+        comboSource.Add(58, "58MM THERMAL RECEIPT PRINTER")
         cboTipoImpresora.DataSource = New BindingSource(comboSource, Nothing)
         cboTipoImpresora.ValueMember = "Key"
         cboTipoImpresora.DisplayMember = "Value"
