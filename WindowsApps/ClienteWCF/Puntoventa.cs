@@ -1304,7 +1304,7 @@ namespace LeandroSoftware.ClienteWCF
 
         public static async Task<CuentaBanco> ObtenerCuentaBanco(int intIdCuentaBanco, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerCuentaBanco', Parametros: {IdCuentaBanco: " + intIdCuentaBanco + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerCuentaBanco', Parametros: {IdReferencia: " + intIdCuentaBanco + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             CuentaBanco cuentaBanco = null;
             if (respuesta != "")
@@ -1314,7 +1314,7 @@ namespace LeandroSoftware.ClienteWCF
 
         public static async Task EliminarCuentaBanco(int intIdCuentaBanco, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'EliminarCuentaBanco', Parametros: {IdCuentaBanco: " + intIdCuentaBanco + "}}";
+            string strDatos = "{NombreMetodo: 'EliminarCuentaBanco', Parametros: {IdReferencia: " + intIdCuentaBanco + "}}";
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 

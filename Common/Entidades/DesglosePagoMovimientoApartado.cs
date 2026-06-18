@@ -6,7 +6,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdMovApartado { get; set; }
         public int IdFormaPago { get; set; }
         public int IdTipoMoneda { get; set; }
-        public int IdCuentaBanco { get; set; }
+        public int IdReferencia { get; set; }
         public string DescripcionCuenta { get; set; }
         public string TipoTarjeta { get; set; }
         public string NroMovimiento { get; set; }

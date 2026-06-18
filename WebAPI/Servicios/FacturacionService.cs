@@ -513,7 +513,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 IdSucursal = factura.IdSucursal
                             };
-                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
+                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdReferencia);
                             if (cuentaBanco == null)
                                 throw new BusinessException("La cuenta bancaria asignada al movimiento no existe.");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
@@ -611,9 +611,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                                 else
                                 {
-                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeBancos") && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeBancos") && x.IdProducto == desglosePago.IdReferencia).FirstOrDefault();
                                     if (bancoParam == null)
-                                        throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
+                                        throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdReferencia + " y no se puede continuar. Por favor verificar.");
                                     detalleAsiento = new DetalleAsiento
                                     {
                                         Linea = intLineaDetalleAsiento += 1,
@@ -908,7 +908,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar
                         {
                             IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario,
-                            IdCuentaBanco = cuentaBanco.IdBanco,
+                            IdReferencia = cuentaBanco.IdBanco,
                             TipoTarjeta = "",
                             NroMovimiento = "",
                             IdTipoMoneda = factura.IdTipoMoneda,
@@ -1081,19 +1081,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
-                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdReferencia).FirstOrDefault();
                                 if (banco != null)
                                     desglosePago.DescripcionCuenta = banco.Descripcion;
                                 else
-                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                                    desglosePago.DescripcionCuenta = "SIN DESCRIPCION";
                             }
                             else
                             {
-                                CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdReferencia).FirstOrDefault();
                                 if (banco != null)
                                     desglosePago.DescripcionCuenta = banco.Descripcion;
                                 else
-                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                                    desglosePago.DescripcionCuenta = "SIN DESCRIPCION";
                             }
                         }
                     }
@@ -1485,19 +1485,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
-                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdReferencia).FirstOrDefault();
                                 if (banco != null)
                                     desglosePago.DescripcionCuenta = banco.Descripcion;
                                 else
-                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                                    desglosePago.DescripcionCuenta = "SIN DESCRIPCION";
                             }
                             else
                             {
-                                CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdReferencia).FirstOrDefault();
                                 if (banco != null)
                                     desglosePago.DescripcionCuenta = banco.Descripcion;
                                 else
-                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                                    desglosePago.DescripcionCuenta = "SIN DESCRIPCION";
                             }
                         }
                     }
@@ -1821,19 +1821,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             if (desglosePago.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
-                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.AsNoTracking().Where(x => x.IdBanco == desglosePago.IdReferencia).FirstOrDefault();
                                 if (banco != null)
                                     desglosePago.DescripcionCuenta = banco.Descripcion;
                                 else
-                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                                    desglosePago.DescripcionCuenta = "SIN DESCRIPCION";
                             }
                             else
                             {
-                                CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdReferencia).FirstOrDefault();
                                 if (banco != null)
                                     desglosePago.DescripcionCuenta = banco.Descripcion;
                                 else
-                                    desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                                    desglosePago.DescripcionCuenta = "SIN DESCRIPCION";
                             }
                         }
                     }
@@ -2117,7 +2117,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar
                         {
                             IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario,
-                            IdCuentaBanco = cuentaBanco.IdBanco,
+                            IdReferencia = cuentaBanco.IdBanco,
                             TipoTarjeta = "",
                             NroMovimiento = "",
                             IdTipoMoneda = factura.IdTipoMoneda,

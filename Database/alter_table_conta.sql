@@ -44,3 +44,14 @@ ALTER TABLE movimientonotacreditocliente
   ADD CONSTRAINT movimientonotacreditocliente_ibfk_1 FOREIGN KEY (IdNotaCredito) REFERENCES notacreditocliente (IdNotaCredito);
 
 ALTER TABLE movimientonotacreditocliente MODIFY Consecutivo int NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE desglosepagoapartado CHANGE IdReferencia IdReferencia int NOT NULL;
+ALTER TABLE desglosepagocompra CHANGE IdReferencia IdReferencia int NOT NULL;
+ALTER TABLE desglosepagodevolucioncliente CHANGE IdReferencia IdReferencia int NOT NULL;
+ALTER TABLE desglosepagodevolucionproveedor CHANGE IdReferencia IdReferencia int NOT NULL;
+ALTER TABLE desglosepagomovimientoapartado CHANGE IdReferencia IdReferencia int NOT NULL;
+ALTER TABLE desglosepagomovimientocuentaporcobrar CHANGE IdReferencia IdReferencia int NOT NULL;
+ALTER TABLE desglosepagomovimientoporpagar CHANGE IdReferencia IdReferencia int NOT NULL;
+ALTER TABLE desglosepagomovimientoordenservicio CHANGE IdReferencia IdReferencia int NOT NULL;
+ALTER TABLE desglosepagoordenservicio CHANGE IdReferencia IdReferencia int NOT NULL;
+ALTER TABLE desglosepagofactura CHANGE IdReferencia IdReferencia int NOT NULL;

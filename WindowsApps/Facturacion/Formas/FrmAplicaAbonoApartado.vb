@@ -21,7 +21,7 @@ Public Class FrmAplicaAbonoApartado
     Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
 #End Region
 
-#Region "Métodos"
+#Region "Mï¿½todos"
     Private Sub IniciaDetalleMovimiento()
         dtbDesglosePago = New DataTable()
         dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
@@ -236,7 +236,7 @@ Public Class FrmAplicaAbonoApartado
         cboTipoBanco.Width = 371
         lblBanco.Width = 371
         lblBanco.Text = "Banco Adquiriente"
-        lblAutorizacion.Text = "Autorización"
+        lblAutorizacion.Text = "Autorizaciï¿½n"
         txtDocumento.Text = ""
         txtTipoTarjeta.Text = ""
         txtMontoPago.Text = ""
@@ -289,7 +289,7 @@ Public Class FrmAplicaAbonoApartado
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             desglosePagoMovimiento = New DesglosePagoMovimientoApartado With {
                 .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
-                .IdCuentaBanco = IIf(dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo, 0, dtbDesglosePago.Rows(I).Item(2)),
+                .IdReferencia = IIf(dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo, 0, dtbDesglosePago.Rows(I).Item(2)),
                 .TipoTarjeta = dtbDesglosePago.Rows(I).Item(4),
                 .NroMovimiento = dtbDesglosePago.Rows(I).Item(5),
                 .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(6),
@@ -312,7 +312,7 @@ Public Class FrmAplicaAbonoApartado
             formPagoFactura.decPagoCliente = decPagoCliente
             formPagoFactura.ShowDialog()
         Else
-            MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Transacciï¿½n efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
         btnAgregar.Enabled = True
         btnImprimir.Enabled = True
@@ -380,7 +380,7 @@ Public Class FrmAplicaAbonoApartado
                 cboTipoBanco.Width = 371
                 lblBanco.Width = 371
                 lblBanco.Text = "Banco Adquiriente"
-                lblAutorizacion.Text = "Autorización"
+                lblAutorizacion.Text = "Autorizaciï¿½n"
                 txtTipoTarjeta.Visible = True
                 lblTipoTarjeta.Visible = True
             Else

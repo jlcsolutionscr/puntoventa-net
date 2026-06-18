@@ -33,7 +33,7 @@ Public Class FrmCompra
     Private assembly As Assembly = Assembly.LoadFrom("Common.dll")
 #End Region
 
-#Region "Métodos"
+#Region "Mï¿½todos"
     Private Sub IniciaDetalleCompra()
         dtbDetalleCompra = New DataTable()
         dtbDetalleCompra.Columns.Add("IDPRODUCTO", GetType(Integer))
@@ -55,7 +55,7 @@ Public Class FrmCompra
         dtbDesglosePago = New DataTable()
         dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCFORMAPAGO", GetType(String))
-        dtbDesglosePago.Columns.Add("IDCUENTABANCO", GetType(Integer))
+        dtbDesglosePago.Columns.Add("IDREFERENCIA", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCBANCO", GetType(String))
         dtbDesglosePago.Columns.Add("NROCHEQUE", GetType(String))
         dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Integer))
@@ -105,7 +105,7 @@ Public Class FrmCompra
 
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
-        dvcDescripcion.HeaderText = "Descripción"
+        dvcDescripcion.HeaderText = "Descripciï¿½n"
         dvcDescripcion.Width = 320
         dvcDescripcion.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleCompra.Columns.Add(dvcDescripcion)
@@ -179,8 +179,8 @@ Public Class FrmCompra
         dvcDescFormaPago.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcDescFormaPago)
 
-        dvcIdCuentaBanco.DataPropertyName = "IDCUENTABANCO"
-        dvcIdCuentaBanco.HeaderText = "IdCuentaBanco"
+        dvcIdCuentaBanco.DataPropertyName = "IDREFERENCIA"
+        dvcIdCuentaBanco.HeaderText = "IdReferencia"
         dvcIdCuentaBanco.Visible = False
         grdDesglosePago.Columns.Add(dvcIdCuentaBanco)
 
@@ -272,7 +272,7 @@ Public Class FrmCompra
             dtrRowDesglosePago = dtbDesglosePago.NewRow
             dtrRowDesglosePago.Item(0) = detalle.IdFormaPago
             dtrRowDesglosePago.Item(1) = FrmPrincipal.ObtenerDescripcionFormaPagoEmpresa(detalle.IdFormaPago)
-            dtrRowDesglosePago.Item(2) = detalle.IdCuentaBanco
+            dtrRowDesglosePago.Item(2) = detalle.IdReferencia
             dtrRowDesglosePago.Item(3) = detalle.DescripcionCuenta
             dtrRowDesglosePago.Item(4) = detalle.NroMovimiento
             dtrRowDesglosePago.Item(5) = detalle.IdTipoMoneda
@@ -595,7 +595,7 @@ Public Class FrmCompra
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacciï¿½n procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -716,7 +716,7 @@ Public Class FrmCompra
             Try
                 producto = Await Puntoventa.ObtenerProducto(intIdProducto, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
-                MessageBox.Show("Error al obtener la información del producto seleccionado. Intente mas tarde.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error al obtener la informaciï¿½n del producto seleccionado. Intente mas tarde.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
             CargarDatosProducto(producto)
@@ -733,11 +733,11 @@ Public Class FrmCompra
             txtFactura.Focus()
             Exit Sub
         ElseIf cboCondicionVenta.SelectedValue = StaticCondicionVenta.Credito And (txtPlazoCredito.Text = "" Or txtPlazoCredito.Text = "0") Then
-            MessageBox.Show("El valor del campo plazo no puede ser 0 para una compra de crédito.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("El valor del campo plazo no puede ser 0 para una compra de crï¿½dito.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             txtPlazoCredito.Focus()
             Exit Sub
         ElseIf decTotal = 0 Then
-            MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Debe agregar lï¿½neas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         ElseIf cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado And decSaldoPorPagar > 0 Then
             MessageBox.Show("El total del desglose de pago no es suficiente para cubrir el saldo por pagar actual.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -784,7 +784,7 @@ Public Class FrmCompra
             For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoCompra With {
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
-                    .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(2),
+                    .IdReferencia = dtbDesglosePago.Rows(I).Item(2),
                     .NroMovimiento = dtbDesglosePago.Rows(I).Item(4),
                     .Beneficiario = txtProveedor.Text,
                     .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(5),
@@ -803,7 +803,7 @@ Public Class FrmCompra
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacciï¿½n efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnGenerarPDF.Enabled = True
         btnAgregar.Enabled = True
@@ -892,7 +892,7 @@ Public Class FrmCompra
     Private Sub BtnInsertar_Click(sender As Object, e As EventArgs) Handles btnInsertar.Click
         If producto IsNot Nothing Then
             Dim strError As String = ""
-            If txtDescripcion.Text = "" Then strError = "La descripción no puede estar en blanco"
+            If txtDescripcion.Text = "" Then strError = "La descripciï¿½n no puede estar en blanco"
             If txtPrecioCosto.Text <= "0.00" Then strError = "El precio de costo del producto no puede estar ser 0"
             If strError <> "" Then
                 MessageBox.Show(strError, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -1034,7 +1034,7 @@ Public Class FrmCompra
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
                         Else
-                            If producto.Activo = False Then MessageBox.Show("El código ingresado pertenece a un producto que se encuentra inactivo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            If producto.Activo = False Then MessageBox.Show("El cï¿½digo ingresado pertenece a un producto que se encuentra inactivo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             txtCodigoProveedor.Text = ""
                             txtCodigo.Text = ""
                             txtDescripcion.Text = ""
@@ -1101,7 +1101,7 @@ Public Class FrmCompra
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
                         Else
-                            If producto.Activo = False Then MessageBox.Show("El código ingresado pertenece a un producto que se encuentra inactivo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            If producto.Activo = False Then MessageBox.Show("El cï¿½digo ingresado pertenece a un producto que se encuentra inactivo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                             txtCodigoProveedor.Text = ""
                             txtCodigo.Text = ""
                             txtDescripcion.Text = ""

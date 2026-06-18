@@ -22,7 +22,7 @@ Public Class FrmAplicaAbonoCxP
     Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
 #End Region
 
-#Region "Métodos"
+#Region "Mï¿½todos"
     Private Sub IniciaDetalleMovimiento()
         dtbDesglosePago = New DataTable()
         dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
@@ -240,7 +240,7 @@ Public Class FrmAplicaAbonoCxP
         cboTipoBanco.Width = 371
         lblBanco.Width = 371
         lblBanco.Text = "Banco Adquiriente"
-        lblAutorizacion.Text = "Autorización"
+        lblAutorizacion.Text = "Autorizaciï¿½n"
         txtDocumento.Text = ""
         txtTipoTarjeta.Text = ""
         txtMontoPago.Text = ""
@@ -254,7 +254,7 @@ Public Class FrmAplicaAbonoCxP
             btnBuscarCxP_Click(btnBuscarCxP, New EventArgs())
             Exit Sub
         ElseIf txtRecibo.Text = "" Then
-            MessageBox.Show("Debe ingresar el número de recibo correspondiente al pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Debe ingresar el nï¿½mero de recibo correspondiente al pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             txtRecibo.Focus()
             Exit Sub
         ElseIf decTotal = 0 Then
@@ -300,7 +300,7 @@ Public Class FrmAplicaAbonoCxP
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
             desglosePagoMovimiento = New DesglosePagoMovimientoCuentaPorPagar With {
                 .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
-                .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(2),
+                .IdReferencia = dtbDesglosePago.Rows(I).Item(2),
                 .Beneficiario = dtbDesglosePago.Rows(I).Item(4),
                 .NroMovimiento = dtbDesglosePago.Rows(I).Item(5),
                 .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(6),
@@ -323,7 +323,7 @@ Public Class FrmAplicaAbonoCxP
             formPagoEfectivo.decPagoCliente = decPagoCliente
             formPagoEfectivo.ShowDialog()
         Else
-            MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Transacciï¿½n efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
         btnAgregar.Enabled = True
         btnImprimir.Enabled = True
@@ -392,7 +392,7 @@ Public Class FrmAplicaAbonoCxP
                 cboTipoBanco.Width = 371
                 lblBanco.Width = 371
                 lblBanco.Text = "Banco Adquiriente"
-                lblAutorizacion.Text = "Autorización"
+                lblAutorizacion.Text = "Autorizaciï¿½n"
                 txtTipoTarjeta.Visible = True
                 lblTipoTarjeta.Visible = True
             Else

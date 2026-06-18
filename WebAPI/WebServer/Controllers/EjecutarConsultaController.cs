@@ -759,7 +759,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                         strRespuesta = JsonConvert.SerializeObject(listadoCuentaBanco);
                     break;
                 case "ObtenerCuentaBanco":
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdCuentaBanco").Value.ToString());
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdReferencia").Value.ToString());
                     cuentaBanco = _servicioBanca.ObtenerCuentaBanco(intIdLlave1);
                     if (cuentaBanco != null)
                         strRespuesta = JsonConvert.SerializeObject(cuentaBanco);

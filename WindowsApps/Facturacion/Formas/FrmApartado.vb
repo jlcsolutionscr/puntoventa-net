@@ -50,7 +50,7 @@ Public Class FrmApartado
         dtbDesglosePago = New DataTable()
         dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCFORMAPAGO", GetType(String))
-        dtbDesglosePago.Columns.Add("IDCUENTABANCO", GetType(Integer))
+        dtbDesglosePago.Columns.Add("IDREFERENCIA", GetType(Integer))
         dtbDesglosePago.Columns.Add("DESCBANCO", GetType(String))
         dtbDesglosePago.Columns.Add("TIPOTARJETA", GetType(String))
         dtbDesglosePago.Columns.Add("NROMOVIMIENTO", GetType(String))
@@ -179,8 +179,8 @@ Public Class FrmApartado
         dvcDescFormaPago.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcDescFormaPago)
 
-        dvcIdCuentaBanco.DataPropertyName = "IDCUENTABANCO"
-        dvcIdCuentaBanco.HeaderText = "IdCuentaBanco"
+        dvcIdCuentaBanco.DataPropertyName = "IDREFERENCIA"
+        dvcIdCuentaBanco.HeaderText = "IdReferencia"
         dvcIdCuentaBanco.Visible = False
         grdDesglosePago.Columns.Add(dvcIdCuentaBanco)
 
@@ -256,7 +256,7 @@ Public Class FrmApartado
             dtrRowDesglosePago = dtbDesglosePago.NewRow
             dtrRowDesglosePago.Item(0) = detalle.IdFormaPago
             dtrRowDesglosePago.Item(1) = FrmPrincipal.ObtenerDescripcionFormaPagoCliente(detalle.IdFormaPago)
-            dtrRowDesglosePago.Item(2) = detalle.IdCuentaBanco
+            dtrRowDesglosePago.Item(2) = detalle.IdReferencia
             dtrRowDesglosePago.Item(3) = detalle.DescripcionCuenta
             dtrRowDesglosePago.Item(4) = detalle.TipoTarjeta
             dtrRowDesglosePago.Item(5) = detalle.NroMovimiento
@@ -815,7 +815,7 @@ Public Class FrmApartado
             For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoApartado With {
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
-                    .IdCuentaBanco = dtbDesglosePago.Rows(I).Item(2),
+                    .IdReferencia = dtbDesglosePago.Rows(I).Item(2),
                     .TipoTarjeta = dtbDesglosePago.Rows(I).Item(4),
                     .NroMovimiento = dtbDesglosePago.Rows(I).Item(5),
                     .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(6),

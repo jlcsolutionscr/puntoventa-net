@@ -220,7 +220,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 IdSucursal = movimiento.IdSucursal
                             };
-                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
+                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdReferencia);
                             if (cuentaBanco == null)
                                 throw new BusinessException("La cuenta bancaria asignada al movimiento no existe");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
@@ -283,9 +283,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             else
                             {
-                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeBancos") && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeBancos") && x.IdProducto == desglosePago.IdReferencia).FirstOrDefault();
                                 if (bancoParam == null)
-                                    throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
+                                    throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdReferencia + " y no se puede continuar. Por favor verificar.");
                                 detalleAsiento = new DetalleAsiento
                                 {
                                     Linea = intLineaDetalleAsiento += 1,
@@ -597,7 +597,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 IdSucursal = movimiento.IdSucursal
                             };
-                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
+                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdReferencia);
                             if (cuentaBanco == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
                             movimientoBanco.IdUsuario = movimiento.IdUsuario;
@@ -656,9 +656,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             else
                             {
 
-                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeBancos") && x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeBancos") && x.IdProducto == desglosePago.IdReferencia).FirstOrDefault();
                                 if (bancoParam == null)
-                                    throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
+                                    throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdReferencia + " y no se puede continuar. Por favor verificar.");
                                 detalleAsiento = new DetalleAsiento
                                 {
                                     Linea = intLineaDetalleAsiento += 1,
@@ -868,7 +868,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 IdSucursal = movimiento.IdSucursal
                             };
-                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
+                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdReferencia);
                             if (cuentaBanco == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
                             movimientoBanco.IdUsuario = movimiento.IdUsuario;
@@ -1029,7 +1029,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             {
                                 IdSucursal = movimiento.IdSucursal
                             };
-                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
+                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdReferencia);
                             if (cuentaBanco == null) throw new BusinessException("La cuenta bancaria asignada al movimiento no existe");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
                             movimientoBanco.IdUsuario = movimiento.IdUsuario;

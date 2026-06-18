@@ -300,7 +300,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
                                 .Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
-                                .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.y.IdFormaPago, z.y.IdCuentaBanco, z.x.ConsecFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.Impuesto, Total = z.y.MontoLocal, z.x.TotalCosto });
+                                .Select(z => new { z.x.IdCliente, z.x.Nulo, z.x.IdCondicionVenta, z.y.IdFormaPago, z.x.ConsecFactura, z.x.Fecha, NombreCliente = z.x.Cliente.Nombre, z.x.Impuesto, Total = z.y.MontoLocal, z.x.TotalCosto });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.ContadoEfectivo)
                             {
                                 detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Contado && x.IdFormaPago == StaticFormaPago.Efectivo);

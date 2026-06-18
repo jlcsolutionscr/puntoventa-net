@@ -817,7 +817,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (facturas.Count > 0)
                     {
                         var pagosFacturas = facturas.Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
-                            .Select(y => new { y.x.ConsecFactura, y.x.Fecha, y.x.NombreCliente, y.y.IdFormaPago, y.y.IdCuentaBanco, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
+                            .Select(y => new { y.x.ConsecFactura, y.x.Fecha, y.x.NombreCliente, y.y.IdFormaPago, y.y.IdReferencia, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
                         foreach (var dato in pagosFacturas)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
@@ -835,7 +835,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
                                 cierre.VentasTarjeta += dato.MontoLocal;
-                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdReferencia);
                                 if (banco != null)
                                 {
                                     cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
@@ -886,7 +886,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (apartados.Count > 0)
                     {
                         var pagosApartados = apartados.Join(dbContext.DesglosePagoApartadoRepository, x => x.IdApartado, y => y.IdApartado, (x, y) => new { x, y })
-                            .Select(y => new { y.x.ConsecApartado, y.x.Fecha, y.x.NombreCliente, y.y.IdFormaPago, y.y.IdCuentaBanco, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
+                            .Select(y => new { y.x.ConsecApartado, y.x.Fecha, y.x.NombreCliente, y.y.IdFormaPago, y.y.IdReferencia, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
                         foreach (var dato in pagosApartados)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
@@ -904,7 +904,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
                                 cierre.AdelantosApartadoTarjeta += dato.MontoLocal;
-                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdReferencia);
                                 if (banco != null)
                                 {
                                     cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
@@ -938,7 +938,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (movimientosapartado.Count > 0)
                     {
                         var pagosApartados = movimientosapartado.Join(dbContext.DesglosePagoMovimientoApartadoRepository, x => x.IdMovApartado, y => y.IdMovApartado, (x, y) => new { x, y })
-                            .Select(y => new { y.x.IdMovApartado, y.x.Fecha, y.x.Apartado.ConsecApartado, y.y.IdFormaPago, y.y.IdCuentaBanco, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
+                            .Select(y => new { y.x.IdMovApartado, y.x.Fecha, y.x.Apartado.ConsecApartado, y.y.IdFormaPago, y.y.IdReferencia, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
                         foreach (var dato in pagosApartados)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
@@ -956,7 +956,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
                                 cierre.AdelantosApartadoTarjeta += dato.MontoLocal;
-                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdReferencia);
                                 if (banco != null)
                                 {
                                     cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
@@ -990,7 +990,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ordenes.Count > 0)
                     {
                         var pagosOrdenes = ordenes.Join(dbContext.DesglosePagoOrdenServicioRepository, x => x.IdOrden, y => y.IdOrden, (x, y) => new { x, y })
-                            .Select(y => new { y.x.ConsecOrdenServicio, y.x.Fecha, y.x.NombreCliente, y.y.IdFormaPago, y.y.IdCuentaBanco, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
+                            .Select(y => new { y.x.ConsecOrdenServicio, y.x.Fecha, y.x.NombreCliente, y.y.IdFormaPago, y.y.IdReferencia, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
                         foreach (var dato in pagosOrdenes)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
@@ -1008,7 +1008,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
                                 cierre.AdelantosOrdenTarjeta += dato.MontoLocal;
-                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdReferencia);
                                 if (banco != null)
                                 {
                                     cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
@@ -1042,7 +1042,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (MovimientosordenServicio.Count > 0)
                     {
                         var pagosOrdenes = MovimientosordenServicio.Join(dbContext.DesglosePagoMovimientoOrdenServicioRepository, x => x.IdMovOrden, y => y.IdMovOrden, (x, y) => new { x, y })
-                            .Select(y => new { y.x.IdMovOrden, y.x.Fecha, y.x.OrdenServicio.ConsecOrdenServicio, y.y.IdFormaPago, y.y.IdCuentaBanco, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
+                            .Select(y => new { y.x.IdMovOrden, y.x.Fecha, y.x.OrdenServicio.ConsecOrdenServicio, y.y.IdFormaPago, y.y.IdReferencia, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
                         foreach (var dato in pagosOrdenes)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
@@ -1060,7 +1060,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
                                 cierre.AdelantosOrdenTarjeta += dato.MontoLocal;
-                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdReferencia);
                                 if (banco != null)
                                 {
                                     cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;
@@ -1094,7 +1094,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (movimientosCxC.Count > 0)
                     {
                         var pagosCxC = movimientosCxC.Join(dbContext.DesglosePagoMovimientoCuentaPorCobrarRepository, x => x.IdMovCxC, y => y.IdMovCxC, (x, y) => new { x, y })
-                            .Select(y => new { y.x.IdMovCxC, y.x.Fecha, y.x.CuentaPorCobrar.Referencia, y.y.IdFormaPago, y.y.IdCuentaBanco, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
+                            .Select(y => new { y.x.IdMovCxC, y.x.Fecha, y.x.CuentaPorCobrar.Referencia, y.y.IdFormaPago, y.y.IdReferencia, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
                         foreach (var dato in pagosCxC)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
@@ -1112,7 +1112,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             else if (dato.IdFormaPago == StaticFormaPago.Tarjeta)
                             {
                                 cierre.PagosCxCTarjeta += dato.MontoLocal;
-                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdCuentaBanco);
+                                BancoAdquiriente banco = dbContext.BancoAdquirienteRepository.Find(dato.IdReferencia);
                                 if (banco != null)
                                 {
                                     cierre.RetencionTarjeta += dato.MontoLocal * banco.PorcentajeRetencion / 100;

@@ -361,13 +361,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     foreach (var desglosePago in compra.DesglosePagoCompra)
                     {
-                        if (StaticFormaPago.Efectivo != desglosePago.IdFormaPago)
+                        if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
                         {
                             movimientoBanco = new MovimientoBanco
                             {
                                 IdSucursal = compra.IdSucursal
                             };
-                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdCuentaBanco);
+                            CuentaBanco cuentaBanco = dbContext.CuentaBancoRepository.Find(desglosePago.IdReferencia);
                             if (cuentaBanco == null)
                                 throw new BusinessException("La cuenta bancaria asignada al movimiento no existe.");
                             movimientoBanco.IdCuenta = cuentaBanco.IdCuenta;
@@ -457,9 +457,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                                 else if (desglosePago.IdFormaPago != StaticFormaPago.Tarjeta)
                                 {
-                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeBancos") & x.IdProducto == desglosePago.IdCuentaBanco).FirstOrDefault();
+                                    ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeBancos") & x.IdProducto == desglosePago.IdReferencia).FirstOrDefault();
                                     if (bancoParam == null)
-                                        throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdCuentaBanco + " y no se puede continuar. Por favor verificar.");
+                                        throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdReferencia + " y no se puede continuar. Por favor verificar.");
                                     detalleAsiento = new DetalleAsiento
                                     {
                                         Linea = intLineaDetalleAsiento += 1,
@@ -642,11 +642,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Compra compra = dbContext.CompraRepository.Include("Proveedor").Include("DetalleCompra.Producto").Include("DesglosePagoCompra").FirstOrDefault(x => x.IdCompra == intIdCompra);
                     foreach (DesglosePagoCompra desglosePago in compra.DesglosePagoCompra)
                     {
-                        CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdCuentaBanco).FirstOrDefault();
-                        if (banco != null)
-                            desglosePago.DescripcionCuenta = banco.Descripcion;
-                        else
-                            desglosePago.DescripcionCuenta = "NO INFORMATION AVAILABLE";
+                        if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
+                        {
+                            CuentaBanco banco = dbContext.CuentaBancoRepository.AsNoTracking().Where(x => x.IdCuenta == desglosePago.IdReferencia).FirstOrDefault();
+                            if (banco != null)
+                                desglosePago.DescripcionCuenta = banco.Descripcion;
+                            else
+                                desglosePago.DescripcionCuenta = "SIN DESCRIPCION";
+                        }
                     }
                     return compra;
                 }

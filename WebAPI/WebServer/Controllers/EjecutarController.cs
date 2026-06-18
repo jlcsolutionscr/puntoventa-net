@@ -288,7 +288,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     _servicioBanca.ActualizarCuentaBanco(cuentaBanco);
                     break;
                 case "EliminarCuentaBanco":
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdCuentaBanco").Value.ToString());
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdReferencia").Value.ToString());
                     _servicioBanca.EliminarCuentaBanco(intIdLlave1);
                     break;
                 case "AgregarVendedor":

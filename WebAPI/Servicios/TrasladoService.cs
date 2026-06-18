@@ -85,7 +85,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         public void AplicarTraslado(int intIdTraslado, int intIdUsuario)
         {
-            decimal decTotalInventario = 0;
             DataTable dtbInventarios = new DataTable();
             dtbInventarios.Columns.Add("IdLinea", typeof(int));
             dtbInventarios.Columns.Add("Total", typeof(decimal));
