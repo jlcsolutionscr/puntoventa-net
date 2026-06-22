@@ -410,7 +410,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         tarjetasPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentasPorCobrarTarjeta")).FirstOrDefault();
                         notaCreditoClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("NotaCreditoClientes")).FirstOrDefault();
                         if (ingresosVentasParam == null || costoVentasParam == null || ivaDevengadoParam == null || efectivoPorLiquidarParam == null || cuentasPorCobrarClientesParam == null || otraCondicionVentaParam == null || tarjetasPorLiquidarParam == null || notaCreditoClientesParam == null)
-                            throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
+                            throw new BusinessException("La parametrización contable está incompleta y no es posible procesar la transacción. Por favor verificar.");
                     }
                     factura.IdCxC = 0;
                     factura.IdAsiento = 0;
@@ -649,7 +649,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 {
                                     ParametroContable bancoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeBancos") && x.IdProducto == desglosePago.IdReferencia).FirstOrDefault();
                                     if (bancoParam == null)
-                                        throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdReferencia + " y no se puede continuar. Por favor verificar.");
+                                        throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdReferencia + " y no es posible procesar la transacción. Por favor verificar.");
                                     detalleAsiento = new DetalleAsiento
                                     {
                                         Linea = intLineaDetalleAsiento += 1,
@@ -690,7 +690,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 int intIdLinea = (int)data["IdLinea"];
                                 lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("LineaDeProductos") && x.IdProducto == intIdLinea).FirstOrDefault();
                                 if (lineaParam == null)
-                                    throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
+                                    throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no es posible procesar la transacción. Por favor verificar.");
                                 detalleAsiento = new DetalleAsiento
                                 {
                                     Linea = intLineaDetalleAsiento += 1,
@@ -831,7 +831,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 ParametroContable costoVentasParam = null;
                 ParametroContable cuentasPorCobrarClientesParam = null;
                 ParametroContable devolucionSobreVentasParam = null;
+                ParametroContable egresoParam = null;
                 ParametroContable lineaParam = null;
+                CuentaEgreso cuentaEgresos = null;
                 DataTable dtbInventarios = new DataTable();
                 dtbInventarios.Columns.Add("IdLinea", typeof(int));
                 dtbInventarios.Columns.Add("Total", typeof(decimal));
@@ -852,7 +854,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         cuentasPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentasPorCobrarClientes")).FirstOrDefault();
                         devolucionSobreVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("DevolucionSobreVentas")).FirstOrDefault();
                         if (notaCreditoClientesParam == null || ivaDevengadoParam == null || cuentasPorCobrarClientesParam == null || devolucionSobreVentasParam == null)
-                            throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
+                            throw new BusinessException("La parametrización contable está incompleta y no es posible procesar la transacción. Por favor verificar.");
                     }
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -936,7 +938,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdSucursal = factura.IdSucursal,
                             Tipo = StaticTipoAbono.AbonoEfectivo,
                             IdCxC = factura.IdCxC,
-                            Observaciones = "Abono por devolución de mercancía",
+                            Observaciones = "Abono por anulación de factura nro. " + factura.ConsecFactura,
                             Monto = decSaldoAbonoCxCCliente,
                             SaldoActual = cxc.Saldo,
                             Fecha = Validador.ObtenerFechaHoraCostaRica()
@@ -965,19 +967,41 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (decSaldoAFavorDelCliente > 0)
                     {
-                        NotaCreditoCliente notaCredito = new NotaCreditoCliente
+                        if (!empresa.DevolucionEnEfectivo) {
+                            NotaCreditoCliente notaCredito = new NotaCreditoCliente
+                            {
+                                IdEmpresa = factura.IdEmpresa,
+                                IdCliente = factura.IdCliente,
+                                IdUsuario = factura.IdUsuario,
+                                Fecha = Validador.ObtenerFechaHoraCostaRica(),
+                                Detalle = "Nota de crédito por anulación de factura: " + factura.ConsecFactura,
+                                Referencia = factura.ConsecFactura,
+                                MontoOriginal = decSaldoAFavorDelCliente,
+                                Saldo = decSaldoAFavorDelCliente,
+                                Nulo = false
+                            };
+                            dbContext.NotaCreditoClienteRepository.Add(notaCredito);
+                        }
+                        else
                         {
-                            IdEmpresa = factura.IdEmpresa,
-                            IdCliente = factura.IdCliente,
-                            IdUsuario = factura.IdUsuario,
-                            Fecha = Validador.ObtenerFechaHoraCostaRica(),
-                            Detalle = "Nota de crédito por anulación de factura: " + factura.ConsecFactura,
-                            Referencia = factura.ConsecFactura,
-                            MontoOriginal = decSaldoAFavorDelCliente,
-                            Saldo = decSaldoAFavorDelCliente,
-                            Nulo = false
-                        };
-                        dbContext.NotaCreditoClienteRepository.Add(notaCredito);
+                            cuentaEgresos = dbContext.CuentaEgresoRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
+                            if (cuentaEgresos == null)
+                                throw new BusinessException("La empresa no posee ninguna cuenta de egresos parametrizada para devoluciones de clientes");
+                            Egreso egreso = new Egreso
+                            {
+                                IdEmpresa = factura.IdEmpresa,
+                                IdSucursal = factura.IdSucursal,
+                                IdUsuario = factura.IdUsuario,
+                                Fecha = Validador.ObtenerFechaHoraCostaRica(),
+                                IdCuenta = cuentaEgresos.IdCuenta,
+                                Beneficiario = factura.NombreCliente,
+                                Detalle = "Anulación de factura posterior a cierre de efectivo " + factura.ConsecFactura,
+                                Monto = decSaldoAFavorDelCliente,
+                                Nulo = false,
+                                Procesado = false
+                            };
+                            dbContext.EgresoRepository.Add(egreso);
+                        }
                     }
                     DocumentoElectronico documentoNC = null;
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
@@ -1021,13 +1045,29 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (decSaldoAFavorDelCliente > 0)
                         {
-                            detalleAsiento = new DetalleAsiento
+                            if (!empresa.DevolucionEnEfectivo)
                             {
-                                Linea = 1,
-                                IdCuenta = notaCreditoClientesParam.IdCuenta,
-                                Credito = decSaldoAFavorDelCliente,
-                                SaldoAnterior = dbContext.CatalogoContableRepository.Find(notaCreditoClientesParam.IdCuenta).SaldoActual
-                            };
+                                detalleAsiento = new DetalleAsiento
+                                {
+                                    Linea = 1,
+                                    IdCuenta = notaCreditoClientesParam.IdCuenta,
+                                    Credito = decSaldoAFavorDelCliente,
+                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(notaCreditoClientesParam.IdCuenta).SaldoActual
+                                };
+                            }
+                            else
+                            {
+                                egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeEgresos") & x.IdProducto == cuentaEgresos.IdCuenta).FirstOrDefault();
+                                if (egresoParam == null)
+                                    throw new BusinessException("No existe parametrización contable para la cuenta de egresos " + cuentaEgresos.IdCuenta + " y no es posible procesar la transacción. Por favor verificar.");
+                                detalleAsiento = new DetalleAsiento
+                                {
+                                    Linea = intLineaDetalleAsiento += 1,
+                                    IdCuenta = egresoParam.IdCuenta,
+                                    Debito = decSaldoAFavorDelCliente,
+                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(egresoParam.IdCuenta).SaldoActual
+                                };
+                            }
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalCredito += detalleAsiento.Credito;
                         }
@@ -1061,7 +1101,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 int intIdLinea = (int)data["IdLinea"];
                                 lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("LineaDeProductos") && x.IdProducto == intIdLinea).FirstOrDefault();
                                 if (lineaParam == null)
-                                    throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
+                                    throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no es posible procesar la transacción. Por favor verificar.");
                                 detalleAsiento = new DetalleAsiento
                                 {
                                     Linea = intLineaDetalleAsiento += 1,
@@ -2067,7 +2107,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         costoVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CostosDeVentas")).FirstOrDefault();
                         devolucionSobreVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("DevolucionSobreVentas")).FirstOrDefault();
                         if (notaCreditoClientesParam == null || cuentasPorCobrarClientesParam == null || otraCondicionVentaParam == null || ivaDevengadoParam == null || costoVentasParam == null || devolucionSobreVentasParam == null)
-                            throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
+                            throw new BusinessException("La parametrización contable está incompleta y no es posible procesar la transacción. Por favor verificar.");
                     }
                     devolucion.IdAsiento = 0;
                     devolucion.IdSucursal = factura.IdSucursal;
@@ -2263,7 +2303,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 int intIdLinea = (int)data["IdLinea"];
                                 lineaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("LineaDeProductos") && x.IdProducto == intIdLinea).FirstOrDefault();
                                 if (lineaParam == null)
-                                    throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
+                                    throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no es posible procesar la transacción. Por favor verificar.");
                                 detalleAsiento = new DetalleAsiento
                                 {
                                     Linea = intLineaDetalleAsiento += 1,

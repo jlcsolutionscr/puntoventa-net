@@ -45,13 +45,12 @@ ALTER TABLE movimientonotacreditocliente
 
 ALTER TABLE movimientonotacreditocliente MODIFY Consecutivo int NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE desglosepagoapartado CHANGE IdReferencia IdReferencia int NOT NULL;
-ALTER TABLE desglosepagocompra CHANGE IdReferencia IdReferencia int NOT NULL;
-ALTER TABLE desglosepagodevolucioncliente CHANGE IdReferencia IdReferencia int NOT NULL;
-ALTER TABLE desglosepagodevolucionproveedor CHANGE IdReferencia IdReferencia int NOT NULL;
-ALTER TABLE desglosepagomovimientoapartado CHANGE IdReferencia IdReferencia int NOT NULL;
-ALTER TABLE desglosepagomovimientocuentaporcobrar CHANGE IdReferencia IdReferencia int NOT NULL;
-ALTER TABLE desglosepagomovimientoporpagar CHANGE IdReferencia IdReferencia int NOT NULL;
-ALTER TABLE desglosepagomovimientoordenservicio CHANGE IdReferencia IdReferencia int NOT NULL;
-ALTER TABLE desglosepagoordenservicio CHANGE IdReferencia IdReferencia int NOT NULL;
-ALTER TABLE desglosepagofactura CHANGE IdReferencia IdReferencia int NOT NULL;
+ALTER TABLE desglosepagoapartado CHANGE IdCuentaBanco IdReferencia int NOT NULL;
+ALTER TABLE desglosepagocompra CHANGE IdCuentaBanco IdReferencia int NOT NULL;
+ALTER TABLE desglosepagodevolucionproveedor CHANGE IdCuentaBanco IdReferencia int NOT NULL;
+ALTER TABLE desglosepagomovimientoapartado CHANGE IdCuentaBanco IdReferencia int NOT NULL;
+ALTER TABLE desglosepagomovimientocuentaporcobrar CHANGE IdCuentaBanco IdReferencia int NOT NULL;
+ALTER TABLE desglosepagomovimientocuentaporpagar CHANGE IdCuentaBanco IdReferencia int NOT NULL;
+ALTER TABLE desglosepagomovimientoordenservicio CHANGE IdCuentaBanco IdReferencia int NOT NULL;
+ALTER TABLE desglosepagoordenservicio CHANGE IdCuentaBanco IdReferencia int NOT NULL;
+ALTER TABLE desglosepagofactura CHANGE IdCuentaBanco IdReferencia int NOT NULL;

@@ -42,7 +42,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<Compra> CompraRepository { get; set; }
         public DbSet<DesglosePagoApartado> DesglosePagoApartadoRepository { get; set; }
         public DbSet<DesglosePagoCompra> DesglosePagoCompraRepository { get; set; }
-        public DbSet<DesglosePagoDevolucionCliente> DesglosePagoDevolucionClienteRepository { get; set; }
         public DbSet<DesglosePagoDevolucionProveedor> DesglosePagoDevolucionProveedorRepository { get; set; }
         public DbSet<DesglosePagoFactura> DesglosePagoFacturaRepository { get; set; }
         public DbSet<DesglosePagoMovimientoApartado> DesglosePagoMovimientoApartadoRepository { get; set; }
