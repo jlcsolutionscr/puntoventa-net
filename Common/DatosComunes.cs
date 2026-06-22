@@ -330,18 +330,20 @@ namespace LeandroSoftware.Common.DatosComunes
         public decimal Valor { get; set; }
     }
 
-    public class TipoParametroContableElemento
+    public class TipoParametroContable
     {
-        public TipoParametroContableElemento() { }
+        public TipoParametroContable() { }
 
-        public TipoParametroContableElemento(int id, string descripcion, bool multiCuenta)
+        public TipoParametroContable(int id, string descripcion, string tipo, bool multiCuenta)
         {
             Id = id;
             Descripcion = descripcion;
+            Tipo = Tipo;
             MultiCuenta = multiCuenta;
         }
         public int Id { get; set; }
         public string Descripcion { get; set; }
+        public string Tipo { get; set; }
         public bool MultiCuenta { get; set; }
     }
 

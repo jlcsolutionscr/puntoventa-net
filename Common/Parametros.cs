@@ -3,6 +3,7 @@ using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using LeandroSoftware.Common.DatosComunes;
+using LeandroSoftware.Common.Constantes;
 
 namespace LeandroSoftware.Common.Parametros
 {
@@ -239,49 +240,49 @@ namespace LeandroSoftware.Common.Parametros
         }
     }
 
-    public static class TipoParametroContable
+    public static class TipoParametroContableClase
     {
-        private static readonly List<TipoParametroContableElemento> listado = new List<TipoParametroContableElemento>()
+        private static readonly List<TipoParametroContable> listado = new List<TipoParametroContable>()
         {
-            new TipoParametroContableElemento(1, "IngresosPorVentas", false),
-            new TipoParametroContableElemento(2, "DevolucionSobreVentas", false),
-            new TipoParametroContableElemento(3, "CostosDeVentas", false),
-            new TipoParametroContableElemento(4, "IvaDevengado", false),
-            new TipoParametroContableElemento(5, "IvaSoportado", false),
-            new TipoParametroContableElemento(6, "LineaDeProductos", true),
-            new TipoParametroContableElemento(7, "LineaDeServicios", true),
-            new TipoParametroContableElemento(8, "CuentaDeBancos", true),
-            new TipoParametroContableElemento(9, "Efectivo", false),
-            new TipoParametroContableElemento(10, "OtraCondicionVenta", false),
-            new TipoParametroContableElemento(11, "CuentasPorCobrarClientes", false),
-            new TipoParametroContableElemento(12, "CuentasPorCobrarTarjeta", false),
-            new TipoParametroContableElemento(13, "CuentasPorPagarProveedores", false),
-            new TipoParametroContableElemento(14, "CuentaDeIngresos", true),
-            new TipoParametroContableElemento(15, "CuentaDeEgresos", true),
-            new TipoParametroContableElemento(16, "NotaCreditoClientes", true),
-            new TipoParametroContableElemento(17, "PerdidasyGanancias", false)
+            new TipoParametroContable(1, "Ingresos por ventas", StaticTipoParametroContable.IngresosPorVentas, false),
+            new TipoParametroContable(2, "Devoluciones por ventas", StaticTipoParametroContable.DevolucionSobreVentas, false),
+            new TipoParametroContable(3, "Costo de ventas", StaticTipoParametroContable.CostosDeVentas, false),
+            new TipoParametroContable(4, "IVA devengado", StaticTipoParametroContable.IvaDevengado, false),
+            new TipoParametroContable(5, "IVA soportado", StaticTipoParametroContable.IvaSoportado, false),
+            new TipoParametroContable(6, "Linea de productos", StaticTipoParametroContable.LineaDeProductos, true),
+            new TipoParametroContable(7, "Linea de servicios", StaticTipoParametroContable.LineaDeServicios, true),
+            new TipoParametroContable(8, "Cuentas de banco", StaticTipoParametroContable.CuentaDeBancos, true),
+            new TipoParametroContable(9, "Cuenta de efectivo", StaticTipoParametroContable.Efectivo, false),
+            new TipoParametroContable(10, "Otra condicion de venta", StaticTipoParametroContable.OtraCondicionVenta, false),
+            new TipoParametroContable(11, "Cuentas por cobrar a clientes", StaticTipoParametroContable.CuentasPorCobrarClientes, false),
+            new TipoParametroContable(12, "Tarjetas por liquidar", StaticTipoParametroContable.CuentasPorCobrarTarjeta, false),
+            new TipoParametroContable(13, "Cuentas por pagar a proveedores", StaticTipoParametroContable.CuentasPorPagarProveedores, false),
+            new TipoParametroContable(14, "Cuentas de ingresos en efectivo", StaticTipoParametroContable.CuentaDeIngresos, true),
+            new TipoParametroContable(15, "Cuentas de egresos en efectivo", StaticTipoParametroContable.CuentaDeEgresos, true),
+            new TipoParametroContable(16, "Notas de credito de clientes", StaticTipoParametroContable.NotaCreditoClientes, true),
+            new TipoParametroContable(17, "Cuenta de perdidas y ganancias", StaticTipoParametroContable.PerdidasyGanancias, false)
         };
 
-        public static IList<TipoParametroContableElemento> ObtenerListado()
+        public static IList<TipoParametroContable> ObtenerListado()
         {
             return listado;
         }
 
         public static string ObtenerDescripcion(int intId)
         {
-            TipoParametroContableElemento item = listado.FirstOrDefault(x => x.Id == intId);
+            TipoParametroContable item = listado.FirstOrDefault(x => x.Id == intId);
             if (item != null) return item.Descripcion;
             return "";
         }
 
         public static int ObtenerId(string strDescripcion)
         {
-            TipoParametroContableElemento item = listado.FirstOrDefault(x => x.Descripcion == strDescripcion);
+            TipoParametroContable item = listado.FirstOrDefault(x => x.Descripcion == strDescripcion);
             if (item != null) return item.Id;
             return 0;
         }
 
-        public static TipoParametroContableElemento Encontrar(int intId)
+        public static TipoParametroContable Encontrar(int intId)
         {
             return listado.FirstOrDefault(x => x.Id == intId);
         }

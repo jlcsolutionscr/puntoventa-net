@@ -1,5 +1,8 @@
-Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.Constantes
+Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Parametros
 
 Public Class FrmParametroContable
 #Region "Variables"
@@ -32,7 +35,7 @@ Public Class FrmParametroContable
         'cboTipoParametro.DataSource = servicioContabilidad.ObtenerTiposParametroContable()
         cboCuentaContable.ValueMember = "IdCuenta"
         cboCuentaContable.DisplayMember = "DescripcionCompleta"
-        'cboCuentaContable.DataSource = servicioContabilidad.ObtenerListaCuentasParaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+        'cboCuentaContable.DataSource = servicioContabilidad.ObtenerListaCuentasParaMovimientos(FrmPrincipal.empresaGlobal.IdEmpresa)
     End Sub
 
     Private Sub CargarDatosCuentaContable(ByVal intIdCuenta As Integer)
@@ -44,34 +47,30 @@ Public Class FrmParametroContable
         End Try
     End Sub
 
-    Private Sub CargarDatosProducto(ByVal tipoParametro As TipoParametroContable)
+    Private Async Sub CargarDatosProducto(ByVal tipoParametro As TipoParametroContable)
         If tipoParametro.MultiCuenta Then
             cboProducto.Enabled = True
-            Select Case tipoParametro.IdTipo
+            Select Case tipoParametro.Tipo
                 Case StaticTipoParametroContable.CuentaDeBancos
-                    'cboProducto.DataSource = servicioBancario.ObtenerListaCuentasBanco(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-                    cboProducto.ValueMember = "IdCuenta"
-                    cboProducto.DisplayMember = "Descripcion"
-                Case StaticTipoParametroContable.CuentaDeEgresos
-                    'cboProducto.DataSource = servicioEgresos.ObtenerListaCuentasEgreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+                    cboProducto.DataSource = Await Puntoventa.ObtenerListadoCuentasBanco(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
                     cboProducto.ValueMember = "IdCuenta"
                     cboProducto.DisplayMember = "Descripcion"
                 Case StaticTipoParametroContable.CuentaDeIngresos
-                    'cboProducto.DataSource = servicioIngresos.ObtenerListaCuentasIngreso(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+                    cboProducto.DataSource = Await Puntoventa.ObtenerListadoCuentasIngreso(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
+                    cboProducto.ValueMember = "IdCuenta"
+                    cboProducto.DisplayMember = "Descripcion"
+                Case StaticTipoParametroContable.CuentaDeEgresos
+                    cboProducto.DataSource = Await Puntoventa.ObtenerListadoCuentasEgreso(FrmPrincipal.empresaGlobal.IdEmpresa, "", FrmPrincipal.usuarioGlobal.Token)
                     cboProducto.ValueMember = "IdCuenta"
                     cboProducto.DisplayMember = "Descripcion"
                 Case StaticTipoParametroContable.LineaDeProductos
-                    'cboProducto.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+                    'cboProducto.DataSource = servicioMantenimiento.ObtenerListaLineasDeProducto(FrmPrincipal.empresaGlobal.IdEmpresa)
                     cboProducto.ValueMember = "IdLinea"
                     cboProducto.DisplayMember = "Descripcion"
                 Case StaticTipoParametroContable.LineaDeServicios
-                    'cboProducto.DataSource = servicioMantenimiento.ObtenerListaLineasDeServicio(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+                    'cboProducto.DataSource = servicioMantenimiento.ObtenerListaLineasDeServicio(FrmPrincipal.empresaGlobal.IdEmpresa)
                     cboProducto.ValueMember = "IdLinea"
                     cboProducto.DisplayMember = "Descripcion"
-                Case StaticTipoParametroContable.Traslados
-                    'cboProducto.DataSource = servicioTraslados.ObtenerListaSucursales(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
-                    cboProducto.ValueMember = "IdSucursal"
-                    cboProducto.DisplayMember = "Nombre"
             End Select
         Else
             cboProducto.DataSource = Nothing
@@ -112,11 +111,11 @@ Public Class FrmParametroContable
                 cboTipoParametro.SelectedValue = datos.IdTipo
                 cboCuentaContable.SelectedValue = datos.IdCuenta
                 CargarDatosCuentaContable(datos.IdCuenta)
-                CargarDatosProducto(datos.TipoParametroContable)
+                tipoParametro = TipoParametroContableClase.Encontrar(datos.IdTipo)
+                CargarDatosProducto(tipoParametro)
                 If datos.IdProducto > 0 Then
                     cboProducto.SelectedValue = datos.IdProducto
                 End If
-                'tipoParametro = servicioContabilidad.ObtenerTipoParametroContable(cboTipoParametro.SelectedValue)
             Else
                 datos = New ParametroContable
                 If cboCuentaContable.SelectedValue > 0 Then CargarDatosCuentaContable(cboCuentaContable.SelectedValue)
@@ -168,7 +167,7 @@ Public Class FrmParametroContable
     Private Sub cboTipoParametro_SelectedValueChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cboTipoParametro.SelectedValueChanged
         If bolReady And cboTipoParametro.SelectedValue IsNot Nothing Then
             Try
-                'tipoParametro = servicioContabilidad.ObtenerTipoParametroContable(cboTipoParametro.SelectedValue)
+                tipoParametro = TipoParametroContableClase.Encontrar(cboTipoParametro.SelectedValue)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

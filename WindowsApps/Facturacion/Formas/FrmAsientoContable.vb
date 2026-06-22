@@ -76,7 +76,7 @@ Public Class FrmAsientoContable
             dtrRowDetAsiento.Item(0) = detalleAsiento.IdCuenta
             dtrRowDetAsiento.Item(1) = detalleAsiento.CatalogoContable.CuentaContable
             dtrRowDetAsiento.Item(2) = detalleAsiento.CatalogoContable.DescripcionCompleta
-            dtrRowDetAsiento.Item(3) = detalleAsiento.CatalogoContable.TipoCuentaContable.TipoSaldo
+            dtrRowDetAsiento.Item(3) = detalleAsiento.CatalogoContable.TipoSaldo
             dtrRowDetAsiento.Item(4) = detalleAsiento.Debito
             dtrRowDetAsiento.Item(5) = detalleAsiento.Credito
             dtbDetalleAsiento.Rows.Add(dtrRowDetAsiento)
@@ -89,7 +89,7 @@ Public Class FrmAsientoContable
         dtrRowDetAsiento.Item(0) = cuentaContable.IdCuenta
         dtrRowDetAsiento.Item(1) = cuentaContable.Nivel_1
         dtrRowDetAsiento.Item(2) = cuentaContable.DescripcionCompleta
-        dtrRowDetAsiento.Item(3) = cuentaContable.TipoCuentaContable.TipoSaldo
+        dtrRowDetAsiento.Item(3) = cuentaContable.TipoSaldo
         dtrRowDetAsiento.Item(4) = FormatNumber(txtDebito.Text, 2)
         dtrRowDetAsiento.Item(5) = FormatNumber(txtCredito.Text, 2)
         dtbDetalleAsiento.Rows.Add(dtrRowDetAsiento)
@@ -108,7 +108,7 @@ Public Class FrmAsientoContable
     End Sub
 
     Private Sub CargarComboProducto()
-        'cboCuentaContable.DataSource = servicioContabilidad.ObtenerListaCuentasParaMovimientos(FrmMenuPrincipal.empresaGlobal.IdEmpresa)
+        'cboCuentaContable.DataSource = servicioContabilidad.ObtenerListaCuentasParaMovimientos(FrmPrincipal.empresaGlobal.IdEmpresa)
         cboCuentaContable.ValueMember = "IdCuenta"
         cboCuentaContable.DisplayMember = "DescripcionCompleta"
         cboCuentaContable.SelectedValue = 0
@@ -160,7 +160,7 @@ Public Class FrmAsientoContable
         If txtIdAsiento.Text <> "" Then
             If MessageBox.Show("Desea anular este registro?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                 Try
-                    'servicioContabilidad.AnularAsiento(txtIdAsiento.Text, FrmMenuPrincipal.usuarioGlobal.IdUsuario)
+                    'servicioContabilidad.AnularAsiento(txtIdAsiento.Text, FrmPrincipal.usuarioGlobal.IdUsuario)
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -176,7 +176,7 @@ Public Class FrmAsientoContable
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
-            'asientoDiario = servicioContabilidad.ObtenerAsiento(FrmMenuPrincipal.intBusqueda)
+            'asientoDiario = servicioContabilidad.ObtenerAsiento(FrmPrincipal.intBusqueda)
             If asientoDiario.IdAsiento > 0 Then
                 txtIdAsiento.Text = asientoDiario.IdAsiento
                 txtDetalle.Text = asientoDiario.Detalle

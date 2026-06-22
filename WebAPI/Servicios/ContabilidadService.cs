@@ -16,8 +16,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         IEnumerable<ClaseCuentaContableElemento> ObtenerListadoClaseCuentaContable();
         ClaseCuentaContableElemento ObtenerClaseCuentaContable(int intIdClase);
-        IEnumerable<TipoParametroContableElemento> ObtenerListadoTipoParametroContable();
-        TipoParametroContableElemento ObtenerTipoParametroContable(int intIdTipo);
+        IEnumerable<TipoParametroContable> ObtenerListadoTipoParametroContable();
+        TipoParametroContable ObtenerTipoParametroContable(int intIdTipo);
         void AgregarCuentaContable(CatalogoContable cuenta);
         void ActualizarCuentaContable(CatalogoContable cuenta);
         void EliminarCuentaContable(int intIdCuenta);
@@ -103,12 +103,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return ClaseCuentaContable.Encontrar(intIdClase);
         }
 
-        public IEnumerable<TipoParametroContableElemento> ObtenerListadoTipoParametroContable()
+        public IEnumerable<TipoParametroContable> ObtenerListadoTipoParametroContable()
         {
             return TipoParametroContable.ObtenerListado();
         }
 
-        public TipoParametroContableElemento ObtenerTipoParametroContable(int intIdTipo)
+        public TipoParametroContable ObtenerTipoParametroContable(int intIdTipo)
         {
             return TipoParametroContable.Encontrar(intIdTipo);
         }

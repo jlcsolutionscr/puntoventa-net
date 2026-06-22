@@ -147,4 +147,25 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly string Pendiente = "pendiente";
         public static readonly string Rechazado = "rechazado";
     };
+
+    public static class StaticTipoParametroContable
+    {
+        public static readonly string IngresosPorVentas = "IngresosPorVentas";
+        public static readonly string DevolucionSobreVentas = "DevolucionSobreVentas";
+        public static readonly string CostosDeVentas = "CostosDeVentas";
+        public static readonly string IvaDevengado = "IvaDevengado";
+        public static readonly string IvaSoportado = "IvaSoportado";
+        public static readonly string LineaDeProductos = "LineaDeProductos";
+        public static readonly string LineaDeServicios = "LineaDeServicios";
+        public static readonly string CuentaDeBancos = "CuentaDeBancos";
+        public static readonly string Efectivo = "Efectivo";
+        public static readonly string OtraCondicionVenta = "OtraCondicionVenta";
+        public static readonly string CuentasPorCobrarClientes = "CuentasPorCobrarClientes";
+        public static readonly string CuentasPorCobrarTarjeta = "CuentasPorCobrarTarjeta";
+        public static readonly string CuentasPorPagarProveedores = "CuentasPorPagarProveedores";
+        public static readonly string CuentaDeIngresos = "CuentaDeIngresos";
+        public static readonly string CuentaDeEgresos = "CuentaDeEgresos";
+        public static readonly string NotaCreditoClientes = "NotaCreditoClientes";
+        public static readonly string PerdidasyGanancias = "PerdidasyGanancias";
+    };
 }
