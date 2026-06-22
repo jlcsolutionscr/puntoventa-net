@@ -287,13 +287,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decSubTotalCompra = compra.Excento + compra.Gravado + compra.Descuento;
                     foreach (var detalleCompra in compra.DetalleCompra)
                     {
-                        Producto producto = dbContext.ProductoRepository.Find(detalleCompra.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleCompra.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la compra no existe!");
-                        if (producto.Tipo != StaticTipoProducto.Producto && producto.Tipo != StaticTipoProducto.Transitorio)
+                        if (producto.Linea.Tipo != StaticTipoProducto.Producto && producto.Linea.Tipo != StaticTipoProducto.Transitorio)
                             throw new BusinessException("El tipo del producto " + producto.Descripcion + " no puede ser un servicio. Por favor verificar.");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
-                        if (producto.Tipo == StaticTipoProducto.Producto)
+                        if (producto.Linea.Tipo == StaticTipoProducto.Producto)
                         {
                             decimal decPrecioVenta = Math.Round(detalleCompra.PrecioVenta * (1 + (detalleCompra.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
                             if (producto.PrecioVenta1 != decPrecioVenta)
@@ -563,11 +563,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(compra);
                     foreach (var detalleCompra in compra.DetalleCompra)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleCompra.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleCompra.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la compra no existe!");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
-                        if (producto.Tipo == StaticTipoProducto.Producto)
+                        if (producto.Linea.Tipo == StaticTipoProducto.Producto)
                         {
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
                             if (existencias == null)
@@ -764,10 +764,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (detalleDevolucion.CantDevolucion > 0)
                         {
-                            Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                            Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                             if (producto == null)
                                 throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
-                            if (producto.Tipo != StaticTipoProducto.Producto)
+                            if (producto.Linea.Tipo != StaticTipoProducto.Producto)
                                 throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
                             if (existencias == null)
@@ -826,10 +826,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(devolucion);
                     foreach (var detalleDevolucion in devolucion.DetalleDevolucionProveedor)
                     {
-                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
-                        if (producto.Tipo != StaticTipoProducto.Producto)
+                        if (producto.Linea.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
                         if (existencias == null)

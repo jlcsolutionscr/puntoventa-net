@@ -74,7 +74,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void ActualizarLinea(Linea linea);
         void EliminarLinea(int intIdLinea);
         Linea ObtenerLinea(int intIdLinea);
-        IList<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion);
+        IList<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, int intTipo, string strDescripcion);
         // Métodos para administrar los productos
         LlaveDescripcionValor ObtenerParametroImpuesto(int intIdImpuesto);
         void AgregarProducto(Producto producto);
@@ -1625,7 +1625,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, string strDescripcion)
+        public IList<LlaveDescripcion> ObtenerListadoLineas(int intIdEmpresa, int intTipo, string strDescripcion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1634,6 +1634,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     var listado = dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    if (intTipo > 0)
+                        listado.Where(x => intTipo == intTipo);
                     if (!strDescripcion.Equals(string.Empty))
                         listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                     listado = listado.OrderBy(x => x.IdLinea).ThenBy(x => x.Descripcion);
@@ -1674,16 +1676,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("La Empresa asignada al producto no está registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
+                    bool existe = dbContext.ProductoRepository.Include("Linea").AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
                     if (existe) throw new BusinessException("El código o código de proveedor de producto ingresado ya está registrado en la empresa.");
-                    if (producto.Tipo == StaticTipoProducto.Transitorio)
+                    if (producto.Linea.Tipo == StaticTipoProducto.Transitorio)
                     {
-                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
+                        bool transitorio = dbContext.ProductoRepository.Include("Linea").AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Linea.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
                         if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
                     }
-                    if (producto.Tipo == StaticTipoProducto.ImpuestodeServicio)
+                    if (producto.Linea.Tipo == StaticTipoProducto.ImpuestodeServicio)
                     {
-                        bool impuestoServ = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
+                        bool impuestoServ = dbContext.ProductoRepository.Include("Linea").AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Linea.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
                         if (impuestoServ) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
                     }
                     if (producto.Imagen == null) producto.Imagen = new byte[0];
@@ -1713,18 +1715,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
+                    bool existe = dbContext.ProductoRepository.Include("Linea").AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
                     if (existe) throw new BusinessException("El código o código de proveedor del producto ingresado ya está registrado en la empresa.");
                     Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("La Empresa asignada al producto no está registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (producto.Tipo == StaticTipoProducto.Transitorio)
+                    if (producto.Linea.Tipo == StaticTipoProducto.Transitorio)
                     {
-                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
+                        bool transitorio = dbContext.ProductoRepository.Include("Linea").AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Linea.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
                         if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
                     }
-                    if (producto.Tipo == StaticTipoProducto.ImpuestodeServicio)
+                    if (producto.Linea.Tipo == StaticTipoProducto.ImpuestodeServicio)
                     {
-                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
+                        bool transitorio = dbContext.ProductoRepository.Include("Linea").AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Linea.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
                         if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
                     }
                     if (!empresa.RegimenSimplificado && producto.CodigoClasificacion.Length < 13) throw new BusinessException("El código CABYS debe tener una longitud mínima de 13 caracteres.");
@@ -1755,7 +1757,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Tipo));
+                    var listaProductos = dbContext.ProductoRepository.Include("Linea").Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Linea.Tipo));
                     if (intIdLinea > 0)
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     else if (!strCodigo.Equals(string.Empty))
@@ -1853,7 +1855,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Tipo == intIdTipo);
+                    return dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Linea.Tipo == intIdTipo);
                 }
                 catch (Exception ex)
                 {
@@ -2285,10 +2287,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.AjusteInventarioRepository.Add(ajusteInventario);
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {
-                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
-                        if (producto.Tipo != StaticTipoProducto.Producto)
+                        if (producto.Linea.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
                         if (existencias != null)
@@ -2368,10 +2370,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(ajusteInventario);
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {
-                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
-                        if (producto.Tipo != StaticTipoProducto.Producto)
+                        if (producto.Linea.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por ajustar no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == ajusteInventario.IdSucursal).FirstOrDefault();
                         if (existencias == null)

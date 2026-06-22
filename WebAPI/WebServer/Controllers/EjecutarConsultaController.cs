@@ -587,7 +587,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "ObtenerListadoLineas":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     strDescripcion = parametrosJO.Property("Descripcion") != null ? parametrosJO.Property("Descripcion").Value.ToString() : "";
-                    IList<LlaveDescripcion> listadoLinea = _servicioMantenimiento.ObtenerListadoLineas(intIdEmpresa, strDescripcion);
+                    int intTipo = parametrosJO.Property("Tipo") != null ? int.Parse(parametrosJO.Property("Tipo").Value.ToString()) : 0;
+                    IList<LlaveDescripcion> listadoLinea = _servicioMantenimiento.ObtenerListadoLineas(intIdEmpresa, intTipo, strDescripcion);
                     if (listadoLinea.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoLinea);
                     break;
@@ -1434,6 +1435,24 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     IList<TiqueteOrdenServicio> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(intIdEmpresa, intIdSucursal, intIdOrden, strCategoria, bolFiltrarPendientes, bolOrdenDescendente);
                     if (listadoTiqueteOrdenServicio.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoTiqueteOrdenServicio);
+                    break;
+                case "ObtenerAsiento":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdAsiento").Value.ToString());
+                    Asiento asiento = _servicioContabilidad.ObtenerAsiento(intIdLlave1);
+                    if (asiento != null)
+                        strRespuesta = JsonConvert.SerializeObject(asiento);
+                    break;
+                case "ObtenerListaCuentasParaMovimientos":
+                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                    IList<CatalogoContable> listadoCuentasParaMovimientos = _servicioContabilidad.ObtenerListadoCuentasParaMovimientos(intIdEmpresa);
+                    if (listadoCuentasParaMovimientos.Count > 0)
+                        strRespuesta = JsonConvert.SerializeObject(listadoCuentasParaMovimientos);
+                    break;
+                case "ObtenerCuentaContable":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdCuenta").Value.ToString());
+                    CatalogoContable cuentaContable = _servicioContabilidad.ObtenerCuentaContable(intIdLlave1);
+                    if (cuentaContable != null)
+                        strRespuesta = JsonConvert.SerializeObject(cuentaContable);
                     break;
                 case "ObtenerDatosReporte":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

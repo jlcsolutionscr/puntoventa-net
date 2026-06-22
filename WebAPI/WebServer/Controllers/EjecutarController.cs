@@ -18,6 +18,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static IReporteService _servicioReportes;
         private static ITrasladoService _servicioTraslado;
         private static ICuentaPorProcesarService _servicioCuentaPorProcesar;
+        private static IContabilidadService _servicioContabilidad;
         private static Empresa? empresa;
         private static string? logotipo;
         private static CredencialesHacienda? credenciales;
@@ -66,7 +67,8 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             IBancaService servicioBanca,
             IReporteService servicioReportes,
             ITrasladoService servicioTraslado,
-            ICuentaPorProcesarService servicioCuentaPorProcesar
+            ICuentaPorProcesarService servicioCuentaPorProcesar,
+            IContabilidadService servicioContabilidad
         )
         {
             _servicioMantenimiento = servicioMantenimiento;
@@ -77,6 +79,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
             _servicioReportes = servicioReportes;
             _servicioTraslado = servicioTraslado;
             _servicioCuentaPorProcesar = servicioCuentaPorProcesar;
+            _servicioContabilidad = servicioContabilidad;
             strLogoPath = Path.Combine(environment.ContentRootPath, "images/Logo.png");
         }
 
@@ -479,6 +482,11 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                     string strCorreoNotificacion = parametrosJO.Property("CorreoNotificacion").Value.ToString();
                     _servicioMantenimiento.GenerarAutorizacionActualizacionCorreoUsuario(intIdLlave1, strCorreoNotificacion);
+                    break;
+                case "AnularAsiento":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdAsiento").Value.ToString());
+                    intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                    _servicioContabilidad.AnularAsiento(intIdLlave1, intIdUsuario);
                     break;
                 case "EnviarReportePorCorreoElectronico":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

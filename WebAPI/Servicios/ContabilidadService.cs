@@ -14,26 +14,26 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 {
     public interface IContabilidadService
     {
-        IEnumerable<ClaseCuentaContableElemento> ObtenerListadoClaseCuentaContable();
+        IList<ClaseCuentaContableElemento> ObtenerListadoClaseCuentaContable();
         ClaseCuentaContableElemento ObtenerClaseCuentaContable(int intIdClase);
         void AgregarCuentaContable(CatalogoContable cuenta);
         void ActualizarCuentaContable(CatalogoContable cuenta);
         void EliminarCuentaContable(int intIdCuenta);
         CatalogoContable ObtenerCuentaContable(int intIdCuenta);
-        IEnumerable<CatalogoContable> ObtenerListadoCuentasContables(int intIdEmpresa, string strDescripcion);
+        IList<CatalogoContable> ObtenerListadoCuentasContables(int intIdEmpresa, string strDescripcion);
         ParametroContable AgregarParametroContable(ParametroContable parametro);
         void ActualizarParametroContable(ParametroContable parametro);
         void EliminarParametroContable(int intIdParametro);
         ParametroContable ObtenerParametroContable(int intIdParametro);
-        IEnumerable<ParametroContable> ObtenerListadoParametrosContables(string strDescripcion);
-        IEnumerable<CatalogoContable> ObtenerListadoCuentaDeMayor(int intIdEmpresa);
-        IEnumerable<CatalogoContable> ObtenerListadoCuentasParaMovimientos(int intIdEmpresa);
-        IEnumerable<ParametroContable> ObtenerListadoCuentasParaLineasDeProducto(int intIdEmpresa);
-        IEnumerable<ParametroContable> ObtenerListadoCuentasParaLineasDeServicio(int intIdEmpresa);
-        IEnumerable<ParametroContable> ObtenerListadoCuentasParaBancos(int intIdEmpresa);
-        IEnumerable<ParametroContable> ObtenerListadoCuentasParaEgresos(int intIdEmpresa);
-        IEnumerable<ParametroContable> ObtenerListadoCuentasParaIngresos(int intIdEmpresa);
-        IEnumerable<CatalogoContable> ObtenerListadoCuentasDeBalance(int intIdEmpresa);
+        IList<ParametroContable> ObtenerListadoParametrosContables(string strDescripcion);
+        IList<CatalogoContable> ObtenerListadoCuentaDeMayor(int intIdEmpresa);
+        IList<CatalogoContable> ObtenerListadoCuentasParaMovimientos(int intIdEmpresa);
+        IList<ParametroContable> ObtenerListadoCuentasParaLineasDeProducto(int intIdEmpresa);
+        IList<ParametroContable> ObtenerListadoCuentasParaLineasDeServicio(int intIdEmpresa);
+        IList<ParametroContable> ObtenerListadoCuentasParaBancos(int intIdEmpresa);
+        IList<ParametroContable> ObtenerListadoCuentasParaEgresos(int intIdEmpresa);
+        IList<ParametroContable> ObtenerListadoCuentasParaIngresos(int intIdEmpresa);
+        IList<CatalogoContable> ObtenerListadoCuentasDeBalance(int intIdEmpresa);
         Asiento AgregarAsiento(Asiento asiento);
         Asiento AgregarAsiento(Asiento asiento, LeandroContext dbContext);
         void ReversarAsientoContable(int intIdAsiento);
@@ -42,13 +42,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void AnularAsiento(int intIdAsiento, int intIdUsuario);
         Asiento ObtenerAsiento(int intIdAsiento);
         int ObtenerTotalListaAsientos(int intIdEmpresa, int intIdAsiento, string strDetalle);
-        IEnumerable<Asiento> ObtenerListadoAsientos(int intIdEmpresa, int numPagina, int cantRec, int intIdAsiento, string strDetalle);
+        IList<Asiento> ObtenerListadoAsientos(int intIdEmpresa, int numPagina, int cantRec, int intIdAsiento, string strDetalle);
         void ProcesarCierreMensual(int intIdEmpresa);
         void AjustarSaldosCuentasdeMayor();
-        List<ReporteMovimientosContables> ObtenerReporteMovimientosContables(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
-        List<ReporteBalanceComprobacion> ObtenerReporteBalanceComprobacion(int intIdEmpresa, int intMes = 0, int intAnnio = 0);
-        List<ReportePerdidasyGanancias> ObtenerReportePerdidasyGanancias(int intIdEmpresa, int intIdSucursal);
-        List<ReporteDetalleMovimientosCuentasDeBalance> ObtenerReporteDetalleMovimientosCuentasDeBalance(int intIdEmpresa, int intIdCuentaGrupo, string strFechaInicial, string strFechaFinal);
+        IList<ReporteMovimientosContables> ObtenerReporteMovimientosContables(int intIdEmpresa, string strFechaInicial, string strFechaFinal);
+        IList<ReporteBalanceComprobacion> ObtenerReporteBalanceComprobacion(int intIdEmpresa, int intMes = 0, int intAnnio = 0);
+        IList<ReportePerdidasyGanancias> ObtenerReportePerdidasyGanancias(int intIdEmpresa, int intIdSucursal);
+        IList<ReporteDetalleMovimientosCuentasDeBalance> ObtenerReporteDetalleMovimientosCuentasDeBalance(int intIdEmpresa, int intIdCuentaGrupo, string strFechaInicial, string strFechaFinal);
         
     }
     
@@ -91,7 +91,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<ClaseCuentaContableElemento> ObtenerListadoClaseCuentaContable()
+        public IList<ClaseCuentaContableElemento> ObtenerListadoClaseCuentaContable()
         {
             return ClaseCuentaContable.ObtenerListado();
         }
@@ -207,7 +207,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CatalogoContable> ObtenerListadoCuentasContables(int intIdEmpresa, string strDescripcion)
+        public IList<CatalogoContable> ObtenerListadoCuentasContables(int intIdEmpresa, string strDescripcion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -341,7 +341,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<ParametroContable> ObtenerListadoParametrosContables(string strDescripcion)
+        public IList<ParametroContable> ObtenerListadoParametrosContables(string strDescripcion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -362,7 +362,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CatalogoContable> ObtenerListadoCuentaDeMayor(int intIdEmpresa)
+        public IList<CatalogoContable> ObtenerListadoCuentaDeMayor(int intIdEmpresa)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -380,7 +380,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CatalogoContable> ObtenerListadoCuentasParaMovimientos(int intIdEmpresa)
+        public IList<CatalogoContable> ObtenerListadoCuentasParaMovimientos(int intIdEmpresa)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -398,7 +398,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<ParametroContable> ObtenerListadoCuentasParaLineasDeProducto(int intIdEmpresa)
+        public IList<ParametroContable> ObtenerListadoCuentasParaLineasDeProducto(int intIdEmpresa)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -416,7 +416,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<ParametroContable> ObtenerListadoCuentasParaLineasDeServicio(int intIdEmpresa)
+        public IList<ParametroContable> ObtenerListadoCuentasParaLineasDeServicio(int intIdEmpresa)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -434,7 +434,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<ParametroContable> ObtenerListadoCuentasParaBancos(int intIdEmpresa)
+        public IList<ParametroContable> ObtenerListadoCuentasParaBancos(int intIdEmpresa)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -452,7 +452,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<ParametroContable> ObtenerListadoCuentasParaEgresos(int intIdEmpresa)
+        public IList<ParametroContable> ObtenerListadoCuentasParaEgresos(int intIdEmpresa)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -470,7 +470,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<ParametroContable> ObtenerListadoCuentasParaIngresos(int intIdEmpresa)
+        public IList<ParametroContable> ObtenerListadoCuentasParaIngresos(int intIdEmpresa)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -488,7 +488,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<CatalogoContable> ObtenerListadoCuentasDeBalance(int intIdEmpresa)
+        public IList<CatalogoContable> ObtenerListadoCuentasDeBalance(int intIdEmpresa)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -712,7 +712,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IEnumerable<Asiento> ObtenerListadoAsientos(int intIdEmpresa, int numPagina, int cantRec, int intIdAsiento, string strDetalle)
+        public IList<Asiento> ObtenerListadoAsientos(int intIdEmpresa, int numPagina, int cantRec, int intIdAsiento, string strDetalle)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -878,7 +878,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteMovimientosContables> ObtenerReporteMovimientosContables(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
+        public IList<ReporteMovimientosContables> ObtenerReporteMovimientosContables(int intIdEmpresa, string strFechaInicial, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -887,7 +887,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    List<ReporteMovimientosContables> listaReporte = new List<ReporteMovimientosContables>();
+                    var listaReporte = new List<ReporteMovimientosContables>();
                     DateTime datFechaActual = Validador.ObtenerFechaHoraCostaRica();
                     var listaCuentas = dbContext.CatalogoContableRepository.Where(x => x.IdEmpresa == intIdEmpresa)
                         .OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7)
@@ -906,7 +906,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         };
                         listaReporte.Add(reporteLinea);
                     }
-                    return listaReporte;
+                    return listaReporte.ToList();
                 }
                 catch (Exception ex)
                 {
@@ -917,14 +917,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteBalanceComprobacion> ObtenerReporteBalanceComprobacion(int intIdEmpresa, int intMes = 0, int intAnnio = 0)
+        public IList<ReporteBalanceComprobacion> ObtenerReporteBalanceComprobacion(int intIdEmpresa, int intMes = 0, int intAnnio = 0)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
-                    List<ReporteBalanceComprobacion> listaReporte = new List<ReporteBalanceComprobacion>();
+                    var listaReporte = new List<ReporteBalanceComprobacion>();
                     DateTime datFechaActual = Validador.ObtenerFechaHoraCostaRica();
                     var listaCuentas = dbContext.CatalogoContableRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EsCuentaBalance == true)
                         .OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7).ToList();
@@ -953,7 +953,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (decSaldo != 0)
                             listaReporte.Add(reporteLinea);
                     }
-                    return listaReporte;
+                    return listaReporte.ToList();
                 }
                 catch (Exception ex)
                 {
@@ -964,14 +964,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReportePerdidasyGanancias> ObtenerReportePerdidasyGanancias(int intIdEmpresa, int intIdSucursal)
+        public IList<ReportePerdidasyGanancias> ObtenerReportePerdidasyGanancias(int intIdEmpresa, int intIdSucursal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
-                    List<ReportePerdidasyGanancias> listaReporte = new List<ReportePerdidasyGanancias>();
+                    var listaReporte = new List<ReportePerdidasyGanancias>();
                     DateTime datFechaActual = Validador.ObtenerFechaHoraCostaRica();
                     var listaCuentas = dbContext.CatalogoContableRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.EsCuentaBalance == true && x.SaldoActual != 0 && x.IdClaseCuenta == 3/*CUENTA DE RESULTADOS*/)
                         .OrderBy(x => x.Nivel_1).ThenBy(x => x.Nivel_2).ThenBy(x => x.Nivel_3).ThenBy(x => x.Nivel_4).ThenBy(x => x.Nivel_5).ThenBy(x => x.Nivel_6).ThenBy(x => x.Nivel_7).ToList();
@@ -1000,7 +1000,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         listaReporte.Add(reporteLinea);
                     }
-                    return listaReporte;
+                    return listaReporte.ToList();
                 }
                 catch (Exception ex)
                 {
@@ -1011,7 +1011,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<ReporteDetalleMovimientosCuentasDeBalance> ObtenerReporteDetalleMovimientosCuentasDeBalance(int intIdEmpresa, int intIdCuentaGrupo, string strFechaInicial, string strFechaFinal)
+        public IList<ReporteDetalleMovimientosCuentasDeBalance> ObtenerReporteDetalleMovimientosCuentasDeBalance(int intIdEmpresa, int intIdCuentaGrupo, string strFechaInicial, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1020,7 +1020,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    List<ReporteDetalleMovimientosCuentasDeBalance> listaReporte = new List<ReporteDetalleMovimientosCuentasDeBalance>();
+                    var listaReporte = new List<ReporteDetalleMovimientosCuentasDeBalance>();
                     var cuentaDeBalance = dbContext.CatalogoContableRepository.Where(a => a.IdCuenta == intIdCuentaGrupo).FirstOrDefault();
                     int annioSaldoAnterior = datFechaInicial.Year;
                     int mesSaldoAnterior = datFechaInicial.Month - 1;

@@ -125,7 +125,7 @@ Public Class FrmDevolucionAProveedores
     Private Sub CargarDetalleCompra(ByVal compra As Compra)
         dtbDetalleDevolucion.Rows.Clear()
         For Each detalle As DetalleCompra In compra.DetalleCompra
-            If detalle.Producto.Tipo = StaticTipoProducto.Producto Then
+            If detalle.Producto.Linea.Tipo = StaticTipoProducto.Producto Then
                 dtrRowDetDevolucion = dtbDetalleDevolucion.NewRow
                 dtrRowDetDevolucion.Item(0) = detalle.IdProducto
                 dtrRowDetDevolucion.Item(1) = detalle.Producto.Codigo

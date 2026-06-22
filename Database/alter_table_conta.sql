@@ -57,3 +57,6 @@ ALTER TABLE desglosepagofactura CHANGE IdCuentaBanco IdReferencia int NOT NULL;
 
 ALTER TABLE factura ADD IdNotaCredito int NOT NULL;
 ALTER TABLE devolucioncliente ADD IdNotaCredito int NOT NULL;
+
+ALTER TABLE producto DROP COLUMN Tipo;
+ALTER TABLE linea ADD Tipo int NOT NULL;

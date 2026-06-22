@@ -538,13 +538,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             Dictionary <int,decimal> impuestoResumen = new Dictionary<int,decimal>();
             foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
             {
-                if (detalleFactura.Producto.Tipo != StaticTipoProducto.ImpuestodeServicio)
+                if (detalleFactura.Producto.Linea.Tipo != StaticTipoProducto.ImpuestodeServicio)
                 {
                     ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalleFactura.Producto.CodigoClasificacion);
                     if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalleFactura.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
                     if (
-                        (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto && clasificacion.Tipo != StaticTipoProducto.Producto) ||
-                        (clasificacion.Tipo == StaticTipoProducto.Producto && detalleFactura.Producto.Tipo != StaticTipoProducto.Producto)
+                        (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.Producto && clasificacion.Tipo != StaticTipoProducto.Producto) ||
+                        (clasificacion.Tipo == StaticTipoProducto.Producto && detalleFactura.Producto.Linea.Tipo != StaticTipoProducto.Producto)
                     ) throw new BusinessException("El producto: " + detalleFactura.Producto.Descripcion + " contiene un 'Tipo' que no corresponde al tipo del catálogo del Ministerio de Hacienda");
                     decimal decSubtotal = 0;
                     FacturaElectronicaLineaDetalle lineaDetalle = new FacturaElectronicaLineaDetalle
@@ -559,9 +559,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Codigo = detalleFactura.Producto.Codigo
                     };
                     lineaDetalle.CodigoComercial = new CodigoType[] { codigoComercial };
-                    if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                    if (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Unid;
-                    else if (detalleFactura.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
+                    else if (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.ServicioProfesionales)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Sp;
                     else
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Os;
@@ -620,7 +620,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         lineaDetalle.ImpuestoAsumidoEmisorFabrica = 0;
                         lineaDetalle.Impuesto = new ImpuestoType[] { impuestoType };
                         decTotalImpuestos += decMontoImpuestoNetoPorLinea;
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                        if (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                         {
                             decTotalMercanciasGravadas += decMontoGravadoPorLinea;
                             decTotalMercanciasExoneradas += decMontoExoneradoPorLinea;
@@ -635,7 +635,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                     {
                         decimal decMontoExcento = lineaDetalle.MontoTotal;
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                        if (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                             decTotalMercanciasExcentas += decMontoExcento;
                         else
                             decTotalServiciosExcentos += decMontoExcento;
@@ -843,13 +843,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             Dictionary <int,decimal> impuestoResumen = new Dictionary<int,decimal>();
             foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
             {
-                if (detalleFactura.Producto.Tipo != StaticTipoProducto.ImpuestodeServicio)
+                if (detalleFactura.Producto.Linea.Tipo != StaticTipoProducto.ImpuestodeServicio)
                 {
                     ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalleFactura.Producto.CodigoClasificacion);
                     if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalleFactura.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
                     if (
-                        (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto && clasificacion.Tipo != StaticTipoProducto.Producto) ||
-                        (clasificacion.Tipo == StaticTipoProducto.Producto && detalleFactura.Producto.Tipo != StaticTipoProducto.Producto)
+                        (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.Producto && clasificacion.Tipo != StaticTipoProducto.Producto) ||
+                        (clasificacion.Tipo == StaticTipoProducto.Producto && detalleFactura.Producto.Linea.Tipo != StaticTipoProducto.Producto)
                     ) throw new BusinessException("El producto: " + detalleFactura.Producto.Descripcion + " contiene un 'Tipo' que no corresponde al tipo del catálogo del Ministerio de Hacienda");
                     decimal decSubtotal = 0;
                     TiqueteElectronicoLineaDetalle lineaDetalle = new TiqueteElectronicoLineaDetalle
@@ -864,9 +864,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Codigo = detalleFactura.Producto.Codigo
                     };
                     lineaDetalle.CodigoComercial = new CodigoType[] { codigoComercial };
-                    if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                    if (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Unid;
-                    else if (detalleFactura.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
+                    else if (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.ServicioProfesionales)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Sp;
                     else
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Os;
@@ -901,7 +901,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         lineaDetalle.ImpuestoAsumidoEmisorFabrica = 0;
                         lineaDetalle.Impuesto = new ImpuestoType[] { impuestoType };
                         decTotalImpuestos += decMontoImpuestoNetoPorLinea;
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                        if (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                         {
                             decTotalMercanciasGravadas += decMontoGravadoPorLinea;
                             decTotalMercanciasExoneradas += decMontoExoneradoPorLinea;
@@ -916,7 +916,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                     {
                         decimal decMontoExcento = lineaDetalle.MontoTotal;
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                        if (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                             decTotalMercanciasExcentas += decMontoExcento;
                         else
                             decTotalServiciosExcentos += decMontoExcento;
@@ -1158,13 +1158,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             Dictionary <int,decimal> impuestoResumen = new Dictionary<int,decimal>();
             foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
             {
-                if (detalleFactura.Producto.Tipo != StaticTipoProducto.ImpuestodeServicio)
+                if (detalleFactura.Producto.Linea.Tipo != StaticTipoProducto.ImpuestodeServicio)
                 {
                     ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalleFactura.Producto.CodigoClasificacion);
                     if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalleFactura.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
                     if (
-                        (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto && clasificacion.Tipo != StaticTipoProducto.Producto) ||
-                        (clasificacion.Tipo == StaticTipoProducto.Producto && detalleFactura.Producto.Tipo != StaticTipoProducto.Producto)
+                        (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.Producto && clasificacion.Tipo != StaticTipoProducto.Producto) ||
+                        (clasificacion.Tipo == StaticTipoProducto.Producto && detalleFactura.Producto.Linea.Tipo != StaticTipoProducto.Producto)
                     ) throw new BusinessException("El producto: " + detalleFactura.Producto.Descripcion + " contiene un 'Tipo' que no corresponde al tipo del catálogo del Ministerio de Hacienda");
                     decimal decSubtotal = 0;
                     NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle
@@ -1179,9 +1179,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Codigo = detalleFactura.Producto.Codigo
                     };
                     lineaDetalle.CodigoComercial = new CodigoType[] { codigoComercial };
-                    if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                    if (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Unid;
-                    else if (detalleFactura.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
+                    else if (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.ServicioProfesionales)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Sp;
                     else
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Os;
@@ -1240,7 +1240,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         lineaDetalle.ImpuestoAsumidoEmisorFabrica = 0;
                         lineaDetalle.Impuesto = new ImpuestoType[] { impuestoType };
                         decTotalImpuestos += decMontoImpuestoNetoPorLinea;
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                        if (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                         {
                             decTotalMercanciasGravadas += decMontoGravadoPorLinea;
                             decTotalMercanciasExoneradas += decMontoExoneradoPorLinea;
@@ -1255,7 +1255,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                     {
                         decimal decMontoExcento = lineaDetalle.MontoTotal;
-                        if (detalleFactura.Producto.Tipo == StaticTipoProducto.Producto)
+                        if (detalleFactura.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                             decTotalMercanciasExcentas += decMontoExcento;
                         else
                             decTotalServiciosExcentos += decMontoExcento;
@@ -1486,13 +1486,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             Dictionary <int,decimal> impuestoResumen = new Dictionary<int,decimal>();
             foreach (DetalleDevolucionCliente detalle in devolucion.DetalleDevolucionCliente)
             {
-                if (detalle.Producto.Tipo != StaticTipoProducto.ImpuestodeServicio)
+                if (detalle.Producto.Linea.Tipo != StaticTipoProducto.ImpuestodeServicio)
                 {
                     ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalle.Producto.CodigoClasificacion);
                     if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalle.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
                     if (
-                        (detalle.Producto.Tipo == StaticTipoProducto.Producto && clasificacion.Tipo != StaticTipoProducto.Producto) ||
-                        (clasificacion.Tipo == StaticTipoProducto.Producto && detalle.Producto.Tipo != StaticTipoProducto.Producto)
+                        (detalle.Producto.Linea.Tipo == StaticTipoProducto.Producto && clasificacion.Tipo != StaticTipoProducto.Producto) ||
+                        (clasificacion.Tipo == StaticTipoProducto.Producto && detalle.Producto.Linea.Tipo != StaticTipoProducto.Producto)
                     ) throw new BusinessException("El producto: " + detalle.Producto.Descripcion + " contiene un 'Tipo' que no corresponde al tipo del catálogo del Ministerio de Hacienda");
                     decimal decSubtotal = 0;
                     NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle
@@ -1507,9 +1507,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Codigo = detalle.Producto.Codigo
                     };
                     lineaDetalle.CodigoComercial = new CodigoType[] { codigoComercial };
-                    if (detalle.Producto.Tipo == StaticTipoProducto.Producto)
+                    if (detalle.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Unid;
-                    else if (detalle.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
+                    else if (detalle.Producto.Linea.Tipo == StaticTipoProducto.ServicioProfesionales)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Sp;
                     else
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Os;
@@ -1568,7 +1568,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         lineaDetalle.ImpuestoAsumidoEmisorFabrica = 0;
                         lineaDetalle.Impuesto = new ImpuestoType[] { impuestoType };
                         decTotalImpuestos += decMontoImpuestoNetoPorLinea;
-                        if (detalle.Producto.Tipo == StaticTipoProducto.Producto)
+                        if (detalle.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                         {
                             decTotalMercanciasGravadas += decMontoGravadoPorLinea;
                             decTotalMercanciasExoneradas += decMontoExoneradoPorLinea;
@@ -1583,7 +1583,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                     {
                         decimal decMontoExcento = lineaDetalle.MontoTotal;
-                        if (detalle.Producto.Tipo == StaticTipoProducto.Producto)
+                        if (detalle.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                             decTotalMercanciasExcentas += decMontoExcento;
                         else
                             decTotalServiciosExcentos += decMontoExcento;
@@ -1804,13 +1804,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             Dictionary <int,decimal> impuestoResumen = new Dictionary<int,decimal>();
             foreach (DetalleDevolucionCliente detalle in devolucion.DetalleDevolucionCliente)
             {
-                if (detalle.Producto.Tipo != StaticTipoProducto.ImpuestodeServicio)
+                if (detalle.Producto.Linea.Tipo != StaticTipoProducto.ImpuestodeServicio)
                 {
                     ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalle.Producto.CodigoClasificacion);
                     if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalle.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
                     if (
-                        (detalle.Producto.Tipo == StaticTipoProducto.Producto && clasificacion.Tipo != StaticTipoProducto.Producto) ||
-                        (clasificacion.Tipo == StaticTipoProducto.Producto && detalle.Producto.Tipo != StaticTipoProducto.Producto)
+                        (detalle.Producto.Linea.Tipo == StaticTipoProducto.Producto && clasificacion.Tipo != StaticTipoProducto.Producto) ||
+                        (clasificacion.Tipo == StaticTipoProducto.Producto && detalle.Producto.Linea.Tipo != StaticTipoProducto.Producto)
                     ) throw new BusinessException("El producto: " + detalle.Producto.Descripcion + " contiene un 'Tipo' que no corresponde al tipo del catálogo del Ministerio de Hacienda");
                     decimal decSubtotal = 0;
                     NotaDebitoElectronicaLineaDetalle lineaDetalle = new NotaDebitoElectronicaLineaDetalle
@@ -1825,9 +1825,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Codigo = detalle.Producto.Codigo
                     };
                     lineaDetalle.CodigoComercial = new CodigoType[] { codigoComercial };
-                    if (detalle.Producto.Tipo == StaticTipoProducto.Producto)
+                    if (detalle.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Unid;
-                    else if (detalle.Producto.Tipo == StaticTipoProducto.ServicioProfesionales)
+                    else if (detalle.Producto.Linea.Tipo == StaticTipoProducto.ServicioProfesionales)
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Sp;
                     else
                         lineaDetalle.UnidadMedida = UnidadMedidaType.Os;
@@ -1886,7 +1886,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         lineaDetalle.ImpuestoAsumidoEmisorFabrica = 0;
                         lineaDetalle.Impuesto = new ImpuestoType[] { impuestoType };
                         decTotalImpuestos += decMontoImpuestoNetoPorLinea;
-                        if (detalle.Producto.Tipo == StaticTipoProducto.Producto)
+                        if (detalle.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                         {
                             decTotalMercanciasGravadas += decMontoGravadoPorLinea;
                             decTotalMercanciasExoneradas += decMontoExoneradoPorLinea;
@@ -1901,7 +1901,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else
                     {
                         decimal decMontoExcento = lineaDetalle.MontoTotal;
-                        if (detalle.Producto.Tipo == StaticTipoProducto.Producto)
+                        if (detalle.Producto.Linea.Tipo == StaticTipoProducto.Producto)
                             decTotalMercanciasExcentas += decMontoExcento;
                         else
                             decTotalServiciosExcentos += decMontoExcento;

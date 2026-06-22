@@ -448,13 +448,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     foreach (var detalleFactura in factura.DetalleFactura)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la factura no existe!");
                         if (!empresa.RegimenSimplificado && producto.CodigoClasificacion == "")
                             throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la factura no posee clasificación CABYS.");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
-                        if (producto.Tipo == StaticTipoProducto.Producto)
+                        if (producto.Linea.Tipo == StaticTipoProducto.Producto)
                         {
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
                             if (existencias != null)
@@ -490,7 +490,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decTotalPorLinea = Math.Round(detalleFactura.PrecioVenta * detalleFactura.Cantidad, 2, MidpointRounding.AwayFromZero);
                             if (!detalleFactura.Excento)
                                 decTotalPorLinea = Math.Round(decTotalPorLinea / (1 + (detalleFactura.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
-                            if (producto.Tipo == StaticTipoProducto.Producto)
+                            if (producto.Linea.Tipo == StaticTipoProducto.Producto)
                             {
                                 decimal decCostoVentasPorLinea = producto.PrecioCosto * detalleFactura.Cantidad;
                                 decTotalCostoVentas += decCostoVentasPorLinea;
@@ -870,11 +870,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(factura);
                     foreach (var detalleFactura in factura.DetalleFactura)
                     {
-                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
-                        if (producto.Tipo == StaticTipoProducto.Producto)
+                        if (producto.Linea.Tipo == StaticTipoProducto.Producto)
                         {
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
                             if (existencias == null)
@@ -901,7 +901,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 decimal decTotalPorLinea = Math.Round(detalleFactura.PrecioVenta * cantPorAnular, 2, MidpointRounding.AwayFromZero);
                                 if (!detalleFactura.Excento)
                                     decTotalPorLinea = Math.Round(decTotalPorLinea / (1 + (detalleFactura.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
-                                if (producto.Tipo == StaticTipoProducto.Producto)
+                                if (producto.Linea.Tipo == StaticTipoProducto.Producto)
                                 {
                                     decimal decCostoVentasPorLinea = producto.PrecioCosto * cantPorAnular;
                                     decTotalCostoVentas += decCostoVentasPorLinea;
@@ -2121,7 +2121,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     devolucion.IdSucursal = factura.IdSucursal;
                     foreach (var detalleDevolucion in devolucion.DetalleDevolucionCliente)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
@@ -2131,7 +2131,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             throw new BusinessException("El producto " + producto.IdProducto + " no posee registro en el detalle de la factura con id " + factura.IdFactura + ". Por favor consulte con su proveedor.");
                         detalleFactura.CantDevuelto += detalleDevolucion.Cantidad;
                         dbContext.NotificarModificacion(detalleFactura);
-                        if (producto.Tipo == StaticTipoProducto.Producto)
+                        if (producto.Linea.Tipo == StaticTipoProducto.Producto)
                         {
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
                             if (existencias == null)
@@ -2155,7 +2155,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decimal decTotalPorLinea = Math.Round(detalleDevolucion.PrecioVenta * detalleDevolucion.Cantidad, 2, MidpointRounding.AwayFromZero);
                             if (!detalleFactura.Excento)
                                 decTotalPorLinea = Math.Round(decTotalPorLinea / (1 + (detalleDevolucion.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
-                            if (producto.Tipo == StaticTipoProducto.Producto)
+                            if (producto.Linea.Tipo == StaticTipoProducto.Producto)
                             {
                                 decimal decCostoVentasPorLinea = producto.PrecioCosto * detalleDevolucion.Cantidad;
                                 decTotalCostoVentas += decCostoVentasPorLinea;
@@ -2430,7 +2430,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     devolucion.IdSucursal = factura.IdSucursal;
                     foreach (var detalleDevolucion in devolucion.DetalleDevolucionCliente)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                         if (producto == null) throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
                         DetalleFactura detalleFactura = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura && x.IdProducto == detalleDevolucion.IdProducto).FirstOrDefault();
@@ -2438,7 +2438,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             throw new BusinessException("El producto " + producto.IdProducto + " no posee registro en el detalle de la factura con id " + factura.IdFactura + ". Por favor consulte con su proveedor.");
                         detalleFactura.CantDevuelto -= detalleDevolucion.Cantidad;
                         dbContext.NotificarModificacion(detalleFactura);
-                        if (producto.Tipo == StaticTipoProducto.Producto)
+                        if (producto.Linea.Tipo == StaticTipoProducto.Producto)
                         {
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
                             if (existencias == null)

@@ -1046,15 +1046,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var ventasDetalle = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
                         .Join(dbContext.DetalleFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
                         .Join(dbContext.ProductoRepository, x => x.y.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
+                        .Join(dbContext.LineaRepository, x => x.y.IdLinea, y => y.IdLinea, (x, y) => new { x, y })
                         .Where(x => x.y.Tipo == 4);
                     foreach (var value in ventasDetalle)
                     {
                         ReporteProductoTransitorio reporteLinea = new ReporteProductoTransitorio
                         {
-                            IdFact = value.x.x.ConsecFactura,
-                            Fecha = value.x.x.Fecha.ToString("dd/MM/yyyy"),
-                            IdProducto = value.y.IdProducto,
-                            Descripcion = value.x.y.Descripcion
+                            IdFact = value.x.x.x.ConsecFactura,
+                            Fecha = value.x.x.x.Fecha.ToString("dd/MM/yyyy"),
+                            IdProducto = value.x.y.IdProducto,
+                            Descripcion = value.x.x.y.Descripcion
                         };
                         listaReporte.Add(reporteLinea);
                     }
@@ -1136,11 +1137,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     List<ReporteInventario> listaReporte = new List<ReporteInventario>();
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listaProductos = dbContext.ProductoRepository.Include("Linea").Where(x => x.IdEmpresa == intIdEmpresa);
                     if (bolFiltraActivos)
                         listaProductos = listaProductos.Where(x => x.Activo);
                     if (!bolIncluyeServicios)
-                        listaProductos = listaProductos.Where(x => x.Tipo == StaticTipoProducto.Producto);
+                        listaProductos = listaProductos.Where(x => x.Linea.Tipo == StaticTipoProducto.Producto);
                     if (intIdLinea > 0)
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     else if (!strCodigo.Equals(string.Empty))

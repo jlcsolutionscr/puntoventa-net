@@ -108,10 +108,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(traslado);
                     foreach (var detalleTraslado in traslado.DetalleTraslado)
                     {
-                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleTraslado.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleTraslado.IdProducto);
                         if (producto == null)
                             throw new Exception("El producto asignado al detalle del traslado no existe");
-                        if (producto.Tipo != StaticTipoProducto.Producto)
+                        if (producto.Linea.Tipo != StaticTipoProducto.Producto)
                             throw new BusinessException("El tipo de producto por trasladar no puede ser un servicio. Por favor verificar.");
                         ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == traslado.IdSucursalOrigen).FirstOrDefault();
                         if (existencias != null)
