@@ -20,6 +20,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal Total { get { return Excento + Gravado + Impuesto; } }
         public int IdMovimientoCxC { get; set; }
         public int IdAsiento { get; set; }
+        public int IdNotaCredito { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
         public string MotivoAnulacion { get; set; }

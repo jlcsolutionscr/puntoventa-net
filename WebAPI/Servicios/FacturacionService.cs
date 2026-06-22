@@ -415,6 +415,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     factura.IdCxC = 0;
                     factura.IdAsiento = 0;
                     factura.IdMovBanco = 0;
+                    factura.IdNotaCredito = 0;
                     Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
                     if (cliente == null) throw new BusinessException("El cliente asignado a la factura no existe!");
                     if (cliente.IdCliente > 1)
@@ -538,20 +539,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         else if (desglosePago.IdFormaPago == StaticFormaPago.NotaCredito)
                         {
-                            NotaCreditoCliente notaCredito = dbContext.NotaCreditoClienteRepository.Find(desglosePago.IdReferencia);
-                            if (notaCredito == null)
+                            NotaCreditoCliente notaCreditoPago = dbContext.NotaCreditoClienteRepository.Find(desglosePago.IdReferencia);
+                            if (notaCreditoPago == null)
                                 throw new BusinessException("La nota de crédito asignada al pago de la factura no existe!");
-                            if (notaCredito.Nulo)
+                            if (notaCreditoPago.Nulo)
                                 throw new BusinessException("La nota de crédito asignada al pago de la factura se encuentra anulada!");
-                            if (notaCredito.Saldo < desglosePago.MontoLocal)
+                            if (notaCreditoPago.Saldo < desglosePago.MontoLocal)
                                 throw new BusinessException("El saldo de la nota de crédito no es suficiente para cubrir el monto indicado en el desglose de pago!");
-                            if (notaCredito.IdCliente != factura.IdCliente)
+                            if (notaCreditoPago.IdCliente != factura.IdCliente)
                                 throw new BusinessException("La nota de crédito no corresponde al cliente indicado en la factura!");
-                            notaCredito.Saldo -= desglosePago.MontoLocal;
-                            dbContext.NotificarModificacion(notaCredito);
+                            notaCreditoPago.Saldo -= desglosePago.MontoLocal;
+                            dbContext.NotificarModificacion(notaCreditoPago);
                             MovimientoNotaCreditoCliente movimientoNotaCredito = new MovimientoNotaCreditoCliente
                             {
-                                IdNotaCredito = notaCredito.IdNotaCredito,
+                                IdNotaCredito = notaCreditoPago.IdNotaCredito,
                                 IdUsuario = factura.IdUsuario,
                                 Fecha = factura.Fecha,
                                 Monto = desglosePago.MontoLocal,
@@ -833,6 +834,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 ParametroContable devolucionSobreVentasParam = null;
                 ParametroContable egresoParam = null;
                 ParametroContable lineaParam = null;
+                NotaCreditoCliente notaCredito = null;
                 CuentaEgreso cuentaEgresos = null;
                 DataTable dtbInventarios = new DataTable();
                 dtbInventarios.Columns.Add("IdLinea", typeof(int));
@@ -920,7 +922,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     MovimientoCuentaPorCobrar mov = null;
                     if (factura.IdCxC > 0)
                     {
-                        BancoAdquiriente cuentaBanco = dbContext.BancoAdquirienteRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa);
+                        BancoAdquiriente cuentaBanco = dbContext.BancoAdquirienteRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa);
                         if (cuentaBanco == null) throw new BusinessException("La empresa no posee ningun banco adquiriente parametrizado");
                         CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
                         if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada a la factura de la devolución no existe");
@@ -963,12 +965,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     else
                     {
-                        decSaldoAFavorDelCliente = devolucion.Total;
+                        decSaldoAFavorDelCliente = factura.Total;
                     }
                     if (decSaldoAFavorDelCliente > 0)
                     {
                         if (!empresa.DevolucionEnEfectivo) {
-                            NotaCreditoCliente notaCredito = new NotaCreditoCliente
+                            notaCredito = new NotaCreditoCliente
                             {
                                 IdEmpresa = factura.IdEmpresa,
                                 IdCliente = factura.IdCliente,
@@ -1117,6 +1119,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         servicioContabilidad.AgregarAsiento(asiento, dbContext);
                     }
                     dbContext.Commit();
+                    if (notaCredito != null)
+                    {
+                        factura.IdNotaCredito = notaCredito.IdNotaCredito;
+                        dbContext.Commit();
+                    }
                     if (documentoNC != null)
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC));
@@ -2075,14 +2082,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decSaldoAbonoCxCCliente = 0;
                 decimal decSaldoAFavorDelCliente = 0;
                 ParametroContable notaCreditoClientesParam = null;
+                ParametroContable egresoParam = null;
                 ParametroContable cuentasPorCobrarClientesParam = null;
                 ParametroContable otraCondicionVentaParam = null;
                 ParametroContable ivaDevengadoParam = null;
                 ParametroContable costoVentasParam = null;
                 ParametroContable devolucionSobreVentasParam = null;
-                costoVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CostosDeVentas")).FirstOrDefault();
-                        
                 ParametroContable lineaParam = null;
+                NotaCreditoCliente notaCredito = null;
+                CuentaEgreso cuentaEgresos = null;
                 DataTable dtbInventarios = new DataTable();
                 dtbInventarios.Columns.Add("IdLinea", typeof(int));
                 dtbInventarios.Columns.Add("Total", typeof(decimal));
@@ -2165,7 +2173,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
                     MovimientoCuentaPorCobrar mov = null;
-                    if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
+                    if (factura.IdCxC > 0)
                     {
                         BancoAdquiriente cuentaBanco = dbContext.BancoAdquirienteRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa);
                         if (cuentaBanco == null) throw new BusinessException("La empresa no posee ningun banco adquiriente parametrizado");
@@ -2214,19 +2222,42 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (decSaldoAFavorDelCliente > 0)
                     {
-                        NotaCreditoCliente notaCredito = new NotaCreditoCliente
+                        if (!empresa.DevolucionEnEfectivo)
                         {
-                            IdEmpresa = factura.IdEmpresa,
-                            IdCliente = factura.IdCliente,
-                            IdUsuario = factura.IdUsuario,
-                            Fecha = Validador.ObtenerFechaHoraCostaRica(),
-                            Detalle = "Nota de crédito por devolución de mercancía de factura: " + factura.ConsecFactura,
-                            Referencia = factura.ConsecFactura,
-                            MontoOriginal = decSaldoAFavorDelCliente,
-                            Saldo = decSaldoAFavorDelCliente,
-                            Nulo = false
-                        };
-                        dbContext.NotaCreditoClienteRepository.Add(notaCredito);
+                            notaCredito = new NotaCreditoCliente
+                            {
+                                IdEmpresa = factura.IdEmpresa,
+                                IdCliente = factura.IdCliente,
+                                IdUsuario = factura.IdUsuario,
+                                Fecha = Validador.ObtenerFechaHoraCostaRica(),
+                                Detalle = "Nota de crédito por devolución de mercancía de factura: " + factura.ConsecFactura,
+                                Referencia = factura.ConsecFactura,
+                                MontoOriginal = decSaldoAFavorDelCliente,
+                                Saldo = decSaldoAFavorDelCliente,
+                                Nulo = false
+                            };
+                            dbContext.NotaCreditoClienteRepository.Add(notaCredito);
+                        }
+                        else
+                        {
+                            cuentaEgresos = dbContext.CuentaEgresoRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
+                            if (cuentaEgresos == null)
+                                throw new BusinessException("La empresa no posee ninguna cuenta de egresos parametrizada para devoluciones de clientes");
+                            Egreso egreso = new Egreso
+                            {
+                                IdEmpresa = factura.IdEmpresa,
+                                IdSucursal = factura.IdSucursal,
+                                IdUsuario = factura.IdUsuario,
+                                Fecha = Validador.ObtenerFechaHoraCostaRica(),
+                                IdCuenta = cuentaEgresos.IdCuenta,
+                                Beneficiario = factura.NombreCliente,
+                                Detalle = "Anulación de factura posterior a cierre de efectivo " + factura.ConsecFactura,
+                                Monto = decSaldoAFavorDelCliente,
+                                Nulo = false,
+                                Procesado = false
+                            };
+                            dbContext.EgresoRepository.Add(egreso);
+                        }
                     }
                     DocumentoElectronico documentoNC = null;
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
@@ -2263,13 +2294,29 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (decSaldoAFavorDelCliente > 0)
                         {
-                            detalleAsiento = new DetalleAsiento
+                            if (!empresa.DevolucionEnEfectivo)
                             {
-                                Linea = 1,
-                                IdCuenta = notaCreditoClientesParam.IdCuenta,
-                                Credito = decSaldoAFavorDelCliente,
-                                SaldoAnterior = dbContext.CatalogoContableRepository.Find(notaCreditoClientesParam.IdCuenta).SaldoActual
-                            };
+                                detalleAsiento = new DetalleAsiento
+                                {
+                                    Linea = 1,
+                                    IdCuenta = notaCreditoClientesParam.IdCuenta,
+                                    Credito = decSaldoAFavorDelCliente,
+                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(notaCreditoClientesParam.IdCuenta).SaldoActual
+                                };
+                            }
+                            else
+                            {
+                                egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeEgresos") & x.IdProducto == cuentaEgresos.IdCuenta).FirstOrDefault();
+                                if (egresoParam == null)
+                                    throw new BusinessException("No existe parametrización contable para la cuenta de egresos " + cuentaEgresos.IdCuenta + " y no es posible procesar la transacción. Por favor verificar.");
+                                detalleAsiento = new DetalleAsiento
+                                {
+                                    Linea = intLineaDetalleAsiento += 1,
+                                    IdCuenta = egresoParam.IdCuenta,
+                                    Debito = decSaldoAFavorDelCliente,
+                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(egresoParam.IdCuenta).SaldoActual
+                                };
+                            }
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalCredito += detalleAsiento.Credito;
                         }
@@ -2319,6 +2366,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         servicioContabilidad.AgregarAsiento(asiento, dbContext);
                     }
                     dbContext.Commit();
+                    if (notaCredito != null)
+                    {
+                        factura.IdNotaCredito = notaCredito.IdNotaCredito;
+                    }
                     if (mov != null)
                     {
                         devolucion.IdMovimientoCxC = mov.IdMovCxC;
@@ -2331,7 +2382,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         asiento.Detalle += devolucion.IdDevolucion;
                         dbContext.NotificarModificacion(asiento);
                     }
-                    if (mov != null || asiento != null) dbContext.Commit();
+                    if (mov != null || asiento != null || notaCredito != null) dbContext.Commit();
                     if (documentoNC != null)
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC));

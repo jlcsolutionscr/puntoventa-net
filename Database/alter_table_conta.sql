@@ -54,3 +54,6 @@ ALTER TABLE desglosepagomovimientocuentaporpagar CHANGE IdCuentaBanco IdReferenc
 ALTER TABLE desglosepagomovimientoordenservicio CHANGE IdCuentaBanco IdReferencia int NOT NULL;
 ALTER TABLE desglosepagoordenservicio CHANGE IdCuentaBanco IdReferencia int NOT NULL;
 ALTER TABLE desglosepagofactura CHANGE IdCuentaBanco IdReferencia int NOT NULL;
+
+ALTER TABLE factura ADD IdNotaCredito int NOT NULL;
+ALTER TABLE devolucioncliente ADD IdNotaCredito int NOT NULL;

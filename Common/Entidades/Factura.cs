@@ -44,6 +44,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdOrdenServicio { get; set; }
         public int IdProforma { get; set; }
         public int IdApartado { get; set; }
+        public int IdNotaCredito { get; set; }
         public decimal TotalCosto { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
