@@ -56,6 +56,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarDevolucionCliente(DevolucionCliente devolucion);
         void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion);
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
+        NotaCreditoCliente ObtenerNotaCreditoCliente(int intIdNotaCredito);
         int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, int intIdDevolucion, string strNombre, string strFechaFinal);
         IList<FacturaDetalle> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdDevolucion, string strNombre, string strFechaFinal);
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosPendientes();
@@ -2542,6 +2543,25 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al obtener el registro de devolución: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultado la información de la devolución. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public NotaCreditoCliente ObtenerNotaCreditoCliente(int intIdNotaCredito)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    NotaCreditoCliente notaCreditoCliente = dbContext.NotaCreditoClienteRepository.FirstOrDefault(x => x.IdNotaCredito == intIdNotaCredito);
+                    return notaCreditoCliente;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al obtener el registro de nota de crédito del cliente: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultado la información de la nota de crédito del cliente. Por favor consulte con su proveedor.");
                 }
             }
         }

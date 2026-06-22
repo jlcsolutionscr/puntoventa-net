@@ -1635,7 +1635,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     var listado = dbContext.LineaRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (intTipo > 0)
-                        listado.Where(x => intTipo == intTipo);
+                        listado.Where(x => x.Tipo == intTipo);
                     if (!strDescripcion.Equals(string.Empty))
                         listado = listado.Where(x => x.Descripcion.Contains(strDescripcion));
                     listado = listado.OrderBy(x => x.IdLinea).ThenBy(x => x.Descripcion);
