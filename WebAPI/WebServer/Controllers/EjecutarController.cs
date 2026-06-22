@@ -41,6 +41,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static MovimientoApartado? movimientoApartado;
         private static MovimientoOrdenServicio? movimientoOrdenServicio;
         private static PuntoDeServicio? puntoDeServicio;
+        private static ParametroContable? parametroContable;
         private static int intIdEmpresa;
         private static int intIdSucursal;
         private static int intIdUsuario;
@@ -487,6 +488,14 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdAsiento").Value.ToString());
                     intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                     _servicioContabilidad.AnularAsiento(intIdLlave1, intIdUsuario);
+                    break;
+                case "AgregarParametroContable":
+                    parametroContable = JsonConvert.DeserializeObject<ParametroContable>(strEntidad);
+                    _servicioContabilidad.AgregarParametroContable(parametroContable);
+                    break;
+                case "ActualizarParametroContable":
+                    parametroContable = JsonConvert.DeserializeObject<ParametroContable>(strEntidad);
+                    _servicioContabilidad.ActualizarParametroContable(parametroContable);
                     break;
                 case "EnviarReportePorCorreoElectronico":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

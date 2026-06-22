@@ -1454,6 +1454,12 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (cuentaContable != null)
                         strRespuesta = JsonConvert.SerializeObject(cuentaContable);
                     break;
+                case "ObtenerParametroContable":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdParametro").Value.ToString());
+                    ParametroContable parametroContable = _servicioContabilidad.ObtenerParametroContable(intIdLlave1);
+                    if (parametroContable != null)
+                        strRespuesta = JsonConvert.SerializeObject(parametroContable);
+                    break;
                 case "ObtenerDatosReporte":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
