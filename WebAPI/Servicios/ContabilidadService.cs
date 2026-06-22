@@ -16,8 +16,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
     {
         IEnumerable<ClaseCuentaContableElemento> ObtenerListadoClaseCuentaContable();
         ClaseCuentaContableElemento ObtenerClaseCuentaContable(int intIdClase);
-        IEnumerable<TipoParametroContable> ObtenerListadoTipoParametroContable();
-        TipoParametroContable ObtenerTipoParametroContable(int intIdTipo);
         void AgregarCuentaContable(CatalogoContable cuenta);
         void ActualizarCuentaContable(CatalogoContable cuenta);
         void EliminarCuentaContable(int intIdCuenta);
@@ -101,16 +99,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         public ClaseCuentaContableElemento ObtenerClaseCuentaContable(int intIdClase)
         {
             return ClaseCuentaContable.Encontrar(intIdClase);
-        }
-
-        public IEnumerable<TipoParametroContable> ObtenerListadoTipoParametroContable()
-        {
-            return TipoParametroContable.ObtenerListado();
-        }
-
-        public TipoParametroContable ObtenerTipoParametroContable(int intIdTipo)
-        {
-            return TipoParametroContable.Encontrar(intIdTipo);
         }
 
         public void AgregarCuentaContable(CatalogoContable cuenta)
@@ -266,7 +254,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var tipo = TipoParametroContable.Encontrar(parametro.IdTipo);
+                    var tipo = TipoParametroContableClase.Encontrar(parametro.IdTipo);
                     bool bolError = tipo.MultiCuenta && dbContext.ParametroContableRepository.Where(x => x.IdTipo == parametro.IdTipo).Count() > 0;
                     if (bolError)
                         throw new BusinessException("El tipo de parámetro contable " + tipo.Descripcion + " no soporta la asignación de múltiples cuentas contables");
@@ -417,7 +405,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { TipoParametroContable.ObtenerId("LineaDeProductos") }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
+                    return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { TipoParametroContableClase.ObtenerId("LineaDeProductos") }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -435,7 +423,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { TipoParametroContable.ObtenerId("LineaDeServicios") }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
+                    return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { TipoParametroContableClase.ObtenerId("LineaDeServicios") }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -453,7 +441,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { TipoParametroContable.ObtenerId("CuentaDeBancos") }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
+                    return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { TipoParametroContableClase.ObtenerId("CuentaDeBancos") }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -471,7 +459,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { TipoParametroContable.ObtenerId("CuentaDeEgresos") }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
+                    return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { TipoParametroContableClase.ObtenerId("CuentaDeEgresos") }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -489,7 +477,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { TipoParametroContable.ObtenerId("CuentaDeIngresos") }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
+                    return dbContext.ParametroContableRepository.Include("CatalogoContable").Where(c => c.CatalogoContable.IdEmpresa == intIdEmpresa && c.CatalogoContable.PermiteMovimiento && new[] { TipoParametroContableClase.ObtenerId("CuentaDeIngresos") }.Contains(c.IdTipo)).OrderBy(x => x.CatalogoContable.Nivel_1).ThenBy(x => x.CatalogoContable.Nivel_2).ThenBy(x => x.CatalogoContable.Nivel_3).ThenBy(x => x.CatalogoContable.Nivel_4).ThenBy(x => x.CatalogoContable.Nivel_5).ThenBy(x => x.CatalogoContable.Nivel_6).ThenBy(x => x.CatalogoContable.Nivel_7).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -761,7 +749,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    perdidaGananciaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("PerdidasyGanancias")).FirstOrDefault();
+                    perdidaGananciaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("PerdidasyGanancias")).FirstOrDefault();
                     if (perdidaGananciaParam == null) throw new BusinessException("La cuenta de perdidas y ganancias no se encuentra parametrizada y no se puede ejecutar el cierre contable. Por favor verificar.");
 
                     var saldosMensuales = dbContext.CatalogoContableRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.SaldoActual != 0)

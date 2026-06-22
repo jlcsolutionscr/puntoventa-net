@@ -103,7 +103,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         int ObtenerTotalListaAjusteInventario(int intIdEmpresa, int intIdSucursal, int intIdAjusteInventario, string strDescripcion, string strFechaFinal);
         IList<AjusteInventarioDetalle> ObtenerListadoAjusteInventario(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdAjusteInventario, string strDescripcion, string strFechaFinal);
         // Métodos para obtener parámetros generales del sistema
-        IList<LlaveDescripcion> ObtenerListadoTipoIdentificacion();
         IList<LlaveDescripcion> ObtenerListadoCatalogoReportes();
         CatalogoReporte ObtenerCatalogoReporte(int intIdReporte);
         IList<LlaveDescripcion> ObtenerListadoProvincias();
@@ -468,16 +467,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().Include("ActividadEconomicaEmpresa").Include("SucursalPorEmpresa").Include("ReportePorEmpresa.CatalogoReporte").Include("Distrito.Canton.Provincia").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa);
-                empresa.ListadoTipoIdentificacion = ObtenerListadoTipoIdentificacion();
+                empresa.ListadoTipoIdentificacion = TipoDeIdentificacion.ObtenerListado();
                 empresa.ListadoFormaPagoCliente = ObtenerListadoFormaPagoCliente();
                 empresa.ListadoFormaPagoEmpresa = ObtenerListadoFormaPagoEmpresa();
                 empresa.ListadoTipoProducto = ObtenerListadoTipoProducto(strCodigoUsuario);
-                empresa.ListadoTipoImpuesto = ObtenerListadoTipoImpuesto();
-                empresa.ListadoTipoMoneda = ObtenerListadoTipoMoneda();
-                empresa.ListadoCondicionVenta = ObtenerListadoCondicionVenta();
-                empresa.ListadoTipoExoneracion = ObtenerListadoTipoExoneracion();
-                empresa.ListadoNombreInstExoneracion = ObtenerListadoNombreInstExoneracion();
-                empresa.ListadoTipoPrecio = ObtenerListadoTipodePrecio();
+                empresa.ListadoTipoImpuesto =  TipoDeImpuesto.ObtenerListado();
+                empresa.ListadoTipoMoneda = TipoDeMoneda.ObtenerListado();
+                empresa.ListadoCondicionVenta = CondicionDeVenta.ObtenerListado();
+                empresa.ListadoTipoExoneracion = TipoDeExoneracion.ObtenerListado();
+                empresa.ListadoNombreInstExoneracion = TipoDeNombreInstExoneracion.ObtenerListado();
+                empresa.ListadoTipoPrecio = TipoDePrecioProducto.ObtenerListado();
+                empresa.ListadoTipoParametroContable = empresa.Contabiliza ? TipoParametroContableClase.ObtenerListado() : new List<TipoParametroContable>();
 
                 Usuario usuario = null;
                 if (strCodigoUsuario.ToUpper() == "ADMIN" || strCodigoUsuario.ToUpper() == "CONTADOR")
@@ -1660,21 +1660,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return TipoDeProducto.ObtenerListado().Where(x => tiposProducto.Contains(x.Id)).ToList();
         }
 
-        IList<LlaveDescripcion> ObtenerListadoTipoExoneracion()
-        {
-            return TipoDeExoneracion.ObtenerListado();
-        }
-
-        IList<LlaveDescripcion> ObtenerListadoNombreInstExoneracion()
-        {
-            return TipoDeNombreInstExoneracion.ObtenerListado();
-        }
-
-        IList<LlaveDescripcionValor> ObtenerListadoTipoImpuesto()
-        {
-            return TipoDeImpuesto.ObtenerListado();
-        }
-
         public LlaveDescripcionValor ObtenerParametroImpuesto(int intIdImpuesto)
         {
             return TipoDeImpuesto.ObtenerParametro(intIdImpuesto);
@@ -2139,11 +2124,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        IList<LlaveDescripcion> ObtenerListadoCondicionVenta()
-        {
-            return CondicionDeVenta.ObtenerListado();
-        }
-
         IList<LlaveDescripcion> ObtenerListadoFormaPagoCliente()
         {
             return FormaDePago.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.Tarjeta, StaticFormaPago.SinpeMovil, StaticFormaPago.PlataformaDigital }.Contains(x.Id)).ToList();
@@ -2285,11 +2265,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else throw new Exception("Se produjo un error consultando el listado de bancos adquirientes. Por favor consulte con su proveedor.");
                 }
             }
-        }
-
-        IList<LlaveDescripcion> ObtenerListadoTipoMoneda()
-        {
-            return TipoDeMoneda.ObtenerListado();
         }
 
         public string AgregarAjusteInventario(AjusteInventario ajusteInventario)
@@ -2514,11 +2489,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<LlaveDescripcion> ObtenerListadoTipoIdentificacion()
-        {
-            return TipoDeIdentificacion.ObtenerListado();
-        }
-
         public IList<LlaveDescripcion> ObtenerListadoCatalogoReportes()
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
@@ -2616,31 +2586,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error consultando el listado de distritos. Por favor consulte con su proveedor.");
                 }
-            }
-        }
-
-        private IList<LlaveDescripcion> ObtenerListadoTipodePrecio()
-        {
-            try
-            {
-                IList<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-                var tipoPrecio = new LlaveDescripcion(1, "Precio 1");
-                listado.Add(tipoPrecio);
-                tipoPrecio = new LlaveDescripcion(2, "Precio 2");
-                listado.Add(tipoPrecio);
-                tipoPrecio = new LlaveDescripcion(3, "Precio 3");
-                listado.Add(tipoPrecio);
-                tipoPrecio = new LlaveDescripcion(4, "Precio 4");
-                listado.Add(tipoPrecio);
-                tipoPrecio = new LlaveDescripcion(5, "Precio 5");
-                listado.Add(tipoPrecio);
-                return listado;
-            }
-            catch (Exception ex)
-            {
-                if (_logger != null) _logger.LogError("Error al obtener el listado de tipos de precio: ", ex);
-                if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                else throw new Exception("Se produjo un error consultando el listado de tipos de precio. Por favor consulte con su proveedor.");
             }
         }
 

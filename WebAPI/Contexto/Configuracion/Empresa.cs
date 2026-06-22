@@ -22,6 +22,7 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
             builder.Ignore(p => p.ListadoTipoExoneracion);
             builder.Ignore(p => p.ListadoNombreInstExoneracion);
             builder.Ignore(p => p.ListadoTipoPrecio);
+            builder.Ignore(p => p.ListadoTipoParametroContable);
             builder.HasOne(p => p.Distrito).WithMany().HasForeignKey(p => new { p.IdProvincia, p.IdCanton, p.IdDistrito });
             builder.HasOne(p => p.PlanFacturacion).WithMany().HasForeignKey(p => p.TipoContrato);
             builder.HasMany(p => p.ReportePorEmpresa).WithOne().HasForeignKey(p => p.IdEmpresa);

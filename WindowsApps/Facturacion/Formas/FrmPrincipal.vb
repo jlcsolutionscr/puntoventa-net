@@ -735,6 +735,7 @@ Public Class FrmPrincipal
         listaTipoExoneracion = empresa.ListadoTipoExoneracion
         listaNombreInstExoneracion = empresa.ListadoNombreInstExoneracion
         listaTipoPrecio = empresa.ListadoTipoPrecio
+        listaParametroContable = empresa.ListadoParametroContable
         listaSucursales = New List(Of LlaveDescripcion)
         For Each sucursal As SucursalPorEmpresa In empresa.SucursalPorEmpresa
             listaSucursales.Add(New LlaveDescripcion(sucursal.IdSucursal, sucursal.NombreSucursal))

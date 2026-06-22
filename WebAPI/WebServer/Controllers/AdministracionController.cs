@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Servicios;
 using LeandroSoftware.Common.DatosComunes;
+using LeandroSoftware.Common.Parametros;
 
 namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
 {
@@ -221,7 +222,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         {
             try
             {
-                IList<LlaveDescripcion> listadoEmpresas = (List<LlaveDescripcion>)_servicioMantenimiento.ObtenerListadoTipoIdentificacion();
+                IList<LlaveDescripcion> listadoEmpresas = TipoDeIdentificacion.ObtenerListado();
                 string strRespuesta = "";
                 if (listadoEmpresas.Count > 0)
                     strRespuesta = JsonConvert.SerializeObject(listadoEmpresas);

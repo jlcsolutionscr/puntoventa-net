@@ -56,5 +56,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public IList<LlaveDescripcion> ListadoTipoExoneracion { get; set; }
         public IList<LlaveDescripcion> ListadoNombreInstExoneracion { get; set; }
         public IList<LlaveDescripcion> ListadoTipoPrecio { get; set; }
+        public IList<TipoParametroContable> ListadoTipoParametroContable { get; set; }
     }
 }

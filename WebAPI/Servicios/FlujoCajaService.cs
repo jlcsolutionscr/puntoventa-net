@@ -214,7 +214,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
-                        efectivoPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
+                        efectivoPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("Efectivo")).FirstOrDefault();
                         if (efectivoPorLiquidarParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                     }
@@ -226,7 +226,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.IngresoRepository.Add(ingreso);
                     if (empresa.Contabiliza)
                     {
-                        ingresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeIngresos") & x.IdProducto == cuentaIngreso.IdCuenta).FirstOrDefault();
+                        ingresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentaDeIngresos") & x.IdProducto == cuentaIngreso.IdCuenta).FirstOrDefault();
                         if (ingresoParam == null)
                             throw new BusinessException("No existe parametrización contable para la cuenta de ingresos " + cuentaIngreso.IdCuenta + " y no se puede continuar. Por favor verificar.");
                         int intLineaDetalleAsiento = 0;
@@ -560,7 +560,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
-                        efectivoPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("Efectivo")).FirstOrDefault();
+                        efectivoPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("Efectivo")).FirstOrDefault();
                         if (efectivoPorLiquidarParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                     }
@@ -572,7 +572,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.EgresoRepository.Add(egreso);
                     if (empresa.Contabiliza)
                     {
-                        egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContable.ObtenerId("CuentaDeEgresos") & x.IdProducto == cuentaEgreso.IdCuenta).FirstOrDefault();
+                        egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentaDeEgresos") & x.IdProducto == cuentaEgreso.IdCuenta).FirstOrDefault();
                         if (egresoParam == null)
                             throw new BusinessException("No existe parametrización contable para la cuenta de ingresos " + cuentaEgreso.IdCuenta + " y no se puede continuar. Por favor verificar.");
                         int intLineaDetalleAsiento = 0;
