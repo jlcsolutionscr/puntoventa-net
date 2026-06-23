@@ -109,7 +109,7 @@ Public Class FrmCliente
     End Sub
 
     Private Async Sub BtnGuardar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnGuardar.Click
-        If cboTipoIdentificacion.SelectedValue Is Nothing Or txtIdentificacion.Text.Length = 0 Or txtDireccion.Text.Length = 0 Or txtNombre.Text.Length = 0 Or txtCorreoElectronico.Text.Length = 0 Then
+        If cboTipoIdentificacion.SelectedValue Is Nothing Or txtIdentificacion.Text.Length = 0 Or txtNombre.Text.Length = 0 Then
             MessageBox.Show("Existen campos requeridos que no se fueron ingresados. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
@@ -119,9 +119,15 @@ Public Class FrmCliente
                 Exit Sub
             End If
         End If
-        If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And txtActividadEconomica.Text.Length > 0 And txtActividadEconomica.Text.Length < 6 Then
-            MessageBox.Show("El código de actividad económica debe contener un mínimo de 6 dígitos. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
+        If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
+            If txtCorreoElectronico.Text.Length = 0 Or txtDireccion.Text.Length = 0 Then
+                MessageBox.Show("Se debe ingresar la información de la dirección y/o correo eletrónico del cliente. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End If
+            If txtActividadEconomica.Text.Length > 0 And txtActividadEconomica.Text.Length < 6 Then
+                MessageBox.Show("El código de actividad económica debe contener un mínimo de 6 dígitos. Por favor verifique la información.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End If
         End If
         btnCancelar.Focus()
         btnGuardar.Enabled = False

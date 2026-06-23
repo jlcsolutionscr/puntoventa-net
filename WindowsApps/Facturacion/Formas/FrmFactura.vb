@@ -1149,8 +1149,11 @@ Public Class FrmFactura
             MessageBox.Show("El valor del campo plazo no puede ser 0 o nulo para una factura de crédito.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             txtPlazoCredito.Focus()
             Exit Sub
+        ElseIf Not FrmPrincipal.empresaGlobal.RegimenSimplificado And cboActividadEconomica.SelectedValue = Nothing Then
+            MessageBox.Show("Debe seleccionar el código de actividad económica para registrar la factura.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Exit Sub
         End If
-        If (cboTipoMoneda.SelectedValue = 2) Then
+        If cboTipoMoneda.SelectedValue = 2 Then
             Try
                 decTipoDeCambioDolar = 1
                 If cboTipoMoneda.SelectedValue = 1 Then
@@ -1188,7 +1191,7 @@ Public Class FrmFactura
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
-                .CodigoActividad = IIf(FrmPrincipal.empresaGlobal.Modalidad = 1, cboActividadEconomica.SelectedValue, ""),
+                .CodigoActividad = IIf(FrmPrincipal.empresaGlobal.RegimenSimplificado, "", cboActividadEconomica.SelectedValue),
                 .CodigoActividadReceptor = cliente.CodigoActividad,
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
@@ -1352,7 +1355,7 @@ Public Class FrmFactura
 
     Private Async Sub BtnGenerarPDF_Click(sender As Object, e As EventArgs) Handles btnGenerarPDF.Click
         If txtIdFactura.Text <> "" Then
-            If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And factura IsNot Nothing Then
+            If factura IsNot Nothing Then
                 Try
                     Dim pdfBytes As Byte() = Await Puntoventa.ObtenerFacturaPDF(factura.IdFactura, FrmPrincipal.usuarioGlobal.Token)
                     Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + factura.ConsecFactura.ToString() + ".pdf"
