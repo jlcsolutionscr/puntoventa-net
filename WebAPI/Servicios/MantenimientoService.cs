@@ -497,14 +497,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 }
                 if (usuario == null) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
                 if (usuario.Clave != strClave) throw new BusinessException("Los credenciales suministrados no son válidos. Verifique los credenciales suministrados.");
-                if (strValorRegistro == "WebAPI")
+                if (strValorRegistro == "WebAPI" || strCodigoUsuario.ToUpper() == "ADMIN")
                 {
                     if (sucursal == null)
                     {
                         sucursal = dbContext.SucursalPorEmpresaRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == usuario.IdSucursal);
                         if (sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
                     }
-                    usuario.IdSucursal = sucursal.IdSucursal;
                     terminal = dbContext.TerminalPorSucursalRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == sucursal.IdSucursal);
                     if (terminal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
                 }
