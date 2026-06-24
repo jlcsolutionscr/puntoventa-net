@@ -713,6 +713,11 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (listadoUsuario.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoUsuario);
                     break;
+                case "ObtenerListadoRoles":
+                    IList<LlaveDescripcion> listadoRoles = _servicioMantenimiento.ObtenerListadoRoles();
+                    if (listadoRoles.Count > 0)
+                        strRespuesta = JsonConvert.SerializeObject(listadoRoles);
+                    break;
                 case "ObtenerUsuario":
                     int intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                     usuario = _servicioMantenimiento.ObtenerUsuario(intIdUsuario);
