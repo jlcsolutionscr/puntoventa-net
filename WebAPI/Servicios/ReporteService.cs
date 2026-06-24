@@ -1137,7 +1137,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     List<ReporteInventario> listaReporte = new List<ReporteInventario>();
-                    var listaProductos = dbContext.ProductoRepository.Include("Linea").Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (bolFiltraActivos)
                         listaProductos = listaProductos.Where(x => x.Activo);
                     if (!bolIncluyeServicios)
