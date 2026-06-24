@@ -32,6 +32,8 @@ Partial Class FrmLinea
         Me.Label4 = New System.Windows.Forms.Label()
         Me.txtImpresoraTiquete = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.cboTipoProducto = New System.Windows.Forms.ComboBox()
+        Me._lblLabels_9 = New System.Windows.Forms.Label()
         CType(Me.ClienteBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvLineaPorSucursal, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -60,7 +62,7 @@ Partial Class FrmLinea
         Me.txtDescripcion.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescripcion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescripcion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescripcion.Location = New System.Drawing.Point(92, 64)
+        Me.txtDescripcion.Location = New System.Drawing.Point(94, 64)
         Me.txtDescripcion.MaxLength = 0
         Me.txtDescripcion.Multiline = True
         Me.txtDescripcion.Name = "txtDescripcion"
@@ -89,7 +91,7 @@ Partial Class FrmLinea
         Me._lblLabels_1.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_1.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_1.Location = New System.Drawing.Point(17, 65)
+        Me._lblLabels_1.Location = New System.Drawing.Point(19, 65)
         Me._lblLabels_1.Name = "_lblLabels_1"
         Me._lblLabels_1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_1.Size = New System.Drawing.Size(69, 17)
@@ -113,7 +115,7 @@ Partial Class FrmLinea
         'cboSucursal
         '
         Me.cboSucursal.FormattingEnabled = True
-        Me.cboSucursal.Location = New System.Drawing.Point(92, 105)
+        Me.cboSucursal.Location = New System.Drawing.Point(94, 132)
         Me.cboSucursal.Name = "cboSucursal"
         Me.cboSucursal.Size = New System.Drawing.Size(360, 21)
         Me.cboSucursal.TabIndex = 3
@@ -123,7 +125,7 @@ Partial Class FrmLinea
         Me.btnEliminar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnEliminar.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnEliminar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnEliminar.Location = New System.Drawing.Point(389, 290)
+        Me.btnEliminar.Location = New System.Drawing.Point(391, 317)
         Me.btnEliminar.Name = "btnEliminar"
         Me.btnEliminar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnEliminar.Size = New System.Drawing.Size(64, 21)
@@ -137,7 +139,7 @@ Partial Class FrmLinea
         Me.btnInsertar.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnInsertar.Cursor = System.Windows.Forms.Cursors.Default
         Me.btnInsertar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnInsertar.Location = New System.Drawing.Point(323, 290)
+        Me.btnInsertar.Location = New System.Drawing.Point(325, 317)
         Me.btnInsertar.Name = "btnInsertar"
         Me.btnInsertar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.btnInsertar.Size = New System.Drawing.Size(64, 21)
@@ -154,7 +156,7 @@ Partial Class FrmLinea
         Me.dgvLineaPorSucursal.AllowUserToResizeRows = False
         Me.dgvLineaPorSucursal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvLineaPorSucursal.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
-        Me.dgvLineaPorSucursal.Location = New System.Drawing.Point(13, 158)
+        Me.dgvLineaPorSucursal.Location = New System.Drawing.Point(15, 185)
         Me.dgvLineaPorSucursal.MultiSelect = False
         Me.dgvLineaPorSucursal.Name = "dgvLineaPorSucursal"
         Me.dgvLineaPorSucursal.ReadOnly = True
@@ -170,7 +172,7 @@ Partial Class FrmLinea
         Me.Label4.BackColor = System.Drawing.Color.Transparent
         Me.Label4.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label4.Location = New System.Drawing.Point(22, 106)
+        Me.Label4.Location = New System.Drawing.Point(24, 133)
         Me.Label4.Name = "Label4"
         Me.Label4.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label4.Size = New System.Drawing.Size(64, 17)
@@ -184,7 +186,7 @@ Partial Class FrmLinea
         Me.txtImpresoraTiquete.BackColor = System.Drawing.SystemColors.Window
         Me.txtImpresoraTiquete.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtImpresoraTiquete.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtImpresoraTiquete.Location = New System.Drawing.Point(94, 132)
+        Me.txtImpresoraTiquete.Location = New System.Drawing.Point(96, 159)
         Me.txtImpresoraTiquete.MaxLength = 0
         Me.txtImpresoraTiquete.Name = "txtImpresoraTiquete"
         Me.txtImpresoraTiquete.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -196,7 +198,7 @@ Partial Class FrmLinea
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(10, 132)
+        Me.Label1.Location = New System.Drawing.Point(12, 159)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label1.Size = New System.Drawing.Size(78, 17)
@@ -204,12 +206,41 @@ Partial Class FrmLinea
         Me.Label1.Text = "Imp-Tiquete:"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'cboTipoProducto
+        '
+        Me.cboTipoProducto.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest
+        Me.cboTipoProducto.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cboTipoProducto.BackColor = System.Drawing.SystemColors.Window
+        Me.cboTipoProducto.Cursor = System.Windows.Forms.Cursors.Default
+        Me.cboTipoProducto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cboTipoProducto.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.cboTipoProducto.Location = New System.Drawing.Point(94, 105)
+        Me.cboTipoProducto.Name = "cboTipoProducto"
+        Me.cboTipoProducto.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.cboTipoProducto.Size = New System.Drawing.Size(203, 21)
+        Me.cboTipoProducto.TabIndex = 68
+        '
+        '_lblLabels_9
+        '
+        Me._lblLabels_9.BackColor = System.Drawing.Color.Transparent
+        Me._lblLabels_9.Cursor = System.Windows.Forms.Cursors.Default
+        Me._lblLabels_9.ForeColor = System.Drawing.SystemColors.ControlText
+        Me._lblLabels_9.Location = New System.Drawing.Point(5, 106)
+        Me._lblLabels_9.Name = "_lblLabels_9"
+        Me._lblLabels_9.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me._lblLabels_9.Size = New System.Drawing.Size(83, 17)
+        Me._lblLabels_9.TabIndex = 67
+        Me._lblLabels_9.Text = "Tipo:"
+        Me._lblLabels_9.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmLinea
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(464, 323)
+        Me.ClientSize = New System.Drawing.Size(464, 348)
+        Me.Controls.Add(Me.cboTipoProducto)
+        Me.Controls.Add(Me._lblLabels_9)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtImpresoraTiquete)
         Me.Controls.Add(Me.Label4)
@@ -228,9 +259,9 @@ Partial Class FrmLinea
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
-        Me.MaximumSize = New System.Drawing.Size(480, 362)
+        Me.MaximumSize = New System.Drawing.Size(480, 387)
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(480, 362)
+        Me.MinimumSize = New System.Drawing.Size(480, 387)
         Me.Name = "FrmLinea"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -255,4 +286,6 @@ Partial Class FrmLinea
     Public WithEvents Label4 As Label
     Public WithEvents txtImpresoraTiquete As TextBox
     Public WithEvents Label1 As Label
+    Public WithEvents cboTipoProducto As ComboBox
+    Public WithEvents _lblLabels_9 As Label
 End Class

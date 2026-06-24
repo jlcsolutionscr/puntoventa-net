@@ -51,6 +51,7 @@ Public Class FrmPrincipal
     Private listaNombreInstExoneracion As List(Of LlaveDescripcion)
     Private listaSucursales As List(Of LlaveDescripcion)
     Private listaTipoPrecio As List(Of LlaveDescripcion)
+    Private listaTipoParametroContable As List(Of TipoParametroContable)
     Private listaActividadEconomica As List(Of LlaveTextoDescripcion)
     Private tipoDeCambioDolar As LlaveDescripcionValor
 
@@ -103,6 +104,10 @@ Public Class FrmPrincipal
 
     Public Function ObtenerListadoTipoPrecio() As List(Of LlaveDescripcion)
         Return New List(Of LlaveDescripcion)(listaTipoPrecio)
+    End Function
+
+    Public Function ObtenerListadoTipoParametroContable() As List(Of LlaveDescripcion)
+        Return New List(Of LlaveDescripcion)(listaTipoParametroContable)
     End Function
 
     Public Function ObtenerListadoActividadEconomica() As List(Of LlaveTextoDescripcion)
@@ -256,7 +261,7 @@ Public Class FrmPrincipal
             .NumDocExoneracion = "",
             .ArticuloExoneracion = "",
             .IncisoExoneracion = "",
-            .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", Provider),
+            .FechaEmisionDoc = Date.ParseExact("01/01/2019", "dd/MM/yyyy", provider),
             .PorcentajeExoneracion = 0,
             .CodigoActividad = ""
         }
@@ -735,7 +740,7 @@ Public Class FrmPrincipal
         listaTipoExoneracion = empresa.ListadoTipoExoneracion
         listaNombreInstExoneracion = empresa.ListadoNombreInstExoneracion
         listaTipoPrecio = empresa.ListadoTipoPrecio
-        listaParametroContable = empresa.ListadoParametroContable
+        listaTipoParametroContable = empresa.ListadoTipoParametroContable
         listaSucursales = New List(Of LlaveDescripcion)
         For Each sucursal As SucursalPorEmpresa In empresa.SucursalPorEmpresa
             listaSucursales.Add(New LlaveDescripcion(sucursal.IdSucursal, sucursal.NombreSucursal))

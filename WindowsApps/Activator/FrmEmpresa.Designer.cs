@@ -85,30 +85,18 @@
             this.label34 = new System.Windows.Forms.Label();
             this.label33 = new System.Windows.Forms.Label();
             this.txtDireccionSucursal = new System.Windows.Forms.TextBox();
-            this.TabRoles = new System.Windows.Forms.TabPage();
-            this.cboRoles = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.btnEliminaRole = new System.Windows.Forms.Button();
-            this.btnInsertaRole = new System.Windows.Forms.Button();
-            this.dgvRolePorEmpresa = new System.Windows.Forms.DataGridView();
-            this.tabReportes = new System.Windows.Forms.TabPage();
-            this.cboReportes = new System.Windows.Forms.ComboBox();
-            this.label26 = new System.Windows.Forms.Label();
-            this.btnEliminaReporte = new System.Windows.Forms.Button();
-            this.btnInsertaReporte = new System.Windows.Forms.Button();
-            this.dgvReportePorEmpresa = new System.Windows.Forms.DataGridView();
-            this.tabContainer = new System.Windows.Forms.TabControl();
             this.chkIngresaPagoCliente = new System.Windows.Forms.CheckBox();
             this.btnLimpiar = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.cboModalidad = new System.Windows.Forms.ComboBox();
             this.txtCorreoSucursal = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.TabRoles.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvRolePorEmpresa)).BeginInit();
-            this.tabReportes.SuspendLayout();
+            this.cboReportes = new System.Windows.Forms.ComboBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.btnEliminaReporte = new System.Windows.Forms.Button();
+            this.btnInsertaReporte = new System.Windows.Forms.Button();
+            this.dgvReportePorEmpresa = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dgvReportePorEmpresa)).BeginInit();
-            this.tabContainer.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdUpdate
@@ -850,191 +838,6 @@
             this.txtDireccionSucursal.Size = new System.Drawing.Size(265, 20);
             this.txtDireccionSucursal.TabIndex = 248;
             // 
-            // TabRoles
-            // 
-            this.TabRoles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
-            this.TabRoles.Controls.Add(this.cboRoles);
-            this.TabRoles.Controls.Add(this.label6);
-            this.TabRoles.Controls.Add(this.btnEliminaRole);
-            this.TabRoles.Controls.Add(this.btnInsertaRole);
-            this.TabRoles.Controls.Add(this.dgvRolePorEmpresa);
-            this.TabRoles.Location = new System.Drawing.Point(4, 22);
-            this.TabRoles.Name = "TabRoles";
-            this.TabRoles.Padding = new System.Windows.Forms.Padding(3);
-            this.TabRoles.Size = new System.Drawing.Size(378, 335);
-            this.TabRoles.TabIndex = 2;
-            this.TabRoles.Text = "Roles";
-            // 
-            // cboRoles
-            // 
-            this.cboRoles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboRoles.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboRoles.FormattingEnabled = true;
-            this.cboRoles.Location = new System.Drawing.Point(10, 31);
-            this.cboRoles.Name = "cboRoles";
-            this.cboRoles.Size = new System.Drawing.Size(361, 21);
-            this.cboRoles.TabIndex = 216;
-            // 
-            // label6
-            // 
-            this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label6.Location = new System.Drawing.Point(7, 11);
-            this.label6.Name = "label6";
-            this.label6.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.label6.Size = new System.Drawing.Size(116, 17);
-            this.label6.TabIndex = 220;
-            this.label6.Text = "Roles por empresa:";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // btnEliminaRole
-            // 
-            this.btnEliminaRole.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnEliminaRole.Cursor = System.Windows.Forms.Cursors.Default;
-            this.btnEliminaRole.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEliminaRole.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnEliminaRole.Location = new System.Drawing.Point(74, 303);
-            this.btnEliminaRole.Name = "btnEliminaRole";
-            this.btnEliminaRole.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnEliminaRole.Size = new System.Drawing.Size(65, 26);
-            this.btnEliminaRole.TabIndex = 219;
-            this.btnEliminaRole.TabStop = false;
-            this.btnEliminaRole.Text = "Eliminar";
-            this.btnEliminaRole.UseVisualStyleBackColor = false;
-            this.btnEliminaRole.Click += new System.EventHandler(this.btnEliminaRole_Click);
-            // 
-            // btnInsertaRole
-            // 
-            this.btnInsertaRole.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnInsertaRole.Cursor = System.Windows.Forms.Cursors.Default;
-            this.btnInsertaRole.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnInsertaRole.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnInsertaRole.Location = new System.Drawing.Point(8, 303);
-            this.btnInsertaRole.Name = "btnInsertaRole";
-            this.btnInsertaRole.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnInsertaRole.Size = new System.Drawing.Size(65, 26);
-            this.btnInsertaRole.TabIndex = 218;
-            this.btnInsertaRole.TabStop = false;
-            this.btnInsertaRole.Text = "Insertar";
-            this.btnInsertaRole.UseVisualStyleBackColor = false;
-            this.btnInsertaRole.Click += new System.EventHandler(this.btnInsertaRole_Click);
-            // 
-            // dgvRolePorEmpresa
-            // 
-            this.dgvRolePorEmpresa.AllowUserToAddRows = false;
-            this.dgvRolePorEmpresa.AllowUserToDeleteRows = false;
-            this.dgvRolePorEmpresa.AllowUserToResizeColumns = false;
-            this.dgvRolePorEmpresa.AllowUserToResizeRows = false;
-            this.dgvRolePorEmpresa.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvRolePorEmpresa.Location = new System.Drawing.Point(8, 58);
-            this.dgvRolePorEmpresa.Name = "dgvRolePorEmpresa";
-            this.dgvRolePorEmpresa.RowHeadersVisible = false;
-            this.dgvRolePorEmpresa.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.dgvRolePorEmpresa.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dgvRolePorEmpresa.Size = new System.Drawing.Size(362, 239);
-            this.dgvRolePorEmpresa.TabIndex = 217;
-            this.dgvRolePorEmpresa.TabStop = false;
-            // 
-            // tabReportes
-            // 
-            this.tabReportes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
-            this.tabReportes.Controls.Add(this.cboReportes);
-            this.tabReportes.Controls.Add(this.label26);
-            this.tabReportes.Controls.Add(this.btnEliminaReporte);
-            this.tabReportes.Controls.Add(this.btnInsertaReporte);
-            this.tabReportes.Controls.Add(this.dgvReportePorEmpresa);
-            this.tabReportes.Location = new System.Drawing.Point(4, 22);
-            this.tabReportes.Name = "tabReportes";
-            this.tabReportes.Padding = new System.Windows.Forms.Padding(3);
-            this.tabReportes.Size = new System.Drawing.Size(378, 335);
-            this.tabReportes.TabIndex = 1;
-            this.tabReportes.Text = "Reportes";
-            // 
-            // cboReportes
-            // 
-            this.cboReportes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboReportes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboReportes.FormattingEnabled = true;
-            this.cboReportes.Location = new System.Drawing.Point(10, 31);
-            this.cboReportes.Name = "cboReportes";
-            this.cboReportes.Size = new System.Drawing.Size(361, 21);
-            this.cboReportes.TabIndex = 211;
-            // 
-            // label26
-            // 
-            this.label26.BackColor = System.Drawing.Color.Transparent;
-            this.label26.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label26.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label26.Location = new System.Drawing.Point(7, 11);
-            this.label26.Name = "label26";
-            this.label26.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.label26.Size = new System.Drawing.Size(116, 17);
-            this.label26.TabIndex = 215;
-            this.label26.Text = "Reportes por empresa:";
-            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // btnEliminaReporte
-            // 
-            this.btnEliminaReporte.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnEliminaReporte.Cursor = System.Windows.Forms.Cursors.Default;
-            this.btnEliminaReporte.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEliminaReporte.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnEliminaReporte.Location = new System.Drawing.Point(74, 303);
-            this.btnEliminaReporte.Name = "btnEliminaReporte";
-            this.btnEliminaReporte.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnEliminaReporte.Size = new System.Drawing.Size(65, 26);
-            this.btnEliminaReporte.TabIndex = 214;
-            this.btnEliminaReporte.TabStop = false;
-            this.btnEliminaReporte.Text = "Eliminar";
-            this.btnEliminaReporte.UseVisualStyleBackColor = false;
-            this.btnEliminaReporte.Click += new System.EventHandler(this.BtnEliminaReporte_Click);
-            // 
-            // btnInsertaReporte
-            // 
-            this.btnInsertaReporte.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnInsertaReporte.Cursor = System.Windows.Forms.Cursors.Default;
-            this.btnInsertaReporte.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnInsertaReporte.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnInsertaReporte.Location = new System.Drawing.Point(8, 303);
-            this.btnInsertaReporte.Name = "btnInsertaReporte";
-            this.btnInsertaReporte.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.btnInsertaReporte.Size = new System.Drawing.Size(65, 26);
-            this.btnInsertaReporte.TabIndex = 213;
-            this.btnInsertaReporte.TabStop = false;
-            this.btnInsertaReporte.Text = "Insertar";
-            this.btnInsertaReporte.UseVisualStyleBackColor = false;
-            this.btnInsertaReporte.Click += new System.EventHandler(this.BtnInsertaReporte_Click);
-            // 
-            // dgvReportePorEmpresa
-            // 
-            this.dgvReportePorEmpresa.AllowUserToAddRows = false;
-            this.dgvReportePorEmpresa.AllowUserToDeleteRows = false;
-            this.dgvReportePorEmpresa.AllowUserToResizeColumns = false;
-            this.dgvReportePorEmpresa.AllowUserToResizeRows = false;
-            this.dgvReportePorEmpresa.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvReportePorEmpresa.Location = new System.Drawing.Point(8, 58);
-            this.dgvReportePorEmpresa.Name = "dgvReportePorEmpresa";
-            this.dgvReportePorEmpresa.RowHeadersVisible = false;
-            this.dgvReportePorEmpresa.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.dgvReportePorEmpresa.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dgvReportePorEmpresa.Size = new System.Drawing.Size(362, 239);
-            this.dgvReportePorEmpresa.TabIndex = 212;
-            this.dgvReportePorEmpresa.TabStop = false;
-            // 
-            // tabContainer
-            // 
-            this.tabContainer.Controls.Add(this.tabReportes);
-            this.tabContainer.Controls.Add(this.TabRoles);
-            this.tabContainer.Location = new System.Drawing.Point(458, 12);
-            this.tabContainer.Name = "tabContainer";
-            this.tabContainer.SelectedIndex = 0;
-            this.tabContainer.Size = new System.Drawing.Size(386, 361);
-            this.tabContainer.TabIndex = 24;
-            this.tabContainer.TabStop = false;
-            // 
             // chkIngresaPagoCliente
             // 
             this.chkIngresaPagoCliente.AutoSize = true;
@@ -1115,14 +918,90 @@
             this.label10.Text = "Correo electrónico:";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // cboReportes
+            // 
+            this.cboReportes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboReportes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboReportes.FormattingEnabled = true;
+            this.cboReportes.Location = new System.Drawing.Point(478, 39);
+            this.cboReportes.Name = "cboReportes";
+            this.cboReportes.Size = new System.Drawing.Size(361, 21);
+            this.cboReportes.TabIndex = 269;
+            // 
+            // label26
+            // 
+            this.label26.BackColor = System.Drawing.Color.Transparent;
+            this.label26.Cursor = System.Windows.Forms.Cursors.Default;
+            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label26.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label26.Location = new System.Drawing.Point(475, 19);
+            this.label26.Name = "label26";
+            this.label26.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label26.Size = new System.Drawing.Size(116, 17);
+            this.label26.TabIndex = 273;
+            this.label26.Text = "Reportes por empresa:";
+            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // btnEliminaReporte
+            // 
+            this.btnEliminaReporte.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnEliminaReporte.Cursor = System.Windows.Forms.Cursors.Default;
+            this.btnEliminaReporte.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEliminaReporte.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnEliminaReporte.Location = new System.Drawing.Point(542, 311);
+            this.btnEliminaReporte.Name = "btnEliminaReporte";
+            this.btnEliminaReporte.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnEliminaReporte.Size = new System.Drawing.Size(65, 26);
+            this.btnEliminaReporte.TabIndex = 272;
+            this.btnEliminaReporte.TabStop = false;
+            this.btnEliminaReporte.Text = "Eliminar";
+            this.btnEliminaReporte.UseVisualStyleBackColor = false;
+            this.btnEliminaReporte.Click += new System.EventHandler(this.btnEliminaReporte_Click_1);
+            // 
+            // btnInsertaReporte
+            // 
+            this.btnInsertaReporte.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnInsertaReporte.Cursor = System.Windows.Forms.Cursors.Default;
+            this.btnInsertaReporte.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnInsertaReporte.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnInsertaReporte.Location = new System.Drawing.Point(476, 311);
+            this.btnInsertaReporte.Name = "btnInsertaReporte";
+            this.btnInsertaReporte.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.btnInsertaReporte.Size = new System.Drawing.Size(65, 26);
+            this.btnInsertaReporte.TabIndex = 271;
+            this.btnInsertaReporte.TabStop = false;
+            this.btnInsertaReporte.Text = "Insertar";
+            this.btnInsertaReporte.UseVisualStyleBackColor = false;
+            this.btnInsertaReporte.Click += new System.EventHandler(this.btnInsertaReporte_Click_1);
+            // 
+            // dgvReportePorEmpresa
+            // 
+            this.dgvReportePorEmpresa.AllowUserToAddRows = false;
+            this.dgvReportePorEmpresa.AllowUserToDeleteRows = false;
+            this.dgvReportePorEmpresa.AllowUserToResizeColumns = false;
+            this.dgvReportePorEmpresa.AllowUserToResizeRows = false;
+            this.dgvReportePorEmpresa.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvReportePorEmpresa.Location = new System.Drawing.Point(476, 66);
+            this.dgvReportePorEmpresa.Name = "dgvReportePorEmpresa";
+            this.dgvReportePorEmpresa.RowHeadersVisible = false;
+            this.dgvReportePorEmpresa.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.dgvReportePorEmpresa.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.dgvReportePorEmpresa.Size = new System.Drawing.Size(362, 239);
+            this.dgvReportePorEmpresa.TabIndex = 270;
+            this.dgvReportePorEmpresa.TabStop = false;
+            // 
             // FrmEmpresa
             // 
-            this.AcceptButton = this.btnInsertaRole;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(215)))), ((int)(((byte)(225)))));
             this.ClientSize = new System.Drawing.Size(851, 591);
+            this.Controls.Add(this.cboReportes);
+            this.Controls.Add(this.label26);
+            this.Controls.Add(this.btnEliminaReporte);
+            this.Controls.Add(this.btnInsertaReporte);
+            this.Controls.Add(this.dgvReportePorEmpresa);
             this.Controls.Add(this.txtCorreoSucursal);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
@@ -1151,7 +1030,6 @@
             this.Controls.Add(this.cboTipoContrato);
             this.Controls.Add(this.txtCantidadDocumentos);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.tabContainer);
             this.Controls.Add(this.chkRegimenSimplificado);
             this.Controls.Add(this.cboDistrito);
             this.Controls.Add(this.Label14);
@@ -1190,11 +1068,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Registrar/Actualizar datos de la empresa seleccionada";
             this.Load += new System.EventHandler(this.FrmEmpresa_Load);
-            this.TabRoles.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvRolePorEmpresa)).EndInit();
-            this.tabReportes.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvReportePorEmpresa)).EndInit();
-            this.tabContainer.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1257,25 +1131,17 @@
         public System.Windows.Forms.Label label34;
         public System.Windows.Forms.Label label33;
         public System.Windows.Forms.TextBox txtDireccionSucursal;
-        private System.Windows.Forms.TabPage TabRoles;
-        internal System.Windows.Forms.ComboBox cboRoles;
-        public System.Windows.Forms.Label label6;
-        public System.Windows.Forms.Button btnEliminaRole;
-        public System.Windows.Forms.Button btnInsertaRole;
-        internal System.Windows.Forms.DataGridView dgvRolePorEmpresa;
-        private System.Windows.Forms.TabPage tabReportes;
-        internal System.Windows.Forms.ComboBox cboReportes;
-        public System.Windows.Forms.Label label26;
-        public System.Windows.Forms.Button btnEliminaReporte;
-        public System.Windows.Forms.Button btnInsertaReporte;
-        internal System.Windows.Forms.DataGridView dgvReportePorEmpresa;
-        private System.Windows.Forms.TabControl tabContainer;
         internal System.Windows.Forms.CheckBox chkIngresaPagoCliente;
         public System.Windows.Forms.Button btnLimpiar;
         public System.Windows.Forms.Label label9;
         internal System.Windows.Forms.ComboBox cboModalidad;
         public System.Windows.Forms.TextBox txtCorreoSucursal;
         public System.Windows.Forms.Label label10;
+        internal System.Windows.Forms.ComboBox cboReportes;
+        public System.Windows.Forms.Label label26;
+        public System.Windows.Forms.Button btnEliminaReporte;
+        public System.Windows.Forms.Button btnInsertaReporte;
+        internal System.Windows.Forms.DataGridView dgvReportePorEmpresa;
     }
 }
 

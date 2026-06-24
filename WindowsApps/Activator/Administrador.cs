@@ -556,30 +556,6 @@ namespace LeandroSoftware.ClienteWCF
             }
         }
 
-        public static async Task ActualizarRolePorEmpresa(int intIdEmpresa, List<RolePorEmpresa> listado, string strToken)
-        {
-            try
-            {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-                string strListado = JsonConvert.SerializeObject(listado);
-                StringContent contentJson = serializarDatosConId(intIdEmpresa, strListado);
-                if (strToken != "")
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", strToken);
-                HttpResponseMessage httpResponse = await httpClient.PostAsync(strServicioURL + "/actualizarlistadoroles", contentJson);
-                if (httpResponse.StatusCode == HttpStatusCode.SeeOther)
-                {
-                    string strError = JsonConvert.DeserializeObject<string>(httpResponse.Content.ReadAsStringAsync().Result);
-                    throw new Exception(strError);
-                }
-                if (httpResponse.StatusCode != HttpStatusCode.OK)
-                    throw new Exception(httpResponse.ReasonPhrase);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public static async Task RemoverLogoEmpresa(int intIdEmpresa, string strToken)
         {
             try

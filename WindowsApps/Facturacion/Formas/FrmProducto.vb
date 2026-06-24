@@ -14,16 +14,13 @@ Public Class FrmProducto
 
 #Region "Métodos"
     Private Function ValidarCampos(ByRef pCampo As String) As Boolean
-        If cboTipoProducto.Text = "" Then
-            pCampo = "Tipo de producto"
-            Return False
-        ElseIf cboLinea.Text = "" Then
+        If cboLinea.Text = "" Then
             pCampo = "Línea del Producto"
             Return False
         ElseIf txtCodigo.Text = "" Then
             pCampo = "Código"
             Return False
-        ElseIf txtCodigoClasificacion.Text = "" Then
+        ElseIf Not FrmPrincipal.empresaGlobal.RegimenSimplificado And txtCodigoClasificacion.Text = "" Then
             pCampo = "Código Cabys"
             Return False
         ElseIf txtDescripcion.Text = "" Then
@@ -47,9 +44,6 @@ Public Class FrmProducto
     End Function
 
     Private Async Function CargarCombos() As Task
-        cboTipoProducto.ValueMember = "Id"
-        cboTipoProducto.DisplayMember = "Descripcion"
-        cboTipoProducto.DataSource = FrmPrincipal.ObtenerListadoTipoProducto()
         cboTipoImpuesto.ValueMember = "Id"
         cboTipoImpuesto.DisplayMember = "Descripcion"
         cboTipoImpuesto.DataSource = FrmPrincipal.ObtenerListadoTipoImpuesto()
@@ -133,11 +127,10 @@ Public Class FrmProducto
                     Throw New Exception("El producto seleccionado no existe")
                 End If
                 txtIdProducto.Text = datos.IdProducto
-                cboTipoProducto.SelectedValue = datos.Tipo
                 cboLinea.SelectedValue = datos.IdLinea
                 txtCodigo.Text = datos.Codigo
                 txtCodigoProveedor.Text = datos.CodigoProveedor
-                txtCodigoClasificacion.Text = datos.CodigoClasificacion
+                txtCodigoClasificacion.Text = IIf(Not FrmPrincipal.empresaGlobal.RegimenSimplificado, datos.CodigoClasificacion, "")
                 txtDescripcion.Text = datos.Descripcion
                 txtPrecioCosto.Text = FormatoPrecio(datos.PrecioCosto, 2)
                 txtPrecioImpuesto1.Text = FormatoPrecio(datos.PrecioVenta1, 2)
@@ -203,7 +196,7 @@ Public Class FrmProducto
         datos.IdLinea = cboLinea.SelectedValue
         datos.Codigo = txtCodigo.Text
         datos.CodigoProveedor = txtCodigoProveedor.Text
-        datos.CodigoClasificacion = txtCodigoClasificacion.Text
+        datos.CodigoClasificacion = IIf(Not FrmPrincipal.empresaGlobal.RegimenSimplificado, txtCodigoClasificacion.Text, "")
         datos.Descripcion = txtDescripcion.Text
         datos.PrecioCosto = txtPrecioCosto.Text
         datos.PrecioVenta1 = txtPrecioImpuesto1.Text
@@ -212,7 +205,6 @@ Public Class FrmProducto
         datos.PrecioVenta4 = txtPrecioImpuesto4.Text
         datos.PrecioVenta5 = txtPrecioImpuesto5.Text
         datos.PorcDescuento = txtPorcDescuento.Text
-        datos.Tipo = cboTipoProducto.SelectedValue
         datos.IdImpuesto = cboTipoImpuesto.SelectedValue
         datos.IndExistencia = txtIndExistencia.Text
         If ptbImagen.Image IsNot Nothing Then
@@ -421,8 +413,8 @@ Public Class FrmProducto
     End Sub
 
     Private Sub TxtCodigoClasificacion_Validated(sender As Object, e As EventArgs) Handles txtCodigoClasificacion.Validated
-        If txtCodigoClasificacion.TextLength < 13 Then
-            MessageBox.Show("El valor del campo 'Código CABYS' debe tener una longitud no menor a 13 caracteres. Por favor verifique la información suministrada", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        If txtCodigoClasificacion.TextLength > 0 And txtCodigoClasificacion.TextLength <> 13 Then
+            MessageBox.Show("El valor del campo 'Código CABYS' debe tener una longitud de 13 caracteres. Por favor verifique la información suministrada", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             txtCodigoClasificacion.Text = ""
         End If
     End Sub

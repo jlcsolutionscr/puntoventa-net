@@ -13,14 +13,12 @@ namespace LeandroSoftware.Activator
 {
     public partial class FrmEmpresa : Form
     {
-        private DataTable dtRolePorEmpresa;
         private DataTable dtReportePorEmpresa;
         private Empresa empresa;
         private SucursalPorEmpresa sucursal;
         private TerminalPorSucursal terminal;
         private bool bolLoading = true;
         private bool bolListadoReporteModificado = false;
-        private bool bolListadoRoleModificado = false;
         private bool bolSucursalNueva = true;
         private bool bolTerminalNueva = true;
         private string strToken;
@@ -40,13 +38,6 @@ namespace LeandroSoftware.Activator
             DataColumn[] columns = new DataColumn[1];
             columns[0] = dtReportePorEmpresa.Columns[0];
             dtReportePorEmpresa.PrimaryKey = columns;
-
-            dtRolePorEmpresa = new DataTable();
-            dtRolePorEmpresa.Columns.Add("Id", typeof(int));
-            dtRolePorEmpresa.Columns.Add("Descripcion", typeof(string));
-            columns = new DataColumn[1];
-            columns[0] = dtRolePorEmpresa.Columns[0];
-            dtRolePorEmpresa.PrimaryKey = columns;
         }
 
         private void CargarLineaDetalleReporte()
@@ -65,26 +56,6 @@ namespace LeandroSoftware.Activator
                     objRowEquipo["Descripcion"] = cboReportes.Text;
                     dtReportePorEmpresa.Rows.Add(objRowEquipo);
                     dgvReportePorEmpresa.Refresh();
-                }
-            }
-        }
-
-        private void CargarLineaDetalleRole()
-        {
-            if (cboRoles.SelectedValue != null)
-            {
-                string strValor = cboRoles.SelectedValue.ToString();
-                if (dtRolePorEmpresa.Rows.IndexOf(dtRolePorEmpresa.Rows.Find(strValor)) >= 0)
-                {
-                    MessageBox.Show("El role seleccionado ya fue agregado al detalle.", "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    DataRow objRowEquipo = dtRolePorEmpresa.NewRow();
-                    objRowEquipo["Id"] = cboRoles.SelectedValue;
-                    objRowEquipo["Descripcion"] = cboRoles.Text;
-                    dtRolePorEmpresa.Rows.Add(objRowEquipo);
-                    dgvRolePorEmpresa.Refresh();
                 }
             }
         }
@@ -110,26 +81,6 @@ namespace LeandroSoftware.Activator
             dvcNombreReporte.Visible = true;
             dvcNombreReporte.ReadOnly = true;
             dgvReportePorEmpresa.Columns.Add(dvcNombreReporte);
-
-            DataGridViewTextBoxColumn dvcIdRole = new DataGridViewTextBoxColumn();
-            DataGridViewTextBoxColumn dvcNombreRole = new DataGridViewTextBoxColumn();
-
-            dgvRolePorEmpresa.Columns.Clear();
-            dgvRolePorEmpresa.AutoGenerateColumns = false;
-
-            dvcIdRole.DataPropertyName = "Id";
-            dvcIdRole.HeaderText = "Id";
-            dvcIdRole.Width = 40;
-            dvcIdRole.Visible = true;
-            dvcIdRole.ReadOnly = true;
-            dgvRolePorEmpresa.Columns.Add(dvcIdRole);
-
-            dvcNombreRole.DataPropertyName = "Descripcion";
-            dvcNombreRole.HeaderText = "Role";
-            dvcNombreRole.Width = 302;
-            dvcNombreRole.Visible = true;
-            dvcNombreRole.ReadOnly = true;
-            dgvRolePorEmpresa.Columns.Add(dvcNombreRole);
         }
 
         public async Task CargarListaParametros()
@@ -143,10 +94,6 @@ namespace LeandroSoftware.Activator
             cboReportes.DisplayMember = "Descripcion";
             IList<LlaveDescripcion> dsReportes = await Administrador.ObtenerListadoCatalogoReportes(strToken);
             cboReportes.DataSource = dsReportes;
-            cboRoles.ValueMember = "Id";
-            cboRoles.DisplayMember = "Descripcion";
-            IList<LlaveDescripcion> dsRoles = await Administrador.ObtenerListadoRoles(strToken);
-            cboRoles.DataSource = dsRoles;
             // Carga Tipo Contrato
             cboTipoContrato.ValueMember = "Id";
             cboTipoContrato.DisplayMember = "Descripcion";
@@ -298,7 +245,6 @@ namespace LeandroSoftware.Activator
                 await CargarListaParametros();
                 await CargarProvincias();
                 dgvReportePorEmpresa.DataSource = dtReportePorEmpresa;
-                dgvRolePorEmpresa.DataSource = dtRolePorEmpresa;
                 if (bolEditing)
                 {
                     empresa = await Administrador.ObtenerEmpresa(intIdEmpresa, strToken);
@@ -338,15 +284,6 @@ namespace LeandroSoftware.Activator
                             dtReportePorEmpresa.Rows.Add(objRowEquipo);
                         }
                         dgvReportePorEmpresa.Refresh();
-                        IList<LlaveDescripcion> rolePorEmpresa = await Administrador.ObtenerListadoRolePorEmpresa(empresa.IdEmpresa, strToken);
-                        foreach (var role in rolePorEmpresa)
-                        {
-                            DataRow objRowEquipo = dtRolePorEmpresa.NewRow();
-                            objRowEquipo["Id"] = role.Id;
-                            objRowEquipo["Descripcion"] = role.Descripcion;
-                            dtRolePorEmpresa.Rows.Add(objRowEquipo);
-                        }
-                        dgvRolePorEmpresa.Refresh();
                         btnLimpiar.Enabled = true;
                     }
                     else
@@ -445,18 +382,6 @@ namespace LeandroSoftware.Activator
                     }
                     await Administrador.ActualizarReportePorEmpresa(int.Parse(txtIdEmpresa.Text), listado, strToken);
                 }
-                if (bolListadoRoleModificado)
-                {
-                    List<RolePorEmpresa> listado = new List<RolePorEmpresa>();
-                    foreach (DataRow row in dtRolePorEmpresa.Rows)
-                    {
-                        RolePorEmpresa reporte = new RolePorEmpresa();
-                        reporte.IdEmpresa = int.Parse(txtIdEmpresa.Text);
-                        reporte.IdRole = int.Parse(row["Id"].ToString());
-                        listado.Add(reporte);
-                    }
-                    await Administrador.ActualizarRolePorEmpresa(int.Parse(txtIdEmpresa.Text), listado, strToken);
-                }
                 if (sucursal != null)
                 {
                     sucursal.NombreSucursal = txtNombreSucursal.Text;
@@ -521,30 +446,6 @@ namespace LeandroSoftware.Activator
             }
         }
 
-        private void BtnInsertaReporte_Click(object sender, EventArgs e)
-        {
-            bolListadoReporteModificado = true;
-            CargarLineaDetalleReporte();
-        }
-
-        private void BtnEliminaReporte_Click(object sender, EventArgs e)
-        {
-            bolListadoReporteModificado = true;
-            if (dtReportePorEmpresa.Rows.Count > 0) dtReportePorEmpresa.Rows.Remove(dtReportePorEmpresa.Rows.Find(dgvReportePorEmpresa.CurrentRow.Cells[0].Value));
-        }
-
-        private void btnInsertaRole_Click(object sender, EventArgs e)
-        {
-            bolListadoRoleModificado = true;
-            CargarLineaDetalleRole();
-        }
-
-        private void btnEliminaRole_Click(object sender, EventArgs e)
-        {
-            bolListadoRoleModificado = true;
-            if (dtRolePorEmpresa.Rows.Count > 0) dtRolePorEmpresa.Rows.Remove(dtRolePorEmpresa.Rows.Find(dgvRolePorEmpresa.CurrentRow.Cells[0].Value));
-        }
-
         private void BtnCargarSucursal_Click(object sender, EventArgs e)
         {
             if (txtIdEmpresa.Text != "" && txtIdSucursal.Text != "")
@@ -575,6 +476,18 @@ namespace LeandroSoftware.Activator
                     MessageBox.Show(ex.Message, "Leandro Software", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void btnInsertaReporte_Click_1(object sender, EventArgs e)
+        {
+            bolListadoReporteModificado = true;
+            CargarLineaDetalleReporte();
+        }
+
+        private void btnEliminaReporte_Click_1(object sender, EventArgs e)
+        {
+            bolListadoReporteModificado = true;
+            if (dtReportePorEmpresa.Rows.Count > 0) dtReportePorEmpresa.Rows.Remove(dtReportePorEmpresa.Rows.Find(dgvReportePorEmpresa.CurrentRow.Cells[0].Value));
         }
     }
 }

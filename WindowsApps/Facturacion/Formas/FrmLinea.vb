@@ -12,7 +12,10 @@ Public Class FrmLinea
 
 #Region "Métodos"
     Private Function ValidarCampos(ByRef pCampo As String) As Boolean
-        If txtDescripcion.Text = "" Then
+        If cboTipoProducto.Text = "" Then
+            pCampo = "Tipo de producto"
+            Return False
+        ElseIf txtDescripcion.Text = "" Then
             pCampo = "Descripción"
             Return False
         Else
@@ -70,6 +73,9 @@ Public Class FrmLinea
     End Sub
 
     Private Sub CargarCombos()
+        cboTipoProducto.ValueMember = "Id"
+        cboTipoProducto.DisplayMember = "Descripcion"
+        cboTipoProducto.DataSource = FrmPrincipal.ObtenerListadoTipoProducto()
         cboSucursal.ValueMember = "Id"
         cboSucursal.DisplayMember = "Descripcion"
         cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
@@ -111,6 +117,7 @@ Public Class FrmLinea
                     Exit Sub
                 End If
                 txtIdLinea.Text = datos.IdLinea
+                cboTipoProducto.SelectedValue = datos.Tipo
                 txtDescripcion.Text = datos.Descripcion
                 txtImpresoraTiquete.Text = datos.ImpresoraTiquete
                 CargarDetalleSucursal(datos)
@@ -139,6 +146,7 @@ Public Class FrmLinea
         If datos.IdLinea = 0 Then
             datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         End If
+        datos.Tipo = cboTipoProducto.SelectedValue
         datos.Descripcion = txtDescripcion.Text
         datos.ImpresoraTiquete = txtImpresoraTiquete.Text
         If datos.LineaPorSucursal IsNot Nothing Then

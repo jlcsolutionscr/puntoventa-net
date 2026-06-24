@@ -278,7 +278,7 @@ Public Class FrmOrdenServicio
         Dim decPrecioGravado As Decimal = decPrecio
         If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 5)
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleOrdenServicio, producto.IdProducto)
-        If producto.Tipo = 1 And intIndice >= 0 Then
+        If Not producto.EsServicio And intIndice >= 0 Then
             Dim decNewCantidad = dtbDetalleOrdenServicio.Rows(intIndice).Item(3) + decCantidad
             dtbDetalleOrdenServicio.Rows(intIndice).Item(1) = producto.Codigo
             dtbDetalleOrdenServicio.Rows(intIndice).Item(2) = strDescripcion
@@ -449,7 +449,7 @@ Public Class FrmOrdenServicio
             If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtDescripcion.Text = producto.Descripcion
             txtExistencias.Text = producto.Existencias
-            txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
+            txtUnidad.Text = IIf(producto.EsServicio, "SP", "UND")
             txtPrecio.ReadOnly = Not FrmPrincipal.bolModificaPrecioVenta And Not producto.ModificaPrecio
             txtPorcDesc.Text = FormatNumber(producto.PorcDescuento, 2)
             decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
@@ -1290,7 +1290,7 @@ Public Class FrmOrdenServicio
                 Try
                     producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigo, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
                     If producto IsNot Nothing Then
-                        If producto.Activo And producto.Tipo <> StaticTipoProducto.Transitorio Then
+                        If producto.Activo Then
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
                         Else

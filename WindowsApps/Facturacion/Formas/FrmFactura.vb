@@ -366,7 +366,7 @@ Public Class FrmFactura
         Dim decPrecioGravado As Decimal = decPrecio
         If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 5)
         Dim intIndice As Integer = ObtenerIndice(dtbDetalleFactura, producto.IdProducto)
-        If producto.Tipo = 1 And intIndice >= 0 Then
+        If Not producto.EsServicio And intIndice >= 0 Then
             Dim decNewCantidad = dtbDetalleFactura.Rows(intIndice).Item(3) + decCantidad
             dtbDetalleFactura.Rows(intIndice).Item(1) = producto.Codigo
             dtbDetalleFactura.Rows(intIndice).Item(2) = strDescripcion
@@ -507,15 +507,15 @@ Public Class FrmFactura
         cboCondicionVenta.DataSource = FrmPrincipal.ObtenerListadoCondicionVenta()
         cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
-        Dim listadoFormaPago = FrmPrincipal.ObtenerListadoFormaPagoCliente()
-        listadoFormaPago.Add(StaticFormaPago.NotaCredito)
-        cboFormaPago.DataSource = listadoFormaPago
+        cboFormaPago.DataSource = FrmPrincipal.ObtenerListadoFormaPagoCliente()
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
         cboTipoMoneda.DataSource = FrmPrincipal.ObtenerListadoTipoMoneda()
-        cboActividadEconomica.ValueMember = "Llave"
-        cboActividadEconomica.DisplayMember = "Descripcion"
-        cboActividadEconomica.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
+        If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
+            cboActividadEconomica.ValueMember = "Llave"
+            cboActividadEconomica.DisplayMember = "Descripcion"
+            cboActividadEconomica.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
+        End If
         cboTipoBanco.ValueMember = "Id"
         cboTipoBanco.DisplayMember = "Descripcion"
     End Sub
@@ -562,7 +562,7 @@ Public Class FrmFactura
             If txtCantidad.Text = "" Then txtCantidad.Text = "1"
             txtDescripcion.Text = producto.Descripcion
             txtExistencias.Text = producto.Existencias
-            txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
+            txtUnidad.Text = IIf(producto.EsServicio, "SP", "UND")
             txtPrecio.ReadOnly = Not FrmPrincipal.bolModificaPrecioVenta And Not producto.ModificaPrecio
             txtPorcDesc.Text = FormatNumber(producto.PorcDescuento, 2)
             decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
@@ -638,8 +638,8 @@ Public Class FrmFactura
 
     Private Async Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            lblActividadEconomica.Visible = FrmPrincipal.empresaGlobal.Modalidad = 1
-            cboActividadEconomica.Visible = FrmPrincipal.empresaGlobal.Modalidad = 1
+            lblActividadEconomica.Visible = FrmPrincipal.empresaGlobal.RegimenSimplificado = 1
+            cboActividadEconomica.Visible = FrmPrincipal.empresaGlobal.RegimenSimplificado = 1
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
             txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
@@ -1646,7 +1646,7 @@ Public Class FrmFactura
                 Try
                     producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigo, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
                     If producto IsNot Nothing Then
-                        If producto.Activo And producto.Tipo <> StaticTipoProducto.Transitorio Then
+                        If producto.Activo Then
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
                         Else

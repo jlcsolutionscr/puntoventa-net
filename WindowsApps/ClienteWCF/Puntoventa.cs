@@ -453,9 +453,9 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoRolesPorEmpresa(int intIdEmpresa, string strToken)
+        public static async Task<List<LlaveDescripcion>> ObtenerListadoRoles(string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoRolesPorEmpresa', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoRoles'}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
             if (respuesta != "")

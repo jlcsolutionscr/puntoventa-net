@@ -288,7 +288,7 @@ Public Class FrmCompra
         Dim decPorcUtilidad = 0
         Dim decTasaImpuesto = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
         If decPrecioVenta > 0 Then decPorcUtilidad = (decPrecioVenta * 100 / dblPrecioCosto) - 100
-        If producto.Tipo = 1 And intIndice >= 0 Then
+        If Not producto.EsServicio And intIndice >= 0 Then
             dtbDetalleCompra.Rows(intIndice).Item(1) = producto.CodigoProveedor
             dtbDetalleCompra.Rows(intIndice).Item(2) = producto.Codigo
             dtbDetalleCompra.Rows(intIndice).Item(3) = producto.Descripcion
@@ -1030,7 +1030,7 @@ Public Class FrmCompra
                 Try
                     producto = Await Puntoventa.ObtenerProductoPorCodigoProveedor(FrmPrincipal.empresaGlobal.IdEmpresa, txtCodigoProveedor.Text, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
                     If producto IsNot Nothing Then
-                        If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
+                        If producto.Activo And Not producto.EsServicio Then
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
                         Else
@@ -1097,7 +1097,7 @@ Public Class FrmCompra
                 Try
                     producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigo, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
                     If producto IsNot Nothing Then
-                        If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
+                        If producto.Activo And Not producto.EsServicio Then
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
                         Else

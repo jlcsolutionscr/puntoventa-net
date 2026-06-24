@@ -168,7 +168,7 @@ Public Class FrmTrasladoMercaderia
             txtExistencias.Text = producto.Existencias
             txtCantidad.Text = ""
             txtPrecioCosto.Text = FormatNumber(producto.PrecioCosto, 2)
-            txtUnidad.Text = IIf(producto.Tipo = 1, "UND", IIf(producto.Tipo = 2, "SP", "OS"))
+            txtUnidad.Text = IIf(producto.EsServicio, "SP", "UND")
         End If
     End Sub
 
@@ -449,7 +449,7 @@ Public Class FrmTrasladoMercaderia
                 Try
                     producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigo, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
                     If producto IsNot Nothing Then
-                        If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
+                        If producto.Activo And Not producto.EsServicio Then
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
                         Else

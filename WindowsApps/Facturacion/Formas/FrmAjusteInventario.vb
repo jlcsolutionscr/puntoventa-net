@@ -345,7 +345,7 @@ Public Class FrmAjusteInventario
                 Try
                     producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigo, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
                     If producto IsNot Nothing Then
-                        If producto.Activo And producto.Tipo = StaticTipoProducto.Producto Then
+                        If producto.Activo And Not producto.EsServicio Then
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
                         Else
