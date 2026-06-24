@@ -483,8 +483,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 if (strCodigoUsuario.ToUpper() == "ADMIN" || strCodigoUsuario.ToUpper() == "CONTADOR")
                 {
                     usuario = dbContext.UsuarioRepository.AsNoTracking().Include("RolePorUsuario.Role").FirstOrDefault(x => x.CodigoUsuario == strCodigoUsuario);
-                    usuario.IdEmpresa = empresa.IdEmpresa;
-                    usuario.IdSucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa).IdSucursal;
                 }
                 else
                 {
@@ -498,16 +496,20 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 SucursalPorEmpresa sucursal = null;
                 if (strValorRegistro == "WebAPI" || strCodigoUsuario.ToUpper() == "ADMIN")
                 {
+                    usuario.IdEmpresa = empresa.IdEmpresa;
                     sucursal = dbContext.SucursalPorEmpresaRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == usuario.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
+                    usuario.IdSucursal = sucursal.IdSucursal;
                     terminal = dbContext.TerminalPorSucursalRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == sucursal.IdSucursal);
+                    if (terminal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
                 }
                 else
                 {
                     terminal = dbContext.TerminalPorSucursalRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.ValorRegistro == strValorRegistro);
-                    if (terminal == null) throw new BusinessException("El dispositivo no se encuentra registrado en el sistema.");
+                    if (terminal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
                     sucursal = dbContext.SucursalPorEmpresaRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.IdSucursal == terminal.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
                 }
-                if (terminal == null || sucursal == null) throw new BusinessException("La terminal o dispositivo movil no se encuentra registrado para la empresa suministrada.");
                 EquipoRegistrado equipo = new EquipoRegistrado
                 {
                     IdSucursal = sucursal.IdSucursal,
