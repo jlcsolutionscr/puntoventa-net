@@ -1935,13 +1935,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         int intTotal = 0;
                         try
                         {
-                            List<ReporteInventario> listaReporte = new List<ReporteInventario>();
-                            var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Include("Linea").Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal);
+                            var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Join(dbContext.LineaRepository, a => a.IdLinea, b => b.IdLinea, (a, b) => new { a, b }).Where(a => a.a.IdEmpresa == intIdEmpresa && a.a.IdSucursal == intIdSucursal);
                             if (intIdLinea > 0)
-                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.IdLinea == intIdLinea);
+                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(a => a.a.IdLinea == intIdLinea);
                             if (!bolIncluyeServicios)
-                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.Linea.Tipo == 1);
-                            int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
+                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(a => a.b.Tipo == 1);
+                            int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(a => a.a.IdLinea).ToArray();
                             if (lstLineasPorSucursal.Length > 0)
                             {
                                 string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
@@ -2000,12 +1999,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         var listaProducto = new List<ProductoDetalle>();
                         try
                         {
-                            var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Include("Linea").Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal);
+                            var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Join(dbContext.LineaRepository, a => a.IdLinea, b => b.IdLinea, (a, b) => new { a, b }).Where(a => a.a.IdEmpresa == intIdEmpresa && a.a.IdSucursal == intIdSucursal);
                             if (intIdLinea > 0)
-                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.IdLinea == intIdLinea);
+                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(a => a.a.IdLinea == intIdLinea);
                             if (!bolIncluyeServicios)
-                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.Linea.Tipo == 1);
-                            int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
+                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(a => a.b.Tipo == 1);
+                            int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(a => a.a.IdLinea).ToArray();
                             if (lstLineasPorSucursal.Length > 0)
                             {
                                 string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
