@@ -1677,7 +1677,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("La Empresa asignada al producto no está registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     bool existe = dbContext.ProductoRepository.Include("Linea").AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
                     if (existe) throw new BusinessException("El código o código de proveedor de producto ingresado ya está registrado en la empresa.");
-                    
                     if (producto.Codigo == StaticTipoProductoEspecial.Transitorio || producto.Codigo == StaticTipoProductoEspecial.ImpuestoServicio)
                         throw new BusinessException("El código ingresado es un código reservado para el sistema y no puede ser utilizado.");
                     if (producto.Imagen == null) producto.Imagen = new byte[0];
