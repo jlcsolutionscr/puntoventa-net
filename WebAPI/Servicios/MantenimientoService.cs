@@ -1873,7 +1873,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Codigo.Equals(strCodigo));
+                    Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Linea.Tipo != StaticTipoProducto.Transitorio && x.Codigo.Equals(strCodigo));
                     if (producto != null)
                     {
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
@@ -1898,7 +1898,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.CodigoProveedor.Equals(strCodigo));
+                    Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Linea.Tipo != StaticTipoProducto.Transitorio && x.CodigoProveedor.Equals(strCodigo));
                     if (producto != null)
                     {
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
