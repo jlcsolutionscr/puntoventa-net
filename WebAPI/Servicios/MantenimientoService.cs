@@ -1676,7 +1676,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("La Empresa asignada al producto no está registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
+                    bool existe = dbContext.ProductoRepository.Include("Linea").AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
                     if (existe) throw new BusinessException("El código o código de proveedor de producto ingresado ya está registrado en la empresa.");
                     if (producto.Linea.Tipo == StaticTipoProducto.Transitorio)
                     {
@@ -1715,7 +1715,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    bool existe = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
+                    bool existe = dbContext.ProductoRepository.Include("Linea").AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
                     if (existe) throw new BusinessException("El código o código de proveedor del producto ingresado ya está registrado en la empresa.");
                     Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("La Empresa asignada al producto no está registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -1830,7 +1830,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == intIdProducto);
+                    Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == intIdProducto);
                     if (producto != null)
                     {
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == intIdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
@@ -1855,7 +1855,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Linea.Tipo == intIdTipo);
+                    return dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Linea.Tipo == intIdTipo);
                 }
                 catch (Exception ex)
                 {
@@ -2060,7 +2060,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     var listaProductos = new List<LlaveDescripcion>();
-                    var listado = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Activo == true).Select(x => new { x.IdProducto, x.Codigo, x.Descripcion });
+                    var listado = dbContext.ProductoRepository.Include("Linea").Where(x => x.IdEmpresa == intIdEmpresa && x.Activo == true).Select(x => new { x.IdProducto, x.Codigo, x.Descripcion });
                     foreach (var value in listado)
                     {
                         LlaveDescripcion item = new LlaveDescripcion(value.IdProducto, value.Codigo + " - " + value.Descripcion);
@@ -2283,7 +2283,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.AjusteInventarioRepository.Add(ajusteInventario);
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {
-                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                         if (producto.EsServicio)
@@ -2366,7 +2366,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(ajusteInventario);
                     foreach (var detalleAjuste in ajusteInventario.DetalleAjusteInventario)
                     {
-                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleAjuste.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                         if (producto.EsServicio)
