@@ -6,6 +6,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdSucursal { get; set; }
         public int IdLinea { get; set; }
 
+        public Linea Linea { get; set; }
         public SucursalPorEmpresa SucursalPorEmpresa { get; set; }
     }
 }

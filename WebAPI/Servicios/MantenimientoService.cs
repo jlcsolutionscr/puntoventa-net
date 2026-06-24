@@ -1930,18 +1930,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         try
                         {
                             List<ReporteInventario> listaReporte = new List<ReporteInventario>();
-                            var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal);
+                            var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Include("Linea").Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal);
                             if (intIdLinea > 0)
                                 listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.IdLinea == intIdLinea);
+                            if (!bolIncluyeServicios)
+                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.Linea.Tipo == 1);
                             int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
                             if (lstLineasPorSucursal.Length > 0)
                             {
                                 string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
                                 string strUsaIndex = "";
-                                if (!bolIncluyeServicios)
-                                    listaProductos += " AND p.Tipo = " + StaticTipoProducto.Producto;
-                                else
-                                    listaProductos += " AND p.Tipo IN(1, 2, 3)";
                                 if (bolFiltraActivos)
                                     listaProductos += " AND p.Activo = true";
                                 if (bolFiltraConDescuento)
@@ -1996,18 +1994,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         var listaProducto = new List<ProductoDetalle>();
                         try
                         {
-                            var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal);
+                            var listadoLineaPorSucursal = dbContext.LineaPorSucursalRepository.Include("Linea").Where(y => y.IdEmpresa == intIdEmpresa && y.IdSucursal == intIdSucursal);
                             if (intIdLinea > 0)
                                 listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.IdLinea == intIdLinea);
+                            if (!bolIncluyeServicios)
+                                listadoLineaPorSucursal = listadoLineaPorSucursal.Where(x => x.Linea.Tipo == 1);
                             int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(x => x.IdLinea).ToArray();
                             if (lstLineasPorSucursal.Length > 0)
                             {
                                 string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
                                 string strUsaIndex = "";
-                                if (!bolIncluyeServicios)
-                                    listaProductos += " AND p.Tipo = " + StaticTipoProducto.Producto;
-                                else
-                                    listaProductos += " AND p.Tipo IN(1, 2, 3)";
                                 if (bolFiltraActivos)
                                     listaProductos += " AND p.Activo = true";
                                 if (bolFiltraConDescuento)
