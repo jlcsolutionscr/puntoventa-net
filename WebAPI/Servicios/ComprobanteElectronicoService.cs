@@ -538,7 +538,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             Dictionary <int,decimal> impuestoResumen = new Dictionary<int,decimal>();
             foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
             {
-                if (detalleFactura.Producto.Linea.Tipo != StaticTipoProducto.ImpuestodeServicio)
+                if (detalleFactura.Producto.Codigo != StaticTipoProductoEspecial.ImpuestoServicio)
                 {
                     ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalleFactura.Producto.CodigoClasificacion);
                     if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalleFactura.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
@@ -843,7 +843,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             Dictionary <int,decimal> impuestoResumen = new Dictionary<int,decimal>();
             foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
             {
-                if (detalleFactura.Producto.Linea.Tipo != StaticTipoProducto.ImpuestodeServicio)
+                if (detalleFactura.Producto.Codigo != StaticTipoProductoEspecial.ImpuestoServicio)
                 {
                     ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalleFactura.Producto.CodigoClasificacion);
                     if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalleFactura.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
@@ -1158,7 +1158,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             Dictionary <int,decimal> impuestoResumen = new Dictionary<int,decimal>();
             foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
             {
-                if (detalleFactura.Producto.Linea.Tipo != StaticTipoProducto.ImpuestodeServicio)
+                if (detalleFactura.Producto.Codigo != StaticTipoProductoEspecial.ImpuestoServicio)
                 {
                     ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalleFactura.Producto.CodigoClasificacion);
                     if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalleFactura.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
@@ -1486,7 +1486,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             Dictionary <int,decimal> impuestoResumen = new Dictionary<int,decimal>();
             foreach (DetalleDevolucionCliente detalle in devolucion.DetalleDevolucionCliente)
             {
-                if (detalle.Producto.Linea.Tipo != StaticTipoProducto.ImpuestodeServicio)
+                if (detalle.Producto.Codigo != StaticTipoProductoEspecial.ImpuestoServicio)
                 {
                     ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalle.Producto.CodigoClasificacion);
                     if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalle.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
@@ -1804,7 +1804,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             Dictionary <int,decimal> impuestoResumen = new Dictionary<int,decimal>();
             foreach (DetalleDevolucionCliente detalle in devolucion.DetalleDevolucionCliente)
             {
-                if (detalle.Producto.Linea.Tipo != StaticTipoProducto.ImpuestodeServicio)
+                if (detalle.Producto.Codigo != StaticTipoProductoEspecial.ImpuestoServicio)
                 {
                     ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalle.Producto.CodigoClasificacion);
                     if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalle.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");

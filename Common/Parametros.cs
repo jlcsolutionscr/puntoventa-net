@@ -216,8 +216,6 @@ namespace LeandroSoftware.Common.Parametros
             new LlaveDescripcion(1, "Producto"),
             new LlaveDescripcion(2, "Servicios Profesionales"),
             new LlaveDescripcion(3, "Otros Servicios"),
-            new LlaveDescripcion(4, "Transitorio"),
-            new LlaveDescripcion(5, "Impuesto al servicio 10%")
         };
 
         public static IList<LlaveDescripcion> ObtenerListado()
