@@ -1646,7 +1646,7 @@ Public Class FrmFactura
                 Try
                     producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigo, FrmPrincipal.equipoGlobal.IdSucursal, FrmPrincipal.usuarioGlobal.Token)
                     If producto IsNot Nothing Then
-                        If producto.Activo And producto.Tipo <> StaticTipoProducto.Transitorio Then
+                        If producto.Activo Then
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
                         Else
