@@ -5,7 +5,7 @@ Public Class FrmParametroContable
 #Region "Variables"
     Public intIdParametro As Integer
     Private datos As ParametroContable
-    Private tipoParametro As TipoParametroContable
+    'Private tipoParametro As TipoParametroContable
     Private cuentaContable As CatalogoContable
     Private bolReady As Boolean = False
 #End Region
@@ -18,7 +18,7 @@ Public Class FrmParametroContable
         ElseIf cboCuentaContable.SelectedValue Is Nothing Then
             pCampo = "Cuenta Contable"
             Return False
-        ElseIf cboProducto.SelectedValue Is Nothing And tipoParametro.MultiCuenta Then
+        ElseIf cboProducto.SelectedValue Is Nothing Then 'And tipoParametro.MultiCuenta Then
             pCampo = "Producto"
             Return False
         Else
@@ -143,7 +143,7 @@ Public Class FrmParametroContable
         End If
         datos.IdTipo = cboTipoParametro.SelectedValue
         datos.IdCuenta = cboCuentaContable.SelectedValue
-        If tipoParametro.MultiCuenta Then
+        If True Then 'tipoParametro.MultiCuenta Then
             datos.IdProducto = cboProducto.SelectedValue
         Else
             datos.IdProducto = 0
@@ -173,7 +173,7 @@ Public Class FrmParametroContable
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            CargarDatosProducto(tipoParametro)
+            'CargarDatosProducto(tipoParametro)
         End If
     End Sub
 

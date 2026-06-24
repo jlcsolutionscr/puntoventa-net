@@ -511,9 +511,11 @@ Public Class FrmFactura
         cboTipoMoneda.ValueMember = "Id"
         cboTipoMoneda.DisplayMember = "Descripcion"
         cboTipoMoneda.DataSource = FrmPrincipal.ObtenerListadoTipoMoneda()
-        cboActividadEconomica.ValueMember = "Llave"
-        cboActividadEconomica.DisplayMember = "Descripcion"
-        cboActividadEconomica.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
+        If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
+            cboActividadEconomica.ValueMember = "Llave"
+            cboActividadEconomica.DisplayMember = "Descripcion"
+            cboActividadEconomica.DataSource = FrmPrincipal.ObtenerListadoActividadEconomica()
+        End If
         cboTipoBanco.ValueMember = "Id"
         cboTipoBanco.DisplayMember = "Descripcion"
     End Sub
@@ -636,8 +638,8 @@ Public Class FrmFactura
 
     Private Async Sub FrmFactura_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
-            lblActividadEconomica.Visible = FrmPrincipal.empresaGlobal.Modalidad = 1
-            cboActividadEconomica.Visible = FrmPrincipal.empresaGlobal.Modalidad = 1
+            lblActividadEconomica.Visible = Not FrmPrincipal.empresaGlobal.RegimenSimplificado
+            cboActividadEconomica.Visible = Not FrmPrincipal.empresaGlobal.RegimenSimplificado
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
             txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
@@ -689,7 +691,7 @@ Public Class FrmFactura
         txtTelefono.Text = ""
         txtReferencia.Text = ""
         txtObservaciones.Text = ""
-        If cboActividadEconomica.Items.Count > 0 Then cboActividadEconomica.SelectedIndex = 0
+        If Not FrmPrincipal.empresaGlobal.RegimenSimplificado And cboActividadEconomica.Items.Count > 0 Then cboActividadEconomica.SelectedIndex = 0
         cboCondicionVenta.Enabled = False
         cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
         txtPlazoCredito.Text = ""
@@ -885,7 +887,7 @@ Public Class FrmFactura
                 txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
                 txtTelefono.Text = ordenServicio.Telefono
                 txtObservaciones.Text = ordenServicio.OtrosDetalles
-                cboActividadEconomica.SelectedIndex = 0
+                If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
@@ -953,7 +955,7 @@ Public Class FrmFactura
                 txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
                 txtTelefono.Text = apartado.Telefono
                 txtObservaciones.Text = apartado.TextoAdicional
-                cboActividadEconomica.SelectedIndex = 0
+                If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
@@ -1021,7 +1023,7 @@ Public Class FrmFactura
                 txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
                 txtTelefono.Text = proforma.Telefono
                 txtObservaciones.Text = proforma.TextoAdicional
-                cboActividadEconomica.SelectedIndex = 0
+                If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
@@ -1192,7 +1194,7 @@ Public Class FrmFactura
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
                 .CodigoActividad = IIf(FrmPrincipal.empresaGlobal.RegimenSimplificado, "", cboActividadEconomica.SelectedValue),
-                .CodigoActividadReceptor = cliente.CodigoActividad,
+                .CodigoActividadReceptor = IIf(FrmPrincipal.empresaGlobal.RegimenSimplificado, "", cliente.CodigoActividad),
                 .IdCondicionVenta = cboCondicionVenta.SelectedValue,
                 .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
                 .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
