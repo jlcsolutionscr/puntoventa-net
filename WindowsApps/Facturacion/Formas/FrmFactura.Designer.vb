@@ -125,7 +125,7 @@ Partial Class FrmFactura
         Me.Label17 = New System.Windows.Forms.Label()
         Me.cboActividadEconomica = New System.Windows.Forms.ComboBox()
         Me.lblActividadEconomica = New System.Windows.Forms.Label()
-        Me.Label19 = New System.Windows.Forms.Label()
+        Me.btnNotaCredito = New System.Windows.Forms.Button()
         CType(Me.grdDetalleFactura, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -962,12 +962,12 @@ Partial Class FrmFactura
         Me.txtPorcentajeExoneracion.BackColor = System.Drawing.SystemColors.Window
         Me.txtPorcentajeExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPorcentajeExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(765, 118)
+        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(656, 118)
         Me.txtPorcentajeExoneracion.MaxLength = 0
         Me.txtPorcentajeExoneracion.Name = "txtPorcentajeExoneracion"
         Me.txtPorcentajeExoneracion.ReadOnly = True
         Me.txtPorcentajeExoneracion.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPorcentajeExoneracion.Size = New System.Drawing.Size(25, 20)
+        Me.txtPorcentajeExoneracion.Size = New System.Drawing.Size(42, 20)
         Me.txtPorcentajeExoneracion.TabIndex = 14
         Me.txtPorcentajeExoneracion.TabStop = False
         Me.txtPorcentajeExoneracion.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
@@ -977,7 +977,7 @@ Partial Class FrmFactura
         Me.Label8.BackColor = System.Drawing.Color.Transparent
         Me.Label8.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label8.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label8.Location = New System.Drawing.Point(631, 118)
+        Me.Label8.Location = New System.Drawing.Point(522, 118)
         Me.Label8.Name = "Label8"
         Me.Label8.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label8.Size = New System.Drawing.Size(128, 19)
@@ -1256,18 +1256,19 @@ Partial Class FrmFactura
         Me.lblActividadEconomica.Text = "Actividad Econ:"
         Me.lblActividadEconomica.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'Label19
+        'btnNotaCredito
         '
-        Me.Label19.BackColor = System.Drawing.Color.Transparent
-        Me.Label19.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label19.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label19.Location = New System.Drawing.Point(789, 118)
-        Me.Label19.Name = "Label19"
-        Me.Label19.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label19.Size = New System.Drawing.Size(20, 19)
-        Me.Label19.TabIndex = 214
-        Me.Label19.Text = "%"
-        Me.Label19.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.btnNotaCredito.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnNotaCredito.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnNotaCredito.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnNotaCredito.Location = New System.Drawing.Point(710, 116)
+        Me.btnNotaCredito.Name = "btnNotaCredito"
+        Me.btnNotaCredito.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnNotaCredito.Size = New System.Drawing.Size(96, 21)
+        Me.btnNotaCredito.TabIndex = 206
+        Me.btnNotaCredito.TabStop = False
+        Me.btnNotaCredito.Text = "Nota de Credito"
+        Me.btnNotaCredito.UseVisualStyleBackColor = False
         '
         'FrmFactura
         '
@@ -1276,7 +1277,7 @@ Partial Class FrmFactura
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 642)
-        Me.Controls.Add(Me.Label19)
+        Me.Controls.Add(Me.btnNotaCredito)
         Me.Controls.Add(Me.cboActividadEconomica)
         Me.Controls.Add(Me.lblActividadEconomica)
         Me.Controls.Add(Me.txtDescuento)
@@ -1428,5 +1429,5 @@ Partial Class FrmFactura
     Public WithEvents Label17 As Label
     Public WithEvents cboActividadEconomica As ComboBox
     Public WithEvents lblActividadEconomica As Label
-    Public WithEvents Label19 As Label
+    Public WithEvents btnNotaCredito As Button
 End Class

@@ -1552,6 +1552,16 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
+        public static async Task<NotaCreditoCliente> ObtenerNotaCreditoCliente(int intIdNotaCredito, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerNotaCreditoCliente', Parametros: {IdNotaCredito: " + intIdNotaCredito + "}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            NotaCreditoCliente notaCredito = null;
+            if (respuesta != "")
+                notaCredito = JsonConvert.DeserializeObject<NotaCreditoCliente>(respuesta);
+            return notaCredito;
+        }
+
         public static async Task<int> ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, int intIdDevolucion, string strNombre, string strFechaFinal, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerTotalListaDevolucionesPorCliente', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdDevolucion: " + intIdDevolucion + ", Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";

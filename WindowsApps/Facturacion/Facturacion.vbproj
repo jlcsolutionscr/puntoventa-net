@@ -141,6 +141,12 @@
     <Compile Include="Formas\FrmAceptarDocumentoElectronico.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Formas\FrmBusquedaNotaCredito.Designer.vb">
+      <DependentUpon>FrmBusquedaNotaCredito.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmBusquedaNotaCredito.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Formas\FrmAplicaAbonoCxP.Designer.vb">
       <DependentUpon>FrmAplicaAbonoCxP.vb</DependentUpon>
     </Compile>
@@ -778,6 +784,9 @@
     </Compile>
     <EmbeddedResource Include="Formas\FrmAceptarDocumentoElectronico.resx">
       <DependentUpon>FrmAceptarDocumentoElectronico.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmBusquedaNotaCredito.resx">
+      <DependentUpon>FrmBusquedaNotaCredito.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAplicaAbonoCxP.resx">
       <DependentUpon>FrmAplicaAbonoCxP.vb</DependentUpon>

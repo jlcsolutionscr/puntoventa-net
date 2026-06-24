@@ -116,7 +116,7 @@ Public Class FrmPrincipal
 
     Public Function ObtenerDescripcionTipoExoneracion(intIdTipo As Integer) As String
         Dim tipo As LlaveDescripcion = listaTipoExoneracion.FirstOrDefault(Function(x) x.Id = intIdTipo)
-        If tipo.Descripcion <> Nothing Then
+        If tipo IsNot Nothing Then
             Return tipo.Descripcion
         Else
             Return ""
@@ -125,7 +125,7 @@ Public Class FrmPrincipal
 
     Public Function ObtenerDescripcionNombreInstExoneracion(intIdTipo As Integer) As String
         Dim tipo As LlaveDescripcion = listaNombreInstExoneracion.FirstOrDefault(Function(x) x.Id = intIdTipo)
-        If tipo.Descripcion <> Nothing Then
+        If tipo IsNot Nothing Then
             Return tipo.Descripcion
         Else
             Return ""
@@ -134,7 +134,7 @@ Public Class FrmPrincipal
 
     Public Function ObtenerDescripcionFormaPagoEmpresa(intIdTipo As Integer) As String
         Dim tipo As LlaveDescripcion = listaFormaPagoEmpresa.FirstOrDefault(Function(x) x.Id = intIdTipo)
-        If tipo.Descripcion <> Nothing Then
+        If tipo IsNot Nothing Then
             Return tipo.Descripcion
         Else
             Return ""
@@ -142,8 +142,11 @@ Public Class FrmPrincipal
     End Function
 
     Public Function ObtenerDescripcionFormaPagoCliente(intIdTipo As Integer) As String
+        If intIdTipo = 8 Then
+            Return "Nota de credito"
+        End If
         Dim tipo As LlaveDescripcion = listaFormaPagoCliente.FirstOrDefault(Function(x) x.Id = intIdTipo)
-        If tipo.Descripcion <> Nothing Then
+        If tipo IsNot Nothing Then
             Return tipo.Descripcion
         Else
             Return ""

@@ -23,6 +23,7 @@ Public Class FrmFactura
     Private producto As Producto
     Private cliente As Cliente
     Private vendedor As Vendedor
+    Private notaCreditoCliente As NotaCreditoCliente
     Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
     Private bolImpuestoCargado As Boolean = False
@@ -201,7 +202,7 @@ Public Class FrmFactura
         grdDesglosePago.Columns.Add(dvcIdCuentaBanco)
 
         dvcDescBanco.DataPropertyName = "DESCBANCO"
-        dvcDescBanco.HeaderText = "Banco"
+        dvcDescBanco.HeaderText = "Detalle"
         dvcDescBanco.Width = 240
         dvcDescBanco.ReadOnly = True
         dvcDescBanco.SortMode = DataGridViewColumnSortMode.NotSortable
@@ -734,6 +735,7 @@ Public Class FrmFactura
         btnOrdenServicio.Enabled = True
         btnApartado.Enabled = True
         btnProforma.Enabled = True
+        btnNotaCredito.Enabled = True
         Try
             cliente = FrmPrincipal.ObtenerClienteDeContado()
             txtNombreCliente.Text = cliente.Nombre
@@ -855,6 +857,7 @@ Public Class FrmFactura
                 btnOrdenServicio.Enabled = False
                 btnApartado.Enabled = False
                 btnProforma.Enabled = False
+                btnNotaCredito.Enabled = False
                 btnAnular.Enabled = Not factura.Nulo And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
             Else
@@ -1067,6 +1070,43 @@ Public Class FrmFactura
         End If
     End Sub
 
+    Private Async Sub btnNotaCredito_Click(sender As Object, e As EventArgs) Handles btnNotaCredito.Click
+        Dim formBusqueda As New FrmBusquedaNotaCredito()
+        FrmPrincipal.intBusqueda = 0
+        formBusqueda.ShowDialog()
+        If FrmPrincipal.intBusqueda > 0 Then
+            Try
+                notaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
+            Dim decMontoPago, decTipoCambio As Decimal
+            decMontoPago = CDbl(txtSaldoPorPagar.Text)
+            decTipoCambio = CDbl(txtTipoCambio.Text)
+            Dim objPkDesglose(1) As Object
+            objPkDesglose(0) = StaticFormaPago.NotaCredito
+            objPkDesglose(1) = 0
+            If dtbDesglosePago.Rows.Contains(objPkDesglose) Then
+                MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End If
+            dtrRowDesglosePago = dtbDesglosePago.NewRow
+            dtrRowDesglosePago.Item(0) = StaticFormaPago.NotaCredito
+            dtrRowDesglosePago.Item(1) = "Nota de Credito"
+            dtrRowDesglosePago.Item(2) = notaCreditoCliente.IdNotaCredito
+            dtrRowDesglosePago.Item(3) = "Nota de credito nro. " & notaCreditoCliente.IdNotaCredito
+            dtrRowDesglosePago.Item(4) = ""
+            dtrRowDesglosePago.Item(5) = ""
+            dtrRowDesglosePago.Item(6) = cboTipoMoneda.SelectedValue
+            dtrRowDesglosePago.Item(7) = decMontoPago
+            dtrRowDesglosePago.Item(8) = decTipoCambio
+            dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
+            grdDesglosePago.Refresh()
+            CargarTotalesPago()
+        End If
+    End Sub
+
     Private Async Sub BtnBuscaVendedor_Click(sender As Object, e As EventArgs) Handles btnBuscaVendedor.Click
         Dim formBusqueda As New FrmBusquedaVendedor()
         FrmPrincipal.intBusqueda = 0
@@ -1158,9 +1198,7 @@ Public Class FrmFactura
         If cboTipoMoneda.SelectedValue = 2 Then
             Try
                 decTipoDeCambioDolar = 1
-                If cboTipoMoneda.SelectedValue = 1 Then
-                    decTipoDeCambioDolar = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
-                End If
+                decTipoDeCambioDolar = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
                 txtTipoCambio.Text = decTipoDeCambioDolar
             Catch ex As Exception
                 MessageBox.Show("Ocurrió un error al consultar el tipo de cambio del dólar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -1292,6 +1330,7 @@ Public Class FrmFactura
         btnOrdenServicio.Enabled = False
         btnApartado.Enabled = False
         btnProforma.Enabled = False
+        btnNotaCredito.Enabled = False
     End Sub
 
     Private Async Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click

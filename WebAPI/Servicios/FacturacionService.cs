@@ -1177,6 +1177,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 else
                                     desglosePago.DescripcionCuenta = "SIN DESCRIPCION";
                             }
+                        } else if (desglosePago.IdFormaPago == StaticFormaPago.NotaCredito)
+                        {
+                            desglosePago.DescripcionCuenta = "Nota de credito nro. " + desglosePago.IdReferencia;
                         }
                     }
                     return factura;
