@@ -920,7 +920,7 @@ Public Class FrmProforma
                 Try
                     producto = Await Puntoventa.ObtenerProductoPorCodigo(FrmPrincipal.empresaGlobal.IdEmpresa, strCodigo, cboSucursal.SelectedValue, FrmPrincipal.usuarioGlobal.Token)
                     If producto IsNot Nothing Then
-                        If producto.Activo And producto.Tipo <> StaticTipoProducto.Transitorio Then
+                        If producto.Activo And producto.Tipo <> StaticTipoProductoEspecial.Transitorio Then
                             CargarDatosProducto(producto)
                             txtCantidad.Focus()
                         Else

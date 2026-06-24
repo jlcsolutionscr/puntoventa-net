@@ -470,7 +470,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 empresa.ListadoTipoIdentificacion = TipoDeIdentificacion.ObtenerListado();
                 empresa.ListadoFormaPagoCliente = ObtenerListadoFormaPagoCliente();
                 empresa.ListadoFormaPagoEmpresa = ObtenerListadoFormaPagoEmpresa();
-                empresa.ListadoTipoProducto = ObtenerListadoTipoProducto(strCodigoUsuario);
+                empresa.ListadoTipoProducto = TipoDeProducto.ObtenerListado();
                 empresa.ListadoTipoImpuesto =  TipoDeImpuesto.ObtenerListado();
                 empresa.ListadoTipoMoneda = TipoDeMoneda.ObtenerListado();
                 empresa.ListadoCondicionVenta = CondicionDeVenta.ObtenerListado();
@@ -1661,13 +1661,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        IList<LlaveDescripcion> ObtenerListadoTipoProducto(string strCodigoUsuario)
-        {
-            IList<int> tiposProducto = new List<int> {1, 2, 3 };
-            if (strCodigoUsuario.ToUpper() == "ADMIN") tiposProducto = new List<int> {1, 2, 3, 4, 5 };
-            return TipoDeProducto.ObtenerListado().Where(x => tiposProducto.Contains(x.Id)).ToList();
-        }
-
         public LlaveDescripcionValor ObtenerParametroImpuesto(int intIdImpuesto)
         {
             return TipoDeImpuesto.ObtenerParametro(intIdImpuesto);
@@ -1684,16 +1677,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("La Empresa asignada al producto no está registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     bool existe = dbContext.ProductoRepository.Include("Linea").AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
                     if (existe) throw new BusinessException("El código o código de proveedor de producto ingresado ya está registrado en la empresa.");
-                    if (producto.Linea.Tipo == StaticTipoProducto.Transitorio)
-                    {
-                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Linea.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
-                        if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
-                    }
-                    if (producto.Linea.Tipo == StaticTipoProducto.ImpuestodeServicio)
-                    {
-                        bool impuestoServ = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.Linea.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
-                        if (impuestoServ) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
-                    }
+                    
+                    if (producto.Codigo == StaticTipoProductoEspecial.Transitorio || producto.Codigo == StaticTipoProductoEspecial.ImpuestoServicio)
+                        throw new BusinessException("El código ingresado es un código reservado para el sistema y no puede ser utilizado.");
                     if (producto.Imagen == null) producto.Imagen = new byte[0];
                     if (!empresa.RegimenSimplificado && producto.CodigoClasificacion.Length < 13) throw new BusinessException("El código CABYS debe tener una longitud mínima de 13 caracteres.");
                     dbContext.ProductoRepository.Add(producto);
@@ -1725,16 +1711,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (existe) throw new BusinessException("El código o código de proveedor del producto ingresado ya está registrado en la empresa.");
                     Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("La Empresa asignada al producto no está registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (producto.Linea.Tipo == StaticTipoProducto.Transitorio)
-                    {
-                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Linea.Tipo == StaticTipoProducto.Transitorio).Count() > 0;
-                        if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Transitorio' registrado en la empresa.");
-                    }
-                    if (producto.Linea.Tipo == StaticTipoProducto.ImpuestodeServicio)
-                    {
-                        bool transitorio = dbContext.ProductoRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto != producto.IdProducto && x.Linea.Tipo == StaticTipoProducto.ImpuestodeServicio).Count() > 0;
-                        if (transitorio) throw new BusinessException("Ya existe un producto de tipo 'Impuesto de servicio' registrado en la empresa.");
-                    }
+                    if (producto.Codigo == StaticTipoProductoEspecial.Transitorio || producto.Codigo == StaticTipoProductoEspecial.ImpuestoServicio)
+                        throw new BusinessException("El código ingresado es un código reservado para el sistema y no puede ser utilizado.");
                     if (!empresa.RegimenSimplificado && producto.CodigoClasificacion.Length < 13) throw new BusinessException("El código CABYS debe tener una longitud mínima de 13 caracteres.");
                     dbContext.NotificarModificacion(producto);
                     dbContext.Commit();
@@ -1879,7 +1857,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Linea.Tipo != StaticTipoProducto.Transitorio && x.Codigo.Equals(strCodigo));
+                    Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && !new string[] { StaticTipoProductoEspecial.Transitorio, StaticTipoProductoEspecial.ImpuestoServicio}.Contains(x.Codigo) && x.Codigo.Equals(strCodigo));
                     if (producto != null)
                     {
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
@@ -1904,7 +1882,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Linea.Tipo != StaticTipoProducto.Transitorio && x.CodigoProveedor.Equals(strCodigo));
+                    Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && !new string[] { StaticTipoProductoEspecial.Transitorio, StaticTipoProductoEspecial.ImpuestoServicio}.Contains(x.Codigo) && x.CodigoProveedor.Equals(strCodigo));
                     if (producto != null)
                     {
                         var existencias = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == intIdSucursal).FirstOrDefault();
