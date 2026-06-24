@@ -547,8 +547,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 throw new BusinessException("La nota de crédito asignada al pago de la factura se encuentra anulada!");
                             if (notaCreditoPago.Saldo < desglosePago.MontoLocal)
                                 throw new BusinessException("El saldo de la nota de crédito no es suficiente para cubrir el monto indicado en el desglose de pago!");
-                            if (notaCreditoPago.IdCliente != factura.IdCliente)
-                                throw new BusinessException("La nota de crédito no corresponde al cliente indicado en la factura!");
                             notaCreditoPago.Saldo -= desglosePago.MontoLocal;
                             dbContext.NotificarModificacion(notaCreditoPago);
                             MovimientoNotaCreditoCliente movimientoNotaCredito = new MovimientoNotaCreditoCliente
