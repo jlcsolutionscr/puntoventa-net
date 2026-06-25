@@ -30,7 +30,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
         string AgregarFactura(Factura factura);
         string AgregarFacturaCompra(FacturaCompra facturaCompra);
-        void AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion);
+        string AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion);
         Factura ObtenerFactura(int intIdFactura);
         int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
         IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
@@ -817,7 +817,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion)
+        public string AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1127,6 +1127,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC));
                     }
+                    if (notaCredito != null) return notaCredito.IdNotaCredito.ToString();
+                    return "";
                 }
                 catch (BusinessException)
                 {
@@ -2389,6 +2391,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC));
                     }
+                    if (notaCredito != null) return devolucion.IdDevolucion.ToString() + "-" + notaCredito.IdNotaCredito.ToString();
+                    return devolucion.IdDevolucion.ToString();
                 }
                 catch (BusinessException)
                 {
@@ -2402,7 +2406,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
                 }
-                return devolucion.IdDevolucion.ToString();
+
             }
         }
 

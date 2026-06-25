@@ -662,8 +662,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             facturaElectronica.DetalleServicio = detalleServicioList.ToArray();
             if (detalleOtrosCargosList.Count > 0) facturaElectronica.OtrosCargos = detalleOtrosCargosList.ToArray();
-            FacturaElectronicaResumenFactura resumenFactura = new FacturaElectronicaResumenFactura();
-            resumenFactura.MedioPago = medioPagoList.ToArray();
+            FacturaElectronicaResumenFactura resumenFactura = new FacturaElectronicaResumenFactura
+            {
+                MedioPago = medioPagoList.ToArray()
+            };
             if (impuestoResumen.Count > 0)
             {
                 List<FacturaElectronicaResumenFacturaTotalDesgloseImpuesto> totalDesgloseImpuesto = new List<FacturaElectronicaResumenFacturaTotalDesgloseImpuesto>();

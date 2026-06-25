@@ -13,6 +13,5 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdFactura { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
-        public NotaCreditoCliente NotaCreditoCliente { get; set; }
     }
 }

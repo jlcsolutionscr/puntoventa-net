@@ -10,7 +10,6 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
         {
             builder.ToTable("movimientonotacreditocliente");
             builder.HasKey(p => p.Consecutivo);
-            builder.HasOne(p => p.NotaCreditoCliente).WithMany().HasForeignKey(p => p.IdNotaCredito);
         }
     }
 }
