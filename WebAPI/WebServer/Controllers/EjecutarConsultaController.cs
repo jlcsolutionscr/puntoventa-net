@@ -916,6 +916,13 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     string strIdFactura = _servicioFacturacion.AgregarFactura(factura);
                     strRespuesta = JsonConvert.SerializeObject(strIdFactura);
                     break;
+                case "AnularFactura":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
+                    intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
+                    string strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
+                    string strIdNotaCredito = _servicioFacturacion.AnularFactura(intIdLlave1, intIdUsuario, strMotivoAnulacion);
+                    strRespuesta = strIdNotaCredito;
+                    break;
                 case "AgregarFacturaCompra":
                     facturaCompra = JsonConvert.DeserializeObject<FacturaCompra>(strEntidad);
                     string strIdFacturaCompra = _servicioFacturacion.AgregarFacturaCompra(facturaCompra);

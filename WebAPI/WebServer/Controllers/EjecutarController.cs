@@ -319,12 +319,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
                     _servicioFlujoCaja.AnularIngreso(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                     break;
-                case "AnularFactura":
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
-                    intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
-                    strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
-                    _servicioFacturacion.AnularFactura(intIdLlave1, intIdUsuario, strMotivoAnulacion);
-                    break;
                 case "AnularDevolucionCliente":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdDevolucion").Value.ToString());
                     intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
