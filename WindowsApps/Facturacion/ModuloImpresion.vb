@@ -1,12 +1,15 @@
 ﻿Imports System.Collections.Generic
-Imports LeandroSoftware.Common.Dominio.Entidades
 Imports System.Drawing.Printing
+Imports System.IO
 Imports LeandroSoftware.Common.DatosComunes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports Microsoft.ReportingServices.Rendering.WordRenderer.WordOpenXmlRenderer.Parser
 
 Public Class ModuloImpresion
 #Region "Variables"
     Private Shared lineas As IList = New List(Of ClsLineaImpresion)
     Private Shared charCount As Integer
+    Private Shared streamToPrint As StreamReader
 
     Public Class ClsEgreso
         Public empresa As Empresa
@@ -920,6 +923,39 @@ Public Class ModuloImpresion
             lineas.Add(New ClsLineaImpresion(2, observaciones, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(2, "Procesado por: _________________", 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, ".", 0, 100, 10, StringAlignment.Near, False))
+        Catch ex As Exception
+            Throw New Exception("Error formulando el string de impresion:" + ex.Message)
+        End Try
+        Try
+            ImprimirTiquete(objImpresion.equipo.ImpresoraFactura)
+        Catch ex As Exception
+            Throw New Exception("Error invokando a ImprimirTiquete:" + ex.Message)
+        End Try
+    End Sub
+
+    Public Shared Sub ImprimirNotaCreditoCliente(objImpresion As ClsComprobante)
+        lineas.Clear()
+        charCount = objImpresion.equipo.AnchoLinea
+        Try
+            ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "NOTA DE CREDITO")
+            lineas.Add(New ClsLineaImpresion(1, "", 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "Nota crédito nro.: " & objImpresion.strId, 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "", 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFecha, 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "", 0, 100, 10, StringAlignment.Near, False))
+            If objImpresion.strDetalle.Length > 0 Then
+                Dim detalle As String = "Detalle: " & objImpresion.strDetalle
+                While detalle.Length > 32
+                    lineas.Add(New ClsLineaImpresion(1, detalle.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
+                    detalle = detalle.Substring(32)
+                End While
+                lineas.Add(New ClsLineaImpresion(1, detalle, 0, 100, 10, StringAlignment.Near, False))
+            End If
+            lineas.Add(New ClsLineaImpresion(1, "", 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "Monto: " & objImpresion.strTotal, 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(1, "", 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(2, " ", 54, 46, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, "GRACIAS POR PREFERIRNOS", 0, 100, 10, StringAlignment.Center, False))
         Catch ex As Exception
             Throw New Exception("Error formulando el string de impresion:" + ex.Message)
         End Try

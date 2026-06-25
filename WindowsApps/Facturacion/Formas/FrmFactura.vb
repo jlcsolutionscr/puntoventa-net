@@ -788,10 +788,26 @@ Public Class FrmFactura
                     If strIdNotaCredito <> "" Then
                         factura.IdNotaCredito = Integer.Parse(strIdNotaCredito)
                         btnNotaCreditoPDF.Enabled = True
-                        Dim pdfBytes As Byte() = Await Puntoventa.ObtenerNotaCreditoPDF(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
-                        Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\NOTACREDITO-" + factura.ConsecFactura.ToString() + ".pdf"
-                        File.WriteAllBytes(pdfFilePath, pdfBytes)
-                        Process.Start(pdfFilePath)
+                        Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                        comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
+                            .usuario = FrmPrincipal.usuarioGlobal,
+                            .empresa = FrmPrincipal.empresaGlobal,
+                            .equipo = FrmPrincipal.equipoGlobal,
+                            .strId = notaCredito.IdNotaCredito,
+                            .strFecha = notaCredito.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
+                            .strVendedor = "",
+                            .strNombre = "",
+                            .strDocumento = "",
+                            .strTelefono = "",
+                            .strDetalle = notaCredito.Detalle,
+                            .strSubTotal = "",
+                            .strDescuento = "",
+                            .strImpuesto = "",
+                            .strTotal = FormatNumber(notaCredito.MontoOriginal, 2),
+                            .strPagoCon = "",
+                            .strCambio = ""
+                        }
+                        ModuloImpresion.ImprimirNotaCreditoCliente(comprobanteImpresion)
                     End If
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -1093,8 +1109,9 @@ Public Class FrmFactura
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            Dim decMontoPago, decTipoCambio As Decimal
-            decMontoPago = CDbl(txtSaldoPorPagar.Text)
+            Dim decSaldoFactura, decMontoPago, decTipoCambio As Decimal
+            decSaldoFactura = CDbl(txtSaldoPorPagar.Text)
+            decMontoPago = IIf(notaCreditoCliente.Saldo < decSaldoFactura, notaCreditoCliente.Saldo, decSaldoFactura)
             decTipoCambio = CDbl(txtTipoCambio.Text)
             Dim objPkDesglose(1) As Object
             objPkDesglose(0) = StaticFormaPago.NotaCredito
@@ -1426,10 +1443,26 @@ Public Class FrmFactura
     Private Async Sub BtnNotaCreditoPDF_Click(sender As Object, e As EventArgs) Handles btnNotaCreditoPDF.Click
         If factura IsNot Nothing And factura.IdNotaCredito > 0 Then
             Try
-                Dim pdfBytes As Byte() = Await Puntoventa.ObtenerNotaCreditoPDF(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
-                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\NOTACREDITO-" + factura.ConsecFactura.ToString() + ".pdf"
-                File.WriteAllBytes(pdfFilePath, pdfBytes)
-                Process.Start(pdfFilePath)
+                Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
+                    .usuario = FrmPrincipal.usuarioGlobal,
+                    .empresa = FrmPrincipal.empresaGlobal,
+                    .equipo = FrmPrincipal.equipoGlobal,
+                    .strId = notaCredito.IdNotaCredito,
+                    .strFecha = notaCredito.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
+                    .strVendedor = "",
+                    .strNombre = "",
+                    .strDocumento = "",
+                    .strTelefono = "",
+                    .strDetalle = notaCredito.Detalle,
+                    .strSubTotal = "",
+                    .strDescuento = "",
+                    .strImpuesto = "",
+                    .strTotal = FormatNumber(notaCredito.MontoOriginal, 2),
+                    .strPagoCon = "",
+                    .strCambio = ""
+                }
+                ModuloImpresion.ImprimirNotaCreditoCliente(comprobanteImpresion)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

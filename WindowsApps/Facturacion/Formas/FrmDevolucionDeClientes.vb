@@ -16,6 +16,8 @@ Public Class FrmDevolucionDeClientes
     Private cliente As Cliente
     Private comprobante As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
+    'Impresion de tiquete
+    Private comprobanteImpresion As ModuloImpresion.ClsComprobante
 #End Region
 
 #Region "Métodos"
@@ -139,9 +141,8 @@ Public Class FrmDevolucionDeClientes
 
     Private Sub CargarDetalleFactura(ByVal factura As Factura)
         dtbDetalleDevolucion.Rows.Clear()
-        Dim tipoProducto As New List(Of String)(New String() {StaticTipoProducto.Producto, StaticTipoProductoEspecial.Transitorio})
         For Each detalle As DetalleFactura In factura.DetalleFactura
-            If tipoProducto.Contains(detalle.Producto.Codigo) Then
+            If detalle.Producto.Codigo = StaticTipoProductoEspecial.Transitorio Or detalle.Producto.Linea.Tipo = 1 Then
                 dtrRowDetDevolucion = dtbDetalleDevolucion.NewRow
                 dtrRowDetDevolucion.Item(0) = detalle.IdProducto
                 dtrRowDetDevolucion.Item(1) = detalle.Producto.Codigo
@@ -339,11 +340,42 @@ Public Class FrmDevolucionDeClientes
 
     Private Sub btnBuscarFactura_Click(sender As Object, e As EventArgs) Handles btnBuscarFactura.Click
         Dim formBusqueda As New FrmBusquedaFactura()
+        formBusqueda.bolExcluyeNulos = True
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Dim intIdFactura As Integer = FrmPrincipal.intBusqueda
             CargarFactura(intIdFactura)
+        End If
+    End Sub
+
+    Private Async Sub btnNotaCreditoPDF_Click(sender As Object, e As EventArgs) Handles btnNotaCreditoPDF.Click
+        If devolucion IsNot Nothing And devolucion.IdNotaCredito > 0 Then
+            Try
+                Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
+                        .usuario = FrmPrincipal.usuarioGlobal,
+                        .empresa = FrmPrincipal.empresaGlobal,
+                        .equipo = FrmPrincipal.equipoGlobal,
+                        .strId = notaCredito.IdNotaCredito,
+                        .strFecha = notaCredito.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
+                        .strVendedor = "",
+                        .strNombre = "",
+                        .strDocumento = "",
+                        .strTelefono = "",
+                        .strDetalle = notaCredito.Detalle,
+                        .strSubTotal = "",
+                        .strDescuento = "",
+                        .strImpuesto = "",
+                        .strTotal = FormatNumber(notaCredito.MontoOriginal, 2),
+                        .strPagoCon = "",
+                        .strCambio = ""
+                    }
+                ModuloImpresion.ImprimirNotaCreditoCliente(comprobanteImpresion)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
         End If
     End Sub
 
@@ -387,10 +419,26 @@ Public Class FrmDevolucionDeClientes
                 If arrIds(1) IsNot Nothing Then
                     devolucion.IdNotaCredito = Integer.Parse(arrIds(1))
                     btnNotaCreditoPDF.Enabled = True
-                    Dim pdfBytes As Byte() = Await Puntoventa.ObtenerNotaCreditoPDF(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
-                    Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\NOTACREDITO-" + factura.ConsecFactura.ToString() + ".pdf"
-                    File.WriteAllBytes(pdfFilePath, pdfBytes)
-                    Process.Start(pdfFilePath)
+                    Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                    comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
+                        .usuario = FrmPrincipal.usuarioGlobal,
+                        .empresa = FrmPrincipal.empresaGlobal,
+                        .equipo = FrmPrincipal.equipoGlobal,
+                        .strId = notaCredito.IdNotaCredito,
+                        .strFecha = notaCredito.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
+                        .strVendedor = "",
+                        .strNombre = "",
+                        .strDocumento = "",
+                        .strTelefono = "",
+                        .strDetalle = notaCredito.Detalle,
+                        .strSubTotal = "",
+                        .strDescuento = "",
+                        .strImpuesto = "",
+                        .strTotal = FormatNumber(notaCredito.MontoOriginal, 2),
+                        .strPagoCon = "",
+                        .strCambio = ""
+                    }
+                    ModuloImpresion.ImprimirNotaCreditoCliente(comprobanteImpresion)
                 End If
             Catch ex As Exception
                 txtIdDevolucion.Text = ""

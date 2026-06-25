@@ -124,6 +124,7 @@ Partial Class FrmEmpresa
         Me.chkPrecioVentaIncluyeIVA = New System.Windows.Forms.CheckBox()
         Me.txtMontoRedondeoDescuento = New System.Windows.Forms.TextBox()
         Me.Label23 = New System.Windows.Forms.Label()
+        Me.chkDevolucionEnEfectivo = New System.Windows.Forms.CheckBox()
         Me.gpbSucursal.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         CType(Me.dgvActividadEconomica, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1476,12 +1477,24 @@ Partial Class FrmEmpresa
         Me.Label23.Text = "Monto redondeo desc:"
         Me.Label23.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
+        'chkDevolucionEnEfectivo
+        '
+        Me.chkDevolucionEnEfectivo.AutoSize = True
+        Me.chkDevolucionEnEfectivo.Location = New System.Drawing.Point(122, 455)
+        Me.chkDevolucionEnEfectivo.Name = "chkDevolucionEnEfectivo"
+        Me.chkDevolucionEnEfectivo.Size = New System.Drawing.Size(177, 17)
+        Me.chkDevolucionEnEfectivo.TabIndex = 294
+        Me.chkDevolucionEnEfectivo.TabStop = False
+        Me.chkDevolucionEnEfectivo.Text = "Aplica devoluciones en efectivo"
+        Me.chkDevolucionEnEfectivo.UseVisualStyleBackColor = True
+        '
         'FrmEmpresa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1257, 629)
+        Me.Controls.Add(Me.chkDevolucionEnEfectivo)
         Me.Controls.Add(Me.txtMontoRedondeoDescuento)
         Me.Controls.Add(Me.Label23)
         Me.Controls.Add(Me.chkPrecioVentaIncluyeIVA)
@@ -1630,4 +1643,5 @@ Partial Class FrmEmpresa
     Public WithEvents btnEliminar As Button
     Public WithEvents txtCorreoSucursal As TextBox
     Public WithEvents Label7 As Label
+    Friend WithEvents chkDevolucionEnEfectivo As CheckBox
 End Class
