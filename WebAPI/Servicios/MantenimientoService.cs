@@ -1740,7 +1740,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && new int[] { 1, 2, 3 }.Contains(x.Linea.Tipo));
+                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
                     if (intIdLinea > 0)
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     else if (!strCodigo.Equals(string.Empty))
@@ -1838,7 +1838,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Linea.Tipo == intIdTipo);
+                    return dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Codigo == intIdTipo == 4 ? StaticTipoProductoEspecial.Transitorio : StaticTipoProductoEspecial.ImpuestoServicio);
                 }
                 catch (Exception ex)
                 {

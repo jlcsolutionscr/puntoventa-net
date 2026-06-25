@@ -1156,7 +1156,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (factura == null) throw new BusinessException("La registro de la factura no existe!");
                     foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto != null) detalleFactura.Producto = producto;
                     }
                     foreach (DesglosePagoFactura desglosePago in factura.DesglosePagoFactura)
