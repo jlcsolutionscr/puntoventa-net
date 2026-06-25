@@ -1375,52 +1375,60 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "ObtenerFacturaPDF":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
-                    byte[] facturaPdf = _servicioFacturacion.GenerarFacturaPDF(intIdLlave1, bytLogo);
-                    if (facturaPdf.Length > 0)
-                        strRespuesta = JsonConvert.SerializeObject(facturaPdf);
+                    byte[] facturaPDF = _servicioFacturacion.GenerarFacturaPDF(intIdLlave1, bytLogo);
+                    if (facturaPDF.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(facturaPDF);
                     break;
                 case "ObtenerApartadoPDF":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdApartado").Value.ToString());
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
-                    byte[] apartadoPdf = _servicioFacturacion.GenerarApartadoPDF(intIdLlave1, bytLogo);
-                    if (apartadoPdf.Length > 0)
-                        strRespuesta = JsonConvert.SerializeObject(apartadoPdf);
+                    byte[] apartadoPDF = _servicioFacturacion.GenerarApartadoPDF(intIdLlave1, bytLogo);
+                    if (apartadoPDF.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(apartadoPDF);
                     break;
                 case "ObtenerOrdenServicioPDF":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdOrden").Value.ToString());
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
-                    byte[] ordenPdf = _servicioFacturacion.GenerarOrdenServicioPDF(intIdLlave1, bytLogo);
-                    if (ordenPdf.Length > 0)
-                        strRespuesta = JsonConvert.SerializeObject(ordenPdf);
+                    byte[] ordenPDF = _servicioFacturacion.GenerarOrdenServicioPDF(intIdLlave1, bytLogo);
+                    if (ordenPDF.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(ordenPDF);
                     break;
                 case "ObtenerProformaPDF":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
-                    byte[] proformaPdf = _servicioFacturacion.GenerarProformaPDF(intIdLlave1, bytLogo);
-                    if (proformaPdf.Length > 0)
-                        strRespuesta = JsonConvert.SerializeObject(proformaPdf);
+                    byte[] proformaPDF = _servicioFacturacion.GenerarProformaPDF(intIdLlave1, bytLogo);
+                    if (proformaPDF.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(proformaPDF);
                     break;
                 case "GenerarTiqueteFacturaPDF":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdFactura").Value.ToString());
                     intLargoLinea = int.Parse(parametrosJO.Property("LargoLinea").Value.ToString());
                     bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
-                    byte[] tiqueteFacturaPdf = _servicioFacturacion.GenerarTiqueteFacturaPDF(intIdLlave1, intLargoLinea, bytLogo);
-                    if (tiqueteFacturaPdf.Length > 0)
-                        strRespuesta = JsonConvert.SerializeObject(tiqueteFacturaPdf);
+                    byte[] tiqueteFacturaPDF = _servicioFacturacion.GenerarTiqueteFacturaPDF(intIdLlave1, intLargoLinea, bytLogo);
+                    if (tiqueteFacturaPDF.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(tiqueteFacturaPDF);
                     break;
                 case "GenerarTiqueteOrdenServicioPDF":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
                     intLargoLinea = int.Parse(parametrosJO.Property("LargoLinea").Value.ToString());
-                    byte[] tiqueteOrdenServicioPdf = _servicioFacturacion.GenerarTiqueteOrdenServicioPDF(intIdLlave1, intLargoLinea, bytLogo);
-                    if (tiqueteOrdenServicioPdf.Length > 0)
-                        strRespuesta = JsonConvert.SerializeObject(tiqueteOrdenServicioPdf);
+                    byte[] tiqueteOrdenServicioPDF = _servicioFacturacion.GenerarTiqueteOrdenServicioPDF(intIdLlave1, intLargoLinea, bytLogo);
+                    if (tiqueteOrdenServicioPDF.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(tiqueteOrdenServicioPDF);
                     break;
                 case "GenerarTiqueteCierreCajaPDF":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdCierreCaja").Value.ToString());
                     intLargoLinea = int.Parse(parametrosJO.Property("LargoLinea").Value.ToString());
-                    byte[] tiqueteCierreCajaPdf = _servicioFacturacion.GenerarTiqueteCierreCajaPDF(intIdLlave1, intLargoLinea);
-                    if (tiqueteCierreCajaPdf.Length > 0)
-                        strRespuesta = JsonConvert.SerializeObject(tiqueteCierreCajaPdf);
+                    byte[] tiqueteCierreCajaPDF = _servicioFacturacion.GenerarTiqueteCierreCajaPDF(intIdLlave1, intLargoLinea);
+                    if (tiqueteCierreCajaPDF.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(tiqueteCierreCajaPDF);
+                    break;
+                case "GenerarTiqueteNotaCreditoPDF":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdNotaCredito").Value.ToString());
+                    intLargoLinea = int.Parse(parametrosJO.Property("LargoLinea").Value.ToString());
+                    bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
+                    byte[] tiqueteNotaCreditoPDF = _servicioFacturacion.GenerarTiqueteNotaCreditoClientePDF(intIdLlave1, intLargoLinea, bytLogo);
+                    if (tiqueteNotaCreditoPDF.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(tiqueteNotaCreditoPDF);
                     break;
                 case "ObtenerListadoPuntoDeServicio":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

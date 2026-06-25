@@ -80,6 +80,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         byte[] GenerarTiqueteFacturaPDF(int intIdFactura, int intLargoLinea, byte[] bytLogo);
         byte[] GenerarTiqueteOrdenServicioPDF(int intIdOrdenServicio, int intLargoLinea, byte[] bytLogo);
         byte[] GenerarTiqueteCierreCajaPDF(int intIdCierre, int intLargoLinea);
+        byte[] GenerarTiqueteNotaCreditoClientePDF(int intIdNotaCredito, int intLargoLinea, byte[] bytLogo);
     }
 
     public class FacturacionService : IFacturacionService
@@ -3424,7 +3425,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     Empresa empresa = dbContext.EmpresaRepository.Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, "", bytLogo);
+                    EstructuraDocumentoPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, "", bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
                 catch (BusinessException)
@@ -3452,7 +3453,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == apartado.IdEmpresa && x.IdSucursal == apartado.IdSucursal);
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en el apartado no existe!");
-                    EstructuraPDF datos = GenerarEstructuraApartadoPDF(empresa, apartado, sucursal, bytLogo);
+                    EstructuraDocumentoPDF datos = GenerarEstructuraApartadoPDF(empresa, apartado, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
                 catch (BusinessException)
@@ -3480,7 +3481,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en la orden de servicio no existe!");
-                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
+                    EstructuraDocumentoPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
                 catch (BusinessException)
@@ -3508,7 +3509,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == proforma.IdEmpresa && x.IdSucursal == proforma.IdSucursal);
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en la proforma no existe!");
-                    EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, sucursal, bytLogo);
+                    EstructuraDocumentoPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, sucursal, bytLogo);
                     return Generador.GenerarPDF(datos);
                 }
                 catch (BusinessException)
@@ -3545,7 +3546,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.CorreoNotificacion != "")
                     {
-                        EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, "", bytLogo);
+                        EstructuraDocumentoPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, "", bytLogo);
                         byte[] pdfAttactment = Generador.GenerarPDF(datos);
                         JObject jobDatosAdjuntos1 = new JObject
                         {
@@ -3592,7 +3593,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Usuario usuario = dbContext.UsuarioRepository.Where(x => x.IdUsuario == factura.IdUsuario).FirstOrDefault();
                     string strUsuario = "";
                     if (usuario != null) strUsuario = usuario.CodigoUsuario;
-                    EstructuraPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, strUsuario, bytLogo);
+                    EstructuraDocumentoPDF datos = GenerarEstructuraFacturaPDF(empresa, factura, sucursal, strUsuario, bytLogo);
                     return Generador.GenerarTiquetePDF(datos, intLargoLinea);
                 }
                 catch (BusinessException)
@@ -3630,11 +3631,34 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private EstructuraPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, SucursalPorEmpresa sucursal, string codigoUsuario, byte[] bytLogo)
+        public byte[] GenerarTiqueteNotaCreditoClientePDF(int intIdNotaCredito, int intLargoLinea, byte[] bytLogo)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    NotaCreditoCliente notaCredito = dbContext.NotaCreditoClienteRepository.FirstOrDefault(x => x.IdNotaCredito == intIdNotaCredito);
+                    return Generador.GenerarTiqueteNCClientePDF(notaCredito, bytLogo, intLargoLinea);
+                }
+                catch (BusinessException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al generar archivo PDF dela nota de crédito con ID: " + intIdNotaCredito, ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al generar el archivo PDF de la nota de crédito. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        private EstructuraDocumentoPDF GenerarEstructuraFacturaPDF(Empresa empresa, Factura factura, SucursalPorEmpresa sucursal, string codigoUsuario, byte[] bytLogo)
         {
             decimal decSubTotal = factura.Gravado + factura.Exonerado + factura.Excento;
             decimal decTotalFactura = decSubTotal + factura.Impuesto;
-            EstructuraPDF datos = new EstructuraPDF
+            EstructuraDocumentoPDF datos = new EstructuraDocumentoPDF
             {
                 PoweredByLogotipo = bytLogo,
                 EsDocumentoElectronico = factura.IdDocElectronico != null
@@ -3667,10 +3691,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CondicionVenta = CondicionDeVenta.ObtenerDescripcion(factura.IdCondicionVenta);
             datos.Fecha = factura.Fecha.ToString("dd/MM/yyyy");
             datos.Usuario = codigoUsuario;
-            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
+            datos.DetalleFormaPago = new List<EstructuraFormaPagoPDF>();
             if (factura.IdCondicionVenta == StaticCondicionVenta.Credito)
             {
-                EstructuraPDFFormaPago detalleFormaPago = new EstructuraPDFFormaPago
+                EstructuraFormaPagoPDF detalleFormaPago = new EstructuraFormaPagoPDF
                 {
                     Descripcion = "Crédito",
                     Monto = decTotalFactura.ToString("N2", CultureInfo.InvariantCulture)
@@ -3683,7 +3707,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decMontoPagado = 0;
                 foreach (DesglosePagoFactura desglosePago in factura.DesglosePagoFactura)
                 {
-                    EstructuraPDFFormaPago detalleFormaPago = new EstructuraPDFFormaPago
+                    EstructuraFormaPagoPDF detalleFormaPago = new EstructuraFormaPagoPDF
                     {
                         Descripcion = FormaDePago.ObtenerDescripcion(desglosePago.IdFormaPago),
                         Monto = desglosePago.MontoLocal.ToString("N2", CultureInfo.InvariantCulture)
@@ -3710,12 +3734,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 datos.TelefonoReceptor = factura.Cliente.Telefono;
                 datos.FaxReceptor = factura.Cliente.Fax;
             }
-            datos.DetalleServicio = new List<EstructuraPDFDetalleServicio>();
+            datos.DetalleServicio = new List<EstructuraDetalleServicioPDF>();
             foreach (DetalleFactura linea in factura.DetalleFactura)
             {
                 decimal decPrecioConIva = linea.PrecioVenta * (1 + linea.PorcentajeIVA / 100);
                 decimal decTotalLinea = linea.Cantidad * decPrecioConIva;
-                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                EstructuraDetalleServicioPDF detalle = new EstructuraDetalleServicioPDF
                 {
                     Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
                     Codigo = linea.Producto.CodigoClasificacion,
@@ -3741,9 +3765,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        private EstructuraPDF GenerarEstructuraApartadoPDF(Empresa empresa, Apartado apartado, SucursalPorEmpresa sucursal, byte[] bytLogo)
+        private EstructuraDocumentoPDF GenerarEstructuraApartadoPDF(Empresa empresa, Apartado apartado, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
-            EstructuraPDF datos = new EstructuraPDF
+            EstructuraDocumentoPDF datos = new EstructuraDocumentoPDF
             {
                 PoweredByLogotipo = bytLogo,
                 EsDocumentoElectronico = false
@@ -3773,7 +3797,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CondicionVenta = "Proforma";
             datos.PlazoCredito = "";
             datos.Fecha = apartado.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
+            datos.DetalleFormaPago = new List<EstructuraFormaPagoPDF>();
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
@@ -3791,11 +3815,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 datos.TelefonoReceptor = apartado.Cliente.Telefono;
                 datos.FaxReceptor = apartado.Cliente.Fax;
             }
-            datos.DetalleServicio = new List<EstructuraPDFDetalleServicio>();
+            datos.DetalleServicio = new List<EstructuraDetalleServicioPDF>();
             foreach (DetalleApartado linea in apartado.DetalleApartado)
             {
                 decimal decTotalLinea = linea.Cantidad * linea.PrecioVenta;
-                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                EstructuraDetalleServicioPDF detalle = new EstructuraDetalleServicioPDF
                 {
                     Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
                     Codigo = linea.Producto.CodigoClasificacion,
@@ -3818,9 +3842,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        private EstructuraPDF GenerarEstructuraOrdenServicioPDF(Empresa empresa, OrdenServicio ordenServicio, SucursalPorEmpresa sucursal, byte[] bytLogo)
+        private EstructuraDocumentoPDF GenerarEstructuraOrdenServicioPDF(Empresa empresa, OrdenServicio ordenServicio, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
-            EstructuraPDF datos = new EstructuraPDF
+            EstructuraDocumentoPDF datos = new EstructuraDocumentoPDF
             {
                 PoweredByLogotipo = bytLogo,
                 EsDocumentoElectronico = false
@@ -3850,7 +3874,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CondicionVenta = "Efectivo";
             datos.PlazoCredito = "";
             datos.Fecha = ordenServicio.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
+            datos.DetalleFormaPago = new List<EstructuraFormaPagoPDF>();
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
@@ -3868,11 +3892,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 datos.TelefonoReceptor = ordenServicio.Cliente.Telefono;
                 datos.FaxReceptor = ordenServicio.Cliente.Fax;
             }
-            datos.DetalleServicio = new List<EstructuraPDFDetalleServicio>();
+            datos.DetalleServicio = new List<EstructuraDetalleServicioPDF>();
             foreach (DetalleOrdenServicio linea in ordenServicio.DetalleOrdenServicio)
             {
                 decimal decTotalLinea = linea.Cantidad * linea.PrecioVenta;
-                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                EstructuraDetalleServicioPDF detalle = new EstructuraDetalleServicioPDF
                 {
                     Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
                     Codigo = linea.Producto.Codigo,
@@ -3894,9 +3918,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             return datos;
         }
 
-        private EstructuraPDF GenerarEstructuraProformaPDF(Empresa empresa, Proforma proforma, SucursalPorEmpresa sucursal, byte[] bytLogo)
+        private EstructuraDocumentoPDF GenerarEstructuraProformaPDF(Empresa empresa, Proforma proforma, SucursalPorEmpresa sucursal, byte[] bytLogo)
         {
-            EstructuraPDF datos = new EstructuraPDF
+            EstructuraDocumentoPDF datos = new EstructuraDocumentoPDF
             {
                 PoweredByLogotipo = bytLogo,
                 EsDocumentoElectronico = false
@@ -3926,7 +3950,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.CondicionVenta = "Proforma";
             datos.PlazoCredito = "";
             datos.Fecha = proforma.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
-            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
+            datos.DetalleFormaPago = new List<EstructuraFormaPagoPDF>();
             datos.NombreEmisor = empresa.NombreEmpresa;
             datos.NombreComercialEmisor = empresa.NombreComercial;
             datos.IdentificacionEmisor = empresa.Identificacion;
@@ -3944,11 +3968,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 datos.TelefonoReceptor = proforma.Cliente.Telefono;
                 datos.FaxReceptor = proforma.Cliente.Fax;
             }
-            datos.DetalleServicio = new List<EstructuraPDFDetalleServicio>();
+            datos.DetalleServicio = new List<EstructuraDetalleServicioPDF>();
             foreach (DetalleProforma linea in proforma.DetalleProforma)
             {
                 decimal decTotalLinea = linea.Cantidad * linea.PrecioVenta;
-                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                EstructuraDetalleServicioPDF detalle = new EstructuraDetalleServicioPDF
                 {
                     Cantidad = linea.Cantidad.ToString("N2", CultureInfo.InvariantCulture),
                     Codigo = linea.Producto.Codigo,
@@ -3994,7 +4018,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         strTitle = "Nota de débito electrónica de emisor " + empresa.NombreComercial;
                     }
-                    EstructuraPDF datos = GenerarEstructuraDocumentoPDF(dbContext, empresa, documentoElectronico, bytLogo);
+                    EstructuraDocumentoPDF datos = GenerarEstructuraDocumentoPDF(dbContext, empresa, documentoElectronico, bytLogo);
                     byte[] pdfAttactment = Generador.GenerarPDF(datos);
                     JObject jobDatosAdjuntos1 = new JObject
                     {
@@ -4027,9 +4051,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        private EstructuraPDF GenerarEstructuraDocumentoPDF(LeandroContext dbContext, Empresa empresa, DocumentoElectronico documentoElectronico, byte[] bytLogo)
+        private EstructuraDocumentoPDF GenerarEstructuraDocumentoPDF(LeandroContext dbContext, Empresa empresa, DocumentoElectronico documentoElectronico, byte[] bytLogo)
         {
-            EstructuraPDF datos = new EstructuraPDF
+            EstructuraDocumentoPDF datos = new EstructuraDocumentoPDF
             {
                 PoweredByLogotipo = bytLogo,
                 EsDocumentoElectronico = true
@@ -4100,7 +4124,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 datos.NombreReceptor = documentoElectronico.NombreReceptor;
             }
-            datos.DetalleServicio = new List<EstructuraPDFDetalleServicio>();
+            datos.DetalleServicio = new List<EstructuraDetalleServicioPDF>();
             foreach (XmlNode lineaDetalle in documentoXml.GetElementsByTagName("LineaDetalle"))
             {
                 if (lineaDetalle["Impuesto"] != null)
@@ -4116,7 +4140,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
                 }
-                EstructuraPDFDetalleServicio detalle = new EstructuraPDFDetalleServicio
+                EstructuraDetalleServicioPDF detalle = new EstructuraDetalleServicioPDF
                 {
                     Cantidad = lineaDetalle["Cantidad"].InnerText,
                     Codigo = documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/") ? lineaDetalle["Codigo"].InnerText : lineaDetalle["CodigoCABYS"].InnerText,
@@ -4134,10 +4158,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
             if (otrosTextos.Length > 0) datos.OtrosTextos = otrosTextos;
             XmlNode resumenFacturaNode = documentoXml.GetElementsByTagName("ResumenFactura").Item(0);
-            datos.DetalleFormaPago = new List<EstructuraPDFFormaPago>();
+            datos.DetalleFormaPago = new List<EstructuraFormaPagoPDF>();
             if (documentoXml.InnerXml.ToString().Contains("xml-schemas/v4.3/"))
             {
-                EstructuraPDFFormaPago detalleFormaPago = new EstructuraPDFFormaPago
+                EstructuraFormaPagoPDF detalleFormaPago = new EstructuraFormaPagoPDF
                 {
                     Descripcion = FormaDePago.ObtenerDescripcion(int.Parse(documentoXml.GetElementsByTagName("MedioPago").Item(0).InnerText)),
                     Monto = resumenFacturaNode["MedioPago"].ChildNodes.Item(1).InnerText
@@ -4148,7 +4172,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 if (resumenFacturaNode["MedioPago"] != null)
                 {
-                    EstructuraPDFFormaPago detalleFormaPago = new EstructuraPDFFormaPago
+                    EstructuraFormaPagoPDF detalleFormaPago = new EstructuraFormaPagoPDF
                     {
                         Descripcion =  FormaDePago.ObtenerDescripcion(int.Parse(resumenFacturaNode["MedioPago"].ChildNodes.Item(0).InnerText)),
                         Monto = resumenFacturaNode["MedioPago"].ChildNodes.Item(1).InnerText
@@ -4184,7 +4208,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     string strBody;
                     string strTitle = empresa.NombreComercial + " - Factura proforma";
                     strBody = "Estimado cliente, adjunto encontrará el detalle de la proforma solicitada.";
-                    EstructuraPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, sucursal, bytLogo);
+                    EstructuraDocumentoPDF datos = GenerarEstructuraProformaPDF(empresa, proforma, sucursal, bytLogo);
                     JArray jarrayObj = new JArray();
                     string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
                     byte[] pdfAttactment = Generador.GenerarPDF(datos);
@@ -4225,7 +4249,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     string strBody;
                     string strTitle = empresa.NombreComercial + " - Orden de servicio";
                     strBody = "Estimado cliente, adjunto encontrará el detalle de la orden de servicio solicitada.";
-                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
+                    EstructuraDocumentoPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
                     JArray jarrayObj = new JArray();
                     string[] arrCorreoReceptor = strCorreoReceptor.Split(';');
                     byte[] pdfAttactment = Generador.GenerarPDF(datos);
@@ -4268,7 +4292,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleOrden.IdProducto);
                         if (producto != null) detalleOrden.Producto = producto;
                     }
-                    EstructuraPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
+                    EstructuraDocumentoPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);
                     return Generador.GenerarTiquetePDF(datos, intLargoLinea);
                 }
                 catch (BusinessException)

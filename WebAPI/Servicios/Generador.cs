@@ -9,7 +9,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
 {
     public static class Generador
     {
-        public static byte[] GenerarPDF(EstructuraPDF datos)
+        public static byte[] GenerarPDF(EstructuraDocumentoPDF datos)
         {
             PdfDocument document = new PdfDocument();
             XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
@@ -87,7 +87,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             gfx.DrawString(datos.Fecha, font, XBrushes.Black, new XRect(110, lineaPos, 200, 12), XStringFormats.TopLeft);
             gfx.DrawString("Medio de Pago: ", font, XBrushes.Black, new XRect(370, lineaPos, 80, 12), XStringFormats.TopLeft);
             string strMediosPago = "";
-            foreach (EstructuraPDFFormaPago desglosePago in datos.DetalleFormaPago)
+            foreach (EstructuraFormaPagoPDF desglosePago in datos.DetalleFormaPago)
             {
                 if (strMediosPago != "") strMediosPago += ", ";
                 strMediosPago += desglosePago.Descripcion;
@@ -139,7 +139,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             font = new XFont("Arial", 8, XFontStyle.Regular, options);
             int cantLineasDetalle = 0;
             int cantPaginas = 1;
-            foreach (EstructuraPDFDetalleServicio linea in datos.DetalleServicio)
+            foreach (EstructuraDetalleServicioPDF linea in datos.DetalleServicio)
             {
                 cantLineasDetalle += 1;
                 lineaPos += 12;
@@ -289,7 +289,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             font = new XFont("Courier New", 12, XFontStyle.Bold, options);
             gfx.DrawString(datos.TituloDocumento, font, XBrushes.Black, new XRect(0, 20, page.Width, 15), XStringFormats.TopCenter);
             int lineaPos = 23;
-            foreach (EstructuraPDFDetalleProducto linea in datos.DetalleProducto)
+            foreach (EstructuraDetalleProductoPDF linea in datos.DetalleProducto)
             {
                 lineaPos += 12;
                 gfx.DrawString(linea.Descripcion, font, XBrushes.Black, new XRect(10, lineaPos, page.Width - 20, 12), XStringFormats.TopLeft);
@@ -308,7 +308,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             return stream.ToArray();
         }
 
-        public static byte[] GenerarTiquetePDF(EstructuraPDF datos, int intLargoLinea)
+        public static byte[] GenerarTiquetePDF(EstructuraDocumentoPDF datos, int intLargoLinea)
         {
             PdfDocument document = new PdfDocument();
             XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
@@ -381,7 +381,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             tf.DrawString("Total", font, XBrushes.Black, new XRect(dblMitadLinea + 11, lineaPos, dblMitadLinea - 2, 12), XStringFormats.TopLeft);
             gfx.DrawLine(XPens.DarkGray, 1, lineaPos + 13, pageWidth - 1, lineaPos + 13);
             font = new XFont("Arial", 10, XFontStyle.Regular, options);
-            foreach (EstructuraPDFDetalleServicio linea in datos.DetalleServicio)
+            foreach (EstructuraDetalleServicioPDF linea in datos.DetalleServicio)
             {
                 lineaPos += 12;
                 string strDescripcion = linea.Detalle.Length > availableChars ? linea.Detalle.Substring(0, availableChars) : linea.Detalle;
@@ -411,7 +411,7 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             gfx.DrawString("Desglose de pago", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             font = new XFont("Arial", 10, XFontStyle.Regular, options);
             
-            foreach (EstructuraPDFFormaPago desglosePago in datos.DetalleFormaPago)
+            foreach (EstructuraFormaPagoPDF desglosePago in datos.DetalleFormaPago)
             {
                 lineaPos += 12;
                 gfx.DrawString(desglosePago.Descripcion, font, XBrushes.Black, new XRect(48, lineaPos, dblMitadLinea, 12), XStringFormats.TopLeft);
@@ -541,6 +541,51 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             font = new XFont("Arial", 10, XFontStyle.Bold);
             lineaPos += 30;
             AgregarLineaDescripcionValor(gfx, tf, font, "Total de ventas", cierreCaja.VentasEfectivo + cierreCaja.VentasTarjeta + cierreCaja.VentasBancos, pageWidth, lineaPos);
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream, false);
+            byte[] bytes = stream.ToArray();
+            return bytes;
+        }
+
+        public static byte[] GenerarTiqueteNCClientePDF(NotaCreditoCliente notaCredito, byte[] bytPoweredByLogo, int intLargoLinea)
+        {
+            PdfDocument document = new PdfDocument();
+            XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);
+            document.Info.Title = "Nota de crédito del cliente";
+            PdfPage page = document.AddPage();
+            page.Width = XUnit.FromCentimeter(intLargoLinea / 10);
+            int availableChars = (int) Math.Floor(intLargoLinea / 2.5);
+            List<string> lineasDetalle = obtenerLineasPorAnchoDeLinea(notaCredito.Detalle.Split(" "), availableChars);
+            page.Height = 155 + (lineasDetalle.Count * 12);
+            double pageWidth = page.Width;
+            double pageHeight = page.Height;
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XTextFormatter tf = new XTextFormatter(gfx)
+            {
+                Alignment = XParagraphAlignment.Right
+            };
+            int lineaPos = 20;
+            XFont font = new XFont("Arial", 12, XFontStyle.Bold, options);
+            gfx.DrawString("NOTA DE CREDITO", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            font = new XFont("Arial", 10, XFontStyle.Regular, options);
+            lineaPos += 15;
+            gfx.DrawString("IdNota: " + notaCredito.IdNotaCredito.ToString(), font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            lineaPos += 12;
+            gfx.DrawString("Fecha emisión: " + notaCredito.Fecha.ToString("dd/MM/yyyy hh:mm:ss tt"), font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            lineaPos += 12;
+            gfx.DrawString("REFERENCIA", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            for (int intPos = 0; intPos < lineasDetalle.Count; intPos++)
+            {
+                lineaPos += 12;
+                gfx.DrawString(lineasDetalle[intPos], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            }
+            lineaPos += 12;
+            gfx.DrawString("Monto total: " + notaCredito.MontoOriginal.ToString("N2", CultureInfo.InvariantCulture), font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            lineaPos += 24;
+            font = new XFont("Arial", 8, XFontStyle.BoldItalic, options);
+            tf.DrawString("Powered by", font, XBrushes.Black, new XRect(1, lineaPos + 13, pageWidth - 100, 12), XStringFormats.TopLeft);
+            XImage poweredByImage = XImage.FromStream(() => new MemoryStream(bytPoweredByLogo));
+            gfx.DrawImage(poweredByImage, pageWidth - 90, lineaPos, 88, 40);
             MemoryStream stream = new MemoryStream();
             document.Save(stream, false);
             byte[] bytes = stream.ToArray();

@@ -14,7 +14,7 @@ namespace LeandroSoftware.ServicioWeb.EstructuraDatos
         public string RespuestaXml { get; set; }
     }
 
-    public class EstructuraPDF
+    public class EstructuraDocumentoPDF
     {
         public string TituloDocumento { get; set; }
         public string NombreComercial { get; set; }
@@ -57,11 +57,11 @@ namespace LeandroSoftware.ServicioWeb.EstructuraDatos
         public byte[] PoweredByLogotipo { get; set; }
         public bool EsDocumentoElectronico { get; set; }
 
-        public List<EstructuraPDFDetalleServicio> DetalleServicio { get; set; }
-        public List<EstructuraPDFFormaPago> DetalleFormaPago { get; set; }
+        public List<EstructuraDetalleServicioPDF> DetalleServicio { get; set; }
+        public List<EstructuraFormaPagoPDF> DetalleFormaPago { get; set; }
     }
 
-    public class EstructuraPDFDetalleServicio
+    public class EstructuraDetalleServicioPDF
     {
         public string Cantidad { get; set; }
         public string Codigo { get; set; }
@@ -70,7 +70,7 @@ namespace LeandroSoftware.ServicioWeb.EstructuraDatos
         public string TotalLinea { get; set; }
     }
 
-    public class EstructuraPDFFormaPago
+    public class EstructuraFormaPagoPDF
     {
         public string Descripcion { get; set; }
         public string Monto { get; set; }
@@ -80,10 +80,10 @@ namespace LeandroSoftware.ServicioWeb.EstructuraDatos
     {
         public string TituloDocumento { get; set; }
         public string TotalInventario { get; set; }
-        public List<EstructuraPDFDetalleProducto> DetalleProducto { get; set; }
+        public List<EstructuraDetalleProductoPDF> DetalleProducto { get; set; }
     }
 
-    public class EstructuraPDFDetalleProducto
+    public class EstructuraDetalleProductoPDF
     {
 
         public string Codigo { get; set; }
