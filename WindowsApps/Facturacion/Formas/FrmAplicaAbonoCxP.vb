@@ -22,7 +22,7 @@ Public Class FrmAplicaAbonoCxP
     Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
 #End Region
 
-#Region "M�todos"
+#Region "Métodos"
     Private Sub IniciaDetalleMovimiento()
         dtbDesglosePago = New DataTable()
         dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
@@ -240,7 +240,7 @@ Public Class FrmAplicaAbonoCxP
         cboTipoBanco.Width = 371
         lblBanco.Width = 371
         lblBanco.Text = "Banco Adquiriente"
-        lblAutorizacion.Text = "Autorizaci�n"
+        lblAutorizacion.Text = "Autorización"
         txtDocumento.Text = ""
         txtTipoTarjeta.Text = ""
         txtMontoPago.Text = ""
@@ -254,7 +254,7 @@ Public Class FrmAplicaAbonoCxP
             btnBuscarCxP_Click(btnBuscarCxP, New EventArgs())
             Exit Sub
         ElseIf txtRecibo.Text = "" Then
-            MessageBox.Show("Debe ingresar el n�mero de recibo correspondiente al pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Debe ingresar el número de recibo correspondiente al pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             txtRecibo.Focus()
             Exit Sub
         ElseIf decTotal = 0 Then
@@ -323,7 +323,7 @@ Public Class FrmAplicaAbonoCxP
             formPagoEfectivo.decPagoCliente = decPagoCliente
             formPagoEfectivo.ShowDialog()
         Else
-            MessageBox.Show("Transacci�n efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
         btnAgregar.Enabled = True
         btnImprimir.Enabled = True
@@ -392,7 +392,7 @@ Public Class FrmAplicaAbonoCxP
                 cboTipoBanco.Width = 371
                 lblBanco.Width = 371
                 lblBanco.Text = "Banco Adquiriente"
-                lblAutorizacion.Text = "Autorizaci�n"
+                lblAutorizacion.Text = "Autorización"
                 txtTipoTarjeta.Visible = True
                 lblTipoTarjeta.Visible = True
             Else

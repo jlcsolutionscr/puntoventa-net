@@ -229,7 +229,7 @@ Partial Class FrmBusquedaNotaCredito
         Me.Name = "FrmAplicaNotaCredito"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Aplicar Nota de Credito"
+        Me.Text = "Aplicar Nota de Crédito"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

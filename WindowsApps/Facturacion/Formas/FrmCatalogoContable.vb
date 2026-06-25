@@ -6,13 +6,13 @@ Public Class FrmCatalogoContable
     Private datos As CatalogoContable
 #End Region
 
-#Region "M�todos"
+#Region "Métodos"
     Private Function ValidarCampos(ByRef pCampo As String) As Boolean
         If txtNivel_1.Text = "" Then
             pCampo = "Nivel 1"
             Return False
         ElseIf txtDescripcion.Text = "" Then
-            pCampo = "Descripci�n"
+            pCampo = "Descripción"
             Return False
         ElseIf cboTipoSaldo.Text = "" Then
             pCampo = "Tipo de Saldo"

@@ -18,7 +18,7 @@ Public Class FrmDevolucionDeClientes
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
 #End Region
 
-#Region "M�todos"
+#Region "Métodos"
     Private Sub IniciaDetalleDevolucion()
         dtbDetalleDevolucion = New DataTable()
         dtbDetalleDevolucion.Columns.Add("IDPRODUCTO", GetType(Integer))
@@ -55,14 +55,14 @@ Public Class FrmDevolucionDeClientes
         grdDetalleDevolucion.Columns.Add(dvcIdProducto)
 
         dvcCodigo.DataPropertyName = "CODIGO"
-        dvcCodigo.HeaderText = "C�digo"
+        dvcCodigo.HeaderText = "Código"
         dvcCodigo.Width = 125
         dvcCodigo.ReadOnly = True
         dvcCodigo.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleDevolucion.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
-        dvcDescripcion.HeaderText = "Descripci�n"
+        dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.Width = 340
         dvcDescripcion.ReadOnly = True
         dvcDescripcion.SortMode = DataGridViewColumnSortMode.NotSortable
@@ -139,9 +139,9 @@ Public Class FrmDevolucionDeClientes
 
     Private Sub CargarDetalleFactura(ByVal factura As Factura)
         dtbDetalleDevolucion.Rows.Clear()
-        Dim tipoProducto As New List(Of Integer)(New Integer() {StaticTipoProducto.Producto, StaticTipoProductoEspecial.Transitorio})
+        Dim tipoProducto As New List(Of String)(New String() {StaticTipoProducto.Producto, StaticTipoProductoEspecial.Transitorio})
         For Each detalle As DetalleFactura In factura.DetalleFactura
-            If tipoProducto.Contains(detalle.Producto.Linea.Tipo) Then
+            If tipoProducto.Contains(detalle.Producto.Codigo) Then
                 dtrRowDetDevolucion = dtbDetalleDevolucion.NewRow
                 dtrRowDetDevolucion.Item(0) = detalle.IdProducto
                 dtrRowDetDevolucion.Item(1) = detalle.Producto.Codigo
@@ -199,7 +199,7 @@ Public Class FrmDevolucionDeClientes
             CargarTotales()
         Else
             txtIdFactura.Text = ""
-            MessageBox.Show("El n�mero de factura ingresadno existe!e. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("El número de factura ingresado no existe!e. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 #End Region
@@ -259,7 +259,7 @@ Public Class FrmDevolucionDeClientes
         Else
             If grdDetalleDevolucion.CurrentCell.ColumnIndex = 8 Then
                 If grdDetalleDevolucion.CurrentCell.Value > grdDetalleDevolucion.CurrentRow.Cells(3).Value Then
-                    MessageBox.Show("La cantidad ingresada de art�culos por devolver excede la cantidad de art�culos de la factura.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBox.Show("La cantidad ingresada de artículos por devolver excede la cantidad de artículos de la factura.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     grdDetalleDevolucion.CurrentCell.Value = 0
                 End If
             End If
@@ -301,7 +301,7 @@ Public Class FrmDevolucionDeClientes
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacci�n procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 BtnAgregar_Click(btnAgregar, New EventArgs())
             End If
         End If
@@ -349,7 +349,7 @@ Public Class FrmDevolucionDeClientes
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         If cliente Is Nothing Or txtFecha.Text = "" Or factura Is Nothing Or CDbl(txtTotal.Text) = 0 Then
-            MessageBox.Show("Informaci�n incompleta.  Favor verificar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         btnGuardar.Enabled = False
@@ -399,7 +399,7 @@ Public Class FrmDevolucionDeClientes
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacci�n efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         grdDetalleDevolucion.ReadOnly = True
         btnImprimir.Enabled = True
         btnAgregar.Enabled = True

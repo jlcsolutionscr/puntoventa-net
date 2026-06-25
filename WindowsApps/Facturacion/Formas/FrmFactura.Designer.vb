@@ -1268,7 +1268,7 @@ Partial Class FrmFactura
         Me.btnNotaCredito.Size = New System.Drawing.Size(96, 21)
         Me.btnNotaCredito.TabIndex = 206
         Me.btnNotaCredito.TabStop = False
-        Me.btnNotaCredito.Text = "Nota de Credito"
+        Me.btnNotaCredito.Text = "Nota de Crédito"
         Me.btnNotaCredito.UseVisualStyleBackColor = False
         '
         'btnNotaCreditoPDF

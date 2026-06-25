@@ -21,7 +21,7 @@ Public Class FrmAplicaAbonoApartado
     Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
 #End Region
 
-#Region "M�todos"
+#Region "Métodos"
     Private Sub IniciaDetalleMovimiento()
         dtbDesglosePago = New DataTable()
         dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
@@ -236,7 +236,7 @@ Public Class FrmAplicaAbonoApartado
         cboTipoBanco.Width = 371
         lblBanco.Width = 371
         lblBanco.Text = "Banco Adquiriente"
-        lblAutorizacion.Text = "Autorizaci�n"
+        lblAutorizacion.Text = "Autorización"
         txtDocumento.Text = ""
         txtTipoTarjeta.Text = ""
         txtMontoPago.Text = ""
@@ -312,7 +312,7 @@ Public Class FrmAplicaAbonoApartado
             formPagoFactura.decPagoCliente = decPagoCliente
             formPagoFactura.ShowDialog()
         Else
-            MessageBox.Show("Transacci�n efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
         btnAgregar.Enabled = True
         btnImprimir.Enabled = True
@@ -380,7 +380,7 @@ Public Class FrmAplicaAbonoApartado
                 cboTipoBanco.Width = 371
                 lblBanco.Width = 371
                 lblBanco.Text = "Banco Adquiriente"
-                lblAutorizacion.Text = "Autorizaci�n"
+                lblAutorizacion.Text = "Autorización"
                 txtTipoTarjeta.Visible = True
                 lblTipoTarjeta.Visible = True
             Else

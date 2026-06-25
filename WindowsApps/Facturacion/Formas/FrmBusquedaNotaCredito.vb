@@ -6,7 +6,7 @@ Public Class FrmBusquedaNotaCredito
     Private notaCredito As NotaCreditoCliente
 #End Region
 
-#Region "M�todos"
+#Region "Métodos"
 #End Region
 
 #Region "Eventos Controles"
@@ -32,7 +32,7 @@ Public Class FrmBusquedaNotaCredito
 
     Private Async Sub BtnBuscar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBuscar.Click
         If txtId.Text = "" Then
-            MessageBox.Show("Debe ingresar el numero de nota de credito!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Debe ingresar el numero de nota de crédito!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         Try

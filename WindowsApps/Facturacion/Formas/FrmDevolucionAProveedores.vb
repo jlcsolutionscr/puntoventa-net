@@ -16,7 +16,7 @@ Public Class FrmDevolucionAProveedores
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
 #End Region
 
-#Region "M�todos"
+#Region "Métodos"
     Private Sub IniciaDetalleDevolucion()
         dtbDetalleDevolucion = New DataTable()
         dtbDetalleDevolucion.Columns.Add("IDPRODUCTO", GetType(Integer))
@@ -52,13 +52,13 @@ Public Class FrmDevolucionAProveedores
         grdDetalleDevolucion.Columns.Add(dvcIdProducto)
 
         dvcCodigo.DataPropertyName = "CODIGO"
-        dvcCodigo.HeaderText = "C�digo"
+        dvcCodigo.HeaderText = "Código"
         dvcCodigo.Width = 125
         dvcCodigo.ReadOnly = True
         grdDetalleDevolucion.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
-        dvcDescripcion.HeaderText = "Descripci�n"
+        dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.Width = 340
         dvcCodigo.ReadOnly = True
         grdDetalleDevolucion.Columns.Add(dvcDescripcion)
@@ -186,7 +186,7 @@ Public Class FrmDevolucionAProveedores
                 CargarDetalleCompra(compra)
                 CargarTotales()
             Else
-                MessageBox.Show("El n�mero de compra ingresadno existe!e. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("El número de compra ingresadno existe!e. Por favor verifique.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -233,7 +233,7 @@ Public Class FrmDevolucionAProveedores
             grdDetalleDevolucion.CurrentCell.Value = 0
         Else
             If grdDetalleDevolucion.CurrentCell.Value > grdDetalleDevolucion.CurrentRow.Cells(3).Value Then
-                MessageBox.Show("La cantidad ingresada de art�culos por devolver excede la cantidad de art�culos de la compra.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("La cantidad ingresada de artículos por devolver excede la cantidad de artículos de la compra.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 grdDetalleDevolucion.CurrentCell.Value = 0
             End If
         End If
@@ -268,7 +268,7 @@ Public Class FrmDevolucionAProveedores
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
-                MessageBox.Show("Transacci�n procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 CmdAgregar_Click(CmdAgregar, New EventArgs())
             End If
         End If
@@ -314,7 +314,7 @@ Public Class FrmDevolucionAProveedores
 
     Private Sub CmdGuardar_Click(sender As Object, e As EventArgs) Handles CmdGuardar.Click
         If proveedor Is Nothing Or txtFecha.Text = "" Or compra Is Nothing Or CDbl(txtTotal.Text) = 0 Then
-            MessageBox.Show("Informaci�n incompleta.  Favor verificar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Información incompleta.  Favor verificar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         CmdGuardar.Enabled = False
@@ -351,7 +351,7 @@ Public Class FrmDevolucionAProveedores
                 Exit Sub
             End Try
         End If
-        MessageBox.Show("Transacci�n efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         grdDetalleDevolucion.ReadOnly = True
         CmdImprimir.Enabled = True
         CmdAgregar.Enabled = True

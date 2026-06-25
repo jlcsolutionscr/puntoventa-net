@@ -143,7 +143,7 @@ Public Class FrmPrincipal
 
     Public Function ObtenerDescripcionFormaPagoCliente(intIdTipo As Integer) As String
         If intIdTipo = 8 Then
-            Return "Nota de credito"
+            Return "Nota de Crédito"
         End If
         Dim tipo As LlaveDescripcion = listaFormaPagoCliente.FirstOrDefault(Function(x) x.Id = intIdTipo)
         If tipo IsNot Nothing Then

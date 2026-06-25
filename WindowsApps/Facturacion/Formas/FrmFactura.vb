@@ -860,7 +860,7 @@ Public Class FrmFactura
                 btnBusProd.Enabled = False
                 btnImprimir.Enabled = Not factura.Nulo
                 btnGenerarPDF.Enabled = Not factura.Nulo
-                btnNotaCreditoPDF.Enabled = Not factura.Nulo And factura.IdNotaCredito > 0
+                btnNotaCreditoPDF.Enabled = factura.IdNotaCredito > 0
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
                 btnOrdenServicio.Enabled = False
@@ -870,7 +870,7 @@ Public Class FrmFactura
                 btnAnular.Enabled = Not factura.Nulo And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
             Else
-                MessageBox.Show("No existe registro de factura asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("No existe registro de la factura seleccionada", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End If
     End Sub
@@ -939,7 +939,7 @@ Public Class FrmFactura
                 txtMontoPago.Focus()
                 txtMontoPago.SelectAll()
             Else
-                MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("No existe registro de la orden de servicio seleccionada", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End If
     End Sub
@@ -1008,7 +1008,7 @@ Public Class FrmFactura
                 txtMontoPago.Focus()
                 txtMontoPago.SelectAll()
             Else
-                MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("No existe registro del apartado seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End If
     End Sub
@@ -1077,7 +1077,7 @@ Public Class FrmFactura
                 txtMontoPago.Focus()
                 txtMontoPago.SelectAll()
             Else
-                MessageBox.Show("No existe registro de orden de servicio asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("No existe registro de la proforma seleccionada", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End If
     End Sub
@@ -1105,9 +1105,9 @@ Public Class FrmFactura
             End If
             dtrRowDesglosePago = dtbDesglosePago.NewRow
             dtrRowDesglosePago.Item(0) = StaticFormaPago.NotaCredito
-            dtrRowDesglosePago.Item(1) = "Nota de Credito"
+            dtrRowDesglosePago.Item(1) = "Nota de Crédito"
             dtrRowDesglosePago.Item(2) = notaCreditoCliente.IdNotaCredito
-            dtrRowDesglosePago.Item(3) = "Nota de credito nro. " & notaCreditoCliente.IdNotaCredito
+            dtrRowDesglosePago.Item(3) = "Nota de crédito nro. " & notaCreditoCliente.IdNotaCredito
             dtrRowDesglosePago.Item(4) = ""
             dtrRowDesglosePago.Item(5) = ""
             dtrRowDesglosePago.Item(6) = cboTipoMoneda.SelectedValue
