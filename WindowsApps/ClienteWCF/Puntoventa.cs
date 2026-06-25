@@ -246,6 +246,16 @@ namespace LeandroSoftware.ClienteWCF
             return archivoPDF;
         }
 
+        public static async Task<byte[]> ObtenerNotaCreditoPDF(int intIdNotaCredito, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerNotaCreditoPDF', Parametros: {IdNotaCredito: '" + intIdNotaCredito + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            byte[] archivoPDF = new byte[0];
+            if (respuesta != "")
+                archivoPDF = JsonConvert.DeserializeObject<byte[]>(respuesta);
+            return archivoPDF;
+        }
+
         public static async Task<byte[]> ObtenerApartadoPDF(int intIdApartado, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerApartadoPDF', Parametros: {IdApartado: '" + intIdApartado + "'}}";
@@ -1546,10 +1556,11 @@ namespace LeandroSoftware.ClienteWCF
             return JsonConvert.DeserializeObject<string>(strId);
         }
 
-        public static async Task AnularFactura(int intIdFactura, int intIdUsuario, string strMotivo, string strToken)
+        public static async Task<string> AnularFactura(int intIdFactura, int intIdUsuario, string strMotivo, string strToken)
         {
             string strDatos = "{NombreMetodo: 'AnularFactura', Parametros: {IdFactura: " + intIdFactura + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
-            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+            string strId = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            return JsonConvert.DeserializeObject<string>(strId);
         }
 
         public static async Task<NotaCreditoCliente> ObtenerNotaCreditoCliente(int intIdNotaCredito, string strToken)

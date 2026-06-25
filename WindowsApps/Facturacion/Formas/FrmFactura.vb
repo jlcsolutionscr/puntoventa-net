@@ -784,7 +784,15 @@ Public Class FrmFactura
             formAnulacion.ShowDialog()
             If formAnulacion.bolConfirmacion Then
                 Try
-                    Await Puntoventa.AnularFactura(factura.IdFactura, FrmPrincipal.usuarioGlobal.IdUsuario, formAnulacion.strMotivo, FrmPrincipal.usuarioGlobal.Token)
+                    Dim strIdNotaCredito As String = Await Puntoventa.AnularFactura(factura.IdFactura, FrmPrincipal.usuarioGlobal.IdUsuario, formAnulacion.strMotivo, FrmPrincipal.usuarioGlobal.Token)
+                    If strIdNotaCredito <> "" Then
+                        factura.IdNotaCredito = Integer.Parse(strIdNotaCredito)
+                        btnNotaCreditoPDF.Enabled = True
+                        Dim pdfBytes As Byte() = Await Puntoventa.ObtenerNotaCreditoPDF(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                        Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\NOTACREDITO-" + factura.ConsecFactura.ToString() + ".pdf"
+                        File.WriteAllBytes(pdfFilePath, pdfBytes)
+                        Process.Start(pdfFilePath)
+                    End If
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
@@ -852,6 +860,7 @@ Public Class FrmFactura
                 btnBusProd.Enabled = False
                 btnImprimir.Enabled = Not factura.Nulo
                 btnGenerarPDF.Enabled = Not factura.Nulo
+                btnNotaCreditoPDF.Enabled = Not factura.Nulo And factura.IdNotaCredito > 0
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
                 btnOrdenServicio.Enabled = False
@@ -925,6 +934,7 @@ Public Class FrmFactura
                 btnGuardar.Enabled = True
                 btnImprimir.Enabled = False
                 btnGenerarPDF.Enabled = False
+                btnNotaCreditoPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
                 txtMontoPago.Focus()
                 txtMontoPago.SelectAll()
@@ -993,6 +1003,7 @@ Public Class FrmFactura
                 btnGuardar.Enabled = True
                 btnImprimir.Enabled = False
                 btnGenerarPDF.Enabled = False
+                btnNotaCreditoPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
                 txtMontoPago.Focus()
                 txtMontoPago.SelectAll()
@@ -1061,6 +1072,7 @@ Public Class FrmFactura
                 btnGuardar.Enabled = True
                 btnImprimir.Enabled = False
                 btnGenerarPDF.Enabled = False
+                btnNotaCreditoPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
                 txtMontoPago.Focus()
                 txtMontoPago.SelectAll()
@@ -1317,6 +1329,7 @@ Public Class FrmFactura
         cboCondicionVenta.Enabled = False
         btnGuardar.Enabled = False
         btnGenerarPDF.Enabled = True
+        btnNotaCreditoPDF.Enabled = False
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnInsertar.Enabled = False
@@ -1399,7 +1412,7 @@ Public Class FrmFactura
             If factura IsNot Nothing Then
                 Try
                     Dim pdfBytes As Byte() = Await Puntoventa.ObtenerFacturaPDF(factura.IdFactura, FrmPrincipal.usuarioGlobal.Token)
-                    Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FAC-" + factura.ConsecFactura.ToString() + ".pdf"
+                    Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FACTURA-" + factura.ConsecFactura.ToString() + ".pdf"
                     File.WriteAllBytes(pdfFilePath, pdfBytes)
                     Process.Start(pdfFilePath)
                 Catch ex As Exception
@@ -1407,6 +1420,20 @@ Public Class FrmFactura
                     Exit Sub
                 End Try
             End If
+        End If
+    End Sub
+
+    Private Async Sub BtnNotaCreditoPDF_Click(sender As Object, e As EventArgs) Handles btnNotaCreditoPDF.Click
+        If factura IsNot Nothing And factura.IdNotaCredito > 0 Then
+            Try
+                Dim pdfBytes As Byte() = Await Puntoventa.ObtenerNotaCreditoPDF(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\NOTACREDITO-" + factura.ConsecFactura.ToString() + ".pdf"
+                File.WriteAllBytes(pdfFilePath, pdfBytes)
+                Process.Start(pdfFilePath)
+            Catch ex As Exception
+                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End Try
         End If
     End Sub
 

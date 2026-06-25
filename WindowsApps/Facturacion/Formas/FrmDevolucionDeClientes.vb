@@ -2,6 +2,7 @@ Imports LeandroSoftware.ClienteWCF
 Imports LeandroSoftware.Common.Dominio.Entidades
 Imports LeandroSoftware.Common.Constantes
 Imports System.Collections.Generic
+Imports System.IO
 
 Public Class FrmDevolucionDeClientes
 #Region "Variables"
@@ -283,6 +284,7 @@ Public Class FrmDevolucionDeClientes
         btnAnular.Enabled = False
         btnGuardar.Enabled = True
         btnImprimir.Enabled = False
+        btnNotaCreditoPDF.Enabled = False
         btnBuscarFactura.Enabled = True
         txtIdFactura.Focus()
     End Sub
@@ -327,6 +329,7 @@ Public Class FrmDevolucionDeClientes
                 CargarTotales()
                 grdDetalleDevolucion.ReadOnly = True
                 btnImprimir.Enabled = Not devolucion.Nulo
+                btnNotaCreditoPDF.Enabled = Not devolucion.Nulo And devolucion.IdNotaCredito > 0
                 btnAnular.Enabled = Not devolucion.Nulo And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
                 btnBuscarFactura.Enabled = False
@@ -378,7 +381,17 @@ Public Class FrmDevolucionDeClientes
                 End If
             Next
             Try
-                txtIdDevolucion.Text = Await Puntoventa.AgregarDevolucionCliente(devolucion, FrmPrincipal.usuarioGlobal.Token)
+                Dim strIds As String = Await Puntoventa.AgregarDevolucionCliente(devolucion, FrmPrincipal.usuarioGlobal.Token)
+                Dim arrIds = strIds.Split("-")
+                txtIdDevolucion.Text = arrIds(0)
+                If arrIds(1) IsNot Nothing Then
+                    devolucion.IdNotaCredito = Integer.Parse(arrIds(1))
+                    btnNotaCreditoPDF.Enabled = True
+                    Dim pdfBytes As Byte() = Await Puntoventa.ObtenerNotaCreditoPDF(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                    Dim pdfFilePath As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\NOTACREDITO-" + factura.ConsecFactura.ToString() + ".pdf"
+                    File.WriteAllBytes(pdfFilePath, pdfBytes)
+                    Process.Start(pdfFilePath)
+                End If
             Catch ex As Exception
                 txtIdDevolucion.Text = ""
                 btnGuardar.Enabled = True

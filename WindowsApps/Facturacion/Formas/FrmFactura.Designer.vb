@@ -126,6 +126,7 @@ Partial Class FrmFactura
         Me.cboActividadEconomica = New System.Windows.Forms.ComboBox()
         Me.lblActividadEconomica = New System.Windows.Forms.Label()
         Me.btnNotaCredito = New System.Windows.Forms.Button()
+        Me.btnNotaCreditoPDF = New System.Windows.Forms.Button()
         CType(Me.grdDetalleFactura, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -808,12 +809,12 @@ Partial Class FrmFactura
         Me.txtVendedor.BackColor = System.Drawing.SystemColors.Window
         Me.txtVendedor.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtVendedor.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtVendedor.Location = New System.Drawing.Point(537, 9)
+        Me.txtVendedor.Location = New System.Drawing.Point(568, 9)
         Me.txtVendedor.MaxLength = 0
         Me.txtVendedor.Name = "txtVendedor"
         Me.txtVendedor.ReadOnly = True
         Me.txtVendedor.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtVendedor.Size = New System.Drawing.Size(250, 20)
+        Me.txtVendedor.Size = New System.Drawing.Size(219, 20)
         Me.txtVendedor.TabIndex = 1
         Me.txtVendedor.TabStop = False
         '
@@ -832,7 +833,7 @@ Partial Class FrmFactura
         Me.Label11.BackColor = System.Drawing.Color.Transparent
         Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(466, 9)
+        Me.Label11.Location = New System.Drawing.Point(497, 9)
         Me.Label11.Name = "Label11"
         Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label11.Size = New System.Drawing.Size(65, 19)
@@ -1270,6 +1271,21 @@ Partial Class FrmFactura
         Me.btnNotaCredito.Text = "Nota de Credito"
         Me.btnNotaCredito.UseVisualStyleBackColor = False
         '
+        'btnNotaCreditoPDF
+        '
+        Me.btnNotaCreditoPDF.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnNotaCreditoPDF.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnNotaCreditoPDF.Enabled = False
+        Me.btnNotaCreditoPDF.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnNotaCreditoPDF.Location = New System.Drawing.Point(393, 8)
+        Me.btnNotaCreditoPDF.Name = "btnNotaCreditoPDF"
+        Me.btnNotaCreditoPDF.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnNotaCreditoPDF.Size = New System.Drawing.Size(64, 21)
+        Me.btnNotaCreditoPDF.TabIndex = 207
+        Me.btnNotaCreditoPDF.TabStop = False
+        Me.btnNotaCreditoPDF.Text = "N/C PDF"
+        Me.btnNotaCreditoPDF.UseVisualStyleBackColor = False
+        '
         'FrmFactura
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -1277,6 +1293,7 @@ Partial Class FrmFactura
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 642)
+        Me.Controls.Add(Me.btnNotaCreditoPDF)
         Me.Controls.Add(Me.btnNotaCredito)
         Me.Controls.Add(Me.cboActividadEconomica)
         Me.Controls.Add(Me.lblActividadEconomica)
@@ -1430,4 +1447,5 @@ Partial Class FrmFactura
     Public WithEvents cboActividadEconomica As ComboBox
     Public WithEvents lblActividadEconomica As Label
     Public WithEvents btnNotaCredito As Button
+    Public WithEvents btnNotaCreditoPDF As Button
 End Class

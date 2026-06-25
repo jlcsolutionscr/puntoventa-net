@@ -60,6 +60,7 @@ Partial Class FrmDevolucionDeClientes
         Me.txtCliente = New System.Windows.Forms.TextBox()
         Me.txtDetalle = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.btnNotaCreditoPDF = New System.Windows.Forms.Button()
         CType(Me.grdDetalleDevolucion, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -384,12 +385,28 @@ Partial Class FrmDevolucionDeClientes
         Me.Label1.Text = "Detalle:"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'btnNotaCreditoPDF
+        '
+        Me.btnNotaCreditoPDF.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnNotaCreditoPDF.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnNotaCreditoPDF.Enabled = False
+        Me.btnNotaCreditoPDF.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnNotaCreditoPDF.Location = New System.Drawing.Point(329, 8)
+        Me.btnNotaCreditoPDF.Name = "btnNotaCreditoPDF"
+        Me.btnNotaCreditoPDF.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnNotaCreditoPDF.Size = New System.Drawing.Size(64, 21)
+        Me.btnNotaCreditoPDF.TabIndex = 208
+        Me.btnNotaCreditoPDF.TabStop = False
+        Me.btnNotaCreditoPDF.Text = "N/C PDF"
+        Me.btnNotaCreditoPDF.UseVisualStyleBackColor = False
+        '
         'FrmDevolucionDeClientes
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(825, 458)
+        Me.Controls.Add(Me.btnNotaCreditoPDF)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtDetalle)
         Me.Controls.Add(Me.btnBuscarFactura)
@@ -436,4 +453,5 @@ Partial Class FrmDevolucionDeClientes
     Public WithEvents txtCliente As System.Windows.Forms.TextBox
     Public WithEvents txtDetalle As TextBox
     Public WithEvents Label1 As Label
+    Public WithEvents btnNotaCreditoPDF As Button
 End Class
