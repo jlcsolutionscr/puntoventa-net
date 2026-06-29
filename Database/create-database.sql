@@ -263,7 +263,6 @@ CREATE TABLE catalogocontable (
   Descripcion varchar(200) NOT NULL,
   IdClaseCuenta int NOT NULL,
   PermiteMovimiento bit(1) NOT NULL,
-  PermiteSobrejiro bit(1) NOT NULL,
   SaldoActual double NOT NULL DEFAULT '0',
   TotalDebito double NOT NULL DEFAULT '0',
   TotalCredito double NOT NULL DEFAULT '0'

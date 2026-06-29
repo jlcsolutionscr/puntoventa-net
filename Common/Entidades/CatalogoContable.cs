@@ -22,7 +22,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdClaseCuenta { get; set; }
         public string TipoSaldo { get { return ClaseCuentaContable.ObtenerDescripcion(IdClaseCuenta); } }
         public bool PermiteMovimiento { get; set; }
-        public bool PermiteSobrejiro { get; set; }
         public decimal SaldoActual { get; set; }
         public decimal TotalDebito { get; set; }
         public decimal TotalCredito { get; set; }
