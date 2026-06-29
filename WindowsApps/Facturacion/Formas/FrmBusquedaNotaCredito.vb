@@ -41,10 +41,15 @@ Public Class FrmBusquedaNotaCredito
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
+        If notaCredito Is Nothing Then
+            MessageBox.Show("La referencia para la nota de crédito no existe!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
+        End If
         txtFecha.Text = notaCredito.Fecha
         txtMontoOriginal.Text = FormatNumber(notaCredito.MontoOriginal, 2)
         txtSaldo.Text = FormatNumber(notaCredito.Saldo, 2)
         txtDetalle.Text = notaCredito.Detalle
+        btnAplicar.Enabled = notaCredito.Saldo > 0
     End Sub
 
     Private Sub btnAplicar_Click(sender As Object, e As EventArgs) Handles btnAplicar.Click

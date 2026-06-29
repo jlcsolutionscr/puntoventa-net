@@ -488,6 +488,7 @@ Public Class FrmFactura
         decSaldoPorPagar = decTotal - decMontoAdelanto - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
+        btnNotaCredito.Enabled = decSaldoPorPagar > 0 And txtIdFactura.Text = ""
     End Sub
 
     Private Sub CargarTotalesPago()
@@ -500,6 +501,7 @@ Public Class FrmFactura
         decSaldoPorPagar = decTotal - decMontoAdelanto - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
+        btnNotaCredito.Enabled = decSaldoPorPagar > 0 And txtIdFactura.Text = ""
     End Sub
 
     Private Sub CargarCombos()
@@ -735,7 +737,7 @@ Public Class FrmFactura
         btnOrdenServicio.Enabled = True
         btnApartado.Enabled = True
         btnProforma.Enabled = True
-        btnNotaCredito.Enabled = True
+        btnNotaCredito.Enabled = False
         Try
             cliente = FrmPrincipal.ObtenerClienteDeContado()
             txtNombreCliente.Text = cliente.Nombre
@@ -1115,9 +1117,9 @@ Public Class FrmFactura
             decTipoCambio = CDbl(txtTipoCambio.Text)
             Dim objPkDesglose(1) As Object
             objPkDesglose(0) = StaticFormaPago.NotaCredito
-            objPkDesglose(1) = 0
+            objPkDesglose(1) = notaCreditoCliente.IdNotaCredito
             If dtbDesglosePago.Rows.Contains(objPkDesglose) Then
-                MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("La nota de crédito ya fue agregada al detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
             dtrRowDesglosePago = dtbDesglosePago.NewRow

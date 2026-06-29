@@ -36,7 +36,6 @@ Partial Class FrmCatalogoContable
         Me.txtNivel_7 = New System.Windows.Forms.TextBox()
         Me.lblCuentaGrupo = New System.Windows.Forms.Label()
         Me.cboCuentaGrupo = New System.Windows.Forms.ComboBox()
-        Me.chkPermiteSobrejiro = New System.Windows.Forms.CheckBox()
         Me.chkPermiteMovimiento = New System.Windows.Forms.CheckBox()
         Me.cboTipoSaldo = New System.Windows.Forms.ComboBox()
         Me.txtSaldoActual = New System.Windows.Forms.TextBox()
@@ -243,16 +242,6 @@ Partial Class FrmCatalogoContable
         Me.cboCuentaGrupo.Size = New System.Drawing.Size(260, 21)
         Me.cboCuentaGrupo.TabIndex = 8
         '
-        'chkPermiteSobrejiro
-        '
-        Me.chkPermiteSobrejiro.AutoSize = True
-        Me.chkPermiteSobrejiro.Location = New System.Drawing.Point(95, 231)
-        Me.chkPermiteSobrejiro.Name = "chkPermiteSobrejiro"
-        Me.chkPermiteSobrejiro.Size = New System.Drawing.Size(105, 17)
-        Me.chkPermiteSobrejiro.TabIndex = 13
-        Me.chkPermiteSobrejiro.Text = "Permite Sobrejiro"
-        Me.chkPermiteSobrejiro.UseVisualStyleBackColor = True
-        '
         'chkPermiteMovimiento
         '
         Me.chkPermiteMovimiento.AutoSize = True
@@ -278,7 +267,7 @@ Partial Class FrmCatalogoContable
         Me.txtSaldoActual.BackColor = System.Drawing.SystemColors.Window
         Me.txtSaldoActual.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtSaldoActual.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtSaldoActual.Location = New System.Drawing.Point(95, 254)
+        Me.txtSaldoActual.Location = New System.Drawing.Point(94, 231)
         Me.txtSaldoActual.MaxLength = 0
         Me.txtSaldoActual.Name = "txtSaldoActual"
         Me.txtSaldoActual.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -291,7 +280,7 @@ Partial Class FrmCatalogoContable
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label1.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label1.Location = New System.Drawing.Point(20, 254)
+        Me.Label1.Location = New System.Drawing.Point(19, 231)
         Me.Label1.Name = "Label1"
         Me.Label1.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label1.Size = New System.Drawing.Size(69, 17)
@@ -331,7 +320,7 @@ Partial Class FrmCatalogoContable
         '
         Me.cboClaseCuenta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboClaseCuenta.FormattingEnabled = True
-        Me.cboClaseCuenta.Location = New System.Drawing.Point(94, 280)
+        Me.cboClaseCuenta.Location = New System.Drawing.Point(93, 257)
         Me.cboClaseCuenta.Name = "cboClaseCuenta"
         Me.cboClaseCuenta.Size = New System.Drawing.Size(124, 21)
         Me.cboClaseCuenta.TabIndex = 15
@@ -341,7 +330,7 @@ Partial Class FrmCatalogoContable
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(10, 281)
+        Me.Label2.Location = New System.Drawing.Point(9, 258)
         Me.Label2.Name = "Label2"
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(78, 17)
@@ -363,7 +352,6 @@ Partial Class FrmCatalogoContable
         Me.Controls.Add(Me.txtSaldoActual)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.cboTipoSaldo)
-        Me.Controls.Add(Me.chkPermiteSobrejiro)
         Me.Controls.Add(Me.chkPermiteMovimiento)
         Me.Controls.Add(Me.lblCuentaGrupo)
         Me.Controls.Add(Me.cboCuentaGrupo)
@@ -406,7 +394,6 @@ Partial Class FrmCatalogoContable
     Public WithEvents txtNivel_7 As System.Windows.Forms.TextBox
     Public WithEvents lblCuentaGrupo As System.Windows.Forms.Label
     Friend WithEvents cboCuentaGrupo As System.Windows.Forms.ComboBox
-    Friend WithEvents chkPermiteSobrejiro As System.Windows.Forms.CheckBox
     Friend WithEvents chkPermiteMovimiento As System.Windows.Forms.CheckBox
     Friend WithEvents cboTipoSaldo As System.Windows.Forms.ComboBox
     Public WithEvents txtSaldoActual As System.Windows.Forms.TextBox

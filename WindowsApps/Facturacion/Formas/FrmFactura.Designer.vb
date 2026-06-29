@@ -1261,6 +1261,7 @@ Partial Class FrmFactura
         '
         Me.btnNotaCredito.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnNotaCredito.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnNotaCredito.Enabled = False
         Me.btnNotaCredito.ForeColor = System.Drawing.SystemColors.ControlText
         Me.btnNotaCredito.Location = New System.Drawing.Point(710, 116)
         Me.btnNotaCredito.Name = "btnNotaCredito"

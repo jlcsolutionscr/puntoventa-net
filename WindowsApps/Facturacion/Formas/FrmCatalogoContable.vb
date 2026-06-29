@@ -83,7 +83,6 @@ Public Class FrmCatalogoContable
             txtDescripcion.Text = datos.Descripcion
             cboTipoSaldo.SelectedValue = datos.IdClaseCuenta
             chkPermiteMovimiento.Checked = datos.PermiteMovimiento
-            chkPermiteSobrejiro.Checked = datos.PermiteSobrejiro
             txtSaldoActual.Text = FormatNumber(datos.SaldoActual, 2)
             cboClaseCuenta.SelectedValue = datos.IdClaseCuenta
         Else
@@ -120,7 +119,6 @@ Public Class FrmCatalogoContable
         datos.Descripcion = txtDescripcion.Text
         datos.IdClaseCuenta = cboTipoSaldo.SelectedValue
         datos.PermiteMovimiento = chkPermiteMovimiento.Checked
-        datos.PermiteSobrejiro = chkPermiteSobrejiro.Checked
         datos.SaldoActual = txtSaldoActual.Text
         datos.IdClaseCuenta = cboClaseCuenta.SelectedValue
         Try
