@@ -1481,8 +1481,9 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                         strRespuesta = JsonConvert.SerializeObject(parametroContable);
                     break;
                 case "ObtenerNotaCreditoCliente":
+                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdNotaCredito").Value.ToString());
-                    NotaCreditoCliente notaCreditoCliente = _servicioFacturacion.ObtenerNotaCreditoCliente(intIdLlave1);
+                    NotaCreditoCliente notaCreditoCliente = _servicioFacturacion.ObtenerNotaCreditoCliente(intIdEmpresa, intIdLlave1);
                     if (notaCreditoCliente != null)
                         strRespuesta = JsonConvert.SerializeObject(notaCreditoCliente);
                     break;

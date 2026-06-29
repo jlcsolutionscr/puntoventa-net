@@ -352,7 +352,7 @@ Public Class FrmDevolucionDeClientes
     Private Async Sub btnNotaCreditoPDF_Click(sender As Object, e As EventArgs) Handles btnNotaCreditoPDF.Click
         If devolucion IsNot Nothing And devolucion.IdNotaCredito > 0 Then
             Try
-                Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdEmpresa, factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                         .usuario = FrmPrincipal.usuarioGlobal,
                         .empresa = FrmPrincipal.empresaGlobal,
@@ -419,7 +419,7 @@ Public Class FrmDevolucionDeClientes
                 If arrIds(1) IsNot Nothing Then
                     devolucion.IdNotaCredito = Integer.Parse(arrIds(1))
                     btnNotaCreditoPDF.Enabled = True
-                    Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                    Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdEmpresa, factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
                     comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                         .usuario = FrmPrincipal.usuarioGlobal,
                         .empresa = FrmPrincipal.empresaGlobal,

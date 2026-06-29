@@ -788,7 +788,7 @@ Public Class FrmFactura
                     If strIdNotaCredito <> "" Then
                         factura.IdNotaCredito = Integer.Parse(strIdNotaCredito)
                         btnNotaCreditoPDF.Enabled = True
-                        Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                        Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdEmpresa, factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
                         comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                             .usuario = FrmPrincipal.usuarioGlobal,
                             .empresa = FrmPrincipal.empresaGlobal,
@@ -915,7 +915,7 @@ Public Class FrmFactura
                 txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
                 txtTelefono.Text = ordenServicio.Telefono
                 txtObservaciones.Text = ordenServicio.OtrosDetalles
-                cboActividadEconomica.SelectedIndex = 0
+                If cboActividadEconomica.Items.Count > 0 Then cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
@@ -984,7 +984,7 @@ Public Class FrmFactura
                 txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
                 txtTelefono.Text = apartado.Telefono
                 txtObservaciones.Text = apartado.TextoAdicional
-                cboActividadEconomica.SelectedIndex = 0
+                If cboActividadEconomica.Items.Count > 0 Then cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
@@ -1053,7 +1053,7 @@ Public Class FrmFactura
                 txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
                 txtTelefono.Text = proforma.Telefono
                 txtObservaciones.Text = proforma.TextoAdicional
-                cboActividadEconomica.SelectedIndex = 0
+                If cboActividadEconomica.Items.Count > 0 Then cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
@@ -1104,7 +1104,7 @@ Public Class FrmFactura
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
-                notaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                notaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -1443,7 +1443,7 @@ Public Class FrmFactura
     Private Async Sub BtnNotaCreditoPDF_Click(sender As Object, e As EventArgs) Handles btnNotaCreditoPDF.Click
         If factura IsNot Nothing And factura.IdNotaCredito > 0 Then
             Try
-                Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdEmpresa, factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                     .usuario = FrmPrincipal.usuarioGlobal,
                     .empresa = FrmPrincipal.empresaGlobal,

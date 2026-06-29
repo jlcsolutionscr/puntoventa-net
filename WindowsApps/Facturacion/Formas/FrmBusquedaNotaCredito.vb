@@ -36,7 +36,7 @@ Public Class FrmBusquedaNotaCredito
             Exit Sub
         End If
         Try
-            notaCredito = Await Puntoventa.ObtenerNotaCreditoCliente(txtId.Text, FrmPrincipal.usuarioGlobal.Token)
+            notaCredito = Await Puntoventa.ObtenerNotaCreditoCliente(FrmPrincipal.empresaGlobal.IdEmpresa, txtId.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub

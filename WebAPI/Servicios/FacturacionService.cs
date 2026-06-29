@@ -56,7 +56,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarDevolucionCliente(DevolucionCliente devolucion);
         void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion);
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
-        NotaCreditoCliente ObtenerNotaCreditoCliente(int intIdNotaCredito);
+        NotaCreditoCliente ObtenerNotaCreditoCliente(int intIdEmpresa, int intIdNotaCredito);
         int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, int intIdDevolucion, string strNombre, string strFechaFinal);
         IList<FacturaDetalle> ObtenerListadoDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, int numPagina, int cantRec, int intIdDevolucion, string strNombre, string strFechaFinal);
         IList<DocumentoDetalle> ObtenerListadoDocumentosElectronicosPendientes();
@@ -2553,14 +2553,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public NotaCreditoCliente ObtenerNotaCreditoCliente(int intIdNotaCredito)
+        public NotaCreditoCliente ObtenerNotaCreditoCliente(int intIdEmpresa, int intIdNotaCredito)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 try
                 {
-                    NotaCreditoCliente notaCreditoCliente = dbContext.NotaCreditoClienteRepository.FirstOrDefault(x => x.IdNotaCredito == intIdNotaCredito);
+                    NotaCreditoCliente notaCreditoCliente = dbContext.NotaCreditoClienteRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdNotaCredito == intIdNotaCredito);
                     return notaCreditoCliente;
                 }
                 catch (Exception ex)
