@@ -4,13 +4,12 @@ using LeandroSoftware.Common.Dominio.Entidades;
 
 namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
 {
-    public class TiqueteOrdenServicioConfiguration : IEntityTypeConfiguration<TiqueteOrdenServicio>
+    public class TiqueteDespachoMercanciaConfiguration : IEntityTypeConfiguration<TiqueteDespachoMercancia>
     {
-        public void Configure(EntityTypeBuilder<TiqueteOrdenServicio> builder)
+        public void Configure(EntityTypeBuilder<TiqueteDespachoMercancia> builder)
         {
-            builder.ToTable("tiqueteordenservicio");
+            builder.ToTable("tiquetedespachomercancia");
             builder.HasKey(p => p.IdTiquete);
-            builder.HasOne(p => p.OrdenServicio).WithMany().HasForeignKey(p => p.IdOrden);
         }
     }
 }

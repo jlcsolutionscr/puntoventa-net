@@ -40,5 +40,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public List<DetalleOrdenServicio> DetalleOrdenServicio { get; set; }
         public List<DesglosePagoOrdenServicio> DesglosePagoOrdenServicio { get; set; }
         public int IdPuntoDeServicio { get; set; }
+        public int IdProforma { get; set; }
     }
 }

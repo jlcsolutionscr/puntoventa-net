@@ -178,9 +178,9 @@ namespace JLCSolutionsCR
                             Console.WriteLine("Error requesting tickets from server:", ex.Message);
                             _logger.Error("Error requesting tickets from server: " + ex.Message);
                         }
-                        List<TiqueteOrdenServicio> listado = new List<TiqueteOrdenServicio>();
-                        if (response != "") listado = JsonConvert.DeserializeObject<List<TiqueteOrdenServicio>>(response);
-                        foreach (TiqueteOrdenServicio tiquete in listado)
+                        List<TiqueteDespachoMercancia> listado = new List<TiqueteDespachoMercancia>();
+                        if (response != "") listado = JsonConvert.DeserializeObject<List<TiqueteDespachoMercancia>>(response);
+                        foreach (TiqueteDespachoMercancia tiquete in listado)
                         {
                             try
                             {
@@ -272,7 +272,7 @@ namespace JLCSolutionsCR
             }
         }
 
-        private void GenerateWorkingOrderTicket(TiqueteOrdenServicio tiquete)
+        private void GenerateWorkingOrderTicket(TiqueteDespachoMercancia tiquete)
         {
             try
             {
@@ -284,7 +284,7 @@ namespace JLCSolutionsCR
                     new ClsLineaImpresion(2, "DETALLE DE ORDEN", 0, 100, 12, (int)StringAlignment.Center, false),
                     new ClsLineaImpresion(1, new string('-', 31), 0, 100, 12, (int)StringAlignment.Center, false)
                 };
-                IList<DescripcionValor> detalle = JsonConvert.DeserializeObject<IList<DescripcionValor>>(tiquete.DetalleTiqueteOrdenServicio);
+                IList<DescripcionValor> detalle = JsonConvert.DeserializeObject<IList<DescripcionValor>>(tiquete.DetalleTiqueteDespachoMercancia);
                 foreach (DescripcionValor linea in detalle)
                 {
                     string strDescription = linea.Descripcion;

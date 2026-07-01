@@ -41,7 +41,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         [HttpGet("obtenerlistadotiqueteordenserviciopendiente")]
         public string ObtenerListadoTiqueteOrdenServicioPendiente(int idempresa, int idsucursal, string categoria)
         {
-            IList<TiqueteOrdenServicio> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(idempresa, idsucursal, 0, categoria, true, false);
+            IList<TiqueteDespachoMercancia> listadoTiqueteOrdenServicio = _servicioFacturacion.ObtenerListadoTiqueteOrdenServicio(idempresa, idsucursal, 0, categoria, true, false);
             string strRespuesta = "";
             if (listadoTiqueteOrdenServicio.Count > 0)
                 strRespuesta = JsonConvert.SerializeObject(listadoTiqueteOrdenServicio);

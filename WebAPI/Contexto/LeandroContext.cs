@@ -95,7 +95,7 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<SucursalPorEmpresa> SucursalPorEmpresaRepository { get; set; }
         public DbSet<TerminalPorSucursal> TerminalPorSucursalRepository { get; set; }
         public DbSet<TipoMovimientoBanco> TipoMovimientoBancoRepository { get; set; }
-        public DbSet<TiqueteOrdenServicio> TiqueteOrdenServicioRepository { get; set; }
+        public DbSet<TiqueteDespachoMercancia> TiqueteDespachoMercanciaRepository { get; set; }
         public DbSet<Traslado> TrasladoRepository { get; set; }
         public DbSet<Usuario> UsuarioRepository { get; set; }
         public DbSet<Vendedor> VendedorRepository { get; set; }

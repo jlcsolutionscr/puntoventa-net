@@ -1760,14 +1760,16 @@ CREATE TABLE tipoproducto (
 -- Table structure for table tiqueteordenservicio
 --
 
-CREATE TABLE tiqueteordenservicio (
+CREATE TABLE tiquetedespachomercancia (
   IdTiquete int NOT NULL,
-  IdOrden int NOT NULL,
+  IdReferencia int NOT NULL,
   IdEmpresa int NOT NULL,
   IdSucursal int NOT NULL,
-  Descripcion varchar(100) NOT NULL,
+  FechaEmision varchar(25) NOT NULL,
+  Etiqueta varchar(100) NOT NULL,
+  Descripcion varchar(200) NOT NULL,
   Impresora varchar(100) NOT NULL,
-  DetalleTiqueteOrdenServicio varchar(10000) NOT NULL,
+  DetalleTiqueteDespachoMercancia varchar(10000) NOT NULL,
   Impreso bit(1) NOT NULL
 );
 

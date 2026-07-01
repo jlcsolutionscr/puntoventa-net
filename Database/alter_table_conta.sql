@@ -57,7 +57,29 @@ ALTER TABLE desglosepagoordenservicio CHANGE IdCuentaBanco IdReferencia int NOT 
 ALTER TABLE desglosepagofactura CHANGE IdCuentaBanco IdReferencia int NOT NULL;
 
 ALTER TABLE factura ADD IdNotaCredito int NOT NULL;
+ALTER TABLE empresa ADD ImprimeTiqueteDespachoMercancia bit(1) NOT NULL;
 ALTER TABLE devolucioncliente ADD IdNotaCredito int NOT NULL;
+ALTER TABLE ordenservicio ADD IdProforma int NOT NULL;
 
 ALTER TABLE producto DROP COLUMN Tipo;
 ALTER TABLE linea ADD Tipo int NOT NULL;
+
+DROP TABLE tiqueteordenservicio;
+
+CREATE TABLE tiquetedespachomercancia (
+  IdTiquete int NOT NULL,
+  IdReferencia int NOT NULL,
+  IdEmpresa int NOT NULL,
+  IdSucursal int NOT NULL,
+  FechaEmision varchar(25) NOT NULL,
+  Etiqueta varchar(100) NOT NULL,
+  Descripcion varchar(200) NOT NULL,
+  Impresora varchar(100) NOT NULL,
+  DetalleTiqueteDespachoMercancia varchar(10000) NOT NULL,
+  Impreso bit(1) NOT NULL
+);
+
+ALTER TABLE tiquetedespachomercancia
+  ADD PRIMARY KEY (IdTiquete),
+  ADD KEY tiquetedespachomercancia_ibfk_1 (IdReferencia),
+  ADD KEY tiquetedespachomercancia_ibfk_2 (IdEmpresa,IdSucursal);
