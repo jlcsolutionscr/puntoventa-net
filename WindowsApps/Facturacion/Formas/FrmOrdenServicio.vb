@@ -99,7 +99,6 @@ Public Class FrmOrdenServicio
         dvcCantidad.DataPropertyName = "CANTIDAD"
         dvcCantidad.HeaderText = "Cantidad"
         dvcCantidad.Width = 60
-        dvcCantidad.ReadOnly = True
         dvcCantidad.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleOrdenServicio.Columns.Add(dvcCantidad)
@@ -1023,7 +1022,9 @@ Public Class FrmOrdenServicio
                 MessageBox.Show(strError, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End If
-            CargarLineaDetalleOrdenServicio(producto, txtDescripcion.Text, txtCantidad.Text, decPrecioVenta, txtPorcDesc.Text)
+            Dim decPrecioVentaFinal = decPrecioVenta
+            If producto.Linea.Tipo > 1 And Not FrmPrincipal.empresaGlobal.PrecioVentaIncluyeIVA Then decPrecioVentaFinal = decPrecioVenta * 1.13
+            CargarLineaDetalleOrdenServicio(producto, txtDescripcion.Text, txtCantidad.Text, decPrecioVentaFinal, txtPorcDesc.Text)
             txtCantidad.Text = "1"
             txtCodigo.Text = ""
             txtDescripcion.Text = ""
@@ -1173,7 +1174,7 @@ Public Class FrmOrdenServicio
     End Sub
 
     Private Sub grdDetalleOrdenServicio_EditingControlShowing(sender As Object, e As DataGridViewEditingControlShowingEventArgs) Handles grdDetalleOrdenServicio.EditingControlShowing
-        If grdDetalleOrdenServicio.CurrentCell.ColumnIndex = 4 Then
+        If grdDetalleOrdenServicio.CurrentCell.ColumnIndex = 3 Or grdDetalleOrdenServicio.CurrentCell.ColumnIndex = 4 Then
             Dim tb As TextBox = e.Control
             If tb IsNot Nothing Then
                 AddHandler CType(e.Control, TextBox).KeyPress, AddressOf TextBox_keyPress
@@ -1186,7 +1187,9 @@ Public Class FrmOrdenServicio
     End Sub
 
     Private Sub grdDetalleOrdenServicio_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleOrdenServicio.CellValueChanged
-        If e.ColumnIndex = 4 And Not bolAutorizando Then
+        If e.ColumnIndex = 3 Then
+            CargarTotales()
+        ElseIf e.ColumnIndex = 4 And Not bolAutorizando Then
             bolAutorizando = True
             Dim bolPrecioAutorizado As Boolean = False
             Dim decPorcDesc As Decimal = 0

@@ -287,7 +287,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     decSubTotalCompra = compra.Excento + compra.Gravado + compra.Descuento;
                     foreach (var detalleCompra in compra.DetalleCompra)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleCompra.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleCompra.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la compra no existe!");
                         if (producto.EsServicio)
@@ -295,10 +295,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
                         if (!producto.EsServicio)
                         {
-                            decimal decPrecioVenta = Math.Round(detalleCompra.PrecioVenta * (1 + (detalleCompra.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
-                            if (producto.PrecioVenta1 != decPrecioVenta)
+                            if (producto.PrecioVenta1 != detalleCompra.PrecioVenta)
                             {
-                                producto.PrecioVenta1 = decPrecioVenta;
+                                producto.PrecioVenta1 = detalleCompra.PrecioVenta;
                                 dbContext.NotificarModificacion(producto);
                             }
                             List<ExistenciaPorSucursal> existenciasLista = dbContext.ExistenciaPorSucursalRepository.AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto).ToList();

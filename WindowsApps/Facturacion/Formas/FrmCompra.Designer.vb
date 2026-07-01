@@ -493,7 +493,6 @@ Partial Class FrmCompra
         Me.grdDetalleCompra.Location = New System.Drawing.Point(8, 168)
         Me.grdDetalleCompra.MultiSelect = False
         Me.grdDetalleCompra.Name = "grdDetalleCompra"
-        Me.grdDetalleCompra.ReadOnly = True
         Me.grdDetalleCompra.RowHeadersVisible = False
         Me.grdDetalleCompra.Size = New System.Drawing.Size(934, 200)
         Me.grdDetalleCompra.TabIndex = 24
@@ -1095,7 +1094,7 @@ Partial Class FrmCompra
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(952, 634)
+        Me.ClientSize = New System.Drawing.Size(952, 633)
         Me.Controls.Add(Me.txtObservaciones)
         Me.Controls.Add(Me._lblLabels_11)
         Me.Controls.Add(Me.btnGenerarPDF)
