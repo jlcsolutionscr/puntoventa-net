@@ -9,6 +9,8 @@ DROP TABLE tipoparametrocontable;
 ALTER TABLE empresa ADD DevolucionEnEfectivo bit(1) NOT NULL;
 ALTER TABLE empresa ADD ImprimeTiqueteDespachoMercancia bit(1) NOT NULL;
 ALTER TABLE empresa ADD ImprimeTiqueteAlFacturar bit(1) NOT NULL;
+ALTER TABLE empresa ADD HabilitaCodigoTransitorio bit(1) NOT NULL;
+ALTER TABLE empresa ADD HabilitaCodigoImpuestoServicio bit(1) NOT NULL;
 
 CREATE TABLE notacreditocliente (
   IdEmpresa int NOT NULL,
