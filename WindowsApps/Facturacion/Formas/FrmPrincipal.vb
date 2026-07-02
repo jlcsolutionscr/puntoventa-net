@@ -832,7 +832,7 @@ Public Class FrmPrincipal
         End Try
         dgvDecimal = New DataGridViewCellStyle With {
             .Format = "N2",
-            .NullValue = "0",
+            .NullValue = "0.00",
             .Alignment = DataGridViewContentAlignment.MiddleRight
         }
         dgvInteger = New DataGridViewCellStyle With {

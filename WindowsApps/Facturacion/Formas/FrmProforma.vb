@@ -11,7 +11,7 @@ Public Class FrmProforma
     Private decDescuento, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta As Decimal
     Private consecDetalle As Short
     Private dtbDetalleProforma As DataTable
-    Private dtrRowDetProforma As DataRow
+    Private dtbRowDetProforma As DataRow
     Private proforma As Proforma
     Private detalleProforma As DetalleProforma
     Private producto As Producto
@@ -62,7 +62,6 @@ Public Class FrmProforma
         Dim dvcId As New DataGridViewTextBoxColumn
 
         dvcIdProducto.DataPropertyName = "IDPRODUCTO"
-        dvcIdProducto.HeaderText = "IdP"
         dvcIdProducto.Visible = False
         grdDetalleProforma.Columns.Add(dvcIdProducto)
 
@@ -126,12 +125,10 @@ Public Class FrmProforma
         grdDetalleProforma.Columns.Add(dvcExc)
 
         dvcPorcentajeIVA.DataPropertyName = "PORCENTAJEIVA"
-        dvcPorcentajeIVA.HeaderText = "PorcIVA"
         dvcPorcentajeIVA.Visible = False
         grdDetalleProforma.Columns.Add(dvcPorcentajeIVA)
 
         dvcId.DataPropertyName = "ID"
-        dvcId.HeaderText = "Id"
         dvcId.Visible = False
         grdDetalleProforma.Columns.Add(dvcId)
     End Sub
@@ -140,58 +137,47 @@ Public Class FrmProforma
         dtbDetalleProforma.Rows.Clear()
         consecDetalle = 0
         For Each detalle As DetalleProforma In proforma.DetalleProforma
+            Dim decPrecioVentaIVA = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2)
             consecDetalle += 1
-            dtrRowDetProforma = dtbDetalleProforma.NewRow
-            dtrRowDetProforma.Item(0) = detalle.IdProducto
-            dtrRowDetProforma.Item(1) = detalle.Producto.Codigo
-            dtrRowDetProforma.Item(2) = detalle.Descripcion
-            dtrRowDetProforma.Item(3) = detalle.Cantidad
-            dtrRowDetProforma.Item(4) = detalle.PrecioVenta
-            dtrRowDetProforma.Item(5) = Math.Round(detalle.PrecioVenta * (1 + (detalle.PorcentajeIVA / 100)), 2)
-            dtrRowDetProforma.Item(6) = dtrRowDetProforma.Item(3) * dtrRowDetProforma.Item(5)
-            dtrRowDetProforma.Item(7) = detalle.Excento
-            dtrRowDetProforma.Item(8) = detalle.PorcentajeIVA
-            dtrRowDetProforma.Item(9) = detalle.PorcDescuento
-            dtrRowDetProforma.Item(10) = (dtrRowDetProforma.Item(5) * 100 / (100 - detalle.PorcDescuento)) - dtrRowDetProforma.Item(5)
-            dtrRowDetProforma.Item(11) = consecDetalle
-            dtbDetalleProforma.Rows.Add(dtrRowDetProforma)
+            dtbRowDetProforma = dtbDetalleProforma.NewRow
+            dtbRowDetProforma.Item(0) = detalle.IdProducto
+            dtbRowDetProforma.Item(1) = detalle.Producto.Codigo
+            dtbRowDetProforma.Item(2) = detalle.Descripcion
+            dtbRowDetProforma.Item(3) = detalle.Cantidad
+            dtbRowDetProforma.Item(4) = detalle.PrecioVenta
+            dtbRowDetProforma.Item(5) = decPrecioVentaIVA
+            dtbRowDetProforma.Item(6) = Math.Round(detalle.Cantidad * decPrecioVentaIVA, 2)
+            dtbRowDetProforma.Item(7) = detalle.Excento
+            dtbRowDetProforma.Item(8) = detalle.PorcentajeIVA
+            dtbRowDetProforma.Item(9) = detalle.PorcDescuento
+            dtbRowDetProforma.Item(10) = decPrecioVentaIVA / (1 - (detalle.PorcDescuento / 100)) - decPrecioVentaIVA
+            dtbRowDetProforma.Item(11) = consecDetalle
+            dtbDetalleProforma.Rows.Add(dtbRowDetProforma)
         Next
         grdDetalleProforma.Refresh()
     End Sub
 
-    Private Sub CargarLineaDetalleProforma(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecio As Decimal, decPorcDesc As Decimal)
+    Private Sub CargarLineaDetalleProforma(producto As Producto, strDescripcion As String, decCantidad As Decimal, decPrecioVentaIVA As Decimal, decPorcDesc As Decimal)
         Dim decTasaImpuesto As Decimal = FrmPrincipal.ObtenerTarifaImpuesto(producto.IdImpuesto)
-        Dim decPrecioGravado As Decimal = decPrecio
-        If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecio / (1 + (decTasaImpuesto / 100)), 5)
-        Dim intIndice As Integer = ObtenerIndice(dtbDetalleProforma, producto.IdProducto)
-        If Not producto.EsServicio And intIndice >= 0 Then
-            Dim decNewCantidad = dtbDetalleProforma.Rows(intIndice).Item(3) + decCantidad
-            dtbDetalleProforma.Rows(intIndice).Item(2) = strDescripcion
-            dtbDetalleProforma.Rows(intIndice).Item(3) = decNewCantidad
-            dtbDetalleProforma.Rows(intIndice).Item(4) = decPrecioGravado
-            dtbDetalleProforma.Rows(intIndice).Item(5) = decPrecio
-            dtbDetalleProforma.Rows(intIndice).Item(6) = decNewCantidad * decPrecio
-            dtbDetalleProforma.Rows(intIndice).Item(7) = decTasaImpuesto = 0
-            dtbDetalleProforma.Rows(intIndice).Item(8) = decTasaImpuesto
-            dtbDetalleProforma.Rows(intIndice).Item(9) = decPorcDesc
-            dtbDetalleProforma.Rows(intIndice).Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
-        Else
-            consecDetalle += 1
-            dtrRowDetProforma = dtbDetalleProforma.NewRow
-            dtrRowDetProforma.Item(0) = producto.IdProducto
-            dtrRowDetProforma.Item(1) = producto.Codigo
-            dtrRowDetProforma.Item(2) = strDescripcion
-            dtrRowDetProforma.Item(3) = decCantidad
-            dtrRowDetProforma.Item(4) = decPrecioGravado
-            dtrRowDetProforma.Item(5) = decPrecio
-            dtrRowDetProforma.Item(6) = decCantidad * decPrecio
-            dtrRowDetProforma.Item(7) = decTasaImpuesto = 0
-            dtrRowDetProforma.Item(8) = decTasaImpuesto
-            dtrRowDetProforma.Item(9) = decPorcDesc
-            dtrRowDetProforma.Item(10) = (decPrecio * 100 / (100 - decPorcDesc)) - decPrecio
-            dtrRowDetProforma.Item(11) = consecDetalle
-            dtbDetalleProforma.Rows.Add(dtrRowDetProforma)
-        End If
+        Dim decPrecioOriginal = decPrecioVentaIVA / (1 - (decPorcDesc / 100))
+        Dim decPrecioGrabado As Decimal = decPrecioVentaIVA
+        If decTasaImpuesto > 0 Then decPrecioGrabado = decPrecioVentaIVA / (1 + (decTasaImpuesto / 100))
+        Dim decMontoDescuento = decPrecioOriginal - decPrecioVentaIVA
+        consecDetalle += 1
+        dtbRowDetProforma = dtbDetalleProforma.NewRow
+        dtbRowDetProforma.Item(0) = producto.IdProducto
+        dtbRowDetProforma.Item(1) = producto.Codigo
+        dtbRowDetProforma.Item(2) = strDescripcion
+        dtbRowDetProforma.Item(3) = decCantidad
+        dtbRowDetProforma.Item(4) = decPrecioGrabado
+        dtbRowDetProforma.Item(5) = decPrecioVentaIVA
+        dtbRowDetProforma.Item(6) = decCantidad * decPrecioVentaIVA
+        dtbRowDetProforma.Item(7) = decTasaImpuesto = 0
+        dtbRowDetProforma.Item(8) = decTasaImpuesto
+        dtbRowDetProforma.Item(9) = decPorcDesc
+        dtbRowDetProforma.Item(10) = decMontoDescuento
+        dtbRowDetProforma.Item(11) = consecDetalle
+        dtbDetalleProforma.Rows.Add(dtbRowDetProforma)
         grdDetalleProforma.Refresh()
         CargarTotales()
     End Sub
@@ -216,24 +202,24 @@ Public Class FrmProforma
         Dim intPorcentajeExoneracion As Integer = 0
         If txtPorcentajeExoneracion.Text <> "" Then intPorcentajeExoneracion = CInt(txtPorcentajeExoneracion.Text)
         For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
-            Dim decTasaImpuesto As Decimal = dtbDetalleProforma.Rows(I).Item(8)
-            Dim decPrecio As Decimal = dtbDetalleProforma.Rows(I).Item(4)
             Dim decCantidad As Decimal = dtbDetalleProforma.Rows(I).Item(3)
+            Dim decPrecioGrabado As Decimal = dtbDetalleProforma.Rows(I).Item(4)
+            Dim decTasaImpuesto As Decimal = dtbDetalleProforma.Rows(I).Item(8)
             Dim decDescuentoLinea As Decimal = dtbDetalleProforma.Rows(I).Item(10)
             If decTasaImpuesto > 0 Then
-                Dim decImpuestoProducto As Decimal = decPrecio * decTasaImpuesto / 100
+                Dim decImpuestoProducto As Decimal = decPrecioGrabado * decTasaImpuesto / 100
                 If intPorcentajeExoneracion > 0 Then
                     Dim decTasaGravado = Math.Max(decTasaImpuesto - intPorcentajeExoneracion, 0)
                     Dim decTasaExonerado = decTasaImpuesto - decTasaGravado
-                    decImpuestoProducto = decPrecio * decTasaGravado / 100
-                    decGravado += Math.Round(decPrecio * (decTasaGravado * 100 / decTasaImpuesto) / 100 * decCantidad, 2)
-                    decExonerado += Math.Round(decPrecio * (decTasaExonerado * 100 / decTasaImpuesto) / 100 * decCantidad, 2)
+                    decImpuestoProducto = decPrecioGrabado * decTasaGravado / 100
+                    decGravado += decPrecioGrabado * (decTasaGravado * 100 / decTasaImpuesto) / 100 * decCantidad
+                    decExonerado += decPrecioGrabado * (decTasaExonerado * 100 / decTasaImpuesto) / 100 * decCantidad
                 Else
-                    decGravado += Math.Round(decCantidad * decPrecio, 2)
+                    decGravado += decCantidad * decPrecioGrabado
                 End If
-                decImpuesto += Math.Round(decCantidad * decImpuestoProducto, 2)
+                decImpuesto += decCantidad * decImpuestoProducto
             Else
-                decExcento += Math.Round(decCantidad * decPrecio, 2)
+                decExcento += decCantidad * decPrecioGrabado
             End If
             decDescuento += decDescuentoLinea * decCantidad
         Next
@@ -248,18 +234,12 @@ Public Class FrmProforma
         txtDescuento.Text = FormatNumber(decDescuento, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
         txtTotal.Text = FormatNumber(decTotal, 2)
-        txtSubTotal.Text = FormatNumber(decSubTotal + decDescuento, 2)
-        txtDescuento.Text = FormatNumber(decDescuento, 2)
-        txtImpuesto.Text = FormatNumber(decImpuesto, 2)
-        txtTotal.Text = FormatNumber(decTotal, 2)
     End Sub
 
     Private Function ObtenerPrecioVentaPorCliente(cliente As Cliente, producto As Producto)
         Dim decPrecioVenta As Decimal = producto.PrecioVenta1
         If cliente IsNot Nothing Then
-            If cliente.IdTipoPrecio = 1 Then
-                decPrecioVenta = producto.PrecioVenta1
-            ElseIf cliente.IdTipoPrecio = 2 Then
+            If cliente.IdTipoPrecio = 2 Then
                 decPrecioVenta = producto.PrecioVenta2
             ElseIf cliente.IdTipoPrecio = 3 Then
                 decPrecioVenta = producto.PrecioVenta3
@@ -268,6 +248,9 @@ Public Class FrmProforma
             ElseIf cliente.IdTipoPrecio = 5 Then
                 decPrecioVenta = producto.PrecioVenta5
             End If
+        End If
+        If producto.Linea.Tipo > 1 And Not FrmPrincipal.empresaGlobal.PrecioVentaIncluyeIVA Then
+            decPrecioVenta = decPrecioVenta / 1.13
         End If
         Return decPrecioVenta
     End Function
@@ -292,9 +275,11 @@ Public Class FrmProforma
             decPrecioVenta = ObtenerPrecioVentaPorCliente(cliente, producto)
             If producto.PorcDescuento > 0 Then
                 Dim decPorcDesc As Decimal = producto.PorcDescuento / 100
-                decPrecioVenta -= (decPrecioVenta * decPorcDesc)
+                decPrecioVenta -= decPrecioVenta * (1 - (decPorcDesc / 100))
             End If
             txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
+            txtPorcDesc.Text = "0"
+            txtPorcDesc.ReadOnly = producto.Linea.Tipo > 1
         End If
     End Sub
 
@@ -428,16 +413,14 @@ Public Class FrmProforma
         txtPorcDesc.Text = "0"
         txtPrecio.Text = ""
         decTotal = 0
-        btnGuardar.Enabled = True
         btnAnular.Enabled = False
         btnImprimir.Enabled = False
         btnGenerarPDF.Enabled = False
         btnEnviar.Enabled = False
         btnBuscaVendedor.Enabled = True
-        btnBuscarCliente.Enabled = True
         cliente = FrmPrincipal.ObtenerClienteDeContado()
         txtNombreCliente.Text = cliente.Nombre
-        txtNombreCliente.ReadOnly = False
+        txtNombreCliente.ReadOnly = True
         If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
             Try
                 vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
@@ -499,13 +482,11 @@ Public Class FrmProforma
                 CargarDetalleProforma(proforma)
                 CargarTotales()
                 cboTipoMoneda.Enabled = False
-                txtNombreCliente.ReadOnly = IIf(proforma.IdCliente = 1, False, True)
+                txtNombreCliente.ReadOnly = cliente.IdCliente > 1
                 btnImprimir.Enabled = Not proforma.Nulo
                 btnGenerarPDF.Enabled = Not proforma.Nulo
                 btnEnviar.Enabled = Not proforma.Nulo
                 btnBuscaVendedor.Enabled = False
-                btnBuscarCliente.Enabled = False
-                btnGuardar.Enabled = Not proforma.Aplicado
                 btnAnular.Enabled = Not proforma.Nulo And Not proforma.Aplicado And FrmPrincipal.bolAnularTransacciones
             Else
                 MessageBox.Show("No existe registro de proforma asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -540,7 +521,7 @@ Public Class FrmProforma
             Try
                 cliente = Await Puntoventa.ObtenerCliente(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
                 txtNombreCliente.Text = cliente.Nombre
-                txtNombreCliente.ReadOnly = True
+                txtNombreCliente.ReadOnly = cliente.IdCliente > 1
                 txtTelefono.Text = cliente.Telefono
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 CargarTotales()
@@ -667,12 +648,10 @@ Public Class FrmProforma
         btnImprimir.Focus()
         btnGenerarPDF.Enabled = True
         btnEnviar.Enabled = True
-        btnGuardar.Enabled = True
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         cboTipoMoneda.Enabled = False
         btnBuscaVendedor.Enabled = False
-        btnBuscarCliente.Enabled = False
     End Sub
 
     Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
@@ -792,53 +771,53 @@ Public Class FrmProforma
     End Sub
 
     Private Sub grdDetalleProforma_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleProforma.CellValueChanged
-        If e.ColumnIndex = 3 Then
-            CargarTotales()
-        ElseIf e.ColumnIndex = 4 And Not bolAutorizando Then
+        Dim bolPrecioAutorizado As Boolean = False
+        Dim decCantidad As Decimal = dtbDetalleProforma.Rows(e.RowIndex).Item(3)
+        Dim decPrecioConIVA As Decimal = dtbDetalleProforma.Rows(e.RowIndex).Item(5)
+        If e.ColumnIndex = 4 And Not bolAutorizando Then
             bolAutorizando = True
-            Dim bolPrecioAutorizado As Boolean = False
-            Dim decPorcDesc As Decimal = 0
-            Dim decPrecioTotal As Decimal = dtbDetalleProforma.Rows(e.RowIndex).Item(5) + dtbDetalleProforma.Rows(e.RowIndex).Item(10)
-            If Not IsDBNull(grdDetalleProforma.Rows(e.RowIndex).Cells(e.ColumnIndex).Value) Then
-                decPorcDesc = grdDetalleProforma.Rows(e.RowIndex).Cells(e.ColumnIndex).Value
+            Dim decPrecioOriginal = dtbDetalleProforma.Rows(e.RowIndex).Item(5) + dtbDetalleProforma.Rows(e.RowIndex).Item(10)
+            Dim decPorcDesc As Decimal = (decPrecioOriginal - decPrecioConIVA) / decPrecioOriginal * 100
+            Dim decNewPorcDesc = decPorcDesc
+            If Not IsDBNull(grdDetalleProforma.Rows(e.RowIndex).Cells(4).Value) Then
+                decNewPorcDesc = grdDetalleProforma.Rows(e.RowIndex).Cells(4).Value
             End If
-            If decPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
+
+            If decNewPorcDesc > FrmPrincipal.usuarioGlobal.PorcMaxDescuento Then
                 If MessageBox.Show("El porcentaje ingresado es mayor al parámetro establecido para el usuario actual. Desea ingresar una autorización?", "JLC Solutions CR", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = MsgBoxResult.Yes Then
                     Dim formAutorizacion As New FrmAutorizacionEspecial
-                    formAutorizacion.decPorcentaje = decPorcDesc
-                    formAutorizacion.decPrecioVenta = decPrecioTotal
+                    formAutorizacion.decPorcentaje = decNewPorcDesc
+                    formAutorizacion.decPrecioVenta = decPrecioOriginal
                     formAutorizacion.ShowDialog()
                     If FrmPrincipal.decDescAutorizado > 0 Then
                         bolPrecioAutorizado = True
-                        decPorcDesc = FrmPrincipal.decDescAutorizado
+                        decNewPorcDesc = FrmPrincipal.decDescAutorizado
                     Else
                         MessageBox.Show("No se logró obtener la autorización solicitada.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                        decPorcDesc = 0
+                        dtbDetalleProforma.Rows(e.RowIndex).Item(9) = decPorcDesc
+                        decNewPorcDesc = decPorcDesc
                     End If
                 Else
-                    decPorcDesc = 0
+                    dtbDetalleProforma.Rows(e.RowIndex).Item(9) = decPorcDesc
+                    decNewPorcDesc = decPorcDesc
                 End If
             End If
-            grdDetalleProforma.Rows(e.RowIndex).Cells(e.ColumnIndex).Value = decPorcDesc
-            Dim decCantidad As Decimal = grdDetalleProforma.Rows(e.RowIndex).Cells(3).Value
-            Dim decTasaImpuesto As Decimal = grdDetalleProforma.Rows(e.RowIndex).Cells(9).Value
-            Dim decPrecioConDescuento As Decimal = decPrecioTotal - (decPrecioTotal * decPorcDesc / 100)
-            If decPorcDesc > 0 And Not bolPrecioAutorizado And FrmPrincipal.empresaGlobal.MontoRedondeoDescuento > 0 Then
-                decPrecioConDescuento = Puntoventa.ObtenerPrecioRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoDescuento, decPrecioConDescuento)
-                decPorcDesc = (decPrecioTotal - decPrecioConDescuento) / decPrecioTotal * 100
+            If decNewPorcDesc <> decPorcDesc Then
+                Dim decTasaImpuesto = dtbDetalleProforma.Rows(e.RowIndex).Item(8)
+                decPrecioConIVA = decPrecioOriginal * (1 - (decNewPorcDesc / 100))
+                Dim decMontoDesc = decPrecioOriginal - decPrecioConIVA
+                Dim decPrecioGrabado = decPrecioConIVA
+                If decTasaImpuesto > 0 Then decPrecioGrabado = decPrecioConIVA / (1 + (decTasaImpuesto / 100))
+                dtbDetalleProforma.Rows(e.RowIndex).Item(4) = decPrecioGrabado
+                dtbDetalleProforma.Rows(e.RowIndex).Item(5) = decPrecioConIVA
+                dtbDetalleProforma.Rows(e.RowIndex).Item(9) = decNewPorcDesc
+                dtbDetalleProforma.Rows(e.RowIndex).Item(10) = decMontoDesc
             End If
-            Dim decMontoDesc = decPrecioTotal - decPrecioConDescuento
-            Dim decPrecioGravado As Decimal = decPrecioConDescuento
-            If decTasaImpuesto > 0 Then decPrecioGravado = Math.Round(decPrecioConDescuento / (1 + (decTasaImpuesto / 100)), 5)
-            dtbDetalleProforma.Rows(e.RowIndex).Item(4) = decPrecioGravado
-            dtbDetalleProforma.Rows(e.RowIndex).Item(5) = decPrecioConDescuento
-            dtbDetalleProforma.Rows(e.RowIndex).Item(6) = decCantidad * decPrecioConDescuento
-            dtbDetalleProforma.Rows(e.RowIndex).Item(9) = decPorcDesc
-            dtbDetalleProforma.Rows(e.RowIndex).Item(10) = decMontoDesc
-            grdDetalleProforma.Refresh()
-            CargarTotales()
             bolAutorizando = False
         End If
+        dtbDetalleProforma.Rows(e.RowIndex).Item(6) = Math.Round(decCantidad * decPrecioConIVA, 2)
+        grdDetalleProforma.Refresh()
+        CargarTotales()
     End Sub
 
     Private Sub txtPorcDesc_KeyPress(sender As Object, e As PreviewKeyDownEventArgs) Handles txtPorcDesc.PreviewKeyDown

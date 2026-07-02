@@ -26,7 +26,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool ModificaPrecio { get; set; }
         public bool Activo { get; set; }
         public decimal Existencias { get; set; }
-        public bool EsServicio { get { return Linea != null ? Linea.Tipo != 1 && Linea.Tipo != 4 : false; } }
+        public bool EsServicio { get { return Linea != null ? Linea.Tipo > 1 : false; } }
         public Linea Linea { get; set; }
         public List<MovimientoProducto> MovimientoProducto { get; set; }
     }
