@@ -1816,50 +1816,53 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dtbDetalleTiquete.Rows.Add(data);
                 }
             }
-            DataView view = new DataView(dtbDetalleTiquete)
+            if (dtbDetalleTiquete.Rows.Count > 0)
             {
-                Sort = "Impresora ASC"
-            };
-            string strPrinterTarget = view[0].Row["Impresora"].ToString();
-            IList<DescripcionValor> lineasDetalle = new List<DescripcionValor> { };
-            TiqueteDespachoMercancia tiquete;
-            foreach (DataRowView row in view)
-            {
-                if (strPrinterTarget != row["Impresora"].ToString())
+                DataView view = new DataView(dtbDetalleTiquete)
                 {
-                    tiquete = new TiqueteDespachoMercancia
+                    Sort = "Impresora ASC"
+                };
+                string strPrinterTarget = view[0].Row["Impresora"].ToString();
+                IList<DescripcionValor> lineasDetalle = new List<DescripcionValor> { };
+                TiqueteDespachoMercancia tiquete;
+                foreach (DataRowView row in view)
+                {
+                    if (strPrinterTarget != row["Impresora"].ToString())
                     {
-                        IdTiquete = 0,
-                        IdEmpresa = ordenServicio.IdEmpresa,
-                        IdSucursal = ordenServicio.IdSucursal,
-                        IdReferencia = ordenServicio.IdOrden,
-                        FechaEmision = Validador.ObtenerFechaHoraCostaRica().ToString(),
-                        Etiqueta = strPuntoServicio,
-                        Descripcion = ordenServicio.OtrosDetalles,
-                        Impresora = strPrinterTarget,
-                        DetalleTiqueteDespachoMercancia = JsonConvert.SerializeObject(lineasDetalle),
-                        Impreso = false
-                    };
-                    dbContext.TiqueteDespachoMercanciaRepository.Add(tiquete);
-                    lineasDetalle = new List<DescripcionValor> { };
-                    strPrinterTarget = row["Impresora"].ToString();
+                        tiquete = new TiqueteDespachoMercancia
+                        {
+                            IdTiquete = 0,
+                            IdEmpresa = ordenServicio.IdEmpresa,
+                            IdSucursal = ordenServicio.IdSucursal,
+                            IdReferencia = ordenServicio.IdOrden,
+                            FechaEmision = Validador.ObtenerFechaHoraCostaRica().ToString(),
+                            Etiqueta = strPuntoServicio,
+                            Descripcion = ordenServicio.OtrosDetalles,
+                            Impresora = strPrinterTarget,
+                            DetalleTiqueteDespachoMercancia = JsonConvert.SerializeObject(lineasDetalle),
+                            Impreso = false
+                        };
+                        dbContext.TiqueteDespachoMercanciaRepository.Add(tiquete);
+                        lineasDetalle = new List<DescripcionValor> { };
+                        strPrinterTarget = row["Impresora"].ToString();
+                    }
+                    lineasDetalle.Add(new DescripcionValor(row["Descripcion"].ToString(), decimal.Parse(row["Cantidad"].ToString())));
                 }
-                lineasDetalle.Add(new DescripcionValor(row["Descripcion"].ToString(), decimal.Parse(row["Cantidad"].ToString())));
+                tiquete = new TiqueteDespachoMercancia
+                {
+                    IdTiquete = 0,
+                    IdEmpresa = ordenServicio.IdEmpresa,
+                    IdSucursal = ordenServicio.IdSucursal,
+                    IdReferencia = ordenServicio.IdOrden,
+                    FechaEmision = Validador.ObtenerFechaHoraCostaRica().ToString(),
+                    Etiqueta = strPuntoServicio,
+                    Descripcion = ordenServicio.OtrosDetalles,
+                    Impresora = strPrinterTarget,
+                    DetalleTiqueteDespachoMercancia = JsonConvert.SerializeObject(lineasDetalle),
+                    Impreso = false
+                };
+                dbContext.TiqueteDespachoMercanciaRepository.Add(tiquete);
             }
-            tiquete = new TiqueteDespachoMercancia
-            {
-                IdTiquete = 0,
-                IdEmpresa = ordenServicio.IdEmpresa,
-                IdSucursal = ordenServicio.IdSucursal,
-                IdReferencia = ordenServicio.IdOrden,
-                FechaEmision = Validador.ObtenerFechaHoraCostaRica().ToString(),
-                Etiqueta = strPuntoServicio,
-                Descripcion = ordenServicio.OtrosDetalles,
-                Impresora = strPrinterTarget,
-                DetalleTiqueteDespachoMercancia = JsonConvert.SerializeObject(lineasDetalle),
-                Impreso = false
-            };
-            dbContext.TiqueteDespachoMercanciaRepository.Add(tiquete);
         }
 
         private void AgregarTiqueteDespachoFactura(Factura factura, ICollection<DetalleFactura> detalleFactura, LeandroContext dbContext)
@@ -1880,50 +1883,53 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dtbDetalleTiquete.Rows.Add(data);
                 }
             }
-            DataView view = new DataView(dtbDetalleTiquete)
+            if (dtbDetalleTiquete.Rows.Count > 0)
             {
-                Sort = "Impresora ASC"
-            };
-            string strPrinterTarget = view[0].Row["Impresora"].ToString();
-            IList<DescripcionValor> lineasDetalle = new List<DescripcionValor> { };
-            TiqueteDespachoMercancia tiquete;
-            foreach (DataRowView row in view)
-            {
-                if (strPrinterTarget != row["Impresora"].ToString())
+                DataView view = new DataView(dtbDetalleTiquete)
                 {
-                    tiquete = new TiqueteDespachoMercancia
+                    Sort = "Impresora ASC"
+                };
+                string strPrinterTarget = view[0].Row["Impresora"].ToString();
+                IList<DescripcionValor> lineasDetalle = new List<DescripcionValor> { };
+                TiqueteDespachoMercancia tiquete;
+                foreach (DataRowView row in view)
+                {
+                    if (strPrinterTarget != row["Impresora"].ToString())
                     {
-                        IdTiquete = 0,
-                        IdEmpresa = factura.IdEmpresa,
-                        IdSucursal = factura.IdSucursal,
-                        IdReferencia = factura.IdFactura,
-                        FechaEmision = Validador.ObtenerFechaHoraCostaRica().ToString(),
-                        Etiqueta = "",
-                        Descripcion = "",
-                        Impresora = strPrinterTarget,
-                        DetalleTiqueteDespachoMercancia = JsonConvert.SerializeObject(lineasDetalle),
-                        Impreso = false
-                    };
-                    dbContext.TiqueteDespachoMercanciaRepository.Add(tiquete);
-                    lineasDetalle = new List<DescripcionValor> { };
-                    strPrinterTarget = row["Impresora"].ToString();
+                        tiquete = new TiqueteDespachoMercancia
+                        {
+                            IdTiquete = 0,
+                            IdEmpresa = factura.IdEmpresa,
+                            IdSucursal = factura.IdSucursal,
+                            IdReferencia = factura.IdFactura,
+                            FechaEmision = Validador.ObtenerFechaHoraCostaRica().ToString(),
+                            Etiqueta = "",
+                            Descripcion = "",
+                            Impresora = strPrinterTarget,
+                            DetalleTiqueteDespachoMercancia = JsonConvert.SerializeObject(lineasDetalle),
+                            Impreso = false
+                        };
+                        dbContext.TiqueteDespachoMercanciaRepository.Add(tiquete);
+                        lineasDetalle = new List<DescripcionValor> { };
+                        strPrinterTarget = row["Impresora"].ToString();
+                    }
+                    lineasDetalle.Add(new DescripcionValor(row["Descripcion"].ToString(), decimal.Parse(row["Cantidad"].ToString())));
                 }
-                lineasDetalle.Add(new DescripcionValor(row["Descripcion"].ToString(), decimal.Parse(row["Cantidad"].ToString())));
+                tiquete = new TiqueteDespachoMercancia
+                {
+                    IdTiquete = 0,
+                    IdEmpresa = factura.IdEmpresa,
+                    IdSucursal = factura.IdSucursal,
+                    IdReferencia = factura.IdFactura,
+                    FechaEmision = Validador.ObtenerFechaHoraCostaRica().ToString(),
+                    Etiqueta = "",
+                    Descripcion = "",
+                    Impresora = strPrinterTarget,
+                    DetalleTiqueteDespachoMercancia = JsonConvert.SerializeObject(lineasDetalle),
+                    Impreso = false
+                };
+                dbContext.TiqueteDespachoMercanciaRepository.Add(tiquete);
             }
-            tiquete = new TiqueteDespachoMercancia
-            {
-                IdTiquete = 0,
-                IdEmpresa = factura.IdEmpresa,
-                IdSucursal = factura.IdSucursal,
-                IdReferencia = factura.IdFactura,
-                FechaEmision = Validador.ObtenerFechaHoraCostaRica().ToString(),
-                Etiqueta = "",
-                Descripcion = "",
-                Impresora = strPrinterTarget,
-                DetalleTiqueteDespachoMercancia = JsonConvert.SerializeObject(lineasDetalle),
-                Impreso = false
-            };
-            dbContext.TiqueteDespachoMercanciaRepository.Add(tiquete);
         }
 
         public void AnularOrdenServicio(int intIdOrdenServicio, int intIdUsuario, string strMotivoAnulacion)
