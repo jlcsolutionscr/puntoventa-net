@@ -332,8 +332,7 @@ Public Class FrmEmpresa
                 End If
             End If
             Await Puntoventa.ActualizarEmpresa(datos, FrmPrincipal.usuarioGlobal.Token)
-            FrmPrincipal.empresaGlobal.PrecioVentaIncluyeIVA = datos.PrecioVentaIncluyeIVA
-            FrmPrincipal.empresaGlobal.MontoRedondeoDescuento = datos.MontoRedondeoDescuento
+            FrmPrincipal.empresaGlobal = datos
             If bolCredencialesModificados Then
                 Dim strCertificado As String = ""
                 If bytCertificado IsNot Nothing Then strCertificado = Convert.ToBase64String(bytCertificado)

@@ -216,6 +216,7 @@ Public Class FrmProducto
         datos.Observacion = txtObservacion.Text
         datos.Activo = chkActivo.Checked
         datos.ModificaPrecio = chkModificaPrecio.Checked
+        datos.IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario
         Try
             If datos.IdProducto = 0 Then
                 Await Puntoventa.AgregarProducto(datos, FrmPrincipal.usuarioGlobal.Token)

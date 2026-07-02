@@ -592,7 +592,7 @@ Public Class FrmFactura
         If e.KeyCode = Keys.F1 Then
             BtnBusProd_Click(btnBusProd, New EventArgs())
         ElseIf e.KeyCode = Keys.F2 Then
-            If FrmPrincipal.empresaGlobal.HabilitaCodigoTransitorio Then
+            If FrmPrincipal.empresaGlobal.HabilitaCodigoTransitorio And FrmPrincipal.productoTranstorio IsNot Nothing Then
                 Dim formCargar As New FrmCargaProductoTransitorio
                 formCargar.ShowDialog()
                 If FrmPrincipal.productoTranstorio.PrecioVenta1 > 0 Then
@@ -606,7 +606,7 @@ Public Class FrmFactura
             BtnAgregar_Click(btnAgregar, New EventArgs())
         ElseIf e.KeyCode = Keys.F5 Then
             If FrmPrincipal.empresaGlobal.Modalidad = 2 Then
-                If FrmPrincipal.productoImpuestoServicio Is Nothing Then
+                If FrmPrincipal.empresaGlobal.HabilitaCodigoImpuestoServicio And FrmPrincipal.productoImpuestoServicio Is Nothing Then
                     MessageBox.Show("El impuesto de servicio no se encuentra configurado. Contacte con su proveedor del sistema.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Else
                     If bolImpuestoCargado Then
@@ -1491,11 +1491,10 @@ Public Class FrmFactura
 
     Private Sub BtnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleFactura.Rows.Count > 0 Then
-            Dim intId = grdDetalleFactura.CurrentRow.Cells(11).Value
             If bolImpuestoCargado Then
-                If dtbDetalleFactura.Rows.Find(intId).Item(13) = 1 Then bolImpuestoCargado = False
+                If dtbDetalleFactura.Rows(grdDetalleFactura.CurrentRow.Index).Item(12) = 1 Then bolImpuestoCargado = False
             End If
-            dtbDetalleFactura.Rows.RemoveAt(dtbDetalleFactura.Rows.IndexOf(dtbDetalleFactura.Rows.Find(intId)))
+            dtbDetalleFactura.Rows.RemoveAt(grdDetalleFactura.CurrentRow.Index)
             grdDetalleFactura.Refresh()
             If dtbDetalleFactura.Rows.Count = 0 Then consecDetalle = 0
             CargarTotales()

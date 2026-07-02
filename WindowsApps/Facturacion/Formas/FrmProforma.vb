@@ -330,7 +330,7 @@ Public Class FrmProforma
         If e.KeyCode = Keys.F1 Then
             BtnBusProd_Click(btnBusProd, New EventArgs())
         ElseIf e.KeyCode = Keys.F2 Then
-            If FrmPrincipal.empresaGlobal.HabilitaCodigoTransitorio Then
+            If FrmPrincipal.empresaGlobal.HabilitaCodigoTransitorio And FrmPrincipal.productoTranstorio IsNot Nothing Then
                 Dim formCargar As New FrmCargaProductoTransitorio
                 formCargar.ShowDialog()
                 If FrmPrincipal.productoTranstorio.PrecioVenta1 > 0 Then
@@ -732,8 +732,7 @@ Public Class FrmProforma
 
     Private Sub CmdEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
         If grdDetalleProforma.Rows.Count > 0 Then
-            Dim intId = grdDetalleProforma.CurrentRow.Cells(10).Value
-            dtbDetalleProforma.Rows.RemoveAt(dtbDetalleProforma.Rows.IndexOf(dtbDetalleProforma.Rows.Find(intId)))
+            dtbDetalleProforma.Rows.RemoveAt(grdDetalleProforma.CurrentRow.Index)
             grdDetalleProforma.Refresh()
             If dtbDetalleProforma.Rows.Count = 0 Then consecDetalle = 0
             CargarTotales()
