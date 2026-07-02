@@ -64,8 +64,8 @@ namespace LeandroSoftware.Common.Constantes
 
     public static class StaticTipoProductoEspecial
     {
-        public static readonly string Transitorio = "TRANSITORIO";
-        public static readonly string ImpuestoServicio = "IMPUESTO-SERVICIO";
+        public static readonly string Transitorio = "TRNRIO";
+        public static readonly string ImpuestoServicio = "IMPSER";
     }
 
     public static class StaticTipoMovimientoProducto
