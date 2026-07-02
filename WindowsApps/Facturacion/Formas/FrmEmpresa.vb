@@ -162,6 +162,9 @@ Public Class FrmEmpresa
             txtFechaRenovacion.Text = Format(datos.FechaVence, "dd/MM/yyyy")
             chkPrecioVentaIncluyeIVA.Checked = datos.PrecioVentaIncluyeIVA
             chkDevolucionEnEfectivo.Checked = datos.DevolucionEnEfectivo
+            chkImprimeTiqueteAlFacturar.Checked = datos.ImprimeTiqueteAlFacturar
+            chkImprimeTiqueteDespachoMercancia.Checked = datos.ImprimeTiqueteDespachoMercancia
+            chkIngresaPagoCliente.Checked = datos.IngresaPagoCliente
             txtMontoRedondeoDescuento.Text = datos.MontoRedondeoDescuento
             If credenciales IsNot Nothing Then
                 txtNombreCertificado.Text = credenciales.NombreCertificado
@@ -258,6 +261,9 @@ Public Class FrmEmpresa
         datos.LeyendaProforma = txtLeyendaProforma.Text
         datos.PrecioVentaIncluyeIVA = chkPrecioVentaIncluyeIVA.Checked
         datos.DevolucionEnEfectivo = chkDevolucionEnEfectivo.Checked
+        datos.ImprimeTiqueteAlFacturar = chkImprimeTiqueteAlFacturar.Checked
+        datos.ImprimeTiqueteDespachoMercancia = chkImprimeTiqueteDespachoMercancia.Checked
+        datos.IngresaPagoCliente = chkIngresaPagoCliente.Checked
         datos.MontoRedondeoDescuento = txtMontoRedondeoDescuento.Text
         datos.Distrito = Nothing
         datos.ActividadEconomicaEmpresa.Clear()

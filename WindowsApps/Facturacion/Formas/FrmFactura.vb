@@ -1330,15 +1330,10 @@ Public Class FrmFactura
                 Exit Sub
             End Try
         End If
-        If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
+        If FrmPrincipal.empresaGlobal.ImprimeTiqueteAlFacturar Then
             BtnImprimir_Click(btnImprimir, New EventArgs())
-            Dim formPagoFactura As New FrmPagoEfectivo()
-            formPagoFactura.decTotalEfectivo = decPagoEfectivo
-            formPagoFactura.decPagoCliente = decPagoCliente
-            formPagoFactura.ShowDialog()
-        Else
-            MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
         btnImprimir.Focus()
         cboTipoMoneda.Enabled = False

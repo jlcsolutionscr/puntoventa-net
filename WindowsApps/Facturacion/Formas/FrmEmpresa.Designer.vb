@@ -125,6 +125,9 @@ Partial Class FrmEmpresa
         Me.txtMontoRedondeoDescuento = New System.Windows.Forms.TextBox()
         Me.Label23 = New System.Windows.Forms.Label()
         Me.chkDevolucionEnEfectivo = New System.Windows.Forms.CheckBox()
+        Me.chkIngresaPagoCliente = New System.Windows.Forms.CheckBox()
+        Me.chkImprimeTiqueteAlFacturar = New System.Windows.Forms.CheckBox()
+        Me.chkImprimeTiqueteDespachoMercancia = New System.Windows.Forms.CheckBox()
         Me.gpbSucursal.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         CType(Me.dgvActividadEconomica, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1443,7 +1446,7 @@ Partial Class FrmEmpresa
         'chkPrecioVentaIncluyeIVA
         '
         Me.chkPrecioVentaIncluyeIVA.AutoSize = True
-        Me.chkPrecioVentaIncluyeIVA.Location = New System.Drawing.Point(122, 432)
+        Me.chkPrecioVentaIncluyeIVA.Location = New System.Drawing.Point(30, 432)
         Me.chkPrecioVentaIncluyeIVA.Name = "chkPrecioVentaIncluyeIVA"
         Me.chkPrecioVentaIncluyeIVA.Size = New System.Drawing.Size(142, 17)
         Me.chkPrecioVentaIncluyeIVA.TabIndex = 17
@@ -1480,7 +1483,7 @@ Partial Class FrmEmpresa
         'chkDevolucionEnEfectivo
         '
         Me.chkDevolucionEnEfectivo.AutoSize = True
-        Me.chkDevolucionEnEfectivo.Location = New System.Drawing.Point(122, 455)
+        Me.chkDevolucionEnEfectivo.Location = New System.Drawing.Point(30, 455)
         Me.chkDevolucionEnEfectivo.Name = "chkDevolucionEnEfectivo"
         Me.chkDevolucionEnEfectivo.Size = New System.Drawing.Size(177, 17)
         Me.chkDevolucionEnEfectivo.TabIndex = 294
@@ -1488,12 +1491,48 @@ Partial Class FrmEmpresa
         Me.chkDevolucionEnEfectivo.Text = "Aplica devoluciones en efectivo"
         Me.chkDevolucionEnEfectivo.UseVisualStyleBackColor = True
         '
+        'chkIngresaPagoCliente
+        '
+        Me.chkIngresaPagoCliente.AutoSize = True
+        Me.chkIngresaPagoCliente.Location = New System.Drawing.Point(227, 455)
+        Me.chkIngresaPagoCliente.Name = "chkIngresaPagoCliente"
+        Me.chkIngresaPagoCliente.Size = New System.Drawing.Size(191, 17)
+        Me.chkIngresaPagoCliente.TabIndex = 295
+        Me.chkIngresaPagoCliente.TabStop = False
+        Me.chkIngresaPagoCliente.Text = "Ingresa monto de pago en efectivo"
+        Me.chkIngresaPagoCliente.UseVisualStyleBackColor = True
+        '
+        'chkImprimeTiqueteAlFacturar
+        '
+        Me.chkImprimeTiqueteAlFacturar.AutoSize = True
+        Me.chkImprimeTiqueteAlFacturar.Location = New System.Drawing.Point(227, 432)
+        Me.chkImprimeTiqueteAlFacturar.Name = "chkImprimeTiqueteAlFacturar"
+        Me.chkImprimeTiqueteAlFacturar.Size = New System.Drawing.Size(147, 17)
+        Me.chkImprimeTiqueteAlFacturar.TabIndex = 296
+        Me.chkImprimeTiqueteAlFacturar.TabStop = False
+        Me.chkImprimeTiqueteAlFacturar.Text = "Imprime tiquete al facturar"
+        Me.chkImprimeTiqueteAlFacturar.UseVisualStyleBackColor = True
+        '
+        'chkImprimeTiqueteDespachoMercancia
+        '
+        Me.chkImprimeTiqueteDespachoMercancia.AutoSize = True
+        Me.chkImprimeTiqueteDespachoMercancia.Location = New System.Drawing.Point(30, 478)
+        Me.chkImprimeTiqueteDespachoMercancia.Name = "chkImprimeTiqueteDespachoMercancia"
+        Me.chkImprimeTiqueteDespachoMercancia.Size = New System.Drawing.Size(147, 17)
+        Me.chkImprimeTiqueteDespachoMercancia.TabIndex = 297
+        Me.chkImprimeTiqueteDespachoMercancia.TabStop = False
+        Me.chkImprimeTiqueteDespachoMercancia.Text = "Imprime tiquete despacho"
+        Me.chkImprimeTiqueteDespachoMercancia.UseVisualStyleBackColor = True
+        '
         'FrmEmpresa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1257, 629)
+        Me.Controls.Add(Me.chkImprimeTiqueteDespachoMercancia)
+        Me.Controls.Add(Me.chkImprimeTiqueteAlFacturar)
+        Me.Controls.Add(Me.chkIngresaPagoCliente)
         Me.Controls.Add(Me.chkDevolucionEnEfectivo)
         Me.Controls.Add(Me.txtMontoRedondeoDescuento)
         Me.Controls.Add(Me.Label23)
@@ -1644,4 +1683,7 @@ Partial Class FrmEmpresa
     Public WithEvents txtCorreoSucursal As TextBox
     Public WithEvents Label7 As Label
     Friend WithEvents chkDevolucionEnEfectivo As CheckBox
+    Friend WithEvents chkIngresaPagoCliente As CheckBox
+    Friend WithEvents chkImprimeTiqueteAlFacturar As CheckBox
+    Friend WithEvents chkImprimeTiqueteDespachoMercancia As CheckBox
 End Class
