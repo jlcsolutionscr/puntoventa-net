@@ -1678,7 +1678,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     bool existe = dbContext.ProductoRepository.Include("Linea").AsNoTracking().Where(x => x.IdEmpresa == producto.IdEmpresa && (x.Codigo == producto.Codigo || x.CodigoProveedor == producto.CodigoProveedor)).Count() > 0;
                     if (existe) throw new BusinessException("El código o código de proveedor de producto ingresado ya está registrado en la empresa.");
                     if (producto.Codigo == StaticTipoProductoEspecial.Transitorio || producto.Codigo == StaticTipoProductoEspecial.ImpuestoServicio)
-                        throw new BusinessException("El código ingresado es un código reservado para el sistema y no puede ser utilizado.");
+                        if (producto.IdUsuario > 1)
+                            throw new BusinessException("El código ingresado es un código reservado para el sistema y no puede ser utilizado.");
                     if (producto.Imagen == null) producto.Imagen = new byte[0];
                     if (!empresa.RegimenSimplificado && producto.CodigoClasificacion.Length < 13) throw new BusinessException("El código CABYS debe tener una longitud mínima de 13 caracteres.");
                     dbContext.ProductoRepository.Add(producto);
@@ -1740,7 +1741,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(intIdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa);
+                    var listaProductos = dbContext.ProductoRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.Codigo != StaticTipoProductoEspecial.Transitorio && x.Codigo != StaticTipoProductoEspecial.ImpuestoServicio);
                     if (intIdLinea > 0)
                         listaProductos = listaProductos.Where(x => x.IdLinea == intIdLinea);
                     else if (!strCodigo.Equals(string.Empty))
@@ -1921,7 +1922,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(a => a.a.IdLinea).ToArray();
                             if (lstLineasPorSucursal.Length > 0)
                             {
-                                string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
+                                string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ") AND p.Codigo != '" + StaticTipoProductoEspecial.Transitorio + "' AND p.Codigo != '" + StaticTipoProductoEspecial.ImpuestoServicio + "'";
                                 string strUsaIndex = "";
                                 if (bolFiltraActivos)
                                     listaProductos += " AND p.Activo = true";
@@ -1985,7 +1986,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             int[] lstLineasPorSucursal = listadoLineaPorSucursal.Select(a => a.a.IdLinea).ToArray();
                             if (lstLineasPorSucursal.Length > 0)
                             {
-                                string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ")";
+                                string listaProductos = " AND p.IdLinea IN(" + string.Join(",", lstLineasPorSucursal) + ") AND p.Codigo != '" + StaticTipoProductoEspecial.Transitorio + "' AND p.Codigo != '" + StaticTipoProductoEspecial.ImpuestoServicio + "'";
                                 string strUsaIndex = "";
                                 if (bolFiltraActivos)
                                     listaProductos += " AND p.Activo = true";
@@ -2043,7 +2044,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     var listaProductos = new List<LlaveDescripcion>();
-                    var listado = dbContext.ProductoRepository.Include("Linea").Where(x => x.IdEmpresa == intIdEmpresa && x.Activo == true).Select(x => new { x.IdProducto, x.Codigo, x.Descripcion });
+                    var listado = dbContext.ProductoRepository.Include("Linea").Where(x => x.IdEmpresa == intIdEmpresa && x.Codigo != StaticTipoProductoEspecial.Transitorio && x.Codigo != StaticTipoProductoEspecial.ImpuestoServicio && x.Activo == true).Select(x => new { x.IdProducto, x.Codigo, x.Descripcion });
                     foreach (var value in listado)
                     {
                         LlaveDescripcion item = new LlaveDescripcion(value.IdProducto, value.Codigo + " - " + value.Descripcion);
