@@ -7,6 +7,8 @@ DROP TABLE tipocuentacontable;
 DROP TABLE tipoparametrocontable;
 
 ALTER TABLE empresa ADD DevolucionEnEfectivo bit(1) NOT NULL;
+ALTER TABLE empresa ADD ImprimeTiqueteDespachoMercancia bit(1) NOT NULL;
+ALTER TABLE empresa ADD ImprimeTiqueteAlFacturar bit(1) NOT NULL;
 
 CREATE TABLE notacreditocliente (
   IdEmpresa int NOT NULL,
@@ -57,7 +59,6 @@ ALTER TABLE desglosepagoordenservicio CHANGE IdCuentaBanco IdReferencia int NOT 
 ALTER TABLE desglosepagofactura CHANGE IdCuentaBanco IdReferencia int NOT NULL;
 
 ALTER TABLE factura ADD IdNotaCredito int NOT NULL;
-ALTER TABLE empresa ADD ImprimeTiqueteDespachoMercancia bit(1) NOT NULL;
 ALTER TABLE devolucioncliente ADD IdNotaCredito int NOT NULL;
 ALTER TABLE ordenservicio ADD IdProforma int NOT NULL;
 
