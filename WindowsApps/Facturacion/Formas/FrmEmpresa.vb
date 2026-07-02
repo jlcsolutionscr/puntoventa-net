@@ -165,6 +165,8 @@ Public Class FrmEmpresa
             chkImprimeTiqueteAlFacturar.Checked = datos.ImprimeTiqueteAlFacturar
             chkImprimeTiqueteDespachoMercancia.Checked = datos.ImprimeTiqueteDespachoMercancia
             chkIngresaPagoCliente.Checked = datos.IngresaPagoCliente
+            chkHabilitaCodigoTransitorio.Checked = datos.HabilitaCodigoTransitorio
+            chkHabilitaCodigoImpuestoServicio.Checked = datos.HabilitaCodigoImpuestoServicio
             txtMontoRedondeoDescuento.Text = datos.MontoRedondeoDescuento
             If credenciales IsNot Nothing Then
                 txtNombreCertificado.Text = credenciales.NombreCertificado
@@ -199,6 +201,8 @@ Public Class FrmEmpresa
                 End Using
                 picLogo.Image = logoImage
             End If
+            chkHabilitaCodigoTransitorio.Enabled = FrmPrincipal.usuarioGlobal.IdUsuario = 1
+            chkHabilitaCodigoImpuestoServicio.Enabled = FrmPrincipal.usuarioGlobal.IdUsuario = 1
             bolInicializado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -264,6 +268,8 @@ Public Class FrmEmpresa
         datos.ImprimeTiqueteAlFacturar = chkImprimeTiqueteAlFacturar.Checked
         datos.ImprimeTiqueteDespachoMercancia = chkImprimeTiqueteDespachoMercancia.Checked
         datos.IngresaPagoCliente = chkIngresaPagoCliente.Checked
+        datos.HabilitaCodigoTransitorio = chkHabilitaCodigoTransitorio.Checked
+        datos.HabilitaCodigoImpuestoServicio = chkHabilitaCodigoImpuestoServicio.Checked
         datos.MontoRedondeoDescuento = txtMontoRedondeoDescuento.Text
         datos.Distrito = Nothing
         datos.ActividadEconomicaEmpresa.Clear()

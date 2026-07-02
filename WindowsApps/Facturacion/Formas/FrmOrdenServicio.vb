@@ -506,7 +506,7 @@ Public Class FrmOrdenServicio
         If e.KeyCode = Keys.F1 Then
             BtnBusProd_Click(btnBusProd, New EventArgs())
         ElseIf e.KeyCode = Keys.F2 Then
-            If FrmPrincipal.productoTranstorio IsNot Nothing Then
+            If FrmPrincipal.empresaGlobal.HabilitaCodigoTransitorio Then
                 Dim formCargar As New FrmCargaProductoTransitorio
                 formCargar.ShowDialog()
                 If FrmPrincipal.productoTranstorio.PrecioVenta1 > 0 Then

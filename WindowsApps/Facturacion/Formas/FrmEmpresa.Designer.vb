@@ -128,6 +128,8 @@ Partial Class FrmEmpresa
         Me.chkIngresaPagoCliente = New System.Windows.Forms.CheckBox()
         Me.chkImprimeTiqueteAlFacturar = New System.Windows.Forms.CheckBox()
         Me.chkImprimeTiqueteDespachoMercancia = New System.Windows.Forms.CheckBox()
+        Me.chkHabilitaCodigoTransitorio = New System.Windows.Forms.CheckBox()
+        Me.chkHabilitaCodigoImpuestoServicio = New System.Windows.Forms.CheckBox()
         Me.gpbSucursal.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         CType(Me.dgvActividadEconomica, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1319,7 +1321,7 @@ Partial Class FrmEmpresa
         Me.txtLeyendaOrdenServicio.BackColor = System.Drawing.SystemColors.Window
         Me.txtLeyendaOrdenServicio.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtLeyendaOrdenServicio.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtLeyendaOrdenServicio.Location = New System.Drawing.Point(122, 540)
+        Me.txtLeyendaOrdenServicio.Location = New System.Drawing.Point(122, 552)
         Me.txtLeyendaOrdenServicio.MaxLength = 500
         Me.txtLeyendaOrdenServicio.Name = "txtLeyendaOrdenServicio"
         Me.txtLeyendaOrdenServicio.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -1331,7 +1333,7 @@ Partial Class FrmEmpresa
         Me.Label15.BackColor = System.Drawing.Color.Transparent
         Me.Label15.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label15.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label15.Location = New System.Drawing.Point(4, 517)
+        Me.Label15.Location = New System.Drawing.Point(4, 529)
         Me.Label15.Name = "Label15"
         Me.Label15.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label15.Size = New System.Drawing.Size(112, 17)
@@ -1345,7 +1347,7 @@ Partial Class FrmEmpresa
         Me.txtLeyendaFactura.BackColor = System.Drawing.SystemColors.Window
         Me.txtLeyendaFactura.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtLeyendaFactura.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtLeyendaFactura.Location = New System.Drawing.Point(122, 514)
+        Me.txtLeyendaFactura.Location = New System.Drawing.Point(122, 526)
         Me.txtLeyendaFactura.MaxLength = 500
         Me.txtLeyendaFactura.Name = "txtLeyendaFactura"
         Me.txtLeyendaFactura.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -1357,7 +1359,7 @@ Partial Class FrmEmpresa
         Me.Label26.BackColor = System.Drawing.Color.Transparent
         Me.Label26.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label26.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label26.Location = New System.Drawing.Point(4, 543)
+        Me.Label26.Location = New System.Drawing.Point(4, 555)
         Me.Label26.Name = "Label26"
         Me.Label26.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label26.Size = New System.Drawing.Size(112, 17)
@@ -1371,7 +1373,7 @@ Partial Class FrmEmpresa
         Me.txtLeyendaProforma.BackColor = System.Drawing.SystemColors.Window
         Me.txtLeyendaProforma.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtLeyendaProforma.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtLeyendaProforma.Location = New System.Drawing.Point(122, 566)
+        Me.txtLeyendaProforma.Location = New System.Drawing.Point(122, 578)
         Me.txtLeyendaProforma.MaxLength = 500
         Me.txtLeyendaProforma.Name = "txtLeyendaProforma"
         Me.txtLeyendaProforma.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -1383,7 +1385,7 @@ Partial Class FrmEmpresa
         Me.Label28.BackColor = System.Drawing.Color.Transparent
         Me.Label28.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label28.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label28.Location = New System.Drawing.Point(4, 569)
+        Me.Label28.Location = New System.Drawing.Point(4, 581)
         Me.Label28.Name = "Label28"
         Me.Label28.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label28.Size = New System.Drawing.Size(112, 17)
@@ -1397,7 +1399,7 @@ Partial Class FrmEmpresa
         Me.txtLeyendaApartado.BackColor = System.Drawing.SystemColors.Window
         Me.txtLeyendaApartado.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtLeyendaApartado.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtLeyendaApartado.Location = New System.Drawing.Point(122, 592)
+        Me.txtLeyendaApartado.Location = New System.Drawing.Point(122, 604)
         Me.txtLeyendaApartado.MaxLength = 500
         Me.txtLeyendaApartado.Name = "txtLeyendaApartado"
         Me.txtLeyendaApartado.RightToLeft = System.Windows.Forms.RightToLeft.No
@@ -1409,7 +1411,7 @@ Partial Class FrmEmpresa
         Me.Label29.BackColor = System.Drawing.Color.Transparent
         Me.Label29.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label29.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label29.Location = New System.Drawing.Point(4, 595)
+        Me.Label29.Location = New System.Drawing.Point(4, 607)
         Me.Label29.Name = "Label29"
         Me.Label29.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label29.Size = New System.Drawing.Size(112, 17)
@@ -1524,12 +1526,36 @@ Partial Class FrmEmpresa
         Me.chkImprimeTiqueteDespachoMercancia.Text = "Imprime tiquete despacho"
         Me.chkImprimeTiqueteDespachoMercancia.UseVisualStyleBackColor = True
         '
+        'chkHabilitaCodigoTransitorio
+        '
+        Me.chkHabilitaCodigoTransitorio.AutoSize = True
+        Me.chkHabilitaCodigoTransitorio.Location = New System.Drawing.Point(227, 478)
+        Me.chkHabilitaCodigoTransitorio.Name = "chkHabilitaCodigoTransitorio"
+        Me.chkHabilitaCodigoTransitorio.Size = New System.Drawing.Size(154, 17)
+        Me.chkHabilitaCodigoTransitorio.TabIndex = 298
+        Me.chkHabilitaCodigoTransitorio.TabStop = False
+        Me.chkHabilitaCodigoTransitorio.Text = "Habilita producto transitorio"
+        Me.chkHabilitaCodigoTransitorio.UseVisualStyleBackColor = True
+        '
+        'chkHabilitaCodigoImpuestoServicio
+        '
+        Me.chkHabilitaCodigoImpuestoServicio.AutoSize = True
+        Me.chkHabilitaCodigoImpuestoServicio.Location = New System.Drawing.Point(30, 501)
+        Me.chkHabilitaCodigoImpuestoServicio.Name = "chkHabilitaCodigoImpuestoServicio"
+        Me.chkHabilitaCodigoImpuestoServicio.Size = New System.Drawing.Size(160, 17)
+        Me.chkHabilitaCodigoImpuestoServicio.TabIndex = 299
+        Me.chkHabilitaCodigoImpuestoServicio.TabStop = False
+        Me.chkHabilitaCodigoImpuestoServicio.Text = "Habilita impuesto de servicio"
+        Me.chkHabilitaCodigoImpuestoServicio.UseVisualStyleBackColor = True
+        '
         'FrmEmpresa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(1257, 629)
+        Me.ClientSize = New System.Drawing.Size(1257, 639)
+        Me.Controls.Add(Me.chkHabilitaCodigoImpuestoServicio)
+        Me.Controls.Add(Me.chkHabilitaCodigoTransitorio)
         Me.Controls.Add(Me.chkImprimeTiqueteDespachoMercancia)
         Me.Controls.Add(Me.chkImprimeTiqueteAlFacturar)
         Me.Controls.Add(Me.chkIngresaPagoCliente)
@@ -1580,7 +1606,9 @@ Partial Class FrmEmpresa
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(73, 22)
         Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(1273, 678)
         Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(1273, 678)
         Me.Name = "FrmEmpresa"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -1686,4 +1714,6 @@ Partial Class FrmEmpresa
     Friend WithEvents chkIngresaPagoCliente As CheckBox
     Friend WithEvents chkImprimeTiqueteAlFacturar As CheckBox
     Friend WithEvents chkImprimeTiqueteDespachoMercancia As CheckBox
+    Friend WithEvents chkHabilitaCodigoTransitorio As CheckBox
+    Friend WithEvents chkHabilitaCodigoImpuestoServicio As CheckBox
 End Class
