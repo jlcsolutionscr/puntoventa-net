@@ -293,7 +293,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (producto.EsServicio)
                             throw new BusinessException("El tipo del producto " + producto.Descripcion + " no puede ser un servicio. Por favor verificar.");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
-                        if (!producto.EsServicio)
+                        if (!producto.EsServicio && producto.Codigo != StaticTipoProductoEspecial.Transitorio && producto.Codigo != StaticTipoProductoEspecial.ImpuestoServicio)
                         {
                             if (producto.PrecioVenta1 != detalleCompra.PrecioVenta)
                             {
@@ -566,7 +566,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la compra no existe!");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
-                        if (!producto.EsServicio)
+                        if (!producto.EsServicio && producto.Codigo != StaticTipoProductoEspecial.Transitorio && producto.Codigo != StaticTipoProductoEspecial.ImpuestoServicio)
                         {
                             ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
                             if (existencias == null)
