@@ -1185,27 +1185,26 @@ Public Class FrmCompra
     End Sub
 
     Private Sub grdDetalleCompra_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grdDetalleCompra.CellValueChanged
-        Dim decCantidad = grdDetalleCompra.Rows(e.RowIndex).Cells(5).Value
-        Dim decPrecioCosto = grdDetalleCompra.Rows(e.RowIndex).Cells(6).Value
-        Dim decTasaImpuesto = grdDetalleCompra.Rows(e.RowIndex).Cells(9).Value
-        Dim decPrecioVenta = grdDetalleCompra.Rows(e.RowIndex).Cells(10).Value
-        Dim decPorcUtilidad As Decimal = grdDetalleCompra.Rows(e.RowIndex).Cells(12).Value
+        Dim decCantidad = dtbDetalleCompra.Rows(e.RowIndex).Item(5)
+        Dim decPrecioCosto = dtbDetalleCompra.Rows(e.RowIndex).Item(6)
+        Dim decTasaImpuesto = dtbDetalleCompra.Rows(e.RowIndex).Item(9)
+        Dim decPrecioVenta = dtbDetalleCompra.Rows(e.RowIndex).Item(10)
+        Dim decPorcUtilidad As Decimal = dtbDetalleCompra.Rows(e.RowIndex).Item(12)
         Dim ids As List(Of Integer) = New List(Of Integer) From {5, 6}
         If ids.Contains(e.ColumnIndex) Then
-            grdDetalleCompra.Rows(e.RowIndex).Cells(7).Value = Math.Round(decCantidad * decPrecioCosto, 2)
+            dtbDetalleCompra.Rows(e.RowIndex).Item(7) = Math.Round(decCantidad * decPrecioCosto, 2)
         End If
         ids = New List(Of Integer) From {6, 10}
         If ids.Contains(e.ColumnIndex) Then
             If decPrecioCosto > 0 And decPrecioVenta > 0 Then
                 decPorcUtilidad = (decPrecioVenta / (1 + (decTasaImpuesto / 100)) * 100 / decPrecioCosto) - 100
-                grdDetalleCompra.Rows(e.RowIndex).Cells(12).Value = Math.Round(decPorcUtilidad, 2)
+                dtbDetalleCompra.Rows(e.RowIndex).Item(12) = Math.Round(decPorcUtilidad, 2)
             End If
         End If
         If e.ColumnIndex = 12 Then
             If decPrecioCosto > 0 And decPorcUtilidad > 0 Then
-                Dim decPrecioVentaSinIVA = decPrecioCosto * (1 + (decPorcUtilidad / 100))
-                decPrecioVenta = decPrecioVentaSinIVA * (1 + (decTasaImpuesto / 100))
-                grdDetalleCompra.Rows(e.RowIndex).Cells(10).Value = Math.Round(decPrecioVenta, 2)
+                decPrecioVenta = decPrecioCosto * (1 + (decPorcUtilidad / 100)) * (1 + (decTasaImpuesto / 100))
+                dtbDetalleCompra.Rows(e.RowIndex).Item(10) = Math.Round(decPrecioVenta, 2)
             End If
         End If
         CargarTotales()
