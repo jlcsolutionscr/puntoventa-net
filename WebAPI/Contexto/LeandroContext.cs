@@ -56,6 +56,8 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<DetalleDevolucionProveedor> DetalleDevolucionProveedorRepository { get; set; }
         public DbSet<DetalleFactura> DetalleFacturaRepository { get; set; }
         public DbSet<DetalleFacturaCompra> DetalleFacturaCompraRepository { get; set; }
+        public DbSet<DetalleMovimientoCuentaPorCobrar> DetalleMovimientoCuentaPorCobrarRepository { get; set; }
+        public DbSet<DetalleMovimientoCuentaPorPagar> DetalleMovimientoCuentaPorPagarRepository { get; set; }
         public DbSet<DetalleOrdenCompra> DetalleOrdenCompraRepository { get; set; }
         public DbSet<DetalleOrdenServicio> DetalleOrdenServicioRepository { get; set; }
         public DbSet<DetalleProforma> DetalleProformaRepository { get; set; }

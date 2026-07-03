@@ -87,7 +87,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var listado = dbContext.CuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false);
+                    var listado = dbContext.CuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Nulo == false);
                     if (bolPendientes)
                         listado = listado.Where(x => x.Saldo > 0);
                     if (strReferencia != "")
@@ -116,7 +116,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaCuentas = new List<CuentaPorProcesar>();
                 try
                 {
-                    var listado = dbContext.CuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false);
+                    var listado = dbContext.CuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Nulo == false);
                     if (bolPendientes)
                         listado = listado.Where(x => x.Saldo > 0);
                     if (strReferencia != "")
@@ -158,10 +158,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
-                    var listado = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCxC == intIdCuenta && !x.Nulo).OrderByDescending(x => x.IdMovCxC);
+                    var listado = dbContext.DetalleMovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Include("MovimientoCuentaPorCobrar").Where(x => x.MovimientoCuentaPorCobrar.IdEmpresa == intIdEmpresa && x.MovimientoCuentaPorCobrar.IdSucursal == intIdSucursal && x.IdCxC == intIdCuenta && !x.MovimientoCuentaPorCobrar.Nulo).OrderByDescending(x => x.IdMovCxC);
                     foreach (var value in listado)
                     {
-                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxC, value.Fecha.ToString("dd/MM/yyyy"), "Abono sobre cuenta por cobrar nro " + value.CuentaPorCobrar.Referencia, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxC, value.MovimientoCuentaPorCobrar.Fecha.ToString("dd/MM/yyyy"), "Abono sobre cuenta por cobrar nro " + value.CuentaPorCobrar.Referencia, value.Monto);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;
@@ -207,11 +207,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.IdAsiento = 0;
                     movimiento.IdMovBanco = 0;
                     dbContext.MovimientoCuentaPorCobrarRepository.Add(movimiento);
-                    CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(movimiento.IdCxC);
-                    if (cxc == null)
-                        throw new BusinessException("La cuenta por cobrar asignada al movimiento no existe");
-                    cxc.Saldo -= movimiento.Monto;
-                    dbContext.NotificarModificacion(cxc);
+                    foreach (var detalle in movimiento.DetalleMovimientoCuentaPorCobrar)
+                    {
+                        CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(detalle.IdCxC);
+                        if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada al movimiento no existe");
+                        cxc.Saldo -= detalle.Monto;
+                        dbContext.NotificarModificacion(cxc);
+                    }
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoCuentaPorCobrar)
                     {
                         if (!new int[] { StaticFormaPago.Efectivo, StaticFormaPago.Tarjeta }.Contains(desglosePago.IdFormaPago))
@@ -255,8 +257,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Detalle = "Registro de abono a cuenta por cobrar recibo nro. "
                         };
                         DetalleAsiento detalleAsiento = null;
+                        decimal decTotalMovimiento = 0;
                         foreach (var desglosePago in movimiento.DesglosePagoMovimientoCuentaPorCobrar)
                         {
+                            decTotalMovimiento += desglosePago.MontoLocal;
                             if (desglosePago.IdFormaPago == StaticFormaPago.Efectivo)
                             {
                                 detalleAsiento = new DetalleAsiento
@@ -301,7 +305,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             Linea = intLineaDetalleAsiento += 1,
                             IdCuenta = cuentaPorCobrarClientesParam.IdCuenta,
-                            Credito = movimiento.Monto,
+                            Credito = decTotalMovimiento,
                             SaldoAnterior = dbContext.CatalogoContableRepository.Find(cuentaPorCobrarClientesParam.IdCuenta).SaldoActual
                         };
                         asiento.DetalleAsiento.Add(detalleAsiento);
@@ -348,7 +352,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.FirstOrDefault(x => x.IdMovCxC == intIdMovimiento);
+                    MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.Include("DetalleMovimientoCuentaPorCobrar").FirstOrDefault(x => x.IdMovCxC == intIdMovimiento);
                     if (movimiento == null) throw new BusinessException("El movimiento de cuenta por cobrar no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
@@ -360,10 +364,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.IdAnuladoPor = intIdUsuario;
                     movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
-                    CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(movimiento.IdCxC);
-                    if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada al movimiento no existe");
-                    cxc.Saldo += movimiento.Monto;
-                    dbContext.NotificarModificacion(cxc);
+                    foreach (var detalle in movimiento.DetalleMovimientoCuentaPorCobrar)
+                    {
+                        CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(detalle.IdCxC);
+                        if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada al movimiento no existe");
+                        cxc.Saldo += detalle.Monto;
+                        dbContext.NotificarModificacion(cxc);
+                    }
                     if (movimiento.IdAsiento > 0)
                     {
                         IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
@@ -393,10 +400,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Include("DesglosePagoMovimientoCuentaPorCobrar").FirstOrDefault(x => x.IdMovCxC == intIdMovimiento);
-                    movimiento.NombrePropietario = "Información no disponible";
-                    Cliente cliente = dbContext.ClienteRepository.Find(movimiento.CuentaPorCobrar.IdPropietario);
-                    if (cliente != null) movimiento.NombrePropietario = cliente.Nombre;
+                    MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.Include("DetalleMovimientoCuentaPorCobrar.CuentaPorCobrar").Include("DesglosePagoMovimientoCuentaPorCobrar").FirstOrDefault(x => x.IdMovCxC == intIdMovimiento);
                     return movimiento;
                 }
                 catch (Exception ex)
@@ -416,7 +420,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorCobrarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false && EF.Functions.DateDiffDay(a.Fecha, Validador.ObtenerFechaHoraCostaRica()) > a.Plazo).Count();
+                    return dbContext.CuentaPorCobrarRepository.Where(a => a.IdPropietario == intIdPropietario && a.Nulo == false && EF.Functions.DateDiffDay(a.Fecha, Validador.ObtenerFechaHoraCostaRica()) > a.Plazo).Count();
                 }
                 catch (Exception ex)
                 {
@@ -434,7 +438,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorCobrarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false).Sum(a => (decimal?)a.Saldo) ?? 0;
+                    return dbContext.CuentaPorCobrarRepository.Where(a => a.IdPropietario == intIdPropietario && a.Nulo == false).Sum(a => (decimal?)a.Saldo) ?? 0;
                 }
                 catch (Exception ex)
                 {
@@ -470,7 +474,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && x.Nulo == false);
+                    var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Nulo == false);
                     if (bolPendientes)
                         listado = listado.Where(x => x.Saldo > 0);
                     if (strReferencia != "")
@@ -499,7 +503,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaCuentas = new List<CuentaPorProcesar>();
                 try
                 {
-                    var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.Tipo == intIdTipo && !x.Nulo);
+                    var listado = dbContext.CuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
                     if (bolPendientes)
                         listado = listado.Where(x => x.Saldo > 0);
                     if (strReferencia != "")
@@ -540,10 +544,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
-                    var listado = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCxP == intIdCuenta && !x.Nulo).OrderByDescending(x => x.IdMovCxP);
+                    var listado = dbContext.DetalleMovimientoCuentaPorPagarRepository.Include("MovimientoCuentaPorPagar").Include("CuentaPorPagar").Where(x => x.MovimientoCuentaPorPagar.IdEmpresa == intIdEmpresa && x.MovimientoCuentaPorPagar.IdSucursal == intIdSucursal && x.IdCxP == intIdCuenta && !x.MovimientoCuentaPorPagar.Nulo).OrderByDescending(x => x.IdMovCxP);
                     foreach (var value in listado)
                     {
-                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxP, value.Fecha.ToString("dd/MM/yyyy"), "Abono con recibo " + value.Recibo + " sobre cuenta por pagar nro " + value.CuentaPorPagar.Referencia, value.Monto);
+                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxP, value.MovimientoCuentaPorPagar.Fecha.ToString("dd/MM/yyyy"), "Abono con recibo " + value.MovimientoCuentaPorPagar.Recibo + " sobre cuenta por pagar nro " + value.CuentaPorPagar.Referencia, value.Monto);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;
@@ -585,12 +589,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.IdAsiento = 0;
                     movimiento.IdMovBanco = 0;
                     dbContext.MovimientoCuentaPorPagarRepository.Add(movimiento);
-                    CuentaPorPagar cxp = dbContext.CuentaPorPagarRepository.Find(movimiento.IdCxP);
-                    if (cxp == null) throw new BusinessException("La cuenta por Pagar asignada al movimiento no existe");
-                    cxp.Saldo -= movimiento.Monto;
-                    dbContext.NotificarModificacion(cxp);
+                    foreach (var detalle in movimiento.DetalleMovimientoCuentaPorPagar)
+                    {
+                        CuentaPorPagar cxp = dbContext.CuentaPorPagarRepository.Find(detalle.IdCxP);
+                        if (cxp == null) throw new BusinessException("La cuenta por pagar asignada al movimiento no existe");
+                        cxp.Saldo -= detalle.Monto;
+                        dbContext.NotificarModificacion(cxp);
+                    }
+                    decimal decPagoTotal = 0;
                     foreach (var desglosePago in movimiento.DesglosePagoMovimientoCuentaPorPagar)
                     {
+                        decPagoTotal += desglosePago.MontoLocal;
                         if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
                         {
                             movimientoBanco = new MovimientoBanco
@@ -628,13 +637,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             Fecha = movimiento.Fecha,
                             TotalCredito = 0,
                             TotalDebito = 0,
-                            Detalle = "Movimiento de abono a cuenta por Pagar recibo nro. "
+                            Detalle = "Movimiento de abono a cuenta por pagar recibo nro. "
                         };
                         DetalleAsiento detalleAsiento = new DetalleAsiento
                         {
                             Linea = intLineaDetalleAsiento += 1,
                             IdCuenta = cuentaPorPagarProveedoresParam.IdCuenta,
-                            Debito = movimiento.Monto,
+                            Debito = decPagoTotal,
                             SaldoAnterior = dbContext.CatalogoContableRepository.Find(cuentaPorPagarProveedoresParam.IdCuenta).SaldoActual
                         };
                         asiento.DetalleAsiento.Add(detalleAsiento);
@@ -713,7 +722,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.FirstOrDefault(x => x.IdMovCxP == intIdMovimiento);
-                    if (movimiento == null) throw new BusinessException("El movimiento de cuenta por Pagar no existe");
+                    if (movimiento == null) throw new BusinessException("El movimiento de cuenta por pagar no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
@@ -724,10 +733,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     movimiento.IdAnuladoPor = intIdUsuario;
                     movimiento.MotivoAnulacion = strMotivoAnulacion;
                     dbContext.NotificarModificacion(movimiento);
-                    CuentaPorPagar cxp = dbContext.CuentaPorPagarRepository.Find(movimiento.IdCxP);
-                    if (cxp == null) throw new BusinessException("La cuenta por Pagar asignada al movimiento no existe");
-                    cxp.Saldo += movimiento.Monto;
-                    dbContext.NotificarModificacion(cxp);
+                    foreach (var detalle in movimiento.DetalleMovimientoCuentaPorPagar)
+                    {
+                        CuentaPorPagar cxp = dbContext.CuentaPorPagarRepository.Find(detalle.IdCxP);
+                        if (cxp == null) throw new BusinessException("La cuenta por pagar asignada al movimiento no existe");
+                        cxp.Saldo += detalle.Monto;
+                        dbContext.NotificarModificacion(cxp);
+                    }
                     if (movimiento.IdAsiento > 0)
                     {
                         IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
@@ -762,10 +774,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Include("DesglosePagoMovimientoCuentaPorPagar").FirstOrDefault(x => x.IdMovCxP == intIdMovimiento);
-                    movimiento.NombrePropietario = "Información no disponible";
-                    Proveedor proveedor = dbContext.ProveedorRepository.Find(movimiento.CuentaPorPagar.IdPropietario);
-                    if (proveedor != null) movimiento.NombrePropietario = proveedor.Nombre;
+                    MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("DetalleMovimientoCuentaPorPagar.CuentaPorPagar").Include("DesglosePagoMovimientoCuentaPorPagar").FirstOrDefault(x => x.IdMovCxP == intIdMovimiento);
                     return movimiento;
                 }
                 catch (Exception ex)
@@ -785,7 +794,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorPagarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false && EF.Functions.DateDiffDay(a.Fecha, Validador.ObtenerFechaHoraCostaRica()) > a.Plazo).Count();
+                    return dbContext.CuentaPorPagarRepository.Where(a => a.IdPropietario == intIdPropietario && a.Nulo == false && EF.Functions.DateDiffDay(a.Fecha, Validador.ObtenerFechaHoraCostaRica()) > a.Plazo).Count();
                 }
                 catch (Exception ex)
                 {
@@ -803,7 +812,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    return dbContext.CuentaPorPagarRepository.Where(a => a.Tipo == intIdTipo && a.IdPropietario == intIdPropietario && a.Nulo == false).Sum(a => (decimal?)a.Saldo) ?? 0;
+                    return dbContext.CuentaPorPagarRepository.Where(a => a.IdPropietario == intIdPropietario && a.Nulo == false).Sum(a => (decimal?)a.Saldo) ?? 0;
                 }
                 catch (Exception ex)
                 {

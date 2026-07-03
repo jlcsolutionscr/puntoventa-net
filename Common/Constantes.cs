@@ -44,17 +44,6 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly int IdNombreInstExoneracion = 1;
     };
 
-    public static class StaticTipoCuentaPorCobrar
-    {
-        public static readonly short Clientes = 1;
-    };
-
-    public static class StaticTipoCuentaPorPagar
-    {
-        public static readonly short Proveedores = 1;
-        public static readonly short Particulares = 2;
-    };
-
     public static class StaticTipoProducto
     {
         public static readonly int Producto = 1;

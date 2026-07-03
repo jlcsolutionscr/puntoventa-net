@@ -813,7 +813,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.RetiroEfectivo = 0;
                     cierre.LiquidacionTarjeta = 0;
 
-                    var facturas = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    List<Factura> facturas = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (facturas.Count > 0)
                     {
                         var pagosFacturas = facturas.Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
@@ -865,7 +865,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    var facturasCredito = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    List<Factura> facturasCredito = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (facturasCredito.Count > 0)
                     {
                         foreach (var dato in facturasCredito)
@@ -882,7 +882,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    var apartados = dbContext.ApartadoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<Apartado> apartados = dbContext.ApartadoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (apartados.Count > 0)
                     {
                         var pagosApartados = apartados.Join(dbContext.DesglosePagoApartadoRepository, x => x.IdApartado, y => y.IdApartado, (x, y) => new { x, y })
@@ -934,7 +934,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    var movimientosapartado = dbContext.MovimientoApartadoRepository.Include("Apartado").Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<MovimientoApartado> movimientosapartado = dbContext.MovimientoApartadoRepository.Include("Apartado").Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (movimientosapartado.Count > 0)
                     {
                         var pagosApartados = movimientosapartado.Join(dbContext.DesglosePagoMovimientoApartadoRepository, x => x.IdMovApartado, y => y.IdMovApartado, (x, y) => new { x, y })
@@ -986,7 +986,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    var ordenes = dbContext.OrdenServicioRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<OrdenServicio> ordenes = dbContext.OrdenServicioRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (ordenes.Count > 0)
                     {
                         var pagosOrdenes = ordenes.Join(dbContext.DesglosePagoOrdenServicioRepository, x => x.IdOrden, y => y.IdOrden, (x, y) => new { x, y })
@@ -1038,7 +1038,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    var MovimientosordenServicio = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<MovimientoOrdenServicio> MovimientosordenServicio = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (MovimientosordenServicio.Count > 0)
                     {
                         var pagosOrdenes = MovimientosordenServicio.Join(dbContext.DesglosePagoMovimientoOrdenServicioRepository, x => x.IdMovOrden, y => y.IdMovOrden, (x, y) => new { x, y })
@@ -1090,11 +1090,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    var movimientosCxC = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Where(x => x.Tipo == 1 && x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<MovimientoCuentaPorCobrar> movimientosCxC = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (movimientosCxC.Count > 0)
                     {
                         var pagosCxC = movimientosCxC.Join(dbContext.DesglosePagoMovimientoCuentaPorCobrarRepository, x => x.IdMovCxC, y => y.IdMovCxC, (x, y) => new { x, y })
-                            .Select(y => new { y.x.IdMovCxC, y.x.Fecha, y.x.CuentaPorCobrar.Referencia, y.y.IdFormaPago, y.y.IdReferencia, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
+                            .Select(y => new { y.x.IdMovCxC, y.x.Fecha, y.y.IdFormaPago, y.y.IdReferencia, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
                         foreach (var dato in pagosCxC)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
@@ -1105,7 +1105,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdReferencia = dato.IdMovCxC,
                                     Tipo = 11,
                                     Fecha = dato.Fecha,
-                                    Descripcion = "Abono a cuenta por cobrar: " + dato.Referencia,
+                                    Descripcion = "Abono a cuenta por cobrar de movimiento: " + dato.IdMovCxC,
                                     Total = dato.MontoLocal
                                 });
                             }
@@ -1123,7 +1123,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdReferencia = dato.IdMovCxC,
                                     Tipo = 12,
                                     Fecha = dato.Fecha,
-                                    Descripcion = "Abono a cuenta por cobrar: " + dato.Referencia,
+                                    Descripcion = "Abono a cuenta por cobrar de movimiento: " + dato.IdMovCxC,
                                     Total = dato.MontoLocal
                                 });
                             }
@@ -1135,14 +1135,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdReferencia = dato.IdMovCxC,
                                     Tipo = 13,
                                     Fecha = dato.Fecha,
-                                    Descripcion = "Abono a cuenta por cobrar: " + dato.Referencia,
+                                    Descripcion = "Abono a cuenta por cobrar de movimiento: " + dato.IdMovCxC,
                                     Total = dato.MontoLocal
                                 });
                             }
                         }
                     }
 
-                    var ingresosEfectivo = dbContext.IngresoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<Ingreso> ingresosEfectivo = dbContext.IngresoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (ingresosEfectivo.Count > 0)
                     {
                         foreach (var dato in ingresosEfectivo)
@@ -1159,15 +1159,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    //var movDevolucionesProveedores = dbContext.DevolucionProveedorRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).Join(dbContext.DesglosePagoDevolucionProveedorRepository, x => x.IdDevolucion, y => y.IdDevolucion, (x, y) => new { x, y })
-                    //    .GroupBy(x => x.y.IdFormaPago).Select(x => new { x.Key, Total = x.Sum(y => y.y.MontoLocal) });
-                    //foreach (var dato in movDevolucionesProveedores)
-                    //{
-                    //    if (dato.Key == StaticFormaPago.Efectivo)
-                    //        cierre.DevolucionesProveedores = dato.Total;
-                    //}
+                    /*List<DevolucionProveedor> movDevolucionesProveedores = dbContext.DevolucionProveedorRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).Join(dbContext.DesglosePagoDevolucionProveedorRepository, x => x.IdDevolucion, y => y.IdDevolucion, (x, y) => new { x, y })
+                        .GroupBy(x => x.y.IdFormaPago).Select(x => new { x.Key, Total = x.Sum(y => y.y.MontoLocal) });
+                    foreach (var dato in movDevolucionesProveedores)
+                    {
+                        if (dato.Key == StaticFormaPago.Efectivo)
+                            cierre.DevolucionesProveedores = dato.Total;
+                    }*/
 
-                    var compras = dbContext.CompraRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    List<Compra> compras = dbContext.CompraRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (compras.Count > 0)
                     {
                         var pagosCompras = compras.Join(dbContext.DesglosePagoCompraRepository, x => x.IdCompra, y => y.IdCompra, (x, y) => new { x, y })
@@ -1201,7 +1201,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    var comprasCredito = dbContext.CompraRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    List<Compra> comprasCredito = dbContext.CompraRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (comprasCredito.Count > 0)
                     {
                         foreach (var dato in comprasCredito)
@@ -1218,11 +1218,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    var movimientosCxP = dbContext.MovimientoCuentaPorPagarRepository.Include("CuentaPorPagar").Where(x => x.Tipo == 1 && x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<MovimientoCuentaPorPagar> movimientosCxP = dbContext.MovimientoCuentaPorPagarRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (movimientosCxP.Count > 0)
                     {
                         var pagosCxP = movimientosCxP.Join(dbContext.DesglosePagoMovimientoCuentaPorPagarRepository, x => x.IdMovCxP, y => y.IdMovCxP, (x, y) => new { x, y })
-                            .Select(y => new { y.x.IdMovCxP, y.x.Fecha, y.x.CuentaPorPagar.Referencia, y.y.IdFormaPago, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
+                            .Select(y => new { y.x.IdMovCxP, y.x.Fecha, y.y.IdFormaPago, MontoLocal = y.y.MontoLocal * y.y.TipoDeCambio });
                         foreach (var dato in pagosCxP)
                         {
                             if (dato.IdFormaPago == StaticFormaPago.Efectivo)
@@ -1233,7 +1233,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdReferencia = dato.IdMovCxP,
                                     Tipo = 18,
                                     Fecha = dato.Fecha,
-                                    Descripcion = "Abono a cuenta por pagar: " + dato.Referencia,
+                                    Descripcion = "Abono a cuenta por pagar con movimiento: " + dato.IdMovCxP,
                                     Total = dato.MontoLocal
                                 });
                             }
@@ -1245,7 +1245,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdReferencia = dato.IdMovCxP,
                                     Tipo = 19,
                                     Fecha = dato.Fecha,
-                                    Descripcion = "Abono a cuenta por pagar: " + dato.Referencia,
+                                    Descripcion = "Abono a cuenta por pagar con movimiento: " + dato.IdMovCxP,
                                     Total = dato.MontoLocal
                                 });
                             }

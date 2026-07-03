@@ -443,7 +443,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdPropietario = factura.IdCliente,
                             Referencia = factura.ConsecFactura.ToString(),
                             Fecha = factura.Fecha,
-                            Tipo = StaticTipoCuentaPorCobrar.Clientes,
                             Total = factura.Total - factura.MontoAdelanto,
                             Saldo = factura.Total - factura.MontoAdelanto,
                             Nulo = false
@@ -755,7 +754,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         movimientoBanco.Descripcion += factura.IdFactura;
                         dbContext.NotificarModificacion(movimientoBanco);
                     }
-                    dbContext.Commit();
+                    if (cuentaPorCobrar != null || asiento != null || movimientoBanco != null) dbContext.Commit();
                     if (documentoFE != null)
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE));
@@ -940,16 +939,21 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         mov = new MovimientoCuentaPorCobrar
                         {
-                            IdEmpresa = factura.IdEmpresa,
-                            IdUsuario = factura.IdUsuario,
-                            IdPropietario = factura.IdCliente,
-                            IdSucursal = factura.IdSucursal,
-                            Tipo = StaticTipoAbono.AbonoEfectivo,
-                            IdCxC = factura.IdCxC,
+                            IdEmpresa = devolucion.IdEmpresa,
+                            IdUsuario = devolucion.IdUsuario,
+                            IdSucursal = devolucion.IdSucursal,
                             Observaciones = "Abono por anulación de factura nro. " + factura.ConsecFactura,
+                            Fecha = devolucion.Fecha
+                        };
+                        DetalleMovimientoCuentaPorCobrar detalleMov = new DetalleMovimientoCuentaPorCobrar
+                        {
+                            IdCxC = factura.IdCxC,
                             Monto = decSaldoAbonoCxCCliente,
                             SaldoActual = cxc.Saldo,
-                            Fecha = Validador.ObtenerFechaHoraCostaRica()
+                        };
+                        mov.DetalleMovimientoCuentaPorCobrar = new List<DetalleMovimientoCuentaPorCobrar>
+                        {
+                            detalleMov
                         };
                         DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar
                         {
@@ -2278,14 +2282,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             IdEmpresa = devolucion.IdEmpresa,
                             IdUsuario = devolucion.IdUsuario,
-                            IdPropietario = factura.IdCliente,
                             IdSucursal = devolucion.IdSucursal,
-                            Tipo = StaticTipoAbono.AbonoEfectivo,
+                            Observaciones = "Abono por devolución de mercancía nro." + devolucion.IdDevolucion,
+                            Fecha = devolucion.Fecha
+                        };
+                        DetalleMovimientoCuentaPorCobrar detalleMov = new DetalleMovimientoCuentaPorCobrar
+                        {
                             IdCxC = factura.IdCxC,
-                            Observaciones = "Abono por devolución de mercancía",
                             Monto = decSaldoAbonoCxCCliente,
                             SaldoActual = cxc.Saldo,
-                            Fecha = devolucion.Fecha
                         };
                         DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar
                         {
@@ -2296,6 +2301,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdTipoMoneda = factura.IdTipoMoneda,
                             MontoLocal = decSaldoAbonoCxCCliente,
                             TipoDeCambio = factura.TipoDeCambioDolar
+                        };
+                        mov.DetalleMovimientoCuentaPorCobrar = new List<DetalleMovimientoCuentaPorCobrar>
+                        {
+                            detalleMov
                         };
                         mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>
                         {
@@ -2551,15 +2560,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (devolucion.IdMovimientoCxC > 0)
                     {
-                        MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.FirstOrDefault(x => x.IdMovCxC == devolucion.IdMovimientoCxC);
+                        MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.Include("DetalleMovimientoCuentaPorCobrar").FirstOrDefault(x => x.IdMovCxC == devolucion.IdMovimientoCxC);
                         if (movimiento == null)
                             throw new BusinessException("El movimiento de la cuenta por cobrar correspondiente a la devolución no existe!");
                         movimiento.Nulo = true;
                         movimiento.IdAnuladoPor = intIdUsuario;
                         dbContext.NotificarModificacion(movimiento);
-                        CuentaPorCobrar cuentaPorCobrar = dbContext.CuentaPorCobrarRepository.Find(movimiento.IdCxC);
-                        cuentaPorCobrar.Saldo += movimiento.Monto;
-                        dbContext.NotificarModificacion(cuentaPorCobrar);
+                        foreach (var detalle in movimiento.DetalleMovimientoCuentaPorCobrar)
+                        {
+                            CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(detalle.IdCxC);
+                            if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada al movimiento no existe");
+                            cxc.Saldo += detalle.Monto;
+                            dbContext.NotificarModificacion(cxc);
+                        }
                     }
                     else
                     {

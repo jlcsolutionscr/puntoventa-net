@@ -10,8 +10,7 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
         {
             builder.ToTable("movimientocuentaporpagar");
             builder.HasKey(p => p.IdMovCxP);
-            builder.Ignore(p => p.NombrePropietario);
-            builder.HasOne(p => p.CuentaPorPagar).WithMany().HasForeignKey(p => p.IdCxP);
+            builder.HasMany(p => p.DetalleMovimientoCuentaPorPagar).WithOne().HasForeignKey(p => p.IdMovCxP);
             builder.HasMany(p => p.DesglosePagoMovimientoCuentaPorPagar).WithOne().HasForeignKey(p => p.IdMovCxP);
         }
     }

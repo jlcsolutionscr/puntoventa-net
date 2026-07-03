@@ -86,3 +86,46 @@ ALTER TABLE tiquetedespachomercancia
   ADD PRIMARY KEY (IdTiquete),
   ADD KEY tiquetedespachomercancia_ibfk_1 (IdReferencia),
   ADD KEY tiquetedespachomercancia_ibfk_2 (IdEmpresa,IdSucursal);
+
+ALTER TABLE tiquetedespachomercancia MODIFY IdTiquete int NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE detallemovimientocuentaporcobrar (
+  IdMovCxC int NOT NULL,
+  IdCxC int DEFAULT NULL,
+  SaldoActual double NOT NULL,
+  Monto double NOT NULL
+);
+ALTER TABLE detallemovimientocuentaporcobrar ADD PRIMARY KEY (IdMovCxC, IdCxC);
+ALTER TABLE detallemovimientocuentaporcobrar ADD CONSTRAINT detallemovimientocuentaporcobrar_ibfk_1 FOREIGN KEY (IdMovCxC) REFERENCES movimientocuentaporcobrar (IdMovCxC);
+ALTER TABLE detallemovimientocuentaporcobrar ADD CONSTRAINT detallemovimientocuentaporcobrar_ibfk_2 FOREIGN KEY (IdCxC) REFERENCES cuentaporcobrar (IdCxC);
+
+INSERT INTO detallemovimientocuentaporcobrar SELECT IdMovCxC, IdCxC, SaldoActual, Monto FROM movimientocuentaporcobrar;
+
+ALTER TABLE cuentaporcobrar DROP COLUMN Tipo;
+ALTER TABLE movimientocuentaporcobrar DROP COLUMN Tipo;
+ALTER TABLE movimientocuentaporcobrar DROP COLUMN IdCxC;
+ALTER TABLE movimientocuentaporcobrar DROP COLUMN IdPropietario;
+ALTER TABLE movimientocuentaporcobrar DROP COLUMN SaldoActual;
+ALTER TABLE movimientocuentaporcobrar DROP COLUMN Monto;
+
+ALTER TABLE movimientocuentaporpagar ADD CONSTRAINT movimientocuentaporpagar_ibfk_2 FOREIGN KEY (IdEmpresa,IdSucursal) REFERENCES sucursalporempresa (IdEmpresa, IdSucursal);
+
+CREATE TABLE detallemovimientocuentaporpagar (
+  IdMovCxP int NOT NULL,
+  IdCxP int DEFAULT NULL,
+  SaldoActual double NOT NULL,
+  Monto double NOT NULL
+);
+ALTER TABLE detallemovimientocuentaporpagar ADD PRIMARY KEY (IdMovCxP, IdCxP);
+ALTER TABLE detallemovimientocuentaporpagar ADD CONSTRAINT detallemovimientocuentaporpagar_ibfk_1 FOREIGN KEY (IdMovCxP) REFERENCES movimientocuentaporpagar (IdMovCxP);
+ALTER TABLE detallemovimientocuentaporpagar ADD CONSTRAINT detallemovimientocuentaporpagar_ibfk_2 FOREIGN KEY (IdCxP) REFERENCES cuentaporpagar (IdCxP);
+
+INSERT INTO detallemovimientocuentaporpagar SELECT IdMovCxP, IdCxP, SaldoActual, Monto FROM movimientocuentaporpagar;
+
+ALTER TABLE cuentaporpagar DROP COLUMN Tipo;
+ALTER TABLE movimientocuentaporpagar DROP COLUMN Tipo;
+ALTER TABLE movimientocuentaporpagar DROP COLUMN TipoPropietario;
+ALTER TABLE movimientocuentaporpagar DROP COLUMN IdCxP;
+ALTER TABLE movimientocuentaporpagar DROP COLUMN IdPropietario;
+ALTER TABLE movimientocuentaporpagar DROP COLUMN SaldoActual;
+ALTER TABLE movimientocuentaporpagar DROP COLUMN Monto;

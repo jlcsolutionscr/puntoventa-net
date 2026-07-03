@@ -276,7 +276,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdPropietario = compra.IdProveedor,
                             Referencia = compra.NoDocumento,
                             Fecha = compra.Fecha,
-                            Tipo = StaticTipoCuentaPorPagar.Proveedores,
                             Total = compra.Total,
                             Saldo = compra.Total,
                             Nulo = false
@@ -849,15 +848,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (devolucion.IdMovimientoCxP > 0)
                     {
-                        MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("DesgloseMovimientoCuentaPorPagar").FirstOrDefault(x => x.IdMovCxP == devolucion.IdMovimientoCxP);
+                        MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("DetalleMovimientoCuentaPorPagar").FirstOrDefault(x => x.IdMovCxP == devolucion.IdMovimientoCxP);
                         if (movimiento == null)
                             throw new BusinessException("El movimiento de la cuenta por pagar correspondiente a la devolución no existe!");
                         movimiento.Nulo = true;
                         movimiento.IdAnuladoPor = intIdUsuario;
                         dbContext.NotificarModificacion(movimiento);
-                        CuentaPorPagar cuentaPorPagar = dbContext.CuentaPorPagarRepository.Find(movimiento.IdCxP);
-                        cuentaPorPagar.Saldo += movimiento.Monto;
-                        dbContext.NotificarModificacion(cuentaPorPagar);
+                        foreach (var detalle in movimiento.DetalleMovimientoCuentaPorPagar)
+                        {
+                            CuentaPorPagar cuentaPorPagar = dbContext.CuentaPorPagarRepository.Find(detalle.IdCxP);
+                            cuentaPorPagar.Saldo += detalle.Monto;
+                            dbContext.NotificarModificacion(cuentaPorPagar);
+                        }
                     }
                     if (devolucion.IdAsiento > 0)
                     {

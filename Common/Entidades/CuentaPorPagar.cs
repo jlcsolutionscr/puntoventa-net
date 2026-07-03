@@ -14,7 +14,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int NroDocOrig { get; set; }
         public DateTime Fecha { get; set; }
         public int Plazo { get; set; }
-        public short Tipo { get; set; }
         public decimal Total { get; set; }
         public decimal Saldo { get; set; }
         public int IdAsiento { get; set; }
