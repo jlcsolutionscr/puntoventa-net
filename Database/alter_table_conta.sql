@@ -129,3 +129,6 @@ ALTER TABLE movimientocuentaporpagar DROP COLUMN IdCxP;
 ALTER TABLE movimientocuentaporpagar DROP COLUMN IdPropietario;
 ALTER TABLE movimientocuentaporpagar DROP COLUMN SaldoActual;
 ALTER TABLE movimientocuentaporpagar DROP COLUMN Monto;
+
+DELETE FROM roleporusuario WHERE IdRole IN (302, 303);
+DELETE FROM role WHERE IdRole IN (302, 303);
