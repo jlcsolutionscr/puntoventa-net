@@ -1148,11 +1148,20 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (listadoCuentasPorCobrar.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoCuentasPorCobrar);
                     break;
-                case "ObtenerListaMovimientosCxC":
+                case "ObtenerTotalListaMovimientosCxC":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                    intIdCuenta = int.Parse(parametrosJO.Property("IdCuenta").Value.ToString());
-                    IList<EfectivoDetalle> listadoMovimientosCxC = _servicioCuentaPorProcesar.ObtenerListadoMovimientosCxC(intIdEmpresa, intIdSucursal, intIdCuenta);
+                    intIdCuenta = int.Parse(parametrosJO.Property("IdMov").Value.ToString());
+                    strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
+                    intTotalLista = _servicioCuentaPorProcesar.ObtenerTotalListaMovimientosCxC(intIdEmpresa, intIdSucursal, intIdCuenta, strFechaFinal);
+                    strRespuesta = JsonConvert.SerializeObject(intTotalLista);
+                    break;
+                case "ObtenerListadoMovimientosCxC":
+                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                    intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                    intIdCuenta = int.Parse(parametrosJO.Property("IdMov").Value.ToString());
+                    strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
+                    IList<IdFechaDescripcion> listadoMovimientosCxC = _servicioCuentaPorProcesar.ObtenerListadoMovimientosCxC(intIdEmpresa, intIdSucursal, intIdCuenta, strFechaFinal);
                     if (listadoMovimientosCxC.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoMovimientosCxC);
                     break;
@@ -1191,11 +1200,20 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (listadoCuentasPorPagar.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoCuentasPorPagar);
                     break;
-                case "ObtenerListaMovimientosCxP":
+                case "ObtenerTotalListaMovimientosCxP":
+                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                    intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
+                    intIdCuenta = int.Parse(parametrosJO.Property("IdMov").Value.ToString());
+                    strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
+                    intTotalLista = _servicioCuentaPorProcesar.ObtenerTotalListaMovimientosCxP(intIdEmpresa, intIdSucursal, intIdCuenta, strFechaFinal);
+                    strRespuesta = JsonConvert.SerializeObject(intTotalLista);
+                    break;
+                case "ObtenerListadoMovimientosCxP":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     intIdCuenta = int.Parse(parametrosJO.Property("IdCuenta").Value.ToString());
-                    IList<EfectivoDetalle> listadoMovimientosCxP = _servicioCuentaPorProcesar.ObtenerListadoMovimientosCxP(intIdEmpresa, intIdSucursal, intIdCuenta);
+                    strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
+                    IList<IdFechaDescripcion> listadoMovimientosCxP = _servicioCuentaPorProcesar.ObtenerListadoMovimientosCxP(intIdEmpresa, intIdSucursal, intIdCuenta, strFechaFinal);
                     if (listadoMovimientosCxP.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoMovimientosCxP);
                     break;
@@ -1462,7 +1480,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (asiento != null)
                         strRespuesta = JsonConvert.SerializeObject(asiento);
                     break;
-                case "ObtenerListaCuentasParaMovimientos":
+                case "ObtenerListadoCuentasParaMovimientos":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     IList<CatalogoContable> listadoCuentasParaMovimientos = _servicioContabilidad.ObtenerListadoCuentasParaMovimientos(intIdEmpresa);
                     if (listadoCuentasParaMovimientos.Count > 0)

@@ -141,16 +141,28 @@
     <Compile Include="Formas\FrmAceptarDocumentoElectronico.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmBusquedaNotaCredito.Designer.vb">
-      <DependentUpon>FrmBusquedaNotaCredito.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmBusquedaNotaCredito.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Formas\FrmAplicaAbonoCxP.Designer.vb">
       <DependentUpon>FrmAplicaAbonoCxP.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmAplicaAbonoCxP.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmBusquedaCuentaPorCobrar.Designer.vb">
+      <DependentUpon>FrmBusquedaCuentaPorCobrar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmBusquedaCuentaPorCobrar.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmBusquedaMovimientoCuentaPorPagar.Designer.vb">
+      <DependentUpon>FrmBusquedaMovimientoCuentaPorPagar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmBusquedaMovimientoCuentaPorPagar.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\FrmBusquedaNotaCredito.Designer.vb">
+      <DependentUpon>FrmBusquedaNotaCredito.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmBusquedaNotaCredito.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmAplicaAbonoOrdenServicio.Designer.vb">
@@ -189,10 +201,10 @@
     <Compile Include="Formas\FrmBusquedaCuentaPorPagar.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmBusquedaCuentaPorCobrar.Designer.vb">
-      <DependentUpon>FrmBusquedaCuentaPorCobrar.vb</DependentUpon>
+    <Compile Include="Formas\FrmBusquedaMovimientoCuentaPorCobrar.Designer.vb">
+      <DependentUpon>FrmBusquedaMovimientoCuentaPorCobrar.vb</DependentUpon>
     </Compile>
-    <Compile Include="Formas\FrmBusquedaCuentaPorCobrar.vb">
+    <Compile Include="Formas\FrmBusquedaMovimientoCuentaPorCobrar.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmBusquedaClasificacionProducto.Designer.vb">
@@ -319,12 +331,6 @@
       <DependentUpon>FrmGestionAbonoApartado.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmGestionAbonoApartado.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmGestionAbonoCxP.Designer.vb">
-      <DependentUpon>FrmGestionAbonoCxP.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmGestionAbonoCxP.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmPagoEfectivo.Designer.vb">
@@ -627,12 +633,6 @@
     <Compile Include="Formas\FrmClienteListado.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmGestionAbonoCxC.Designer.vb">
-      <DependentUpon>FrmGestionAbonoCxC.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmGestionAbonoCxC.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Formas\FrmAplicaAbonoCxC.Designer.vb">
       <DependentUpon>FrmAplicaAbonoCxC.vb</DependentUpon>
     </Compile>
@@ -785,11 +785,18 @@
     <EmbeddedResource Include="Formas\FrmAceptarDocumentoElectronico.resx">
       <DependentUpon>FrmAceptarDocumentoElectronico.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmBusquedaNotaCredito.resx">
-      <DependentUpon>FrmBusquedaNotaCredito.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAplicaAbonoCxP.resx">
       <DependentUpon>FrmAplicaAbonoCxP.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmBusquedaCuentaPorCobrar.resX">
+      <DependentUpon>FrmBusquedaCuentaPorCobrar.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmBusquedaMovimientoCuentaPorPagar.resX">
+      <DependentUpon>FrmBusquedaMovimientoCuentaPorPagar.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmBusquedaNotaCredito.resx">
+      <DependentUpon>FrmBusquedaNotaCredito.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAplicaAbonoOrdenServicio.resx">
       <DependentUpon>FrmAplicaAbonoOrdenServicio.vb</DependentUpon>
@@ -811,8 +818,8 @@
       <DependentUpon>FrmBusquedaCuentaPorPagar.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmBusquedaCuentaPorCobrar.resX">
-      <DependentUpon>FrmBusquedaCuentaPorCobrar.vb</DependentUpon>
+    <EmbeddedResource Include="Formas\FrmBusquedaMovimientoCuentaPorCobrar.resX">
+      <DependentUpon>FrmBusquedaMovimientoCuentaPorCobrar.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmBusquedaClasificacionProducto.resX">
@@ -885,9 +892,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmGestionAbonoApartado.resx">
       <DependentUpon>FrmGestionAbonoApartado.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmGestionAbonoCxP.resx">
-      <DependentUpon>FrmGestionAbonoCxP.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmPagoEfectivo.resx">
       <DependentUpon>FrmPagoEfectivo.vb</DependentUpon>
@@ -1067,9 +1071,6 @@
     <EmbeddedResource Include="Formas\FrmActualizarClave.resX">
       <DependentUpon>FrmActualizarClave.vb</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmGestionAbonoCxC.resx">
-      <DependentUpon>FrmGestionAbonoCxC.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAplicaAbonoCxC.resx">
       <DependentUpon>FrmAplicaAbonoCxC.vb</DependentUpon>

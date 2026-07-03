@@ -84,8 +84,6 @@ Partial Class FrmPrincipal
         Me.MnuApRCxP = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuApRApartado = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuApROrdenServicio = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuAnRCxC = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuAnRCxP = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuAnRApartado = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuAnROrdenServicio = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuBC = New System.Windows.Forms.ToolStripMenuItem()
@@ -428,7 +426,7 @@ Partial Class FrmPrincipal
         '
         'MnuCC
         '
-        Me.MnuCC.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuApRCxC, Me.MnuApRCxP, Me.MnuApRApartado, Me.MnuApROrdenServicio, Me.MnuAnRCxC, Me.MnuAnRCxP, Me.MnuAnRApartado, Me.MnuAnROrdenServicio})
+        Me.MnuCC.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuApRCxC, Me.MnuApRCxP, Me.MnuApRApartado, Me.MnuApROrdenServicio, Me.MnuAnRApartado, Me.MnuAnROrdenServicio})
         Me.MnuCC.MergeAction = System.Windows.Forms.MergeAction.Remove
         Me.MnuCC.Name = "MnuCC"
         Me.MnuCC.Size = New System.Drawing.Size(110, 20)
@@ -438,53 +436,39 @@ Partial Class FrmPrincipal
         'MnuApRCxC
         '
         Me.MnuApRCxC.Name = "MnuApRCxC"
-        Me.MnuApRCxC.Size = New System.Drawing.Size(274, 22)
-        Me.MnuApRCxC.Text = "Aplicar Pago sobre Cuenta por Cobrar"
+        Me.MnuApRCxC.Size = New System.Drawing.Size(272, 22)
+        Me.MnuApRCxC.Text = "Movimiento sobre Cuenta por Cobrar"
         Me.MnuApRCxC.Visible = False
         '
         'MnuApRCxP
         '
         Me.MnuApRCxP.Name = "MnuApRCxP"
-        Me.MnuApRCxP.Size = New System.Drawing.Size(274, 22)
-        Me.MnuApRCxP.Text = "Aplicar Pago sobre Cuenta por Pagar"
+        Me.MnuApRCxP.Size = New System.Drawing.Size(272, 22)
+        Me.MnuApRCxP.Text = "Movimiento sobre Cuenta por Pagar"
         Me.MnuApRCxP.Visible = False
         '
         'MnuApRApartado
         '
         Me.MnuApRApartado.Name = "MnuApRApartado"
-        Me.MnuApRApartado.Size = New System.Drawing.Size(274, 22)
+        Me.MnuApRApartado.Size = New System.Drawing.Size(272, 22)
         Me.MnuApRApartado.Text = "Aplicar Pago sobre Apartado"
         '
         'MnuApROrdenServicio
         '
         Me.MnuApROrdenServicio.Name = "MnuApROrdenServicio"
-        Me.MnuApROrdenServicio.Size = New System.Drawing.Size(274, 22)
+        Me.MnuApROrdenServicio.Size = New System.Drawing.Size(272, 22)
         Me.MnuApROrdenServicio.Text = "Aplicar Pago sobre Orden de Servicio"
-        '
-        'MnuAnRCxC
-        '
-        Me.MnuAnRCxC.Name = "MnuAnRCxC"
-        Me.MnuAnRCxC.Size = New System.Drawing.Size(274, 22)
-        Me.MnuAnRCxC.Text = "Gestionar Pago de Cuenta por Cobrar"
-        Me.MnuAnRCxC.Visible = False
-        '
-        'MnuAnRCxP
-        '
-        Me.MnuAnRCxP.Name = "MnuAnRCxP"
-        Me.MnuAnRCxP.Size = New System.Drawing.Size(274, 22)
-        Me.MnuAnRCxP.Text = "Gestionar Pagos de Cuenta por Pagar"
-        Me.MnuAnRCxP.Visible = False
         '
         'MnuAnRApartado
         '
         Me.MnuAnRApartado.Name = "MnuAnRApartado"
-        Me.MnuAnRApartado.Size = New System.Drawing.Size(274, 22)
+        Me.MnuAnRApartado.Size = New System.Drawing.Size(272, 22)
         Me.MnuAnRApartado.Text = "Gestionar Pago de Apartado"
         '
         'MnuAnROrdenServicio
         '
         Me.MnuAnROrdenServicio.Name = "MnuAnROrdenServicio"
-        Me.MnuAnROrdenServicio.Size = New System.Drawing.Size(274, 22)
+        Me.MnuAnROrdenServicio.Size = New System.Drawing.Size(272, 22)
         Me.MnuAnROrdenServicio.Text = "Gestionar Pago de Orden de Servicio"
         '
         'MnuBC
@@ -588,7 +572,6 @@ Partial Class FrmPrincipal
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents MnuAnRCxP As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuBC As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuBCMov As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuArchivoCambio As System.Windows.Forms.ToolStripMenuItem
@@ -596,7 +579,6 @@ Partial Class FrmPrincipal
     Friend WithEvents MnuContaAsiento As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuMantCI As System.Windows.Forms.ToolStripMenuItem
     Public WithEvents MnuApRCxC As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents MnuAnRCxC As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MnuMantCC As System.Windows.Forms.ToolStripMenuItem
     Public WithEvents MnuCapturaOrdenServicio As System.Windows.Forms.ToolStripMenuItem
     Public WithEvents MnuDevolucionCliente As System.Windows.Forms.ToolStripMenuItem

@@ -514,20 +514,6 @@ Public Class FrmPrincipal
         formReciboOrdenServicio.Show()
     End Sub
 
-    Public Sub MnuAnRCxC_Click(sender As Object, e As EventArgs) Handles MnuAnRCxC.Click
-        Dim formAnulaRecCxC As New FrmGestionAbonoCxC With {
-            .MdiParent = Me
-        }
-        formAnulaRecCxC.Show()
-    End Sub
-
-    Public Sub MnuAnRCxP_Click(sender As Object, e As EventArgs) Handles MnuAnRCxP.Click
-        Dim formAnulaRecCxP As New FrmGestionAbonoCxP With {
-            .MdiParent = Me
-        }
-        formAnulaRecCxP.Show()
-    End Sub
-
     Private Sub MnuAnRApartado_Click(sender As Object, e As EventArgs) Handles MnuAnRApartado.Click
         Dim formAnulaRecApartado As New FrmGestionAbonoApartado With {
             .MdiParent = Me

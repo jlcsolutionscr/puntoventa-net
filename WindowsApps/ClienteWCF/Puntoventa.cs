@@ -1943,7 +1943,7 @@ namespace LeandroSoftware.ClienteWCF
 
         public static async Task<List<CuentaPorProcesar>> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, int intNumeroPagina, int intFilasPorPagina, string strReferencia, string strNombrePropietario, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoCuentasPorCobrar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdTipo: " + intIdTipo + ", Pendientes: '" + bolPendientes + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", Referencia: '" + strReferencia + "', NombrePropietario: '" + strNombrePropietario + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoCuentasPorCobrar', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdTipo: " + intIdTipo + ", Pendientes: '" + bolPendientes + "', NumeroPagina: " + intNumeroPagina + ", FilasPorPagina: " + intFilasPorPagina + ", Referencia: '" + strReferencia + "', NombrePropietario: '" + strNombrePropietario + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<CuentaPorProcesar> listado = new List<CuentaPorProcesar>();
             if (respuesta != "")
@@ -1951,13 +1951,43 @@ namespace LeandroSoftware.ClienteWCF
             return listado;
         }
 
-        public static async Task<List<EfectivoDetalle>> ObtenerListaMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdCuenta, string strToken)
+        public static async Task<int> ObtenerTotalListaMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListaMovimientosCxC', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdCuenta: " + intIdCuenta + "}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaMovimientosCxC', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdMov: " + intIdMov + ", FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<EfectivoDetalle> listado = new List<EfectivoDetalle>();
+            int intCantidad = 0;
             if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<EfectivoDetalle>>(respuesta);
+                intCantidad = JsonConvert.DeserializeObject<int>(respuesta);
+            return intCantidad;
+        }
+
+        public static async Task<List<IdFechaDescripcion>> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdMov, string strFechaFinal, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoMovimientosCxC', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ", FilasPorPagina: " + intFilasPorPagina + ", IdMov: " + intIdMov + ", FechaFinal: '" + strFechaFinal + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<IdFechaDescripcion> listado = new List<IdFechaDescripcion>();
+            if (respuesta != "")
+                listado = JsonConvert.DeserializeObject<List<IdFechaDescripcion>>(respuesta);
+            return listado;
+        }
+
+        public static async Task<int> ObtenerTotalListaMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaMovimientosCxP', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", IdMov: " + intIdMov + ", FechaFinal: '" + strFechaFinal + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            int intCantidad = 0;
+            if (respuesta != "")
+                intCantidad = JsonConvert.DeserializeObject<int>(respuesta);
+            return intCantidad;
+        }
+
+        public static async Task<List<IdFechaDescripcion>> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intNumeroPagina, int intFilasPorPagina, int intIdMov, string strFechaFinal, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerListadoMovimientosCxP', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", NumeroPagina: " + intNumeroPagina + ", FilasPorPagina: " + intFilasPorPagina + ", IdMov: " + intIdMov + ", FechaFinal: '" + strFechaFinal + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            List<IdFechaDescripcion> listado = new List<IdFechaDescripcion>();
+            if (respuesta != "")
+                listado = JsonConvert.DeserializeObject<List<IdFechaDescripcion>>(respuesta);
             return listado;
         }
 

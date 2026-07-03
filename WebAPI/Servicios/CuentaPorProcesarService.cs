@@ -7,6 +7,7 @@ using LeandroSoftware.ServicioWeb.Utilitario;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MySql.EntityFrameworkCore.Extensions;
+using System.Globalization;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
 {
@@ -15,7 +16,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         CuentaPorCobrar ObtenerCuentaPorCobrar(int intIdCxC);
         int ObtenerTotalListaCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, string strReferencia, string strNombrePropietario);
         List<CuentaPorProcesar> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, int numPagina, int cantRec, string strReferencia, string strNombrePropietario);
-        List<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdCuenta);
+        int ObtenerTotalListaMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal);
+        List<IdFechaDescripcion> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal);
         void AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento);
         void AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoCuentaPorCobrar ObtenerMovimientoCxC(int intIdMovimiento);
@@ -24,7 +26,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         CuentaPorPagar ObtenerCuentaPorPagar(int intIdCxP);
         int ObtenerTotalListaCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, string strReferencia, string strNombrePropietario);
         List<CuentaPorProcesar> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, int numPagina, int cantRec, string strReferencia, string strNombrePropietario);
-        List<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdCuenta);
+        int ObtenerTotalListaMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal);
+        List<IdFechaDescripcion> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal);
         void AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento);
         void AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoCuentaPorPagar ObtenerMovimientoCxP(int intIdMovimiento);
@@ -45,6 +48,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         private readonly ILoggerManager _logger;
         private static IServiceScopeFactory? _serviceScopeFactory;
         private static IConfiguracionGeneral? _config;
+        private static CultureInfo provider = CultureInfo.InvariantCulture;
+        private static string strFormat = "dd/MM/yyyy HH:mm:ss";
 
         public CuentaPorProcesarService(ILoggerManager logger, IServiceScopeFactory pServiceScopeFactory, IConfiguracionGeneral config)
         {
@@ -150,18 +155,50 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<EfectivoDetalle> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdCuenta)
+        public int ObtenerTotalListaMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
-                    var listado = dbContext.DetalleMovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Include("MovimientoCuentaPorCobrar").Where(x => x.MovimientoCuentaPorCobrar.IdEmpresa == intIdEmpresa && x.MovimientoCuentaPorCobrar.IdSucursal == intIdSucursal && x.IdCxC == intIdCuenta && !x.MovimientoCuentaPorCobrar.Nulo).OrderByDescending(x => x.IdMovCxC);
+                    var listado = dbContext.MovimientoCuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
+                    if (intIdMov > 0) listado = listado.Where(x => x.IdMovCxC == intIdMov);
+                    if (strFechaFinal != "")
+                    {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
+                    }
+                    return listado.Count();
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de movimientos de cuentas por cobrar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de movimientos de cuentas por cobrar. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public List<IdFechaDescripcion> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                var listaMovimientos = new List<IdFechaDescripcion>();
+                try
+                {
+                    var listado = dbContext.MovimientoCuentaPorCobrarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
+                    if (intIdMov > 0) listado = listado.Where(x => x.IdMovCxC == intIdMov);
+                    if (strFechaFinal != "")
+                    {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
+                    }
+                    listado = listado.OrderByDescending(x => x.IdMovCxC);
                     foreach (var value in listado)
                     {
-                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxC, value.MovimientoCuentaPorCobrar.Fecha.ToString("dd/MM/yyyy"), "Abono sobre cuenta por cobrar nro " + value.CuentaPorCobrar.Referencia, value.Monto);
+                        IdFechaDescripcion item = new IdFechaDescripcion(value.IdMovCxC, value.Fecha.ToString("dd/MM/yyyy"), value.Observaciones);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;
@@ -536,7 +573,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public List<EfectivoDetalle> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdCuenta)
+        public int ObtenerTotalListaMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -544,10 +581,43 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 var listaMovimientos = new List<EfectivoDetalle>();
                 try
                 {
-                    var listado = dbContext.DetalleMovimientoCuentaPorPagarRepository.Include("MovimientoCuentaPorPagar").Include("CuentaPorPagar").Where(x => x.MovimientoCuentaPorPagar.IdEmpresa == intIdEmpresa && x.MovimientoCuentaPorPagar.IdSucursal == intIdSucursal && x.IdCxP == intIdCuenta && !x.MovimientoCuentaPorPagar.Nulo).OrderByDescending(x => x.IdMovCxP);
+                    var listado = dbContext.MovimientoCuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
+                    if (intIdMov > 0) listado = listado.Where(x => x.IdMovCxP == intIdMov);
+                    if (strFechaFinal != "")
+                    {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
+                    }
+                    return listado.Count();
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al obtener el listado de movimientos de cuentas por pagar: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando el listado de movimientos de cuentas por pagar. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public List<IdFechaDescripcion> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                var listaMovimientos = new List<IdFechaDescripcion>();
+                try
+                {
+                    var listado = dbContext.MovimientoCuentaPorPagarRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Nulo);
+                    if (intIdMov > 0) listado = listado.Where(x => x.IdMovCxP == intIdMov);
+                    if (strFechaFinal != "")
+                    {
+                        DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
+                        listado = listado.Where(x => x.Fecha <= datFechaFinal);
+                    }
+                    listado = listado.OrderByDescending(x => x.IdMovCxP);
                     foreach (var value in listado)
                     {
-                        EfectivoDetalle item = new EfectivoDetalle(value.IdMovCxP, value.MovimientoCuentaPorPagar.Fecha.ToString("dd/MM/yyyy"), "Abono con recibo " + value.MovimientoCuentaPorPagar.Recibo + " sobre cuenta por pagar nro " + value.CuentaPorPagar.Referencia, value.Monto);
+                        IdFechaDescripcion item = new IdFechaDescripcion(value.IdMovCxP, value.Fecha.ToString("dd/MM/yyyy"), value.Observaciones);
                         listaMovimientos.Add(item);
                     }
                     return listaMovimientos;

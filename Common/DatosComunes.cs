@@ -302,6 +302,21 @@ namespace LeandroSoftware.Common.DatosComunes
         public string Descripcion { get; set; }
     }
 
+    public class IdFechaDescripcion
+    {
+        public IdFechaDescripcion() { }
+
+        public IdFechaDescripcion(int id, string fecha, string descripcion)
+        {
+            Id = id;
+            Fecha = fecha;
+            Descripcion = descripcion;
+        }
+        public int Id { get; set; }
+        public string Fecha { get; set; }
+        public string Descripcion { get; set; }
+    }
+
     public class LlaveDescripcion
     {
         public LlaveDescripcion() { }
