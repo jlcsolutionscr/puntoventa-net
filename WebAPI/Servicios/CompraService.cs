@@ -235,7 +235,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 CuentaPorPagar cuentaPorPagar = null;
                 Asiento asiento = null;
                 MovimientoBanco movimientoBanco = null;
-                decimal decTipoDeCambio = 1;
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(compra.IdEmpresa);
@@ -263,7 +262,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     compra.IdCxP = 0;
                     compra.IdAsiento = 0;
                     compra.IdMovBanco = 0;
-                    compra.TipoDeCambioDolar = decTipoDeCambio;
                     dbContext.CompraRepository.Add(compra);
                     if (compra.IdCondicionVenta == StaticCondicionVenta.Credito)
                     {

@@ -10,7 +10,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdProforma { get; set; }
         public int ConsecProforma { get; set; }
         public int IdUsuario { get; set; }
-        public int IdTipoMoneda { get; set; }
         public int IdCliente { get; set; }
         public string NombreCliente { get; set; }
         public DateTime Fecha { get; set; }
@@ -23,7 +22,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal Descuento { get; set; }
         public decimal Impuesto { get; set; }
         public decimal Total { get { return Excento + Gravado + Exonerado + Impuesto; } }
-        public decimal TipoDeCambioDolar { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
         public string MotivoAnulacion { get; set; }

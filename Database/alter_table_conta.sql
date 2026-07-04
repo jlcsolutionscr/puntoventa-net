@@ -136,7 +136,14 @@ DELETE FROM role WHERE IdRole IN (302, 303);
 
 ALTER TABLE cuentaporcobrar DROP COLUMN IdTipoMoneda;
 ALTER TABLE cuentaporpagar DROP COLUMN IdTipoMoneda;
-ALTER TABLE compra DROP COLUMN IdTipoMoneda; 
+ALTER TABLE apartado DROP COLUMN IdTipoMoneda;
+ALTER TABLE apartado DROP COLUMN TipoDeCambioDolar;
+ALTER TABLE proforma DROP COLUMN IdTipoMoneda;
+ALTER TABLE proforma DROP COLUMN TipoDeCambioDolar;
+ALTER TABLE ordenservicio DROP COLUMN IdTipoMoneda;
+ALTER TABLE ordenservicio DROP COLUMN TipoDeCambioDolar;
+ALTER TABLE compra DROP COLUMN IdTipoMoneda;
+ALTER TABLE compra DROP COLUMN TipoDeCambioDolar;
 ALTER TABLE desglosepagoapartado DROP COLUMN IdTipoMoneda;
 ALTER TABLE desglosepagocompra DROP COLUMN IdTipoMoneda;
 ALTER TABLE desglosepagofactura DROP COLUMN IdTipoMoneda;

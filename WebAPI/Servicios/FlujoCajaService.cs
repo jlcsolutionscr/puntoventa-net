@@ -870,14 +870,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         foreach (var dato in facturasCredito)
                         {
-                            cierre.VentasCredito += dato.Total * dato.TipoDeCambioDolar;
+                            cierre.VentasCredito += dato.Total;
                             listaMovimientos.Add(new DetalleMovimientoCierreCaja
                             {
                                 IdReferencia = dato.ConsecFactura,
                                 Tipo = 4,
                                 Fecha = dato.Fecha,
                                 Descripcion = "Factura: " + dato.NombreCliente,
-                                Total = dato.Total * dato.TipoDeCambioDolar
+                                Total = dato.Total
                             });
                         }
                     }
@@ -1206,14 +1206,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         foreach (var dato in comprasCredito)
                         {
-                            cierre.ComprasCredito += dato.Total * dato.TipoDeCambioDolar;
+                            cierre.ComprasCredito += dato.Total;
                             listaMovimientos.Add(new DetalleMovimientoCierreCaja
                             {
                                 IdReferencia = dato.IdCompra,
                                 Tipo = 17,
                                 Fecha = dato.Fecha,
                                 Descripcion = "Compra de mercadería: " + dato.NombreProveedor,
-                                Total = dato.Total * dato.TipoDeCambioDolar
+                                Total = dato.Total
                             });
                         }
                     }
