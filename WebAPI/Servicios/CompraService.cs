@@ -272,7 +272,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdEmpresa = compra.IdEmpresa,
                             IdSucursal = compra.IdSucursal,
                             IdUsuario = compra.IdUsuario,
-                            IdTipoMoneda = compra.IdTipoMoneda,
                             IdPropietario = compra.IdProveedor,
                             Referencia = compra.NoDocumento,
                             Fecha = compra.Fecha,

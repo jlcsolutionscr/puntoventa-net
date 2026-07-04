@@ -439,7 +439,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdEmpresa = factura.IdEmpresa,
                             IdSucursal = factura.IdSucursal,
                             IdUsuario = factura.IdUsuario,
-                            IdTipoMoneda = factura.IdTipoMoneda,
                             IdPropietario = factura.IdCliente,
                             Referencia = factura.ConsecFactura.ToString(),
                             Fecha = factura.Fecha,
@@ -961,9 +960,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdReferencia = cuentaBanco.IdBanco,
                             TipoTarjeta = "",
                             NroMovimiento = "",
-                            IdTipoMoneda = factura.IdTipoMoneda,
                             MontoLocal = decSaldoAbonoCxCCliente,
-                            TipoDeCambio = factura.TipoDeCambioDolar
                         };
                         mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>
                         {
@@ -2298,9 +2295,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             IdReferencia = cuentaBanco.IdBanco,
                             TipoTarjeta = "",
                             NroMovimiento = "",
-                            IdTipoMoneda = factura.IdTipoMoneda,
                             MontoLocal = decSaldoAbonoCxCCliente,
-                            TipoDeCambio = factura.TipoDeCambioDolar
                         };
                         mov.DetalleMovimientoCuentaPorCobrar = new List<DetalleMovimientoCuentaPorCobrar>
                         {

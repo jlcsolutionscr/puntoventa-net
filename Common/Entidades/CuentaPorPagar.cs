@@ -8,7 +8,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdSucursal { get; set; }
         public int IdCxP { get; set; }
         public int IdUsuario { get; set; }
-        public int IdTipoMoneda { get; set; }
         public int IdPropietario { get; set; }
         public string Referencia { get; set; }
         public int NroDocOrig { get; set; }

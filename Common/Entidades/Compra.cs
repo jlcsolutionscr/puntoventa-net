@@ -9,7 +9,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdSucursal { get; set; }
         public int IdCompra { get; set; }
         public int IdUsuario { get; set; }
-        public int IdTipoMoneda { get; set; }
         public decimal TipoDeCambioDolar { get; set; }
         public int IdProveedor { get; set; }
         public int IdCondicionVenta { get; set; }

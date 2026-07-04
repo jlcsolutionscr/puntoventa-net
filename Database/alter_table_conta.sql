@@ -132,3 +132,23 @@ ALTER TABLE movimientocuentaporpagar DROP COLUMN Monto;
 
 DELETE FROM roleporusuario WHERE IdRole IN (302, 303);
 DELETE FROM role WHERE IdRole IN (302, 303);
+
+ALTER TABLE cuentaporcobrar DROP COLUMN IdTipoMoneda;
+ALTER TABLE cuentaporpagar DROP COLUMN IdTipoMoneda;
+ALTER TABLE compra DROP COLUMN IdTipoMoneda; 
+ALTER TABLE desglosepagoapartado DROP COLUMN IdTipoMoneda;
+ALTER TABLE desglosepagocompra DROP COLUMN IdTipoMoneda;
+ALTER TABLE desglosepagofactura DROP COLUMN IdTipoMoneda;
+ALTER TABLE desglosepagomovimientoapartado DROP COLUMN IdTipoMoneda;
+ALTER TABLE desglosepagomovimientocuentaporcobrar DROP COLUMN IdTipoMoneda;
+ALTER TABLE desglosepagomovimientocuentaporpagar DROP COLUMN IdTipoMoneda;
+ALTER TABLE desglosepagomovimientoordenservicio DROP COLUMN IdTipoMoneda;
+ALTER TABLE desglosepagoordenservicio DROP COLUMN IdTipoMoneda;
+ALTER TABLE desglosepagoapartado DROP COLUMN TipoDeCambio;
+ALTER TABLE desglosepagocompra DROP COLUMN TipoDeCambio;
+ALTER TABLE desglosepagofactura DROP COLUMN TipoDeCambio;
+ALTER TABLE desglosepagomovimientoapartado DROP COLUMN TipoDeCambio;
+ALTER TABLE desglosepagomovimientocuentaporcobrar DROP COLUMN TipoDeCambio;
+ALTER TABLE desglosepagomovimientocuentaporpagar DROP COLUMN TipoDeCambio;
+ALTER TABLE desglosepagomovimientoordenservicio DROP COLUMN TipoDeCambio;
+ALTER TABLE desglosepagoordenservicio DROP COLUMN TipoDeCambio;
