@@ -11,7 +11,6 @@ namespace LeandroSoftwarbuilder.ServicioWeb.Dominio.Entidades
             builder.ToTable("detallemovimientocuentaporpagar");
             builder.Ignore(p => p.NombrePropietario);
             builder.HasKey(p => new { p.IdMovCxP, p.IdCxP });
-            builder.HasOne(p => p.MovimientoCuentaPorPagar).WithMany().HasForeignKey(p => p.IdMovCxP);
             builder.HasOne(p => p.CuentaPorPagar).WithMany().HasForeignKey(p => p.IdCxP);
         }
     }

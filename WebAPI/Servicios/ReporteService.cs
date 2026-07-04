@@ -628,8 +628,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteGrupoDetalle> listaReporte = new List<ReporteGrupoDetalle>();
                     var cxcClientes = dbContext.CuentaPorCobrarRepository.Where(a => a.IdEmpresa == intIdEmpresa && a.Nulo == false)
                         .Join(dbContext.ClienteRepository, a => a.IdPropietario, b => b.IdCliente, (a, b) => new { a, b })
-                        .Join(dbContext.DetalleMovimientoCuentaPorCobrarRepository.Include("MovimientoCuentaPorCobrar"), a => a.a.IdCxC, d => d.IdCxC, (b, c) => new { b, c }).Where(s => s.c.MovimientoCuentaPorCobrar.IdSucursal == intIdSucursal && !s.c.MovimientoCuentaPorCobrar.Nulo && s.c.MovimientoCuentaPorCobrar.Fecha >= datFechaInicial && s.c.MovimientoCuentaPorCobrar.Fecha <= datFechaFinal)
-                        .Select(d => new { d.b.a.IdPropietario, d.b.a.Referencia, d.b.b.Nombre, d.b.a.IdCxC, d.b.a.Total, d.b.a.Saldo, d.c.IdMovCxC, d.c.MovimientoCuentaPorCobrar.Fecha, d.c.Monto });
+                        .Join(dbContext.DetalleMovimientoCuentaPorCobrarRepository, a => a.a.IdCxC, d => d.IdCxC, (b, c) => new { b, c })
+                        .Join(dbContext.MovimientoCuentaPorCobrarRepository, a => a.c.IdMovCxC, e => e.IdMovCxC, (d, e) => new { d, e })
+                        .Where(s => s.e.IdSucursal == intIdSucursal && !s.e.Nulo && s.e.Fecha >= datFechaInicial && s.e.Fecha <= datFechaFinal)
+                        .Select(f => new { f.d.b.a.IdPropietario, f.d.b.a.Referencia, f.d.b.b.Nombre, f.e.IdMovCxC, f.e.Fecha, f.d.c.Monto });
                     if (intIdCliente > 0)
                         cxcClientes = cxcClientes.Where(a => a.IdPropietario == intIdCliente);
                     foreach (var value in cxcClientes)
@@ -667,8 +669,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteGrupoDetalle> listaReporte = new List<ReporteGrupoDetalle>();
                     var cxpProveedores = dbContext.CuentaPorPagarRepository.Where(a => a.IdEmpresa == intIdEmpresa && a.Nulo == false)
                         .Join(dbContext.ProveedorRepository, a => a.IdPropietario, b => b.IdProveedor, (a, b) => new { a, b })
-                        .Join(dbContext.DetalleMovimientoCuentaPorPagarRepository.Include("MovimientoCuentaPorPagar"), a => a.a.IdCxP, d => d.IdCxP, (b, c) => new { b, c }).Where(s => s.c.MovimientoCuentaPorPagar.IdSucursal == intIdSucursal && !s.c.MovimientoCuentaPorPagar.Nulo && s.c.MovimientoCuentaPorPagar.Fecha >= datFechaInicial && s.c.MovimientoCuentaPorPagar.Fecha <= datFechaFinal)
-                        .Select(d => new { d.b.a.IdPropietario, d.b.a.Referencia, d.b.b.Nombre, d.b.a.IdCxP, d.b.a.Total, d.b.a.Saldo, d.c.IdMovCxP, d.c.MovimientoCuentaPorPagar.Fecha, d.c.MovimientoCuentaPorPagar.Recibo, d.c.Monto });
+                        .Join(dbContext.DetalleMovimientoCuentaPorPagarRepository, a => a.a.IdCxP, d => d.IdCxP, (b, c) => new { b, c })
+                        .Join(dbContext.MovimientoCuentaPorPagarRepository, a => a.c.IdMovCxP, e => e.IdMovCxP, (d, e) => new { d, e })
+                        .Where(s => s.e.IdSucursal == intIdSucursal && !s.e.Nulo && s.e.Fecha >= datFechaInicial && s.e.Fecha <= datFechaFinal)
+                        .Select(f => new { f.d.b.a.IdPropietario, f.d.b.a.Referencia, f.d.b.b.Nombre, f.d.b.a.IdCxP, f.d.b.a.Total, Saldo=f.d.c.SaldoActual, f.e.IdMovCxP, f.e.Fecha, f.d.c.Monto });
                     if (intIdProveedor > 0)
                         cxpProveedores = cxpProveedores.Where(a => a.IdPropietario == intIdProveedor);
                     foreach (var value in cxpProveedores)

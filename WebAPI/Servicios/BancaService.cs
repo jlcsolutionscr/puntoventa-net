@@ -17,7 +17,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<LlaveDescripcion> ObtenerListadoCuentasBanco(int intIdEmpresa, string strDescripcion);
         IList<LlaveDescripcion> ObtenerListadoTipoMovimientoBanco();
         string AgregarMovimientoBanco(MovimientoBanco movimiento);
-        string AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext);
+        void AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext);
         void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         void AnularMovimientoBanco(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion, LeandroContext dbContext);
         MovimientoBanco ObtenerMovimientoBanco(int intIdMovimiento);
@@ -229,17 +229,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
-                return AdicionarMovimientoBanco(movimiento, dbContext);
+                AdicionarMovimientoBanco(movimiento, dbContext);
+                dbContext.Commit();
+                return movimiento.IdMov.ToString();
             }
         }
 
-        public string AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext)
+        public void AgregarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext)
         {
-            return AdicionarMovimientoBanco(movimiento, dbContext);
+            AdicionarMovimientoBanco(movimiento, dbContext);
         }
 
 
-        private string AdicionarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext)
+        private void AdicionarMovimientoBanco(MovimientoBanco movimiento, LeandroContext dbContext)
         {
             try
             {
@@ -256,17 +258,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cuenta.Saldo += movimiento.Monto;
                 dbContext.MovimientoBancoRepository.Add(movimiento);
                 dbContext.NotificarModificacion(cuenta);
-                dbContext.Commit();
-                return movimiento.IdMov.ToString();
             }
-            catch (BusinessException)
+            catch (BusinessException ex)
             {
-                dbContext.RollBack();
-                throw;
+                throw ex;
             }
             catch (Exception ex)
             {
-                dbContext.RollBack();
                 if (_logger != null) _logger.LogError("Error al agregar el movimiento bancario: ", ex);
                 if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                 else throw new Exception("Se produjo un error agregando el movimiento bancario. Por favor consulte con su proveedor..");
@@ -279,6 +277,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 InvalidarMovimientoBanco(intIdMovimiento, intIdUsuario, strMotivoAnulacion, dbContext);
+                dbContext.Commit();
             }
         }
 
@@ -303,12 +302,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 dbContext.NotificarModificacion(movimiento);
                 cuenta.Saldo -= movimiento.Monto;
                 dbContext.NotificarModificacion(cuenta);
-                dbContext.Commit();
             }
-            catch (BusinessException)
+            catch (BusinessException ex)
             {
-                dbContext.RollBack();
-                throw;
+                throw ex;
             }
             catch (Exception ex)
             {
