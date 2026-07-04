@@ -36,8 +36,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static Vendedor? vendedor;
         private static Proforma? proforma;
         private static OrdenServicio? ordenServicio;
-        private static MovimientoCuentaPorCobrar? movimientoCxC;
-        private static MovimientoCuentaPorPagar? movimientoCxP;
         private static MovimientoApartado? movimientoApartado;
         private static MovimientoOrdenServicio? movimientoOrdenServicio;
         private static PuntoDeServicio? puntoDeServicio;
@@ -374,19 +372,11 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
                     _servicioMantenimiento.AnularAjusteInventario(intIdLlave1, intIdUsuario, strMotivoAnulacion);
                     break;
-                case "AplicarMovimientoCxC":
-                    movimientoCxC = JsonConvert.DeserializeObject<MovimientoCuentaPorCobrar>(strEntidad);
-                    _servicioCuentaPorProcesar.AplicarMovimientoCxC(movimientoCxC);
-                    break;
                 case "AnularMovimientoCxC":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdMovimiento").Value.ToString());
                     intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                     strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
                     _servicioCuentaPorProcesar.AnularMovimientoCxC(intIdLlave1, intIdUsuario, strMotivoAnulacion);
-                    break;
-                case "AplicarMovimientoCxP":
-                    movimientoCxP = JsonConvert.DeserializeObject<MovimientoCuentaPorPagar>(strEntidad);
-                    _servicioCuentaPorProcesar.AplicarMovimientoCxP(movimientoCxP);
                     break;
                 case "AnularMovimientoCxP":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdMovimiento").Value.ToString());

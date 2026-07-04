@@ -18,7 +18,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<CuentaPorProcesar> ObtenerListadoCuentasPorCobrar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, int numPagina, int cantRec, string strReferencia, string strNombrePropietario);
         int ObtenerTotalListaMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal);
         List<IdFechaDescripcion> ObtenerListadoMovimientosCxC(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal);
-        void AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento);
+        string AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento);
         void AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoCuentaPorCobrar ObtenerMovimientoCxC(int intIdMovimiento);
         int ObtenerCantidadCxCVencidas(int intIdPropietario, int intIdTipo);
@@ -28,7 +28,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         List<CuentaPorProcesar> ObtenerListadoCuentasPorPagar(int intIdEmpresa, int intIdSucursal, int intIdTipo, bool bolPendientes, int numPagina, int cantRec, string strReferencia, string strNombrePropietario);
         int ObtenerTotalListaMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal);
         List<IdFechaDescripcion> ObtenerListadoMovimientosCxP(int intIdEmpresa, int intIdSucursal, int intIdMov, string strFechaFinal);
-        void AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento);
+        string AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento);
         void AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario, string strMotivoAnulacion);
         MovimientoCuentaPorPagar ObtenerMovimientoCxP(int intIdMovimiento);
         int ObtenerCantidadCxPVencidas(int intIdPropietario, int intIdTipo);
@@ -212,7 +212,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento)
+        public string AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -366,6 +366,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.NotificarModificacion(movimiento);
                     }
                     dbContext.Commit();
+                    return movimiento.IdMovCxC.ToString();
                 }
                 catch (BusinessException)
                 {
@@ -631,7 +632,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public void AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento)
+        public string AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -768,6 +769,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         dbContext.NotificarModificacion(movimientoBanco);
                     }
                     dbContext.Commit();
+                    return movimiento.IdMovCxP.ToString();
                 }
                 catch (BusinessException)
                 {
