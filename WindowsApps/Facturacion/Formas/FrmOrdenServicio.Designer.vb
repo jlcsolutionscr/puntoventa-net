@@ -86,10 +86,6 @@ Partial Class FrmOrdenServicio
         Me._lblLabels_6 = New System.Windows.Forms.Label()
         Me._lblLabels_1 = New System.Windows.Forms.Label()
         Me.btnGenerarPDF = New System.Windows.Forms.Button()
-        Me.cboTipoMoneda = New System.Windows.Forms.ComboBox()
-        Me.Label7 = New System.Windows.Forms.Label()
-        Me.txtTipoCambio = New System.Windows.Forms.TextBox()
-        Me.Label11 = New System.Windows.Forms.Label()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.txtPorcentajeExoneracion = New System.Windows.Forms.TextBox()
         Me.txtFechaEntrega = New System.Windows.Forms.DateTimePicker()
@@ -856,71 +852,12 @@ Partial Class FrmOrdenServicio
         Me.btnGenerarPDF.Text = "A&brir PDF"
         Me.btnGenerarPDF.UseVisualStyleBackColor = False
         '
-        'cboTipoMoneda
-        '
-        Me.cboTipoMoneda.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cboTipoMoneda.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cboTipoMoneda.BackColor = System.Drawing.SystemColors.Window
-        Me.cboTipoMoneda.Cursor = System.Windows.Forms.Cursors.Default
-        Me.cboTipoMoneda.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cboTipoMoneda.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.cboTipoMoneda.IntegralHeight = False
-        Me.cboTipoMoneda.ItemHeight = 13
-        Me.cboTipoMoneda.Location = New System.Drawing.Point(236, 88)
-        Me.cboTipoMoneda.Name = "cboTipoMoneda"
-        Me.cboTipoMoneda.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboTipoMoneda.Size = New System.Drawing.Size(129, 21)
-        Me.cboTipoMoneda.TabIndex = 9
-        Me.cboTipoMoneda.TabStop = False
-        '
-        'Label7
-        '
-        Me.Label7.BackColor = System.Drawing.Color.Transparent
-        Me.Label7.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label7.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label7.Location = New System.Drawing.Point(170, 88)
-        Me.Label7.Name = "Label7"
-        Me.Label7.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label7.Size = New System.Drawing.Size(60, 19)
-        Me.Label7.TabIndex = 192
-        Me.Label7.Text = "Moneda:"
-        Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'txtTipoCambio
-        '
-        Me.txtTipoCambio.AcceptsReturn = True
-        Me.txtTipoCambio.BackColor = System.Drawing.SystemColors.Window
-        Me.txtTipoCambio.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtTipoCambio.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTipoCambio.Location = New System.Drawing.Point(454, 88)
-        Me.txtTipoCambio.MaxLength = 0
-        Me.txtTipoCambio.Name = "txtTipoCambio"
-        Me.txtTipoCambio.ReadOnly = True
-        Me.txtTipoCambio.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtTipoCambio.Size = New System.Drawing.Size(73, 20)
-        Me.txtTipoCambio.TabIndex = 10
-        Me.txtTipoCambio.TabStop = False
-        Me.txtTipoCambio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label11
-        '
-        Me.Label11.BackColor = System.Drawing.Color.Transparent
-        Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(372, 88)
-        Me.Label11.Name = "Label11"
-        Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label11.Size = New System.Drawing.Size(76, 19)
-        Me.Label11.TabIndex = 194
-        Me.Label11.Text = "Tipo Cambio:"
-        Me.Label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
         'Label12
         '
         Me.Label12.BackColor = System.Drawing.Color.Transparent
         Me.Label12.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label12.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label12.Location = New System.Drawing.Point(627, 62)
+        Me.Label12.Location = New System.Drawing.Point(436, 89)
         Me.Label12.Name = "Label12"
         Me.Label12.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label12.Size = New System.Drawing.Size(125, 19)
@@ -934,7 +871,7 @@ Partial Class FrmOrdenServicio
         Me.txtPorcentajeExoneracion.BackColor = System.Drawing.SystemColors.Window
         Me.txtPorcentajeExoneracion.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPorcentajeExoneracion.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(758, 61)
+        Me.txtPorcentajeExoneracion.Location = New System.Drawing.Point(567, 88)
         Me.txtPorcentajeExoneracion.MaxLength = 0
         Me.txtPorcentajeExoneracion.Name = "txtPorcentajeExoneracion"
         Me.txtPorcentajeExoneracion.ReadOnly = True
@@ -1189,7 +1126,7 @@ Partial Class FrmOrdenServicio
         Me.Label19.BackColor = System.Drawing.Color.Transparent
         Me.Label19.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label19.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label19.Location = New System.Drawing.Point(786, 62)
+        Me.Label19.Location = New System.Drawing.Point(595, 89)
         Me.Label19.Name = "Label19"
         Me.Label19.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label19.Size = New System.Drawing.Size(20, 19)
@@ -1223,10 +1160,6 @@ Partial Class FrmOrdenServicio
         Me.Controls.Add(Me.txtFechaEntrega)
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.txtPorcentajeExoneracion)
-        Me.Controls.Add(Me.txtTipoCambio)
-        Me.Controls.Add(Me.Label11)
-        Me.Controls.Add(Me.cboTipoMoneda)
-        Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.btnGenerarPDF)
         Me.Controls.Add(Me.txtPorcDesc)
         Me.Controls.Add(Me.Label13)
@@ -1339,10 +1272,6 @@ Partial Class FrmOrdenServicio
     Public WithEvents _lblLabels_6 As Label
     Public WithEvents _lblLabels_1 As Label
     Public WithEvents btnGenerarPDF As Button
-    Public WithEvents cboTipoMoneda As ComboBox
-    Public WithEvents Label7 As Label
-    Public WithEvents txtTipoCambio As TextBox
-    Public WithEvents Label11 As Label
     Public WithEvents Label12 As Label
     Public WithEvents txtPorcentajeExoneracion As TextBox
     Friend WithEvents txtFechaEntrega As DateTimePicker

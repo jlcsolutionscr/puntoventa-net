@@ -59,15 +59,15 @@ Partial Class FrmAplicaAbonoCxC
         Me.Label6 = New System.Windows.Forms.Label()
         Me.txtMontoTotal = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.grdDetalle = New System.Windows.Forms.DataGridView()
+        Me.grdDetalleMovimiento = New System.Windows.Forms.DataGridView()
         Me.btnEliminar = New System.Windows.Forms.Button()
         Me.btnInsertar = New System.Windows.Forms.Button()
-        Me.TextBox2 = New System.Windows.Forms.TextBox()
-        Me.txtPropietario = New System.Windows.Forms.Label()
+        Me.txtDetalle = New System.Windows.Forms.TextBox()
+        Me.lblDetalle = New System.Windows.Forms.Label()
         Me.btnBuscar = New System.Windows.Forms.Button()
         Me.btnAnular = New System.Windows.Forms.Button()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.grdDetalle, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.grdDetalleMovimiento, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'btnAgregar
@@ -532,22 +532,22 @@ Partial Class FrmAplicaAbonoCxC
         Me.Label2.Text = "Monto total del movimiento:"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'grdDetalle
+        'grdDetalleMovimiento
         '
-        Me.grdDetalle.AllowUserToAddRows = False
-        Me.grdDetalle.AllowUserToDeleteRows = False
-        Me.grdDetalle.AllowUserToResizeColumns = False
-        Me.grdDetalle.AllowUserToResizeRows = False
-        Me.grdDetalle.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grdDetalle.Location = New System.Drawing.Point(8, 133)
-        Me.grdDetalle.MultiSelect = False
-        Me.grdDetalle.Name = "grdDetalle"
-        Me.grdDetalle.ReadOnly = True
-        Me.grdDetalle.RowHeadersVisible = False
-        Me.grdDetalle.RowHeadersWidth = 30
-        Me.grdDetalle.Size = New System.Drawing.Size(750, 89)
-        Me.grdDetalle.TabIndex = 159
-        Me.grdDetalle.TabStop = False
+        Me.grdDetalleMovimiento.AllowUserToAddRows = False
+        Me.grdDetalleMovimiento.AllowUserToDeleteRows = False
+        Me.grdDetalleMovimiento.AllowUserToResizeColumns = False
+        Me.grdDetalleMovimiento.AllowUserToResizeRows = False
+        Me.grdDetalleMovimiento.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.grdDetalleMovimiento.Location = New System.Drawing.Point(8, 133)
+        Me.grdDetalleMovimiento.MultiSelect = False
+        Me.grdDetalleMovimiento.Name = "grdDetalleMovimiento"
+        Me.grdDetalleMovimiento.ReadOnly = True
+        Me.grdDetalleMovimiento.RowHeadersVisible = False
+        Me.grdDetalleMovimiento.RowHeadersWidth = 30
+        Me.grdDetalleMovimiento.Size = New System.Drawing.Size(750, 89)
+        Me.grdDetalleMovimiento.TabIndex = 159
+        Me.grdDetalleMovimiento.TabStop = False
         '
         'btnEliminar
         '
@@ -577,32 +577,32 @@ Partial Class FrmAplicaAbonoCxC
         Me.btnInsertar.Text = "Insertar"
         Me.btnInsertar.UseVisualStyleBackColor = False
         '
-        'TextBox2
+        'txtDetalle
         '
-        Me.TextBox2.AcceptsReturn = True
-        Me.TextBox2.BackColor = System.Drawing.SystemColors.Window
-        Me.TextBox2.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.TextBox2.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.TextBox2.Location = New System.Drawing.Point(108, 102)
-        Me.TextBox2.MaxLength = 0
-        Me.TextBox2.Name = "TextBox2"
-        Me.TextBox2.ReadOnly = True
-        Me.TextBox2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.TextBox2.Size = New System.Drawing.Size(650, 20)
-        Me.TextBox2.TabIndex = 164
+        Me.txtDetalle.AcceptsReturn = True
+        Me.txtDetalle.BackColor = System.Drawing.SystemColors.Window
+        Me.txtDetalle.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtDetalle.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtDetalle.Location = New System.Drawing.Point(108, 102)
+        Me.txtDetalle.MaxLength = 0
+        Me.txtDetalle.Name = "txtDetalle"
+        Me.txtDetalle.ReadOnly = True
+        Me.txtDetalle.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtDetalle.Size = New System.Drawing.Size(650, 20)
+        Me.txtDetalle.TabIndex = 164
         '
-        'txtPropietario
+        'lblDetalle
         '
-        Me.txtPropietario.BackColor = System.Drawing.Color.Transparent
-        Me.txtPropietario.Cursor = System.Windows.Forms.Cursors.Default
-        Me.txtPropietario.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.txtPropietario.Location = New System.Drawing.Point(12, 102)
-        Me.txtPropietario.Name = "txtPropietario"
-        Me.txtPropietario.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtPropietario.Size = New System.Drawing.Size(89, 19)
-        Me.txtPropietario.TabIndex = 165
-        Me.txtPropietario.Text = "Cuenta de:"
-        Me.txtPropietario.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.lblDetalle.BackColor = System.Drawing.Color.Transparent
+        Me.lblDetalle.Cursor = System.Windows.Forms.Cursors.Default
+        Me.lblDetalle.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lblDetalle.Location = New System.Drawing.Point(12, 102)
+        Me.lblDetalle.Name = "lblDetalle"
+        Me.lblDetalle.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.lblDetalle.Size = New System.Drawing.Size(89, 19)
+        Me.lblDetalle.TabIndex = 165
+        Me.lblDetalle.Text = "Detalle:"
+        Me.lblDetalle.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'btnBuscar
         '
@@ -640,11 +640,11 @@ Partial Class FrmAplicaAbonoCxC
         Me.ClientSize = New System.Drawing.Size(767, 480)
         Me.Controls.Add(Me.btnAnular)
         Me.Controls.Add(Me.btnBuscar)
-        Me.Controls.Add(Me.TextBox2)
-        Me.Controls.Add(Me.txtPropietario)
+        Me.Controls.Add(Me.txtDetalle)
+        Me.Controls.Add(Me.lblDetalle)
         Me.Controls.Add(Me.txtMontoTotal)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.grdDetalle)
+        Me.Controls.Add(Me.grdDetalleMovimiento)
         Me.Controls.Add(Me.btnEliminar)
         Me.Controls.Add(Me.btnInsertar)
         Me.Controls.Add(Me.txtMontoOriginal)
@@ -690,7 +690,7 @@ Partial Class FrmAplicaAbonoCxC
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Aplicar abono a Cuentas por Cobrar"
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.grdDetalle, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.grdDetalleMovimiento, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -719,11 +719,11 @@ Partial Class FrmAplicaAbonoCxC
     Public WithEvents Label6 As System.Windows.Forms.Label
     Public WithEvents txtMontoTotal As TextBox
     Public WithEvents Label2 As Label
-    Public WithEvents grdDetalle As DataGridView
+    Public WithEvents grdDetalleMovimiento As DataGridView
     Public WithEvents btnEliminar As Button
     Public WithEvents btnInsertar As Button
-    Public WithEvents TextBox2 As TextBox
-    Public WithEvents txtPropietario As Label
+    Public WithEvents txtDetalle As TextBox
+    Public WithEvents lblDetalle As Label
     Public WithEvents btnBuscar As Button
     Public WithEvents btnAnular As Button
 End Class

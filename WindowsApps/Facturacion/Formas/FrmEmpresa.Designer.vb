@@ -130,6 +130,7 @@ Partial Class FrmEmpresa
         Me.chkImprimeTiqueteDespachoMercancia = New System.Windows.Forms.CheckBox()
         Me.chkHabilitaCodigoTransitorio = New System.Windows.Forms.CheckBox()
         Me.chkHabilitaCodigoImpuestoServicio = New System.Windows.Forms.CheckBox()
+        Me.chkHabilitaFacturacionMonedaExtranjera = New System.Windows.Forms.CheckBox()
         Me.gpbSucursal.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         CType(Me.dgvActividadEconomica, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1548,12 +1549,24 @@ Partial Class FrmEmpresa
         Me.chkHabilitaCodigoImpuestoServicio.Text = "Habilita impuesto de servicio"
         Me.chkHabilitaCodigoImpuestoServicio.UseVisualStyleBackColor = True
         '
+        'chkHabilitaFacturacionMonedaExtranjera
+        '
+        Me.chkHabilitaFacturacionMonedaExtranjera.AutoSize = True
+        Me.chkHabilitaFacturacionMonedaExtranjera.Location = New System.Drawing.Point(227, 501)
+        Me.chkHabilitaFacturacionMonedaExtranjera.Name = "chkHabilitaFacturacionMonedaExtranjera"
+        Me.chkHabilitaFacturacionMonedaExtranjera.Size = New System.Drawing.Size(151, 17)
+        Me.chkHabilitaFacturacionMonedaExtranjera.TabIndex = 300
+        Me.chkHabilitaFacturacionMonedaExtranjera.TabStop = False
+        Me.chkHabilitaFacturacionMonedaExtranjera.Text = "Habilita moneda extranjera"
+        Me.chkHabilitaFacturacionMonedaExtranjera.UseVisualStyleBackColor = True
+        '
         'FrmEmpresa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1257, 639)
+        Me.Controls.Add(Me.chkHabilitaFacturacionMonedaExtranjera)
         Me.Controls.Add(Me.chkHabilitaCodigoImpuestoServicio)
         Me.Controls.Add(Me.chkHabilitaCodigoTransitorio)
         Me.Controls.Add(Me.chkImprimeTiqueteDespachoMercancia)
@@ -1716,4 +1729,5 @@ Partial Class FrmEmpresa
     Friend WithEvents chkImprimeTiqueteDespachoMercancia As CheckBox
     Friend WithEvents chkHabilitaCodigoTransitorio As CheckBox
     Friend WithEvents chkHabilitaCodigoImpuestoServicio As CheckBox
+    Friend WithEvents chkHabilitaFacturacionMonedaExtranjera As CheckBox
 End Class

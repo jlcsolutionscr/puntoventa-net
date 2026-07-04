@@ -54,9 +54,7 @@ Public Class FrmApartado
         dtbDesglosePago.Columns.Add("DESCBANCO", GetType(String))
         dtbDesglosePago.Columns.Add("TIPOTARJETA", GetType(String))
         dtbDesglosePago.Columns.Add("NROMOVIMIENTO", GetType(String))
-        dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Integer))
         dtbDesglosePago.Columns.Add("MONTOLOCAL", GetType(Decimal))
-        dtbDesglosePago.Columns.Add("TIPODECAMBIO", GetType(Decimal))
         dtbDesglosePago.PrimaryKey = {dtbDesglosePago.Columns(0), dtbDesglosePago.Columns(2)}
     End Sub
 
@@ -161,10 +159,7 @@ Public Class FrmApartado
         Dim dvcTipoTarjeta As New DataGridViewTextBoxColumn
         Dim dvcNroMovimiento As New DataGridViewTextBoxColumn
         Dim dvcPlazo As New DataGridViewTextBoxColumn
-        Dim dvcIdTipoMoneda As New DataGridViewTextBoxColumn
-        Dim dvcDescTipoMoneda As New DataGridViewTextBoxColumn
         Dim dvcMontoLocal As New DataGridViewTextBoxColumn
-        Dim dvcTipoCambio As New DataGridViewTextBoxColumn
 
         dvcIdFormaPago.DataPropertyName = "IDFORMAPAGO"
         dvcIdFormaPago.HeaderText = "Id"
@@ -185,7 +180,7 @@ Public Class FrmApartado
 
         dvcDescBanco.DataPropertyName = "DESCBANCO"
         dvcDescBanco.HeaderText = "Banco"
-        dvcDescBanco.Width = 240
+        dvcDescBanco.Width = 350
         dvcDescBanco.ReadOnly = True
         dvcDescBanco.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcDescBanco)
@@ -204,11 +199,6 @@ Public Class FrmApartado
         dvcNroMovimiento.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcNroMovimiento)
 
-        dvcIdTipoMoneda.DataPropertyName = "IDTIPOMONEDA"
-        dvcIdTipoMoneda.HeaderText = "TipoMoneda"
-        dvcIdTipoMoneda.Visible = False
-        grdDesglosePago.Columns.Add(dvcIdTipoMoneda)
-
         dvcMontoLocal.DataPropertyName = "MONTOLOCAL"
         dvcMontoLocal.HeaderText = "Monto Local"
         dvcMontoLocal.Width = 110
@@ -216,14 +206,6 @@ Public Class FrmApartado
         dvcMontoLocal.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoLocal)
-
-        dvcTipoCambio.DataPropertyName = "TIPODECAMBIO"
-        dvcTipoCambio.HeaderText = "Tipo Cambio"
-        dvcTipoCambio.Width = 110
-        dvcTipoCambio.ReadOnly = True
-        dvcTipoCambio.SortMode = DataGridViewColumnSortMode.NotSortable
-        dvcTipoCambio.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        grdDesglosePago.Columns.Add(dvcTipoCambio)
     End Sub
 
     Private Sub CargarDetalleApartado(apartado As Apartado)
@@ -260,9 +242,7 @@ Public Class FrmApartado
             dtrRowDesglosePago.Item(3) = detalle.DescripcionCuenta
             dtrRowDesglosePago.Item(4) = detalle.TipoTarjeta
             dtrRowDesglosePago.Item(5) = detalle.NroMovimiento
-            dtrRowDesglosePago.Item(6) = detalle.IdTipoMoneda
-            dtrRowDesglosePago.Item(7) = detalle.MontoLocal
-            dtrRowDesglosePago.Item(8) = detalle.TipoDeCambio
+            dtrRowDesglosePago.Item(6) = detalle.MontoLocal
             dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
         Next
         grdDesglosePago.Refresh()
@@ -311,9 +291,7 @@ Public Class FrmApartado
             MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
-        Dim decMontoPago, decTipoCambio As Decimal
-        decMontoPago = CDbl(txtMontoPago.Text)
-        decTipoCambio = CDbl(txtTipoCambio.Text)
+        Dim decMontoPago = CDbl(txtMontoPago.Text)
         dtrRowDesglosePago = dtbDesglosePago.NewRow
         dtrRowDesglosePago.Item(0) = cboFormaPago.SelectedValue
         dtrRowDesglosePago.Item(1) = cboFormaPago.Text
@@ -321,9 +299,7 @@ Public Class FrmApartado
         dtrRowDesglosePago.Item(3) = cboTipoBanco.Text
         dtrRowDesglosePago.Item(4) = txtTipoTarjeta.Text
         dtrRowDesglosePago.Item(5) = txtAutorizacion.Text
-        dtrRowDesglosePago.Item(6) = cboTipoMoneda.SelectedValue
-        dtrRowDesglosePago.Item(7) = decMontoPago
-        dtrRowDesglosePago.Item(8) = decTipoCambio
+        dtrRowDesglosePago.Item(6) = decMontoPago
         dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
         grdDesglosePago.Refresh()
     End Sub
@@ -379,8 +355,8 @@ Public Class FrmApartado
         decTotalPago = 0
         decPagoEfectivo = 0
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
-            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
-            decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
+            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(6))
+            decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(6))
         Next
         decSaldoPorPagar = decTotal - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
@@ -391,9 +367,6 @@ Public Class FrmApartado
         cboFormaPago.ValueMember = "Id"
         cboFormaPago.DisplayMember = "Descripcion"
         cboFormaPago.DataSource = FrmPrincipal.ObtenerListadoFormaPagoCliente()
-        cboTipoMoneda.ValueMember = "Id"
-        cboTipoMoneda.DisplayMember = "Descripcion"
-        cboTipoMoneda.DataSource = FrmPrincipal.ObtenerListadoTipoMoneda()
         cboTipoBanco.ValueMember = "Id"
         cboTipoBanco.DisplayMember = "Descripcion"
     End Sub
@@ -522,9 +495,6 @@ Public Class FrmApartado
             txtCodigo.Focus()
             CargarCombos()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-            txtTipoCambio.Text = 1
-            If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
             bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -584,10 +554,6 @@ Public Class FrmApartado
             vendedor = Nothing
             txtVendedor.Text = ""
         End If
-        cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-        txtTipoCambio.Text = 1
-        If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
-        cboTipoMoneda.Enabled = True
         cboFormaPago.Enabled = True
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoBanco.DataSource = New List(Of LlaveDescripcion)
@@ -638,9 +604,6 @@ Public Class FrmApartado
                 cliente = apartado.Cliente
                 txtNombreCliente.Text = apartado.NombreCliente
                 txtFecha.Text = apartado.Fecha
-                cboTipoMoneda.SelectedValue = apartado.IdTipoMoneda
-                txtTipoCambio.Text = 1
-                If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
                 txtTelefono.Text = apartado.Telefono
                 txtDocumento.Text = apartado.TextoAdicional
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
@@ -651,7 +614,6 @@ Public Class FrmApartado
                 CargarTotales()
                 CargarTotalesPago()
                 decPagoCliente = apartado.MontoPagado
-                cboTipoMoneda.Enabled = False
                 txtNombreCliente.ReadOnly = cliente.IdCliente > 1
                 btnInsertar.Enabled = False
                 btnEliminar.Enabled = False
@@ -772,7 +734,6 @@ Public Class FrmApartado
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
-                .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
                 .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
@@ -808,9 +769,7 @@ Public Class FrmApartado
                     .IdReferencia = dtbDesglosePago.Rows(I).Item(2),
                     .TipoTarjeta = dtbDesglosePago.Rows(I).Item(4),
                     .NroMovimiento = dtbDesglosePago.Rows(I).Item(5),
-                    .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(6),
-                    .MontoLocal = dtbDesglosePago.Rows(I).Item(7),
-                    .TipoDeCambio = dtbDesglosePago.Rows(I).Item(8)
+                    .MontoLocal = dtbDesglosePago.Rows(I).Item(6)
                 }
                 apartado.DesglosePagoApartado.Add(desglosePago)
             Next
@@ -849,7 +808,6 @@ Public Class FrmApartado
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
         btnBusProd.Enabled = False
-        cboTipoMoneda.Enabled = False
         btnBuscaVendedor.Enabled = False
         btnBuscarCliente.Enabled = False
         grdDetalleApartado.ReadOnly = True
@@ -1008,13 +966,6 @@ Public Class FrmApartado
         End If
     End Sub
 
-    Private Async Sub CboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedValueChanged
-        If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
-            txtTipoCambio.Text = 1
-            If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
-        End If
-    End Sub
-
     Private Sub BtnInsertarPago_Click(sender As Object, e As EventArgs) Handles btnInsertarPago.Click
         If decTotal = 0 Then
             MessageBox.Show("No ha ingresado el detalle del apartado.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -1027,7 +978,6 @@ Public Class FrmApartado
         Else
             CargarLineaDesglosePago()
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
-            cboTipoMoneda.SelectedValue = StaticValoresPorDefecto.MonedaDelSistema
             txtMontoPago.Text = ""
             CargarTotalesPago()
             cboFormaPago.Focus()

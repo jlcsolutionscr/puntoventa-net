@@ -381,6 +381,7 @@ Public Class FrmProforma
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
             txtTipoCambio.Text = 1
             If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
+            cboTipoMoneda.Enabled = FrmPrincipal.empresaGlobal.HabilitaFacturacionMonedaExtranjera
             bolReady = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -393,7 +394,7 @@ Public Class FrmProforma
         txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-        cboTipoMoneda.Enabled = True
+        cboTipoMoneda.Enabled = FrmPrincipal.empresaGlobal.HabilitaFacturacionMonedaExtranjera
         txtTipoCambio.Text = 1
         If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
         txtTextoAdicional.Text = ""

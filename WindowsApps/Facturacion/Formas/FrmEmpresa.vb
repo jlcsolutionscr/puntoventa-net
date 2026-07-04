@@ -167,6 +167,7 @@ Public Class FrmEmpresa
             chkIngresaPagoCliente.Checked = datos.IngresaPagoCliente
             chkHabilitaCodigoTransitorio.Checked = datos.HabilitaCodigoTransitorio
             chkHabilitaCodigoImpuestoServicio.Checked = datos.HabilitaCodigoImpuestoServicio
+            chkHabilitaFacturacionMonedaExtranjera.Checked = datos.HabilitaFacturacionMonedaExtranjera
             txtMontoRedondeoDescuento.Text = datos.MontoRedondeoDescuento
             If credenciales IsNot Nothing Then
                 txtNombreCertificado.Text = credenciales.NombreCertificado
@@ -203,6 +204,7 @@ Public Class FrmEmpresa
             End If
             chkHabilitaCodigoTransitorio.Enabled = FrmPrincipal.usuarioGlobal.IdUsuario = 1
             chkHabilitaCodigoImpuestoServicio.Enabled = FrmPrincipal.usuarioGlobal.IdUsuario = 1
+            chkHabilitaFacturacionMonedaExtranjera.Enabled = FrmPrincipal.usuarioGlobal.IdUsuario = 1
             bolInicializado = True
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -270,6 +272,7 @@ Public Class FrmEmpresa
         datos.IngresaPagoCliente = chkIngresaPagoCliente.Checked
         datos.HabilitaCodigoTransitorio = chkHabilitaCodigoTransitorio.Checked
         datos.HabilitaCodigoImpuestoServicio = chkHabilitaCodigoImpuestoServicio.Checked
+        datos.HabilitaFacturacionMonedaExtranjera = chkHabilitaFacturacionMonedaExtranjera.Checked
         datos.MontoRedondeoDescuento = txtMontoRedondeoDescuento.Text
         datos.Distrito = Nothing
         datos.ActividadEconomicaEmpresa.Clear()

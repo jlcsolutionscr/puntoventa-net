@@ -30,9 +30,7 @@ Public Class FrmAplicaAbonoApartado
         dtbDesglosePago.Columns.Add("DESCBANCO", GetType(String))
         dtbDesglosePago.Columns.Add("TIPOTARJETA", GetType(String))
         dtbDesglosePago.Columns.Add("AUTORIZACION", GetType(String))
-        dtbDesglosePago.Columns.Add("IDTIPOMONEDA", GetType(Integer))
         dtbDesglosePago.Columns.Add("MONTOLOCAL", GetType(Decimal))
-        dtbDesglosePago.Columns.Add("TIPODECAMBIO", GetType(Decimal))
         dtbDesglosePago.PrimaryKey = {dtbDesglosePago.Columns(0), dtbDesglosePago.Columns(2)}
     End Sub
 
@@ -46,10 +44,7 @@ Public Class FrmAplicaAbonoApartado
         Dim dvcDescBanco As New DataGridViewTextBoxColumn
         Dim dvcTipoTarjeta As New DataGridViewTextBoxColumn
         Dim dvcAutorizacion As New DataGridViewTextBoxColumn
-        Dim dvcIdTipoMoneda As New DataGridViewTextBoxColumn
-        Dim dvcDescTipoMoneda As New DataGridViewTextBoxColumn
         Dim dvcMontoLocal As New DataGridViewTextBoxColumn
-        Dim dvcTipoCambio As New DataGridViewTextBoxColumn
 
         dvcIdTipoPago.DataPropertyName = "IDFORMAPAGO"
         dvcIdTipoPago.HeaderText = "Id"
@@ -72,7 +67,7 @@ Public Class FrmAplicaAbonoApartado
 
         dvcDescBanco.DataPropertyName = "DESCBANCO"
         dvcDescBanco.HeaderText = "Banco"
-        dvcDescBanco.Width = 210
+        dvcDescBanco.Width = 310
         dvcDescBanco.Visible = True
         dvcDescBanco.ReadOnly = True
         grdDesglosePago.Columns.Add(dvcDescBanco)
@@ -91,12 +86,6 @@ Public Class FrmAplicaAbonoApartado
         dvcAutorizacion.ReadOnly = True
         grdDesglosePago.Columns.Add(dvcAutorizacion)
 
-        dvcIdTipoMoneda.DataPropertyName = "IDTIPOMONEDA"
-        dvcIdTipoMoneda.HeaderText = "TipoMoneda"
-        dvcIdTipoMoneda.Width = 0
-        dvcIdTipoMoneda.Visible = False
-        grdDesglosePago.Columns.Add(dvcIdTipoMoneda)
-
         dvcMontoLocal.DataPropertyName = "MONTOLOCAL"
         dvcMontoLocal.HeaderText = "Monto Local"
         dvcMontoLocal.Width = 100
@@ -104,17 +93,9 @@ Public Class FrmAplicaAbonoApartado
         dvcMontoLocal.ReadOnly = True
         dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoLocal)
-
-        dvcTipoCambio.DataPropertyName = "TIPODECAMBIO"
-        dvcTipoCambio.HeaderText = "Tipo Cambio"
-        dvcTipoCambio.Width = 100
-        dvcTipoCambio.Visible = True
-        dvcTipoCambio.ReadOnly = True
-        dvcTipoCambio.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        grdDesglosePago.Columns.Add(dvcTipoCambio)
     End Sub
 
-    Private Async Sub CargarLineaDesglosePago()
+    Private Sub CargarLineaDesglosePago()
         Dim objPkDesglose(1) As Object
         Dim intTipoBanco As Integer = IIf(cboFormaPago.SelectedValue = StaticFormaPago.Efectivo, 0, cboTipoBanco.SelectedValue)
         objPkDesglose(0) = cboFormaPago.SelectedValue
@@ -123,10 +104,7 @@ Public Class FrmAplicaAbonoApartado
             MessageBox.Show("La forma de pago seleccionada ya fue agregada al detalle de pago.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
-        Dim decMontoPago, decTipoCambio As Decimal
-        decMontoPago = CDbl(txtMontoPago.Text)
-        decTipoCambio = 1
-        If apartado.IdTipoMoneda = 2 Then decTipoCambio = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
+        Dim decMontoPago = CDbl(txtMontoPago.Text)
         dtrRowDesglosePago = dtbDesglosePago.NewRow
         dtrRowDesglosePago.Item(0) = cboFormaPago.SelectedValue
         dtrRowDesglosePago.Item(1) = cboFormaPago.Text
@@ -134,9 +112,7 @@ Public Class FrmAplicaAbonoApartado
         dtrRowDesglosePago.Item(3) = cboTipoBanco.Text
         dtrRowDesglosePago.Item(4) = txtTipoTarjeta.Text
         dtrRowDesglosePago.Item(5) = txtDocumento.Text
-        dtrRowDesglosePago.Item(6) = apartado.IdTipoMoneda
-        dtrRowDesglosePago.Item(7) = decMontoPago
-        dtrRowDesglosePago.Item(8) = decTipoCambio
+        dtrRowDesglosePago.Item(6) = decMontoPago
         dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
         grdDesglosePago.Refresh()
     End Sub
@@ -145,8 +121,8 @@ Public Class FrmAplicaAbonoApartado
         decTotalPago = 0
         decPagoEfectivo = 0
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
-            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
-            decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(7))
+            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(6))
+            decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(6))
         Next
         decSaldoPorPagar = decTotal - decTotalPago
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
@@ -292,9 +268,7 @@ Public Class FrmAplicaAbonoApartado
                 .IdReferencia = IIf(dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo, 0, dtbDesglosePago.Rows(I).Item(2)),
                 .TipoTarjeta = dtbDesglosePago.Rows(I).Item(4),
                 .NroMovimiento = dtbDesglosePago.Rows(I).Item(5),
-                .IdTipoMoneda = dtbDesglosePago.Rows(I).Item(6),
-                .MontoLocal = dtbDesglosePago.Rows(I).Item(7),
-                .TipoDeCambio = dtbDesglosePago.Rows(I).Item(8)
+                .MontoLocal = dtbDesglosePago.Rows(I).Item(6)
             }
             movimiento.DesglosePagoMovimientoApartado.Add(desglosePagoMovimiento)
         Next
