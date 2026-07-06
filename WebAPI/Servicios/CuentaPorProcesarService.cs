@@ -793,7 +793,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.FirstOrDefault(x => x.IdMovCxP == intIdMovimiento);
+                    MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("DetalleMovimientoCuentaPorPagar").FirstOrDefault(x => x.IdMovCxP == intIdMovimiento);
                     if (movimiento == null) throw new BusinessException("El movimiento de cuenta por pagar no existe");
                     Empresa empresa = dbContext.EmpresaRepository.Find(movimiento.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
