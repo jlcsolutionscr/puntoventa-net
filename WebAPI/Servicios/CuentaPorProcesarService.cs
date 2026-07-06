@@ -693,7 +693,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 movimientoBanco.Descripcion = "Emisión de transferencia por abono a cuentas por pagar recibo nro. ";
                             }
                             movimientoBanco.Numero = desglosePago.NroMovimiento;
-                            movimientoBanco.Beneficiario = desglosePago.Beneficiario;
+                            movimientoBanco.Beneficiario = "";
                             movimientoBanco.Monto = desglosePago.MontoLocal;
                             IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
                             servicioAuxiliarBancario.AgregarMovimientoBanco(movimientoBanco, dbContext);
