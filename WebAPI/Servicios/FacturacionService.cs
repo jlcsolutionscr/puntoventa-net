@@ -1707,12 +1707,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(sucursal);
                     ordenServicio.ConsecOrdenServicio = sucursal.ConsecOrdenServicio;
                     dbContext.OrdenServicioRepository.Add(ordenServicio);
-                    if (ordenServicio.IdProforma > 0)
-                    {
-                        Proforma proforma = dbContext.ProformaRepository.Find(ordenServicio.IdProforma);
-                        proforma.Aplicado = true;
-                        dbContext.NotificarModificacion(proforma);
-                    }
                     if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
                     {
                         if (ordenServicio.IdPuntoDeServicio > 0)
