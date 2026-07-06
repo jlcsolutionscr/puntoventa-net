@@ -168,7 +168,7 @@ Public Class FrmEmpresa
             chkHabilitaCodigoTransitorio.Checked = datos.HabilitaCodigoTransitorio
             chkHabilitaCodigoImpuestoServicio.Checked = datos.HabilitaCodigoImpuestoServicio
             chkHabilitaFacturacionMonedaExtranjera.Checked = datos.HabilitaFacturacionMonedaExtranjera
-            txtMontoRedondeoDescuento.Text = datos.MontoRedondeoDescuento
+            txtMontoRedondeo.Text = datos.MontoRedondeoFactura
             If credenciales IsNot Nothing Then
                 txtNombreCertificado.Text = credenciales.NombreCertificado
                 txtPinCertificado.Text = credenciales.PinCertificado
@@ -273,7 +273,7 @@ Public Class FrmEmpresa
         datos.HabilitaCodigoTransitorio = chkHabilitaCodigoTransitorio.Checked
         datos.HabilitaCodigoImpuestoServicio = chkHabilitaCodigoImpuestoServicio.Checked
         datos.HabilitaFacturacionMonedaExtranjera = chkHabilitaFacturacionMonedaExtranjera.Checked
-        datos.MontoRedondeoDescuento = txtMontoRedondeoDescuento.Text
+        datos.MontoRedondeoFactura = txtMontoRedondeo.Text
         datos.Distrito = Nothing
         datos.ActividadEconomicaEmpresa.Clear()
         For I As Short = 0 To dtbActividadEconomica.Rows.Count - 1
@@ -403,7 +403,7 @@ Public Class FrmEmpresa
         End If
     End Sub
 
-    Private Sub ValidaDigitosSinDecimal(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono1.KeyPress, txtTelefono2.KeyPress, txtMontoRedondeoDescuento.KeyPress, txtConsecFactura.KeyPress, txtConsecProforma.KeyPress, txtConsecOrdenServicio.KeyPress, txtConsecApartado.KeyPress, txtUltimoFE.KeyPress, txtUltimoND.KeyPress, txtUltimoNC.KeyPress, txtUltimoTE.KeyPress, txtUltimoMR.KeyPress, txtUltimoFEC.KeyPress
+    Private Sub ValidaDigitosSinDecimal(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtIdentificacion.KeyPress, txtTelefono1.KeyPress, txtTelefono2.KeyPress, txtMontoRedondeo.KeyPress, txtConsecFactura.KeyPress, txtConsecProforma.KeyPress, txtConsecOrdenServicio.KeyPress, txtConsecApartado.KeyPress, txtUltimoFE.KeyPress, txtUltimoND.KeyPress, txtUltimoNC.KeyPress, txtUltimoTE.KeyPress, txtUltimoMR.KeyPress, txtUltimoFEC.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 0, ".")
     End Sub
 
@@ -464,10 +464,10 @@ Public Class FrmEmpresa
         End If
     End Sub
 
-    Private Sub txtMontoRedondeoDescuento_Validated(sender As Object, e As EventArgs) Handles txtMontoRedondeoDescuento.Validated
-        If txtMontoRedondeoDescuento.Text > 100 Then
+    Private Sub txtMontoRedondeoDescuento_Validated(sender As Object, e As EventArgs) Handles txtMontoRedondeo.Validated
+        If txtMontoRedondeo.Text > 100 Then
             MessageBox.Show("El monto de redondeo para los descuentos no puede ser mayor a 100", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            txtMontoRedondeoDescuento.Text = "100"
+            txtMontoRedondeo.Text = "100"
         End If
     End Sub
 

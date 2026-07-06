@@ -122,7 +122,7 @@ Partial Class FrmEmpresa
         Me.txtTelefono2 = New System.Windows.Forms.TextBox()
         Me.Label30 = New System.Windows.Forms.Label()
         Me.chkPrecioVentaIncluyeIVA = New System.Windows.Forms.CheckBox()
-        Me.txtMontoRedondeoDescuento = New System.Windows.Forms.TextBox()
+        Me.txtMontoRedondeo = New System.Windows.Forms.TextBox()
         Me.Label23 = New System.Windows.Forms.Label()
         Me.chkDevolucionEnEfectivo = New System.Windows.Forms.CheckBox()
         Me.chkIngresaPagoCliente = New System.Windows.Forms.CheckBox()
@@ -1457,30 +1457,30 @@ Partial Class FrmEmpresa
         Me.chkPrecioVentaIncluyeIVA.Text = "Precio venta incluye IVA"
         Me.chkPrecioVentaIncluyeIVA.UseVisualStyleBackColor = True
         '
-        'txtMontoRedondeoDescuento
+        'txtMontoRedondeo
         '
-        Me.txtMontoRedondeoDescuento.AcceptsReturn = True
-        Me.txtMontoRedondeoDescuento.BackColor = System.Drawing.SystemColors.Window
-        Me.txtMontoRedondeoDescuento.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtMontoRedondeoDescuento.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtMontoRedondeoDescuento.Location = New System.Drawing.Point(122, 406)
-        Me.txtMontoRedondeoDescuento.MaxLength = 3
-        Me.txtMontoRedondeoDescuento.Name = "txtMontoRedondeoDescuento"
-        Me.txtMontoRedondeoDescuento.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtMontoRedondeoDescuento.Size = New System.Drawing.Size(85, 20)
-        Me.txtMontoRedondeoDescuento.TabIndex = 16
+        Me.txtMontoRedondeo.AcceptsReturn = True
+        Me.txtMontoRedondeo.BackColor = System.Drawing.SystemColors.Window
+        Me.txtMontoRedondeo.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtMontoRedondeo.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtMontoRedondeo.Location = New System.Drawing.Point(350, 380)
+        Me.txtMontoRedondeo.MaxLength = 3
+        Me.txtMontoRedondeo.Name = "txtMontoRedondeo"
+        Me.txtMontoRedondeo.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtMontoRedondeo.Size = New System.Drawing.Size(85, 20)
+        Me.txtMontoRedondeo.TabIndex = 16
         '
         'Label23
         '
         Me.Label23.BackColor = System.Drawing.Color.Transparent
         Me.Label23.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label23.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label23.Location = New System.Drawing.Point(-26, 409)
+        Me.Label23.Location = New System.Drawing.Point(253, 383)
         Me.Label23.Name = "Label23"
         Me.Label23.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label23.Size = New System.Drawing.Size(142, 17)
+        Me.Label23.Size = New System.Drawing.Size(91, 17)
         Me.Label23.TabIndex = 293
-        Me.Label23.Text = "Monto redondeo desc:"
+        Me.Label23.Text = "Monto redondeo:"
         Me.Label23.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
         'chkDevolucionEnEfectivo
@@ -1573,7 +1573,7 @@ Partial Class FrmEmpresa
         Me.Controls.Add(Me.chkImprimeTiqueteAlFacturar)
         Me.Controls.Add(Me.chkIngresaPagoCliente)
         Me.Controls.Add(Me.chkDevolucionEnEfectivo)
-        Me.Controls.Add(Me.txtMontoRedondeoDescuento)
+        Me.Controls.Add(Me.txtMontoRedondeo)
         Me.Controls.Add(Me.Label23)
         Me.Controls.Add(Me.chkPrecioVentaIncluyeIVA)
         Me.Controls.Add(Me.txtTelefono2)
@@ -1714,7 +1714,7 @@ Partial Class FrmEmpresa
     Friend WithEvents cboTipoImpresora As ComboBox
     Friend WithEvents chkCierre As CheckBox
     Friend WithEvents chkPrecioVentaIncluyeIVA As CheckBox
-    Public WithEvents txtMontoRedondeoDescuento As TextBox
+    Public WithEvents txtMontoRedondeo As TextBox
     Public WithEvents Label23 As Label
     Public WithEvents Label37 As Label
     Public WithEvents cboActividadEconomica As ComboBox

@@ -695,9 +695,6 @@ Public Class FrmFactura
         btnGenerarPDF.Enabled = False
         btnBuscaVendedor.Enabled = True
         btnBuscarCliente.Enabled = True
-        btnOrdenServicio.Enabled = True
-        btnApartado.Enabled = True
-        btnProforma.Enabled = True
         btnNotaCredito.Enabled = False
         grdDetalleFactura.ReadOnly = False
         Try
@@ -1080,7 +1077,6 @@ Public Class FrmFactura
             Dim decSaldoFactura, decMontoPago, decTipoCambio As Decimal
             decSaldoFactura = CDbl(txtSaldoPorPagar.Text)
             decMontoPago = IIf(notaCreditoCliente.Saldo < decSaldoFactura, notaCreditoCliente.Saldo, decSaldoFactura)
-            decTipoCambio = CDbl(txtTipoCambio.Text)
             Dim objPkDesglose(1) As Object
             objPkDesglose(0) = StaticFormaPago.NotaCredito
             objPkDesglose(1) = notaCreditoCliente.IdNotaCredito
@@ -1095,9 +1091,7 @@ Public Class FrmFactura
             dtrRowDesglosePago.Item(3) = "Nota de crédito nro. " & notaCreditoCliente.IdNotaCredito
             dtrRowDesglosePago.Item(4) = ""
             dtrRowDesglosePago.Item(5) = ""
-            dtrRowDesglosePago.Item(6) = cboTipoMoneda.SelectedValue
-            dtrRowDesglosePago.Item(7) = decMontoPago
-            dtrRowDesglosePago.Item(8) = decTipoCambio
+            dtrRowDesglosePago.Item(6) = decMontoPago
             dtbDesglosePago.Rows.Add(dtrRowDesglosePago)
             grdDesglosePago.Refresh()
             CargarTotalesPago()
@@ -1318,9 +1312,6 @@ Public Class FrmFactura
         btnBusProd.Enabled = False
         btnBuscaVendedor.Enabled = False
         btnBuscarCliente.Enabled = False
-        btnOrdenServicio.Enabled = False
-        btnApartado.Enabled = False
-        btnProforma.Enabled = False
         btnNotaCredito.Enabled = False
         grdDetalleFactura.ReadOnly = True
     End Sub
@@ -1686,11 +1677,6 @@ Public Class FrmFactura
                 txtPorcDesc.Text = decPorcDesc
                 If decPorcDesc > 0 Then
                     Dim decPrecioConDescuento As Decimal = decPrecioVenta - (decPrecioVenta * decPorcDesc / 100)
-                    If Not bolPrecioAutorizado And FrmPrincipal.empresaGlobal.MontoRedondeoDescuento > 0 Then
-                        decPrecioConDescuento = Puntoventa.ObtenerPrecioRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoDescuento, decPrecioConDescuento)
-                        decPorcDesc = (decPrecioVenta - decPrecioConDescuento) / decPrecioVenta * 100
-                        txtPorcDesc.Text = decPorcDesc
-                    End If
                     decPrecioVenta = decPrecioConDescuento
                 End If
                 txtPrecio.Text = FormatNumber(decPrecioVenta, 2)

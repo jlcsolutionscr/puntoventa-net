@@ -37,7 +37,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool HabilitaCodigoImpuestoServicio { get; set; }
         public bool HabilitaFacturacionMonedaExtranjera { get; set; }
         public string CorreoNotificacion { get; set; }
-        public decimal MontoRedondeoDescuento { get; set; }
+        public decimal MontoRedondeoFactura { get; set; }
         public string LeyendaFactura { get; set; }
         public string LeyendaProforma { get; set; }
         public string LeyendaApartado { get; set; }

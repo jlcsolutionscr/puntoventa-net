@@ -848,11 +848,6 @@ Public Class FrmProforma
                 txtPorcDesc.Text = decPorcDesc
                 If decPorcDesc > 0 Then
                     Dim decPrecioConDescuento As Decimal = decPrecioVenta - (decPrecioVenta * decPorcDesc / 100)
-                    If Not bolPrecioAutorizado And FrmPrincipal.empresaGlobal.MontoRedondeoDescuento > 0 Then
-                        decPrecioConDescuento = Puntoventa.ObtenerPrecioRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoDescuento, decPrecioConDescuento)
-                        decPorcDesc = (decPrecioVenta - decPrecioConDescuento) / decPrecioVenta * 100
-                        txtPorcDesc.Text = decPorcDesc
-                    End If
                     decPrecioVenta = decPrecioConDescuento
                 End If
                 txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
