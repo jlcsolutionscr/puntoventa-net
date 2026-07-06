@@ -3202,7 +3202,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                         if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe!");
                         Cliente cliente = dbContext.ClienteRepository.FirstOrDefault(x => x.IdCliente == factura.IdCliente);
-                        if (cliente == null) throw new BusinessException("El cliente registrado en la factura no existe!");
+                        if (cliente == null) throw new BusinessException("El cliente registrado en la factura no existe.");
+                        factura.CodigoActividadReceptor = cliente.CodigoActividad;
+                        if (cliente.IdCliente == 1) cliente.Nombre = factura.Cliente.Nombre;
                         foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                         {
                             Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
