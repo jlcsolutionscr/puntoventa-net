@@ -9,6 +9,7 @@ Public Class FrmBusquedaMovimientoCuentaPorPagar
     Private intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
+    Private intId As Integer = 0
     Private bolCargado As Boolean = False
     Public bolPendientes As Boolean = True
 #End Region
@@ -25,16 +26,17 @@ Public Class FrmBusquedaMovimientoCuentaPorPagar
         dgvListado.AutoGenerateColumns = False
         dvcId.HeaderText = "IdMov"
         dvcId.DataPropertyName = "Id"
-        dvcId.Width = 0
-        dvcId.Visible = False
+        dvcId.Width = 80
         dgvListado.Columns.Add(dvcId)
+
         dvcFecha.HeaderText = "Fecha"
         dvcFecha.DataPropertyName = "Fecha"
-        dvcFecha.Width = 80
+        dvcFecha.Width = 100
         dgvListado.Columns.Add(dvcFecha)
+
         dvcObservaciones.HeaderText = "Observaciones"
         dvcObservaciones.DataPropertyName = "Descripcion"
-        dvcObservaciones.Width = 440
+        dvcObservaciones.Width = 420
         dgvListado.Columns.Add(dvcObservaciones)
     End Sub
 
@@ -42,7 +44,7 @@ Public Class FrmBusquedaMovimientoCuentaPorPagar
         Try
             Dim listado = New List(Of CuentaPorProcesar)
             If intCantidadDePaginas > 0 Then
-                listado = Await Puntoventa.ObtenerListadoMovimientosCxP(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, txtIdMov.Text, txtFechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+                listado = Await Puntoventa.ObtenerListadoMovimientosCxP(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intNumeroPagina, intFilasPorPagina, intId, txtFechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
             End If
             dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
@@ -56,7 +58,7 @@ Public Class FrmBusquedaMovimientoCuentaPorPagar
 
     Private Async Function ValidarCantidadCxP() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaMovimientosCxP(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, txtIdMov.Text, txtFechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaMovimientosCxP(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, intId, txtFechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -158,6 +160,11 @@ Public Class FrmBusquedaMovimientoCuentaPorPagar
 
     Private Async Sub BtnFiltrar_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFiltrar.Click
         btnFiltrar.Enabled = False
+        If txtIdMov.Text = "" Then
+            intId = 0
+        Else
+            intId = CInt(txtIdMov.Text)
+        End If
         Await ValidarCantidadCxP()
         intIndiceDePagina = 1
         Await ActualizarDatos(intIndiceDePagina)

@@ -59,13 +59,13 @@ Partial Class FrmAplicaAbonoCxC
         Me.Label6 = New System.Windows.Forms.Label()
         Me.txtMontoTotal = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.grdDetalleMovimiento = New System.Windows.Forms.DataGridView()
         Me.btnEliminar = New System.Windows.Forms.Button()
         Me.btnInsertar = New System.Windows.Forms.Button()
-        Me.txtDetalle = New System.Windows.Forms.TextBox()
+        Me.txtNombreCliente = New System.Windows.Forms.TextBox()
         Me.lblDetalle = New System.Windows.Forms.Label()
         Me.btnBuscar = New System.Windows.Forms.Button()
         Me.btnAnular = New System.Windows.Forms.Button()
+        Me.grdDetalleMovimiento = New System.Windows.Forms.DataGridView()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDetalleMovimiento, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -136,7 +136,7 @@ Partial Class FrmAplicaAbonoCxC
         Me.txtFecha.Name = "txtFecha"
         Me.txtFecha.ReadOnly = True
         Me.txtFecha.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFecha.Size = New System.Drawing.Size(73, 20)
+        Me.txtFecha.Size = New System.Drawing.Size(65, 20)
         Me.txtFecha.TabIndex = 2
         Me.txtFecha.TabStop = False
         '
@@ -196,6 +196,7 @@ Partial Class FrmAplicaAbonoCxC
         '
         Me.btnImprimir.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnImprimir.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnImprimir.Enabled = False
         Me.btnImprimir.ForeColor = System.Drawing.SystemColors.ControlText
         Me.btnImprimir.Location = New System.Drawing.Point(72, 8)
         Me.btnImprimir.Name = "btnImprimir"
@@ -303,7 +304,7 @@ Partial Class FrmAplicaAbonoCxC
         Me.grdDesglosePago.ReadOnly = True
         Me.grdDesglosePago.RowHeadersVisible = False
         Me.grdDesglosePago.RowHeadersWidth = 30
-        Me.grdDesglosePago.Size = New System.Drawing.Size(750, 89)
+        Me.grdDesglosePago.Size = New System.Drawing.Size(750, 90)
         Me.grdDesglosePago.TabIndex = 17
         Me.grdDesglosePago.TabStop = False
         '
@@ -532,23 +533,6 @@ Partial Class FrmAplicaAbonoCxC
         Me.Label2.Text = "Monto total del movimiento:"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'grdDetalleMovimiento
-        '
-        Me.grdDetalleMovimiento.AllowUserToAddRows = False
-        Me.grdDetalleMovimiento.AllowUserToDeleteRows = False
-        Me.grdDetalleMovimiento.AllowUserToResizeColumns = False
-        Me.grdDetalleMovimiento.AllowUserToResizeRows = False
-        Me.grdDetalleMovimiento.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grdDetalleMovimiento.Location = New System.Drawing.Point(8, 133)
-        Me.grdDetalleMovimiento.MultiSelect = False
-        Me.grdDetalleMovimiento.Name = "grdDetalleMovimiento"
-        Me.grdDetalleMovimiento.ReadOnly = True
-        Me.grdDetalleMovimiento.RowHeadersVisible = False
-        Me.grdDetalleMovimiento.RowHeadersWidth = 30
-        Me.grdDetalleMovimiento.Size = New System.Drawing.Size(750, 89)
-        Me.grdDetalleMovimiento.TabIndex = 159
-        Me.grdDetalleMovimiento.TabStop = False
-        '
         'btnEliminar
         '
         Me.btnEliminar.BackColor = System.Drawing.SystemColors.ButtonHighlight
@@ -577,19 +561,19 @@ Partial Class FrmAplicaAbonoCxC
         Me.btnInsertar.Text = "Insertar"
         Me.btnInsertar.UseVisualStyleBackColor = False
         '
-        'txtDetalle
+        'txtNombreCliente
         '
-        Me.txtDetalle.AcceptsReturn = True
-        Me.txtDetalle.BackColor = System.Drawing.SystemColors.Window
-        Me.txtDetalle.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtDetalle.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDetalle.Location = New System.Drawing.Point(108, 102)
-        Me.txtDetalle.MaxLength = 0
-        Me.txtDetalle.Name = "txtDetalle"
-        Me.txtDetalle.ReadOnly = True
-        Me.txtDetalle.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtDetalle.Size = New System.Drawing.Size(650, 20)
-        Me.txtDetalle.TabIndex = 164
+        Me.txtNombreCliente.AcceptsReturn = True
+        Me.txtNombreCliente.BackColor = System.Drawing.SystemColors.Window
+        Me.txtNombreCliente.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtNombreCliente.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtNombreCliente.Location = New System.Drawing.Point(108, 102)
+        Me.txtNombreCliente.MaxLength = 0
+        Me.txtNombreCliente.Name = "txtNombreCliente"
+        Me.txtNombreCliente.ReadOnly = True
+        Me.txtNombreCliente.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtNombreCliente.Size = New System.Drawing.Size(650, 20)
+        Me.txtNombreCliente.TabIndex = 164
         '
         'lblDetalle
         '
@@ -601,7 +585,7 @@ Partial Class FrmAplicaAbonoCxC
         Me.lblDetalle.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblDetalle.Size = New System.Drawing.Size(89, 19)
         Me.lblDetalle.TabIndex = 165
-        Me.lblDetalle.Text = "Detalle:"
+        Me.lblDetalle.Text = "Propietario:"
         Me.lblDetalle.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'btnBuscar
@@ -622,6 +606,7 @@ Partial Class FrmAplicaAbonoCxC
         '
         Me.btnAnular.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.btnAnular.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnAnular.Enabled = False
         Me.btnAnular.ForeColor = System.Drawing.SystemColors.ControlText
         Me.btnAnular.Location = New System.Drawing.Point(201, 8)
         Me.btnAnular.Name = "btnAnular"
@@ -632,19 +617,37 @@ Partial Class FrmAplicaAbonoCxC
         Me.btnAnular.Text = "&Anular"
         Me.btnAnular.UseVisualStyleBackColor = False
         '
+        'grdDetalleMovimiento
+        '
+        Me.grdDetalleMovimiento.AllowUserToAddRows = False
+        Me.grdDetalleMovimiento.AllowUserToDeleteRows = False
+        Me.grdDetalleMovimiento.AllowUserToResizeColumns = False
+        Me.grdDetalleMovimiento.AllowUserToResizeRows = False
+        Me.grdDetalleMovimiento.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.grdDetalleMovimiento.Location = New System.Drawing.Point(8, 133)
+        Me.grdDetalleMovimiento.MultiSelect = False
+        Me.grdDetalleMovimiento.Name = "grdDetalleMovimiento"
+        Me.grdDetalleMovimiento.ReadOnly = True
+        Me.grdDetalleMovimiento.RowHeadersVisible = False
+        Me.grdDetalleMovimiento.RowHeadersWidth = 30
+        Me.grdDetalleMovimiento.Size = New System.Drawing.Size(750, 90)
+        Me.grdDetalleMovimiento.TabIndex = 168
+        Me.grdDetalleMovimiento.TabStop = False
+        '
         'FrmAplicaAbonoCxC
         '
+        Me.AcceptButton = Me.btnInsertar
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(767, 480)
+        Me.Controls.Add(Me.grdDetalleMovimiento)
         Me.Controls.Add(Me.btnAnular)
         Me.Controls.Add(Me.btnBuscar)
-        Me.Controls.Add(Me.txtDetalle)
+        Me.Controls.Add(Me.txtNombreCliente)
         Me.Controls.Add(Me.lblDetalle)
         Me.Controls.Add(Me.txtMontoTotal)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.grdDetalleMovimiento)
         Me.Controls.Add(Me.btnEliminar)
         Me.Controls.Add(Me.btnInsertar)
         Me.Controls.Add(Me.txtMontoOriginal)
@@ -719,11 +722,11 @@ Partial Class FrmAplicaAbonoCxC
     Public WithEvents Label6 As System.Windows.Forms.Label
     Public WithEvents txtMontoTotal As TextBox
     Public WithEvents Label2 As Label
-    Public WithEvents grdDetalleMovimiento As DataGridView
     Public WithEvents btnEliminar As Button
     Public WithEvents btnInsertar As Button
-    Public WithEvents txtDetalle As TextBox
+    Public WithEvents txtNombreCliente As TextBox
     Public WithEvents lblDetalle As Label
     Public WithEvents btnBuscar As Button
     Public WithEvents btnAnular As Button
+    Public WithEvents grdDetalleMovimiento As DataGridView
 End Class

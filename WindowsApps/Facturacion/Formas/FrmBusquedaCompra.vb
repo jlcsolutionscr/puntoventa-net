@@ -6,7 +6,7 @@ Imports LeandroSoftware.Common.DatosComunes
 Public Class FrmBusquedaCompra
 #Region "Variables"
     Private intTotalRegistros As Integer
-    Private intIndiceDePagina As Integer
+    Public intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
@@ -161,7 +161,6 @@ Public Class FrmBusquedaCompra
             EstablecerPropiedadesDataGridView()
             CargarCombos()
             Await ValidarCantidadCompras()
-            intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
             btnFiltrar.Enabled = True
             bolCargado = True
@@ -175,6 +174,7 @@ Public Class FrmBusquedaCompra
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         If dgvListado.RowCount > 0 Then
             FrmPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
+            FrmPrincipal.intUltPaginaBusqueda = intIndiceDePagina
             Close()
         End If
     End Sub

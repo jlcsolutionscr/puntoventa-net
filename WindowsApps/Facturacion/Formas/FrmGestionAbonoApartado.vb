@@ -126,6 +126,7 @@ Public Class FrmGestionAbonoApartado
         Dim formBusqueda As New FrmBusquedaApartado()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.bolExcluyeNulos = True
+        formBusqueda.intIndiceDePagina = 1
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try

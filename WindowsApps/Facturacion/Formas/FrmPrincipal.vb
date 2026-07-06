@@ -20,6 +20,7 @@ Public Class FrmPrincipal
     Public empresaGlobal As Empresa
     Public equipoGlobal As EquipoRegistrado
     Public intBusqueda As Integer
+    Public intUltPaginaBusqueda As Integer
     Public strBusqueda As String
     Public dgvDecimal As DataGridViewCellStyle
     Public dgvInteger As DataGridViewCellStyle

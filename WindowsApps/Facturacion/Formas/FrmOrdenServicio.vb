@@ -23,6 +23,7 @@ Public Class FrmOrdenServicio
     Private vendedor As Vendedor
     Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
+    Private intUltPaginaBusqueda As Integer = 1
     'Impresion de tiquete
     Private comprobanteImpresion As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
@@ -84,27 +85,23 @@ Public Class FrmOrdenServicio
         dvcCodigo.HeaderText = "Código"
         dvcCodigo.Width = 110
         dvcCodigo.ReadOnly = True
-        dvcCodigo.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleOrdenServicio.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.Width = 300
         dvcDescripcion.ReadOnly = True
-        dvcDescripcion.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleOrdenServicio.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
         dvcCantidad.HeaderText = "Cantidad"
         dvcCantidad.Width = 60
-        dvcCantidad.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleOrdenServicio.Columns.Add(dvcCantidad)
 
         dvcPorcDescuento.DataPropertyName = "PORCDESCUENTO"
         dvcPorcDescuento.HeaderText = "Des%"
         dvcPorcDescuento.Width = 40
-        dvcPorcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleOrdenServicio.Columns.Add(dvcPorcDescuento)
 
@@ -112,7 +109,6 @@ Public Class FrmOrdenServicio
         dvcDescuento.HeaderText = "Desc/U"
         dvcDescuento.Width = 75
         dvcDescuento.ReadOnly = True
-        dvcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleOrdenServicio.Columns.Add(dvcDescuento)
 
@@ -120,7 +116,6 @@ Public Class FrmOrdenServicio
         dvcPrecio.HeaderText = "Precio/U"
         dvcPrecio.Width = 75
         dvcPrecio.ReadOnly = True
-        dvcPrecio.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPrecio.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleOrdenServicio.Columns.Add(dvcPrecio)
 
@@ -128,7 +123,6 @@ Public Class FrmOrdenServicio
         dvcTotal.HeaderText = "Total"
         dvcTotal.Width = 100
         dvcTotal.ReadOnly = True
-        dvcTotal.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleOrdenServicio.Columns.Add(dvcTotal)
 
@@ -136,7 +130,6 @@ Public Class FrmOrdenServicio
         dvcExc.HeaderText = "Exc"
         dvcExc.Width = 20
         dvcExc.ReadOnly = True
-        dvcExc.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleOrdenServicio.Columns.Add(dvcExc)
 
         dvcPorcentajeIVA.DataPropertyName = "PORCENTAJEIVA"
@@ -148,6 +141,10 @@ Public Class FrmOrdenServicio
         dvcId.HeaderText = "Id"
         dvcId.Visible = False
         grdDetalleOrdenServicio.Columns.Add(dvcId)
+
+        For i As Integer = 0 To grdDetalleOrdenServicio.Columns.Count - 1
+            grdDetalleOrdenServicio.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
+        Next
 
         grdDesglosePago.Columns.Clear()
         grdDesglosePago.AutoGenerateColumns = False
@@ -175,7 +172,6 @@ Public Class FrmOrdenServicio
         dvcDescFormaPago.HeaderText = "Forma de Pago"
         dvcDescFormaPago.Width = 120
         dvcDescFormaPago.ReadOnly = True
-        dvcDescFormaPago.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcDescFormaPago)
 
         dvcIdCuentaBanco.DataPropertyName = "IDREFERENCIA"
@@ -187,30 +183,30 @@ Public Class FrmOrdenServicio
         dvcDescBanco.HeaderText = "Banco"
         dvcDescBanco.Width = 350
         dvcDescBanco.ReadOnly = True
-        dvcDescBanco.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcDescBanco)
 
         dvcTipoTarjeta.DataPropertyName = "TIPOTARJETA"
         dvcTipoTarjeta.HeaderText = "Tipo Tarjeta"
         dvcTipoTarjeta.Width = 100
         dvcTipoTarjeta.ReadOnly = True
-        dvcTipoTarjeta.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcTipoTarjeta)
 
         dvcNroMovimiento.DataPropertyName = "NROMOVIMIENTO"
         dvcNroMovimiento.HeaderText = "Movimiento #"
         dvcNroMovimiento.Width = 100
         dvcNroMovimiento.ReadOnly = True
-        dvcNroMovimiento.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcNroMovimiento)
 
         dvcMontoLocal.DataPropertyName = "MONTOLOCAL"
         dvcMontoLocal.HeaderText = "Monto Local"
         dvcMontoLocal.Width = 110
         dvcMontoLocal.ReadOnly = True
-        dvcMontoLocal.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoLocal)
+
+        For i As Integer = 0 To grdDesglosePago.Columns.Count - 1
+            grdDesglosePago.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
+        Next
     End Sub
 
     Private Sub CargarDetalleOrdenServicio(ByVal ordenServicio As OrdenServicio)
@@ -629,9 +625,11 @@ Public Class FrmOrdenServicio
     Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaOrdenServicio()
         formBusqueda.bolHabilitaFiltros = True
+        formBusqueda.intIndiceDePagina = intUltPaginaBusqueda
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
+            intUltPaginaBusqueda = FrmPrincipal.intUltPaginaBusqueda
             Try
                 ordenServicio = Await Puntoventa.ObtenerOrdenServicio(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
@@ -930,7 +928,7 @@ Public Class FrmOrdenServicio
                 comprobanteImpresion.arrDetalleComprobante = arrDetalleOrden
                 arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
                 For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
-                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(7), 2))
+                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(6), 2))
                     arrDesglosePago.Add(desglosePagoImpresion)
                 Next
                 comprobanteImpresion.arrDesglosePago = arrDesglosePago
@@ -1065,7 +1063,7 @@ Public Class FrmOrdenServicio
     End Sub
 
     Private Sub BtnEliminarPago_Click(sender As Object, e As EventArgs) Handles btnEliminarPago.Click
-        If dtbDesglosePago.Rows.Count > 0 Then
+        If dtbDesglosePago.Rows.Count > 0 And grdDesglosePago.CurrentRow IsNot Nothing Then
             dtbDesglosePago.Rows.RemoveAt(grdDesglosePago.CurrentRow.Index)
             grdDesglosePago.Refresh()
             CargarTotalesPago()

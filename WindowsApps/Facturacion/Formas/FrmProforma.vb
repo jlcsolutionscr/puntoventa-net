@@ -19,6 +19,7 @@ Public Class FrmProforma
     Private vendedor As Vendedor
     Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
+    Public intUltPaginaBusqueda As Integer = 1
     'Impresion de tiquete
     Private comprobanteImpresion As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
@@ -69,27 +70,23 @@ Public Class FrmProforma
         dvcCodigo.HeaderText = "Código"
         dvcCodigo.Width = 110
         dvcCodigo.ReadOnly = True
-        dvcCodigo.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleProforma.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.Width = 300
         dvcDescripcion.ReadOnly = True
-        dvcDescripcion.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleProforma.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
         dvcCantidad.HeaderText = "Cantidad"
         dvcCantidad.Width = 60
-        dvcCantidad.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcCantidad)
 
         dvcPorcDescuento.DataPropertyName = "PORCDESCUENTO"
         dvcPorcDescuento.HeaderText = "Des%"
         dvcPorcDescuento.Width = 40
-        dvcPorcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcPorcDescuento)
 
@@ -97,7 +94,6 @@ Public Class FrmProforma
         dvcDescuento.HeaderText = "Desc/U"
         dvcDescuento.Width = 75
         dvcDescuento.ReadOnly = True
-        dvcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcDescuento)
 
@@ -105,7 +101,6 @@ Public Class FrmProforma
         dvcPrecio.HeaderText = "Precio/U"
         dvcPrecio.Width = 75
         dvcPrecio.ReadOnly = True
-        dvcPrecio.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPrecio.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcPrecio)
 
@@ -113,7 +108,6 @@ Public Class FrmProforma
         dvcTotal.HeaderText = "Total"
         dvcTotal.Width = 100
         dvcTotal.ReadOnly = True
-        dvcTotal.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleProforma.Columns.Add(dvcTotal)
 
@@ -121,7 +115,6 @@ Public Class FrmProforma
         dvcExc.HeaderText = "Exc"
         dvcExc.Width = 20
         dvcExc.ReadOnly = True
-        dvcExc.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleProforma.Columns.Add(dvcExc)
 
         dvcPorcentajeIVA.DataPropertyName = "PORCENTAJEIVA"
@@ -131,6 +124,10 @@ Public Class FrmProforma
         dvcId.DataPropertyName = "ID"
         dvcId.Visible = False
         grdDetalleProforma.Columns.Add(dvcId)
+
+        For i As Integer = 0 To grdDetalleProforma.Columns.Count - 1
+            grdDetalleProforma.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
+        Next
     End Sub
 
     Private Sub CargarDetalleProforma(proforma As Proforma)
@@ -459,9 +456,11 @@ Public Class FrmProforma
     Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaProforma()
         formBusqueda.bolHabilitaFiltros = True
+        formBusqueda.intIndiceDePagina = intUltPaginaBusqueda
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
+            intUltPaginaBusqueda = FrmPrincipal.intUltPaginaBusqueda
             Try
                 proforma = Await Puntoventa.ObtenerProforma(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception

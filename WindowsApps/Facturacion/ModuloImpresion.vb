@@ -646,13 +646,7 @@ Public Class ModuloImpresion
         Try
             ImprimirEncabezado(objImpresion.equipo, objImpresion.empresa, Date.Now.ToString("dd-MM-yyyy"), objImpresion.usuario.CodigoUsuario, "RECIBO ABONO CXC")
             lineas.Add(New ClsLineaImpresion(1, "Recibo nro: " & objImpresion.strConsecutivo, 0, 100, 10, StringAlignment.Near, False))
-            lineas.Add(New ClsLineaImpresion(1, "Fecha: " & objImpresion.strFechaAbono, 0, 100, 10, StringAlignment.Near, False))
-            Dim nombre As String = "Cliente: " & objImpresion.strNombre
-            While nombre.Length > 32
-                lineas.Add(New ClsLineaImpresion(1, nombre.Substring(0, 32), 0, 100, 10, StringAlignment.Near, False))
-                nombre = nombre.Substring(32)
-            End While
-            lineas.Add(New ClsLineaImpresion(1, nombre, 0, 100, 10, StringAlignment.Near, False))
+            lineas.Add(New ClsLineaImpresion(2, "Fecha: " & objImpresion.strFechaAbono, 0, 100, 10, StringAlignment.Near, False))
             lineas.Add(New ClsLineaImpresion(1, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))
             ImprimirDesglosePago(objImpresion.arrDesglosePago)
             lineas.Add(New ClsLineaImpresion(2, "".PadRight(32, "_"), 0, 100, 10, StringAlignment.Near, False))

@@ -60,14 +60,12 @@ Public Class FrmDevolucionDeClientes
         dvcCodigo.HeaderText = "Código"
         dvcCodigo.Width = 125
         dvcCodigo.ReadOnly = True
-        dvcCodigo.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleDevolucion.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.Width = 340
         dvcDescripcion.ReadOnly = True
-        dvcDescripcion.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleDevolucion.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
@@ -75,7 +73,6 @@ Public Class FrmDevolucionDeClientes
         dvcCantidad.Width = 60
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         dvcCantidad.ReadOnly = True
-        dvcCantidad.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleDevolucion.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PRECIOCOSTO"
@@ -87,7 +84,6 @@ Public Class FrmDevolucionDeClientes
         dvcPrecioVenta.HeaderText = "Precio"
         dvcPrecioVenta.Width = 75
         dvcPrecioVenta.ReadOnly = True
-        dvcPrecioVenta.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPrecioVenta.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleDevolucion.Columns.Add(dvcPrecioVenta)
 
@@ -95,7 +91,7 @@ Public Class FrmDevolucionDeClientes
         dvcTotal.HeaderText = "Total"
         dvcTotal.Width = 100
         dvcTotal.ReadOnly = True
-        dvcTotal.SortMode = DataGridViewColumnSortMode.NotSortable
+
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleDevolucion.Columns.Add(dvcTotal)
 
@@ -103,14 +99,12 @@ Public Class FrmDevolucionDeClientes
         dvcExc.HeaderText = "Exc"
         dvcExc.Width = 20
         dvcExc.ReadOnly = True
-        dvcExc.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleDevolucion.Columns.Add(dvcExc)
 
         dvcCantDevolucion.DataPropertyName = "CANTDEVOLUCION"
         dvcCantDevolucion.HeaderText = "Cant-Devol"
         dvcCantDevolucion.Width = 60
         dvcCantDevolucion.ReadOnly = False
-        dvcCantDevolucion.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcCantDevolucion.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleDevolucion.Columns.Add(dvcCantDevolucion)
 
@@ -118,6 +112,10 @@ Public Class FrmDevolucionDeClientes
         dvcPorcentajeIVA.HeaderText = "PorcIVA"
         dvcPorcentajeIVA.Visible = False
         grdDetalleDevolucion.Columns.Add(dvcPorcentajeIVA)
+
+        For i As Integer = 0 To grdDetalleDevolucion.Columns.Count - 1
+            grdDetalleDevolucion.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
+        Next
     End Sub
 
     Private Sub CargarDetalleDevolucion(ByVal devolucion As DevolucionCliente)

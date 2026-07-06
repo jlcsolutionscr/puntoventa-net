@@ -126,6 +126,7 @@ Public Class FrmGestionAbonoOrdenServicio
         Dim formBusqueda As New FrmBusquedaOrdenServicio()
         FrmPrincipal.intBusqueda = 0
         formBusqueda.bolExcluyeNulos = True
+        formBusqueda.intIndiceDePagina = 1
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try

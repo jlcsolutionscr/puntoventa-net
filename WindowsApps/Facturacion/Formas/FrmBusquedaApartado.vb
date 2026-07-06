@@ -7,7 +7,7 @@ Public Class FrmBusquedaApartado
 #Region "Variables"
     Private dtListaEstado As New DataTable, drListaEstado As DataRow
     Private intTotalApartados As Integer
-    Private intIndiceDePagina As Integer
+    Public intIndiceDePagina As Integer
     Private intFilasPorPagina As Integer = 13
     Private intCantidadDePaginas As Integer
     Private intId As Integer = 0
@@ -188,7 +188,6 @@ Public Class FrmBusquedaApartado
             EstablecerPropiedadesDataGridView()
             CargarCombos()
             Await ValidarCantidadApartados()
-            intIndiceDePagina = 1
             Await ActualizarDatos(intIndiceDePagina)
             btnFiltrar.Enabled = True
             bolCargado = True
@@ -202,6 +201,7 @@ Public Class FrmBusquedaApartado
     Private Sub FlexProducto_DoubleClick(ByVal sender As Object, ByVal e As EventArgs) Handles dgvListado.DoubleClick
         If dgvListado.RowCount > 0 Then
             FrmPrincipal.intBusqueda = dgvListado.CurrentRow.Cells(0).Value
+            FrmPrincipal.intUltPaginaBusqueda = intIndiceDePagina
             Close()
         End If
     End Sub

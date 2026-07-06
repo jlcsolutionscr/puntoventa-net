@@ -183,7 +183,7 @@ Partial Class FrmBusquedaNotaCredito
         Me.txtFecha.Name = "txtFecha"
         Me.txtFecha.ReadOnly = True
         Me.txtFecha.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtFecha.Size = New System.Drawing.Size(73, 20)
+        Me.txtFecha.Size = New System.Drawing.Size(65, 20)
         Me.txtFecha.TabIndex = 157
         Me.txtFecha.TabStop = False
         '

@@ -22,6 +22,7 @@ Public Class FrmAplicaAbonoCxC
     Private detalleMovimiento As DetalleMovimientoCuentaPorCobrar
     Private desglosePagoMovimiento As DesglosePagoMovimientoCuentaPorCobrar
     Private reciboComprobante As ModuloImpresion.ClsRecibo
+    Private detalleMovImpresion As ModuloImpresion.ClsDesgloseFormaPago
     Private desglosePagoImpresion As ModuloImpresion.ClsDesgloseFormaPago
 #End Region
 
@@ -30,10 +31,9 @@ Public Class FrmAplicaAbonoCxC
         dtbDetalleMovimiento = New DataTable()
         dtbDetalleMovimiento.Columns.Add("IDCXC", GetType(Integer))
         dtbDetalleMovimiento.Columns.Add("PROPIETARIO", GetType(String))
-        dtbDetalleMovimiento.Columns.Add("MONTOORIGINAL", GetType(Integer))
-        dtbDetalleMovimiento.Columns.Add("SALDOACTUAL", GetType(Integer))
-        dtbDetalleMovimiento.Columns.Add("MONTOABONO", GetType(String))
-        dtbDetalleMovimiento.Columns.Add("SALDOPOSTERIOR", GetType(String))
+        dtbDetalleMovimiento.Columns.Add("MONTOORIGINAL", GetType(Decimal))
+        dtbDetalleMovimiento.Columns.Add("SALDOACTUAL", GetType(Decimal))
+        dtbDetalleMovimiento.Columns.Add("MONTOABONO", GetType(Decimal))
         dtbDetalleMovimiento.PrimaryKey = {dtbDetalleMovimiento.Columns(0)}
 
         dtbDesglosePago = New DataTable()
@@ -58,47 +58,42 @@ Public Class FrmAplicaAbonoCxC
         Dim dvcMontoAbono As New DataGridViewTextBoxColumn
         Dim dvcSaldoPosterior As New DataGridViewTextBoxColumn
 
-        dvcIdCxC.DataPropertyName = "IDMOV"
+        dvcIdCxC.DataPropertyName = "IDCXC"
         dvcIdCxC.HeaderText = "Id CxC"
         dvcIdCxC.Width = 50
         dvcIdCxC.Visible = True
-        dvcIdCxC.DefaultCellStyle = FrmPrincipal.dgvInteger
         grdDetalleMovimiento.Columns.Add(dvcIdCxC)
 
         dvcPropietario.DataPropertyName = "PROPIETARIO"
         dvcPropietario.HeaderText = "Propietario"
-        dvcPropietario.Width = 280
+        dvcPropietario.Width = 320
         dvcPropietario.Visible = True
-        dvcPropietario.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleMovimiento.Columns.Add(dvcPropietario)
 
         dvcMontoOriginal.DataPropertyName = "MONTOORIGINAL"
         dvcMontoOriginal.HeaderText = "Monto orig."
-        dvcMontoOriginal.Width = 100
+        dvcMontoOriginal.Width = 120
         dvcMontoOriginal.Visible = True
         dvcMontoOriginal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleMovimiento.Columns.Add(dvcMontoOriginal)
 
         dvcSaldoActual.DataPropertyName = "SALDOACTUAL"
         dvcSaldoActual.HeaderText = "Saldo act."
-        dvcSaldoActual.Width = 100
+        dvcSaldoActual.Width = 120
         dvcSaldoActual.Visible = True
         dvcSaldoActual.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleMovimiento.Columns.Add(dvcSaldoActual)
 
         dvcMontoAbono.DataPropertyName = "MONTOABONO"
         dvcMontoAbono.HeaderText = "Abono"
-        dvcMontoAbono.Width = 100
+        dvcMontoAbono.Width = 120
         dvcMontoAbono.Visible = True
         dvcMontoAbono.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleMovimiento.Columns.Add(dvcMontoAbono)
 
-        dvcSaldoPosterior.DataPropertyName = "SALDOPOSTERIOR"
-        dvcSaldoPosterior.HeaderText = "Saldo post."
-        dvcSaldoPosterior.Width = 100
-        dvcSaldoPosterior.Visible = True
-        dvcSaldoPosterior.DefaultCellStyle = FrmPrincipal.dgvDecimal
-        grdDetalleMovimiento.Columns.Add(dvcSaldoPosterior)
+        For i As Integer = 0 To grdDetalleMovimiento.Columns.Count - 1
+            grdDetalleMovimiento.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
+        Next
 
         grdDesglosePago.Columns.Clear()
         grdDesglosePago.AutoGenerateColumns = False
@@ -109,7 +104,6 @@ Public Class FrmAplicaAbonoCxC
         Dim dvcDescBanco As New DataGridViewTextBoxColumn
         Dim dvcTipoTarjeta As New DataGridViewTextBoxColumn
         Dim dvcAutorizacion As New DataGridViewTextBoxColumn
-        Dim dvcDescTipoMoneda As New DataGridViewTextBoxColumn
         Dim dvcMontoLocal As New DataGridViewTextBoxColumn
 
         dvcIdTipoPago.DataPropertyName = "IDFORMAPAGO"
@@ -154,28 +148,28 @@ Public Class FrmAplicaAbonoCxC
         dvcMontoLocal.Visible = True
         dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoLocal)
+
+        For i As Integer = 0 To grdDesglosePago.Columns.Count - 1
+            grdDesglosePago.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
+        Next
     End Sub
 
-    Private Sub CargarLineasDeDetalle(movimiento As MovimientoCuentaPorCobrar)
-        dtbDetalleMovimiento.Rows.Clear()
+    Private Async Function CargarLineasDeDetalle(movimiento As MovimientoCuentaPorCobrar) As Task
         decTotal = 0
+        dtbDetalleMovimiento.Rows.Clear()
         For Each detalle As DetalleMovimientoCuentaPorCobrar In movimiento.DetalleMovimientoCuentaPorCobrar
+            cliente = Await Puntoventa.ObtenerCliente(detalle.CuentaPorCobrar.IdPropietario, FrmPrincipal.usuarioGlobal.Token)
             decTotal = decTotal + detalle.Monto
             dtrRowDetalleMovimiento = dtbDetalleMovimiento.NewRow
             dtrRowDetalleMovimiento.Item(0) = detalle.IdCxC
-            dtrRowDetalleMovimiento.Item(1) = detalle.CuentaPorCobrar.IdPropietario
+            dtrRowDetalleMovimiento.Item(1) = cliente.Nombre
             dtrRowDetalleMovimiento.Item(2) = detalle.CuentaPorCobrar.Total
             dtrRowDetalleMovimiento.Item(3) = detalle.SaldoActual
             dtrRowDetalleMovimiento.Item(4) = detalle.Monto
-            dtrRowDetalleMovimiento.Item(5) = detalle.SaldoActual - detalle.Monto
             dtbDetalleMovimiento.Rows.Add(dtrRowDetalleMovimiento)
         Next
         grdDetalleMovimiento.Refresh()
-        txtMontoTotal.Text = FormatNumber(decTotal, 2)
-        decSaldoPorPagar = decTotal - decTotalPago
-        txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
-        txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
-    End Sub
+    End Function
 
     Private Sub CargarDesglosePago(movimiento As MovimientoCuentaPorCobrar)
         decTotalPago = 0
@@ -195,9 +189,6 @@ Public Class FrmAplicaAbonoCxC
             decTotalPago = decTotalPago + detalle.MontoLocal
         Next
         grdDesglosePago.Refresh()
-        decSaldoPorPagar = decTotal - decTotalPago
-        txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
-        txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
     End Sub
 
     Private Sub AgregarLineaDetalle()
@@ -211,15 +202,20 @@ Public Class FrmAplicaAbonoCxC
             Dim decMontoAbono = CDec(txtMonto.Text)
             dtrRowDetalleMovimiento = dtbDetalleMovimiento.NewRow
             dtrRowDetalleMovimiento.Item(0) = cuentaPorCobrar.IdCxC
-            dtrRowDetalleMovimiento.Item(1) = lblDetalle.Text
+            dtrRowDetalleMovimiento.Item(1) = txtNombreCliente.Text
             dtrRowDetalleMovimiento.Item(2) = cuentaPorCobrar.Total
             dtrRowDetalleMovimiento.Item(3) = cuentaPorCobrar.Saldo
             dtrRowDetalleMovimiento.Item(4) = decMontoAbono
-            dtrRowDetalleMovimiento.Item(5) = cuentaPorCobrar.Saldo - decMontoAbono
             dtbDetalleMovimiento.Rows.Add(dtrRowDetalleMovimiento)
             grdDetalleMovimiento.Refresh()
+            cuentaPorCobrar = Nothing
+            cliente = Nothing
+            txtMontoOriginal.Text = ""
+            txtSaldoActual.Text = ""
+            txtMonto.Text = ""
+            txtMontoTotal.Text = ""
+            txtNombreCliente.Text = ""
         End If
-        cuentaPorCobrar = Nothing
     End Sub
 
     Private Sub AgregarLineaDesglosePago()
@@ -315,7 +311,7 @@ Public Class FrmAplicaAbonoCxC
             txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
             CargarCombos()
             decTotal = 0
-            grdDesglosePago.DataSource = dtbDetalleMovimiento
+            grdDetalleMovimiento.DataSource = dtbDetalleMovimiento
             grdDesglosePago.DataSource = dtbDesglosePago
             cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
             bolReady = True
@@ -343,10 +339,14 @@ Public Class FrmAplicaAbonoCxC
         txtMonto.ReadOnly = False
         txtObservaciones.ReadOnly = False
         txtMontoPago.ReadOnly = False
+        btnBuscarCxC.Enabled = True
+        btnInsertar.Enabled = True
+        btnEliminar.Enabled = True
         btnInsertarPago.Enabled = True
         btnEliminarPago.Enabled = True
         btnGuardar.Enabled = True
         btnImprimir.Enabled = False
+        btnAnular.Enabled = False
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoBanco.DataSource = New List(Of LlaveDescripcion)
         cboTipoBanco.Width = 371
@@ -363,12 +363,8 @@ Public Class FrmAplicaAbonoCxC
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If cuentaPorCobrar Is Nothing Then
-            MessageBox.Show("Debe seleccionar la cuenta por procesar para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            BtnBuscarCxC_Click(btnBuscarCxC, New EventArgs())
-            Exit Sub
-        ElseIf decTotal = 0 Then
-            MessageBox.Show("Debe ingresar el monto del abono por aplicar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        If decTotal = 0 Then
+            MessageBox.Show("Debe ingresar el monto del movimiento por aplicar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         ElseIf decSaldoPorPagar > 0 Then
             MessageBox.Show("El total del desglose de pago no es suficiente para cubrir el saldo por pagar actual.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -394,18 +390,18 @@ Public Class FrmAplicaAbonoCxC
             decPagoCliente = decPagoEfectivo
         End If
         movimiento = New MovimientoCuentaPorCobrar With {
-            .IdEmpresa = cuentaPorCobrar.IdEmpresa,
+            .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
             .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
             .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
             .Observaciones = txtObservaciones.Text,
             .Fecha = FrmPrincipal.ObtenerFechaCostaRica()
         }
         movimiento.DetalleMovimientoCuentaPorCobrar = New List(Of DetalleMovimientoCuentaPorCobrar)
-        For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleMovimiento.Rows.Count - 1
             detalleMovimiento = New DetalleMovimientoCuentaPorCobrar With {
                 .IdCxC = dtbDetalleMovimiento.Rows(I).Item(0),
-                .SaldoActual = dtbDesglosePago.Rows(I).Item(3),
-                .Monto = dtbDesglosePago.Rows(I).Item(4)
+                .SaldoActual = dtbDetalleMovimiento.Rows(I).Item(3),
+                .Monto = dtbDetalleMovimiento.Rows(I).Item(4)
             }
             movimiento.DetalleMovimientoCuentaPorCobrar.Add(detalleMovimiento)
         Next
@@ -421,7 +417,7 @@ Public Class FrmAplicaAbonoCxC
             movimiento.DesglosePagoMovimientoCuentaPorCobrar.Add(desglosePagoMovimiento)
         Next
         Try
-            Await Puntoventa.AplicarMovimientoCxC(movimiento, FrmPrincipal.usuarioGlobal.Token)
+            txtIdMovCxC.Text = Await Puntoventa.AplicarMovimientoCxC(movimiento, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             btnGuardar.Enabled = True
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -430,10 +426,14 @@ Public Class FrmAplicaAbonoCxC
         MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnAgregar.Enabled = True
         btnImprimir.Enabled = True
+        btnAnular.Enabled = True
         btnImprimir.Focus()
         txtMonto.ReadOnly = True
         txtObservaciones.ReadOnly = True
         txtMontoPago.ReadOnly = True
+        btnBuscarCxC.Enabled = False
+        btnInsertar.Enabled = False
+        btnEliminar.Enabled = False
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
     End Sub
@@ -444,22 +444,19 @@ Public Class FrmAplicaAbonoCxC
             .empresa = FrmPrincipal.empresaGlobal,
             .equipo = FrmPrincipal.equipoGlobal,
             .strConsecutivo = movimiento.IdMovCxC,
-            .strNombre = cliente.Nombre,
             .strFechaAbono = txtFecha.Text,
-            .strSaldoAnterior = FormatNumber(cuentaPorCobrar.Saldo, 2),
             .strTotalAbono = FormatNumber(decTotal, 2),
-            .strSaldoActual = FormatNumber(cuentaPorCobrar.Saldo - decTotal, 2),
             .strPagoCon = FormatNumber(decPagoCliente, 2),
             .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)
         }
         reciboComprobante.arrDesgloseMov = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
-        For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
-            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago("Abono a CXC nro. " + dtbDetalleMovimiento.Rows(I).Item(0), FormatNumber(dtbDesglosePago.Rows(I).Item(3), 2))
-            reciboComprobante.arrDesglosePago.Add(desglosePagoImpresion)
+        For I As Short = 0 To dtbDetalleMovimiento.Rows.Count - 1
+            detalleMovImpresion = New ModuloImpresion.ClsDesgloseFormaPago("Abono a CXC " & dtbDetalleMovimiento.Rows(I).Item(0), FormatNumber(dtbDetalleMovimiento.Rows(I).Item(4), 2))
+            reciboComprobante.arrDesgloseMov.Add(detalleMovImpresion)
         Next
         reciboComprobante.arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
-            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(7), 2))
+            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(6), 2))
             reciboComprobante.arrDesglosePago.Add(desglosePagoImpresion)
         Next
         Try
@@ -485,14 +482,21 @@ Public Class FrmAplicaAbonoCxC
                 bolReady = False
                 txtIdMovCxC.Text = movimiento.IdMovCxC
                 txtFecha.Text = movimiento.Fecha
-                CargarLineasDeDetalle(movimiento)
+                txtObservaciones.Text = movimiento.Observaciones
+                Await CargarLineasDeDetalle(movimiento)
                 CargarDesglosePago(movimiento)
+                decSaldoPorPagar = decTotal - decTotalPago
+                txtMontoTotal.Text = FormatNumber(decTotal, 2)
+                txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
+                txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
+                txtObservaciones.ReadOnly = True
+                btnBuscarCxC.Enabled = False
                 btnInsertar.Enabled = False
                 btnEliminar.Enabled = False
-                cboFormaPago.Enabled = False
                 btnInsertarPago.Enabled = False
                 btnEliminarPago.Enabled = False
-                btnImprimir.Enabled = Not movimiento.Nulo
+                btnImprimir.Enabled = True
+                btnAnular.Enabled = Not movimiento.Nulo
                 btnBuscarCxC.Enabled = False
                 btnAnular.Enabled = Not movimiento.Nulo And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
@@ -603,7 +607,7 @@ Public Class FrmAplicaAbonoCxC
     End Sub
 
     Private Sub BtnEliminarPago_Click(sender As Object, e As EventArgs) Handles btnEliminarPago.Click
-        If dtbDesglosePago.Rows.Count > 0 Then
+        If dtbDesglosePago.Rows.Count > 0 And grdDesglosePago.CurrentRow IsNot Nothing Then
             dtbDesglosePago.Rows.RemoveAt(grdDesglosePago.CurrentRow.Index)
             grdDesglosePago.Refresh()
             CargarTotalesPago()
@@ -624,10 +628,8 @@ Public Class FrmAplicaAbonoCxC
                 Exit Sub
             End Try
             txtMontoOriginal.Text = FormatNumber(cuentaPorCobrar.Total, 2)
-            txtDetalle.Text = "Cuenta por cobrar a nombre de " & cliente.Nombre
+            txtNombreCliente.Text = cliente.Nombre
             txtSaldoActual.Text = FormatNumber(cuentaPorCobrar.Saldo, 2)
-            decTotal = 0
-            decTotalPago = 0
             txtMonto.Text = FormatNumber(cuentaPorCobrar.Saldo, 2)
             txtMonto.Focus()
         End If
@@ -664,6 +666,23 @@ Public Class FrmAplicaAbonoCxC
             ElseIf CDec(txtMonto.Text) > cuentaPorCobrar.Saldo Then
                 MessageBox.Show("El monto del abono no puede ser mayor al saldo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 txtMonto.Text = FormatNumber(cuentaPorCobrar.Saldo, 2)
+            End If
+        End If
+    End Sub
+
+    Private Async Sub btnAnular_Click(sender As Object, e As EventArgs) Handles btnAnular.Click
+        If txtIdMovCxC.Text <> "" Then
+            Dim formAnulacion As New FrmMotivoAnulacion()
+            formAnulacion.bolConfirmacion = False
+            formAnulacion.ShowDialog()
+            If formAnulacion.bolConfirmacion Then
+                Try
+                    Await Puntoventa.AnularMovimientoCxC(txtIdMovCxC.Text, FrmPrincipal.usuarioGlobal.IdUsuario, formAnulacion.strMotivo, FrmPrincipal.usuarioGlobal.Token)
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Exit Sub
+                End Try
+                MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
         End If
     End Sub

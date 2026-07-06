@@ -2001,11 +2001,15 @@ namespace LeandroSoftware.ClienteWCF
             return movimientoCxC;
         }
 
-        public static async Task AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento, string strToken)
+        public static async Task<string> AplicarMovimientoCxC(MovimientoCuentaPorCobrar movimiento, string strToken)
         {
             string strEntidad = JsonConvert.SerializeObject(movimiento);
             string strDatos = "{NombreMetodo: 'AplicarMovimientoCxC', Entidad: " + strEntidad + "}";
-            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            string strIdMovCxC = "";
+            if (respuesta != "")
+                strIdMovCxC = JsonConvert.DeserializeObject<string>(respuesta);
+            return strIdMovCxC;
         }
 
         public static async Task AnularMovimientoCxC(int intIdMovimiento, int intIdUsuario, string strMotivo, string strToken)
@@ -2064,11 +2068,15 @@ namespace LeandroSoftware.ClienteWCF
             return movimientoCxP;
         }
 
-        public static async Task AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento, string strToken)
+        public static async Task<string> AplicarMovimientoCxP(MovimientoCuentaPorPagar movimiento, string strToken)
         {
             string strEntidad = JsonConvert.SerializeObject(movimiento);
             string strDatos = "{NombreMetodo: 'AplicarMovimientoCxP', Entidad: " + strEntidad + "}";
-            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            string strIdMovCxP = "";
+            if (respuesta != "")
+                strIdMovCxP = JsonConvert.DeserializeObject<string>(respuesta);
+            return strIdMovCxP;
         }
 
         public static async Task AnularMovimientoCxP(int intIdMovimiento, int intIdUsuario, string strMotivo, string strToken)

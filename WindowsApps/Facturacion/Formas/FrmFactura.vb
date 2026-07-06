@@ -27,6 +27,7 @@ Public Class FrmFactura
     Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
     Private bolImpuestoCargado As Boolean = False
+    Private intUltPaginaBusqueda As Integer = 1
     'Impresion de tiquete
     Private comprobanteImpresion As ModuloImpresion.ClsComprobante
     Private detalleComprobante As ModuloImpresion.ClsDetalleComprobante
@@ -91,27 +92,23 @@ Public Class FrmFactura
         dvcCodigo.HeaderText = "Código"
         dvcCodigo.Width = 110
         dvcCodigo.ReadOnly = True
-        dvcCodigo.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleFactura.Columns.Add(dvcCodigo)
 
         dvcDescripcion.DataPropertyName = "DESCRIPCION"
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.Width = 300
         dvcDescripcion.ReadOnly = True
-        dvcDescripcion.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleFactura.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
         dvcCantidad.HeaderText = "Cantidad"
         dvcCantidad.Width = 50
-        dvcCantidad.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleFactura.Columns.Add(dvcCantidad)
 
         dvcPorcDescuento.DataPropertyName = "PORCDESCUENTO"
         dvcPorcDescuento.HeaderText = "Des%"
         dvcPorcDescuento.Width = 50
-        dvcPorcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPorcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleFactura.Columns.Add(dvcPorcDescuento)
 
@@ -119,7 +116,6 @@ Public Class FrmFactura
         dvcDescuento.HeaderText = "Desc/U"
         dvcDescuento.Width = 75
         dvcDescuento.ReadOnly = True
-        dvcDescuento.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcDescuento.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleFactura.Columns.Add(dvcDescuento)
 
@@ -127,7 +123,6 @@ Public Class FrmFactura
         dvcPrecio.HeaderText = "Precio/U"
         dvcPrecio.Width = 75
         dvcPrecio.ReadOnly = True
-        dvcPrecio.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPrecio.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleFactura.Columns.Add(dvcPrecio)
 
@@ -135,7 +130,6 @@ Public Class FrmFactura
         dvcTotal.HeaderText = "Total"
         dvcTotal.Width = 100
         dvcTotal.ReadOnly = True
-        dvcTotal.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleFactura.Columns.Add(dvcTotal)
 
@@ -143,7 +137,6 @@ Public Class FrmFactura
         dvcExc.HeaderText = "Exc"
         dvcExc.Width = 20
         dvcExc.ReadOnly = True
-        dvcExc.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleFactura.Columns.Add(dvcExc)
 
         dvcPrecioCosto.DataPropertyName = "PRECIOCOSTO"
@@ -160,6 +153,10 @@ Public Class FrmFactura
         dvcId.HeaderText = "Id"
         dvcId.Visible = False
         grdDetalleFactura.Columns.Add(dvcId)
+
+        For i As Integer = 0 To grdDetalleFactura.Columns.Count - 1
+            grdDetalleFactura.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
+        Next
 
         grdDesglosePago.Columns.Clear()
         grdDesglosePago.AutoGenerateColumns = False
@@ -188,7 +185,6 @@ Public Class FrmFactura
         dvcDescFormaPago.HeaderText = "Forma de Pago"
         dvcDescFormaPago.Width = 120
         dvcDescFormaPago.ReadOnly = True
-        dvcDescFormaPago.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcDescFormaPago)
 
         dvcIdCuentaBanco.DataPropertyName = "IDREFERENCIA"
@@ -200,30 +196,30 @@ Public Class FrmFactura
         dvcDescBanco.HeaderText = "Detalle"
         dvcDescBanco.Width = 350
         dvcDescBanco.ReadOnly = True
-        dvcDescBanco.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcDescBanco)
 
         dvcTipoTarjeta.DataPropertyName = "TIPOTARJETA"
         dvcTipoTarjeta.HeaderText = "Tipo Tarjeta"
         dvcTipoTarjeta.Width = 100
         dvcTipoTarjeta.ReadOnly = True
-        dvcTipoTarjeta.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcTipoTarjeta)
 
         dvcNroMovimiento.DataPropertyName = "NROMOVIMIENTO"
         dvcNroMovimiento.HeaderText = "Movimiento #"
         dvcNroMovimiento.Width = 100
         dvcNroMovimiento.ReadOnly = True
-        dvcNroMovimiento.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcNroMovimiento)
 
         dvcMontoLocal.DataPropertyName = "MONTOLOCAL"
         dvcMontoLocal.HeaderText = "Monto Local"
         dvcMontoLocal.Width = 110
         dvcMontoLocal.ReadOnly = True
-        dvcMontoLocal.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoLocal)
+
+        For i As Integer = 0 To grdDesglosePago.Columns.Count - 1
+            grdDesglosePago.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
+        Next
     End Sub
 
     Private Sub CargarDetalleFactura(factura As Factura)
@@ -600,7 +596,7 @@ Public Class FrmFactura
         ElseIf e.KeyCode = Keys.F10 And btnGuardar.Enabled Then
             BtnGuardar_Click(btnGuardar, New EventArgs())
         ElseIf e.KeyCode = Keys.F11 And btnImprimir.Enabled Then
-            BtnImprimir_Click(btnImprimir, New EventArgs())
+            btnImprimir_Click(btnImprimir, New EventArgs())
         End If
         e.Handled = False
     End Sub
@@ -787,9 +783,11 @@ Public Class FrmFactura
 
     Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaFactura()
+        formBusqueda.intIndiceDePagina = intUltPaginaBusqueda
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
+            intUltPaginaBusqueda = FrmPrincipal.intUltPaginaBusqueda
             Try
                 factura = Await Puntoventa.ObtenerFactura(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
@@ -863,6 +861,7 @@ Public Class FrmFactura
         FrmPrincipal.intBusqueda = 0
         formBusqueda.bolExcluyeAplicados = True
         formBusqueda.bolExcluyeNulos = True
+        formBusqueda.intIndiceDePagina = 1
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
@@ -932,6 +931,7 @@ Public Class FrmFactura
         FrmPrincipal.intBusqueda = 0
         formBusqueda.bolExcluyeAplicados = True
         formBusqueda.bolExcluyeNulos = True
+        formBusqueda.intIndiceDePagina = 1
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
@@ -1001,6 +1001,7 @@ Public Class FrmFactura
         FrmPrincipal.intBusqueda = 0
         formBusqueda.bolExcluyeAplicados = True
         formBusqueda.bolExcluyeNulos = True
+        formBusqueda.intIndiceDePagina = 1
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try
@@ -1021,7 +1022,7 @@ Public Class FrmFactura
                 txtObservaciones.Text = proforma.TextoAdicional
                 If cboActividadEconomica.Items.Count > 0 Then cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
-                cboCondicionVenta.Enabled = cliente.PermiteCredito
+                cboCondicionVenta.Enabled = proforma.IdTipoMoneda = 1 And cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
@@ -1133,7 +1134,7 @@ Public Class FrmFactura
                 txtNombreCliente.ReadOnly = True
                 txtTelefono.Text = cliente.Telefono
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
-                cboCondicionVenta.Enabled = cliente.PermiteCredito
+                cboCondicionVenta.Enabled = cboTipoMoneda.SelectedValue = 1 And cliente.PermiteCredito
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 If FrmPrincipal.empresaGlobal.RegimenSimplificado = False And cliente.CodigoActividad = "" Then MessageBox.Show("El cliente no posee el código de actividad económica registrada en el sistema por lo tanto se emitirá un tiquete electrónico.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 CargarTotales()
@@ -1297,7 +1298,7 @@ Public Class FrmFactura
             End Try
         End If
         If FrmPrincipal.empresaGlobal.ImprimeTiqueteAlFacturar Then
-            BtnImprimir_Click(btnImprimir, New EventArgs())
+            btnImprimir_Click(btnImprimir, New EventArgs())
         End If
         MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnImprimir.Enabled = True
@@ -1324,7 +1325,7 @@ Public Class FrmFactura
         grdDetalleFactura.ReadOnly = True
     End Sub
 
-    Private Async Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
+    Private Async Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
         If txtIdFactura.Text <> "" Then
             If Not FrmPrincipal.empresaGlobal.RegimenSimplificado Then
                 Try
@@ -1373,7 +1374,7 @@ Public Class FrmFactura
                 comprobanteImpresion.arrDetalleComprobante = arrDetalleFactura
                 arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
                 For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
-                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(7), 2))
+                    desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(6), 2))
                     arrDesglosePago.Add(desglosePagoImpresion)
                 Next
                 comprobanteImpresion.arrDesglosePago = arrDesglosePago
@@ -1529,7 +1530,7 @@ Public Class FrmFactura
             txtTipoCambio.Text = 1
             If cboTipoMoneda.SelectedValue = 2 Then
                 txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
-                cboCondicionVenta.SelectedValue = 1
+                cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = False
             Else
                 cboCondicionVenta.Enabled = True
@@ -1573,7 +1574,7 @@ Public Class FrmFactura
     End Sub
 
     Private Sub BtnEliminarPago_Click(sender As Object, e As EventArgs) Handles btnEliminarPago.Click
-        If dtbDesglosePago.Rows.Count > 0 Then
+        If dtbDesglosePago.Rows.Count > 0 And grdDesglosePago.CurrentRow IsNot Nothing Then
             dtbDesglosePago.Rows.RemoveAt(grdDesglosePago.CurrentRow.Index)
             grdDesglosePago.Refresh()
             CargarTotalesPago()

@@ -44,8 +44,6 @@ Public Class FrmAplicaAbonoOrdenServicio
         Dim dvcDescBanco As New DataGridViewTextBoxColumn
         Dim dvcTipoTarjeta As New DataGridViewTextBoxColumn
         Dim dvcAutorizacion As New DataGridViewTextBoxColumn
-        Dim dvcIdTipoMoneda As New DataGridViewTextBoxColumn
-        Dim dvcDescTipoMoneda As New DataGridViewTextBoxColumn
         Dim dvcMontoLocal As New DataGridViewTextBoxColumn
         Dim dvcTipoCambio As New DataGridViewTextBoxColumn
 
@@ -124,7 +122,7 @@ Public Class FrmAplicaAbonoOrdenServicio
         decTotalPago = 0
         decPagoEfectivo = 0
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
-            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(7))
+            If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(6))
             decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(6))
         Next
         decSaldoPorPagar = decTotal - decTotalPago
@@ -319,7 +317,7 @@ Public Class FrmAplicaAbonoOrdenServicio
         }
         reciboComprobante.arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
-            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(7), 2))
+            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(6), 2))
             reciboComprobante.arrDesglosePago.Add(desglosePagoImpresion)
         Next
         Try
@@ -405,7 +403,7 @@ Public Class FrmAplicaAbonoOrdenServicio
     End Sub
 
     Private Sub BtnEliminarPago_Click(sender As Object, e As EventArgs) Handles btnEliminarPago.Click
-        If dtbDesglosePago.Rows.Count > 0 Then
+        If dtbDesglosePago.Rows.Count > 0 And grdDesglosePago.CurrentRow IsNot Nothing Then
             dtbDesglosePago.Rows.RemoveAt(grdDesglosePago.CurrentRow.Index)
             CargarTotalesPago()
             grdDesglosePago.Refresh()
@@ -419,6 +417,7 @@ Public Class FrmAplicaAbonoOrdenServicio
         FrmPrincipal.intBusqueda = 0
         formBusqueda.bolExcluyeAplicados = True
         formBusqueda.bolExcluyeNulos = True
+        formBusqueda.intIndiceDePagina = 1
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try

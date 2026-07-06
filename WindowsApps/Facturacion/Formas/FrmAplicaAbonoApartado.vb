@@ -315,7 +315,7 @@ Public Class FrmAplicaAbonoApartado
         }
         reciboComprobante.arrDesglosePago = New List(Of ModuloImpresion.ClsDesgloseFormaPago)
         For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
-            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(7), 2))
+            desglosePagoImpresion = New ModuloImpresion.ClsDesgloseFormaPago(dtbDesglosePago.Rows(I).Item(1), FormatNumber(dtbDesglosePago.Rows(I).Item(6), 2))
             reciboComprobante.arrDesglosePago.Add(desglosePagoImpresion)
         Next
         Try
@@ -401,7 +401,7 @@ Public Class FrmAplicaAbonoApartado
     End Sub
 
     Private Sub BtnEliminarPago_Click(sender As Object, e As EventArgs) Handles btnEliminarPago.Click
-        If dtbDesglosePago.Rows.Count > 0 Then
+        If dtbDesglosePago.Rows.Count > 0 And grdDesglosePago.CurrentRow IsNot Nothing Then
             dtbDesglosePago.Rows.RemoveAt(grdDesglosePago.CurrentRow.Index)
             CargarTotalesPago()
             grdDesglosePago.Refresh()
@@ -415,6 +415,7 @@ Public Class FrmAplicaAbonoApartado
         FrmPrincipal.intBusqueda = 0
         formBusqueda.bolExcluyeAplicados = True
         formBusqueda.bolExcluyeNulos = True
+        formBusqueda.intIndiceDePagina = 1
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
             Try

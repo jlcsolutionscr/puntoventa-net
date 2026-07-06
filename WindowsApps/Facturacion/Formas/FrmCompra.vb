@@ -32,6 +32,7 @@ Public Class FrmCompra
     Private newFormReport As FrmReportViewer
     Private strEmpresa As String = IIf(FrmPrincipal.empresaGlobal.NombreComercial = "", FrmPrincipal.empresaGlobal.NombreEmpresa, FrmPrincipal.empresaGlobal.NombreComercial)
     Private assembly As Assembly = Assembly.LoadFrom("Common.dll")
+    Public intUltPaginaBusqueda As Integer = 1
 #End Region
 
 #Region "Métodos"
@@ -94,14 +95,12 @@ Public Class FrmCompra
         dvcCodigo.HeaderText = "Cod Prov"
         dvcCodigo.Width = 110
         dvcCodigo.ReadOnly = True
-        dvcCodigo.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleCompra.Columns.Add(dvcCodigo)
 
         dvcCodigoInterno.DataPropertyName = "CODIGOINTERNO"
         dvcCodigoInterno.HeaderText = "Cod Int"
         dvcCodigoInterno.Width = 110
         dvcCodigoInterno.ReadOnly = True
-        dvcCodigoInterno.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleCompra.Columns.Add(dvcCodigoInterno)
 
 
@@ -109,20 +108,17 @@ Public Class FrmCompra
         dvcDescripcion.HeaderText = "Descripción"
         dvcDescripcion.Width = 320
         dvcDescripcion.ReadOnly = True
-        dvcDescripcion.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDetalleCompra.Columns.Add(dvcDescripcion)
 
         dvcCantidad.DataPropertyName = "CANTIDAD"
         dvcCantidad.HeaderText = "Cantidad"
         dvcCantidad.Width = 60
-        dvcCantidad.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcCantidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcCantidad)
 
         dvcPrecioCosto.DataPropertyName = "PRECIOCOSTO"
         dvcPrecioCosto.HeaderText = "P. Costo"
         dvcPrecioCosto.Width = 80
-        dvcPrecioCosto.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPrecioCosto.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcPrecioCosto)
 
@@ -130,7 +126,6 @@ Public Class FrmCompra
         dvcTotal.HeaderText = "Total"
         dvcTotal.Width = 100
         dvcTotal.ReadOnly = True
-        dvcTotal.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcTotal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcTotal)
 
@@ -147,7 +142,6 @@ Public Class FrmCompra
         dvcPrecioVenta.DataPropertyName = "PRECIOVENTA"
         dvcPrecioVenta.HeaderText = "P. Venta"
         dvcPrecioVenta.Width = 80
-        dvcPrecioVenta.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcPrecioVenta.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcPrecioVenta)
 
@@ -159,9 +153,12 @@ Public Class FrmCompra
         dvcUtilidad.DataPropertyName = "UTILIDAD"
         dvcUtilidad.HeaderText = "Utilidad"
         dvcUtilidad.Width = 54
-        dvcUtilidad.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcUtilidad.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDetalleCompra.Columns.Add(dvcUtilidad)
+
+        For i As Integer = 0 To grdDetalleCompra.Columns.Count - 1
+            grdDetalleCompra.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
+        Next
 
         grdDesglosePago.Columns.Clear()
         grdDesglosePago.AutoGenerateColumns = False
@@ -182,7 +179,6 @@ Public Class FrmCompra
         dvcDescFormaPago.DataPropertyName = "DESCFORMAPAGO"
         dvcDescFormaPago.HeaderText = "Forma de Pago"
         dvcDescFormaPago.Width = 154
-        dvcDescFormaPago.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcDescFormaPago)
 
         dvcIdCuentaBanco.DataPropertyName = "IDREFERENCIA"
@@ -193,21 +189,22 @@ Public Class FrmCompra
         dvcDescBanco.DataPropertyName = "DESCBANCO"
         dvcDescBanco.HeaderText = "Banco"
         dvcDescBanco.Width = 500
-        dvcDescBanco.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcDescBanco)
 
         dvcNroCheque.DataPropertyName = "NROCHEQUE"
         dvcNroCheque.HeaderText = "Nro. Cheque"
         dvcNroCheque.Width = 150
-        dvcNroCheque.SortMode = DataGridViewColumnSortMode.NotSortable
         grdDesglosePago.Columns.Add(dvcNroCheque)
 
         dvcMontoLocal.DataPropertyName = "MONTOLOCAL"
         dvcMontoLocal.HeaderText = "Monto Local"
         dvcMontoLocal.Width = 110
-        dvcMontoLocal.SortMode = DataGridViewColumnSortMode.NotSortable
         dvcMontoLocal.DefaultCellStyle = FrmPrincipal.dgvDecimal
         grdDesglosePago.Columns.Add(dvcMontoLocal)
+
+        For i As Integer = 0 To grdDesglosePago.Columns.Count - 1
+            grdDesglosePago.Columns(i).SortMode = DataGridViewColumnSortMode.NotSortable
+        Next
     End Sub
 
     Private Sub CargarDetalleCompra(ByVal compra As Compra)
@@ -223,7 +220,7 @@ Public Class FrmCompra
             dtrRowDetCompra.Item(4) = detalle.Descripcion
             dtrRowDetCompra.Item(5) = detalle.Cantidad
             dtrRowDetCompra.Item(6) = detalle.PrecioCosto
-            dtrRowDetCompra.Item(7) = dtrRowDetCompra.Item(4) * dtrRowDetCompra.Item(5)
+            dtrRowDetCompra.Item(7) = detalle.Cantidad * detalle.PrecioCosto
             dtrRowDetCompra.Item(8) = detalle.PorcentajeIVA = 0
             dtrRowDetCompra.Item(9) = detalle.PorcentajeIVA
             dtrRowDetCompra.Item(10) = detalle.PrecioVenta
@@ -511,7 +508,7 @@ Public Class FrmCompra
         End Try
     End Sub
 
-    Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+    Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdCompra.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
@@ -581,9 +578,11 @@ Public Class FrmCompra
 
     Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaCompra()
+        formBusqueda.intIndiceDePagina = intUltPaginaBusqueda
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
+            intUltPaginaBusqueda = FrmPrincipal.intUltPaginaBusqueda
             Try
                 compra = Await Puntoventa.ObtenerCompra(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
@@ -763,7 +762,6 @@ Public Class FrmCompra
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
                     .IdReferencia = dtbDesglosePago.Rows(I).Item(2),
                     .NroMovimiento = dtbDesglosePago.Rows(I).Item(4),
-                    .Beneficiario = txtProveedor.Text,
                     .MontoLocal = dtbDesglosePago.Rows(I).Item(5)
                 }
                 compra.DesglosePagoCompra.Add(desglosePago)
@@ -811,9 +809,9 @@ Public Class FrmCompra
             arrDetalleCompra = New List(Of ModuloImpresion.ClsDetalleComprobante)
             For I As Short = 0 To dtbDetalleCompra.Rows.Count - 1
                 detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleCompra.Rows(I).Item(2) + " - " + dtbDetalleCompra.Rows(I).Item(1) + " - " + dtbDetalleCompra.Rows(I).Item(3),
-                    .strCantidad = CDec(dtbDetalleCompra.Rows(I).Item(4)),
-                    .strPrecio = FormatNumber(dtbDetalleCompra.Rows(I).Item(13), 2)
+                    .strDescripcion = dtbDetalleCompra.Rows(I).Item(1) & " - " & dtbDetalleCompra.Rows(I).Item(2) & " - " & dtbDetalleCompra.Rows(I).Item(4),
+                    .strCantidad = CDec(dtbDetalleCompra.Rows(I).Item(5)),
+                    .strPrecio = FormatNumber(dtbDetalleCompra.Rows(I).Item(6), 2)
                 }
                 arrDetalleCompra.Add(detalleComprobante)
             Next
@@ -947,7 +945,7 @@ Public Class FrmCompra
     End Sub
 
     Private Sub BtnEliminarPago_Click(sender As Object, e As EventArgs) Handles btnEliminarPago.Click
-        If dtbDesglosePago.Rows.Count > 0 Then
+        If dtbDesglosePago.Rows.Count > 0 And grdDesglosePago.CurrentRow IsNot Nothing Then
             dtbDesglosePago.Rows.RemoveAt(grdDesglosePago.CurrentRow.Index)
             grdDesglosePago.Refresh()
             CargarTotalesPago()
