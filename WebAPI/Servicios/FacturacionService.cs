@@ -3201,15 +3201,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (factura == null) throw new BusinessException("La registro origen del documento no existe!");
                         SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                         if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe!");
+                        Cliente cliente = dbContext.ClienteRepository.FirstOrDefault(x => x.IdCliente == factura.IdCliente);
+                        if (cliente == null) throw new BusinessException("El cliente registrado en la factura no existe!");
                         foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                         {
                             Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                             if (producto != null) detalleFactura.Producto = producto;
                         }
                         if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, sucursal, factura.Cliente, dbContext);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarFacturaElectronica(factura, empresa, sucursal, cliente, dbContext);
                         else
-                            nuevoDocumento = ComprobanteElectronicoService.GenerarTiqueteElectronico(factura, empresa, sucursal, factura.Cliente, dbContext);
+                            nuevoDocumento = ComprobanteElectronicoService.GenerarTiqueteElectronico(factura, empresa, sucursal, cliente, dbContext);
                         factura.IdDocElectronico = nuevoDocumento.ClaveNumerica;
                         dbContext.NotificarModificacion(factura);
                     }
