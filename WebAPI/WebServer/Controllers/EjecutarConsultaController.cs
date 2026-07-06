@@ -1217,7 +1217,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "ObtenerListadoMovimientosCxP":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
-                    intIdCuenta = int.Parse(parametrosJO.Property("IdCuenta").Value.ToString());
+                    intIdCuenta = int.Parse(parametrosJO.Property("IdMov").Value.ToString());
                     strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
                     IList<IdFechaDescripcion> listadoMovimientosCxP = _servicioCuentaPorProcesar.ObtenerListadoMovimientosCxP(intIdEmpresa, intIdSucursal, intIdCuenta, strFechaFinal);
                     if (listadoMovimientosCxP.Count > 0)
