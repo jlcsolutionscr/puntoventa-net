@@ -8,7 +8,7 @@ Imports LeandroSoftware.Common.Constantes
 
 Public Class FrmProforma
 #Region "Variables"
-    Private decDescuento, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta As Decimal
+    Private decDescuento, decExcento, decGravado, decExonerado, decImpuesto, decRedondeo, decTotal, decTotalRedondeado, decSubTotal, decPrecioVenta As Decimal
     Private consecDetalle As Short
     Private dtbDetalleProforma As DataTable
     Private dtbRowDetProforma As DataRow
@@ -227,10 +227,13 @@ Public Class FrmProforma
         decExcento = Math.Round(decExcento, 2)
         decImpuesto = Math.Round(decImpuesto, 2)
         decTotal = Math.Round(decSubTotal + decImpuesto, 2)
+        decTotalRedondeado = Puntoventa.ObtenerTotalRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoFactura, decTotal)
+        decRedondeo = decTotalRedondeado - decTotal
         txtSubTotal.Text = FormatNumber(decSubTotal + decDescuento, 2)
         txtDescuento.Text = FormatNumber(decDescuento, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
-        txtTotal.Text = FormatNumber(decTotal, 2)
+        txtRedondeo.Text = FormatNumber(decRedondeo, 2)
+        txtTotal.Text = FormatNumber(decTotalRedondeado, 2)
     End Sub
 
     Private Function ObtenerPrecioVentaPorCliente(cliente As Cliente, producto As Producto)

@@ -9,7 +9,7 @@ Imports System.Threading.Tasks
 
 Public Class FrmFactura
 #Region "Variables"
-    Private decDescuento, decExcento, decGravado, decExonerado, decImpuesto, decTotalCosto, decTotalPago, decPagoEfectivo, decPagoCliente, decTotal, decSubTotal, decSaldoPorPagar, decPrecioVenta, decMontoAdelanto As Decimal
+    Private decDescuento, decExcento, decGravado, decExonerado, decImpuesto, decTotalCosto, decTotalPago, decPagoEfectivo, decPagoCliente, decRedondeo, decTotal, decTotalRedondeado, decSubTotal, decSaldoPorPagar, decPrecioVenta, decMontoAdelanto As Decimal
     Private consecDetalle As Short
     Private intIdProforma, intIdOrdenServicio, intIdApartado As Integer
     Private dtbDetalleFactura, dtbDesglosePago As DataTable
@@ -442,10 +442,13 @@ Public Class FrmFactura
         decImpuesto = Math.Round(decImpuesto, 2)
         decTotalCosto = Math.Round(decTotalCosto, 2)
         decTotal = Math.Round(decSubTotal + decImpuesto, 2)
+        decTotalRedondeado = Puntoventa.ObtenerTotalRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoFactura, decTotal)
+        decRedondeo = decTotalRedondeado - decTotal
         txtSubTotal.Text = FormatNumber(decSubTotal + decDescuento, 2)
         txtDescuento.Text = FormatNumber(decDescuento, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
-        txtTotal.Text = FormatNumber(decTotal, 2)
+        txtRedondeo.Text = FormatNumber(decRedondeo, 2)
+        txtTotal.Text = FormatNumber(decTotalRedondeado, 2)
         decSaldoPorPagar = decTotal - decMontoAdelanto - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
@@ -1163,7 +1166,7 @@ Public Class FrmFactura
         End If
     End Sub
 
-    Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
+    Private Async Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
         Dim decTipoDeCambioDolar = 1
         If vendedor Is Nothing Then
             MessageBox.Show("Debe seleccionar el vendedor para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -1199,7 +1202,7 @@ Public Class FrmFactura
         If txtIdFactura.Text = "" Then
             If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
                 Dim formPagoFactura As New FrmPagoEfectivo()
-                formPagoFactura.decTotalEfectivo = decPagoEfectivo
+                formPagoFactura.decTotalEfectivo = Puntoventa.ObtenerTotalRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoFactura, decPagoEfectivo)
                 formPagoFactura.decPagoCliente = 0
                 FrmPrincipal.intBusqueda = 0
                 formPagoFactura.ShowDialog()

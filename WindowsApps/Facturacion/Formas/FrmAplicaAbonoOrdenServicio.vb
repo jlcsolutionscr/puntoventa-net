@@ -239,7 +239,7 @@ Public Class FrmAplicaAbonoOrdenServicio
         btnGuardar.Enabled = False
         If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
             Dim formPagoFactura As New FrmPagoEfectivo()
-            formPagoFactura.decTotalEfectivo = decPagoEfectivo
+            formPagoFactura.decTotalEfectivo = Puntoventa.ObtenerTotalRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoFactura, decPagoEfectivo)
             formPagoFactura.decPagoCliente = 0
             FrmPrincipal.intBusqueda = 0
             formPagoFactura.ShowDialog()
@@ -281,15 +281,7 @@ Public Class FrmAplicaAbonoOrdenServicio
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End Try
-        If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
-            BtnImprimir_Click(btnImprimir, New EventArgs())
-            Dim formPagoFactura As New FrmPagoEfectivo()
-            formPagoFactura.decTotalEfectivo = decPagoEfectivo
-            formPagoFactura.decPagoCliente = decPagoCliente
-            formPagoFactura.ShowDialog()
-        Else
-            MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        End If
+        MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         btnAgregar.Enabled = True
         btnImprimir.Enabled = True
         btnImprimir.Focus()

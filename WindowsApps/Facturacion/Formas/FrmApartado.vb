@@ -9,7 +9,7 @@ Imports System.Threading.Tasks
 
 Public Class FrmApartado
 #Region "Variables"
-    Private decDescuento, decExcento, decGravado, decExonerado, decImpuesto, decTotal, decSubTotal, decPrecioVenta, decPagoEfectivo, decPagoCliente, decTotalPago, decSaldoPorPagar As Decimal
+    Private decDescuento, decExcento, decGravado, decExonerado, decImpuesto, decRedondeo, decTotal, decTotalRedondeado, decSubTotal, decPrecioVenta, decPagoEfectivo, decPagoCliente, decTotalPago, decSaldoPorPagar As Decimal
     Private consecDetalle As Short
     Private dtbDetalleApartado, dtbDesglosePago As DataTable
     Private dtrRowDetApartado, dtrRowDesglosePago As DataRow
@@ -338,10 +338,13 @@ Public Class FrmApartado
         decExcento = Math.Round(decExcento, 2)
         decImpuesto = Math.Round(decImpuesto, 2)
         decTotal = Math.Round(decSubTotal + decImpuesto, 2)
+        decTotalRedondeado = Puntoventa.ObtenerTotalRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoFactura, decTotal)
+        decRedondeo = decTotalRedondeado - decTotal
         txtSubTotal.Text = FormatNumber(decSubTotal + decDescuento, 2)
         txtDescuento.Text = FormatNumber(decDescuento, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
-        txtTotal.Text = FormatNumber(decTotal, 2)
+        txtRedondeo.Text = FormatNumber(decRedondeo, 2)
+        txtTotal.Text = FormatNumber(decTotalRedondeado, 2)
         decSaldoPorPagar = decTotal - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
@@ -713,7 +716,7 @@ Public Class FrmApartado
         If txtIdApartado.Text = "" Then
             If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
                 Dim formPagoFactura As New FrmPagoEfectivo()
-                formPagoFactura.decTotalEfectivo = decPagoEfectivo
+                formPagoFactura.decTotalEfectivo = Puntoventa.ObtenerTotalRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoFactura, decPagoEfectivo)
                 formPagoFactura.decPagoCliente = 0
                 FrmPrincipal.intBusqueda = 0
                 formPagoFactura.ShowDialog()
@@ -784,15 +787,7 @@ Public Class FrmApartado
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
-                BtnImprimir_Click(btnImprimir, New EventArgs())
-                Dim formPagoFactura As New FrmPagoEfectivo()
-                formPagoFactura.decTotalEfectivo = decPagoEfectivo
-                formPagoFactura.decPagoCliente = decPagoCliente
-                formPagoFactura.ShowDialog()
-            Else
-                MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
+            MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
         btnImprimir.Enabled = True
         btnGenerarPDF.Enabled = True

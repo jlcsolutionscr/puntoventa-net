@@ -127,6 +127,8 @@ Partial Class FrmFactura
         Me.lblActividadEconomica = New System.Windows.Forms.Label()
         Me.btnNotaCredito = New System.Windows.Forms.Button()
         Me.btnNotaCreditoPDF = New System.Windows.Forms.Button()
+        Me.txtRedondeo = New System.Windows.Forms.TextBox()
+        Me.Label18 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleFactura, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -312,7 +314,7 @@ Partial Class FrmFactura
         Me.txtImpuesto.BackColor = System.Drawing.SystemColors.Window
         Me.txtImpuesto.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtImpuesto.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtImpuesto.Location = New System.Drawing.Point(628, 401)
+        Me.txtImpuesto.Location = New System.Drawing.Point(522, 398)
         Me.txtImpuesto.MaxLength = 0
         Me.txtImpuesto.Name = "txtImpuesto"
         Me.txtImpuesto.ReadOnly = True
@@ -343,7 +345,7 @@ Partial Class FrmFactura
         Me.txtTotal.BackColor = System.Drawing.SystemColors.Window
         Me.txtTotal.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtTotal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtTotal.Location = New System.Drawing.Point(736, 401)
+        Me.txtTotal.Location = New System.Drawing.Point(736, 398)
         Me.txtTotal.MaxLength = 0
         Me.txtTotal.Name = "txtTotal"
         Me.txtTotal.ReadOnly = True
@@ -359,7 +361,7 @@ Partial Class FrmFactura
         Me.txtSubTotal.BackColor = System.Drawing.SystemColors.Window
         Me.txtSubTotal.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtSubTotal.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtSubTotal.Location = New System.Drawing.Point(418, 401)
+        Me.txtSubTotal.Location = New System.Drawing.Point(312, 398)
         Me.txtSubTotal.MaxLength = 0
         Me.txtSubTotal.Name = "txtSubTotal"
         Me.txtSubTotal.ReadOnly = True
@@ -439,7 +441,7 @@ Partial Class FrmFactura
         Me._LblImpuesto_0.BackColor = System.Drawing.Color.Transparent
         Me._LblImpuesto_0.Cursor = System.Windows.Forms.Cursors.Default
         Me._LblImpuesto_0.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._LblImpuesto_0.Location = New System.Drawing.Point(597, 401)
+        Me._LblImpuesto_0.Location = New System.Drawing.Point(491, 399)
         Me._LblImpuesto_0.Name = "_LblImpuesto_0"
         Me._LblImpuesto_0.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._LblImpuesto_0.Size = New System.Drawing.Size(32, 19)
@@ -452,7 +454,7 @@ Partial Class FrmFactura
         Me._LblTotal_6.BackColor = System.Drawing.Color.Transparent
         Me._LblTotal_6.Cursor = System.Windows.Forms.Cursors.Default
         Me._LblTotal_6.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._LblTotal_6.Location = New System.Drawing.Point(696, 401)
+        Me._LblTotal_6.Location = New System.Drawing.Point(696, 399)
         Me._LblTotal_6.Name = "_LblTotal_6"
         Me._LblTotal_6.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._LblTotal_6.Size = New System.Drawing.Size(42, 19)
@@ -465,7 +467,7 @@ Partial Class FrmFactura
         Me._lblSubTotal_5.BackColor = System.Drawing.Color.Transparent
         Me._lblSubTotal_5.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblSubTotal_5.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblSubTotal_5.Location = New System.Drawing.Point(354, 401)
+        Me._lblSubTotal_5.Location = New System.Drawing.Point(248, 399)
         Me._lblSubTotal_5.Name = "_lblSubTotal_5"
         Me._lblSubTotal_5.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblSubTotal_5.Size = New System.Drawing.Size(65, 19)
@@ -1204,7 +1206,7 @@ Partial Class FrmFactura
         Me.txtDescuento.BackColor = System.Drawing.SystemColors.Window
         Me.txtDescuento.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtDescuento.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtDescuento.Location = New System.Drawing.Point(528, 401)
+        Me.txtDescuento.Location = New System.Drawing.Point(422, 398)
         Me.txtDescuento.MaxLength = 0
         Me.txtDescuento.Name = "txtDescuento"
         Me.txtDescuento.ReadOnly = True
@@ -1219,7 +1221,7 @@ Partial Class FrmFactura
         Me.Label17.BackColor = System.Drawing.Color.Transparent
         Me.Label17.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label17.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label17.Location = New System.Drawing.Point(493, 401)
+        Me.Label17.Location = New System.Drawing.Point(387, 399)
         Me.Label17.Name = "Label17"
         Me.Label17.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label17.Size = New System.Drawing.Size(36, 19)
@@ -1287,6 +1289,35 @@ Partial Class FrmFactura
         Me.btnNotaCreditoPDF.Text = "N/C PDF"
         Me.btnNotaCreditoPDF.UseVisualStyleBackColor = False
         '
+        'txtRedondeo
+        '
+        Me.txtRedondeo.AcceptsReturn = True
+        Me.txtRedondeo.BackColor = System.Drawing.SystemColors.Window
+        Me.txtRedondeo.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtRedondeo.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtRedondeo.Location = New System.Drawing.Point(662, 398)
+        Me.txtRedondeo.MaxLength = 0
+        Me.txtRedondeo.Name = "txtRedondeo"
+        Me.txtRedondeo.ReadOnly = True
+        Me.txtRedondeo.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtRedondeo.Size = New System.Drawing.Size(40, 20)
+        Me.txtRedondeo.TabIndex = 209
+        Me.txtRedondeo.TabStop = False
+        Me.txtRedondeo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label18
+        '
+        Me.Label18.BackColor = System.Drawing.Color.Transparent
+        Me.Label18.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label18.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label18.Location = New System.Drawing.Point(602, 399)
+        Me.Label18.Name = "Label18"
+        Me.Label18.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label18.Size = New System.Drawing.Size(60, 19)
+        Me.Label18.TabIndex = 208
+        Me.Label18.Text = "Redondeo:"
+        Me.Label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmFactura
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -1294,6 +1325,8 @@ Partial Class FrmFactura
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 642)
+        Me.Controls.Add(Me.txtRedondeo)
+        Me.Controls.Add(Me.Label18)
         Me.Controls.Add(Me.btnNotaCreditoPDF)
         Me.Controls.Add(Me.btnNotaCredito)
         Me.Controls.Add(Me.cboActividadEconomica)
@@ -1449,4 +1482,6 @@ Partial Class FrmFactura
     Public WithEvents lblActividadEconomica As Label
     Public WithEvents btnNotaCredito As Button
     Public WithEvents btnNotaCreditoPDF As Button
+    Public WithEvents txtRedondeo As TextBox
+    Public WithEvents Label18 As Label
 End Class

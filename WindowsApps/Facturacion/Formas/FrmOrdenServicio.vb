@@ -10,7 +10,7 @@ Imports LeandroSoftware.Common.Constantes
 Public Class FrmOrdenServicio
 #Region "Variables"
     Private strMotivoRechazo As String
-    Private decDescuento, decSubTotal, decExcento, decGravado, decExonerado, decImpuesto, decMontoAdelanto, decTotal, decPagoEfectivo, decPagoCliente, decSaldoPorPagar, decPrecioVenta As Decimal
+    Private decDescuento, decSubTotal, decExcento, decGravado, decExonerado, decImpuesto, decRedondeo, decMontoAdelanto, decTotal, decTotalRedondeado, decPagoEfectivo, decPagoCliente, decSaldoPorPagar, decPrecioVenta As Decimal
     Private consecDetalle As Short
     Private dtbDatosLocal, dtbDetalleOrdenServicio, dtbDesglosePago As DataTable
     Private dtrRowDetOrdenServicio, dtrRowDesglosePago As DataRow
@@ -343,11 +343,14 @@ Public Class FrmOrdenServicio
         decExcento = Math.Round(decExcento, 2)
         decImpuesto = Math.Round(decImpuesto, 2)
         decTotal = Math.Round(decSubTotal + decImpuesto, 2)
+        decTotalRedondeado = Puntoventa.ObtenerTotalRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoFactura, decTotal)
+        decRedondeo = decTotalRedondeado - decTotal
         decSaldoPorPagar = decTotal - decMontoAdelanto
         txtSubTotal.Text = FormatNumber(decSubTotal + decDescuento, 2)
         txtDescuento.Text = FormatNumber(decDescuento, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
-        txtTotal.Text = FormatNumber(decTotal, 2)
+        txtRedondeo.Text = FormatNumber(decRedondeo, 2)
+        txtTotal.Text = FormatNumber(decTotalRedondeado, 2)
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
     End Sub
@@ -752,7 +755,7 @@ Public Class FrmOrdenServicio
         If txtIdOrdenServicio.Text = "" Then
             If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
                 Dim formPagoFactura As New FrmPagoEfectivo()
-                formPagoFactura.decTotalEfectivo = decPagoEfectivo
+                formPagoFactura.decTotalEfectivo = Puntoventa.ObtenerTotalRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoFactura, decPagoEfectivo)
                 formPagoFactura.decPagoCliente = 0
                 FrmPrincipal.intBusqueda = 0
                 formPagoFactura.ShowDialog()
@@ -827,15 +830,7 @@ Public Class FrmOrdenServicio
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
-                BtnImprimir_Click(btnImprimir, New EventArgs())
-                Dim formPagoFactura As New FrmPagoEfectivo()
-                formPagoFactura.decTotalEfectivo = decPagoEfectivo
-                formPagoFactura.decPagoCliente = decPagoCliente
-                formPagoFactura.ShowDialog()
-            Else
-                MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End If
+            MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
             ordenServicio.NombreCliente = txtNombreCliente.Text
             ordenServicio.Telefono = txtTelefono.Text

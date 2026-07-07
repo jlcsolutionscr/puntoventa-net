@@ -50,10 +50,11 @@ namespace LeandroSoftware.ClienteWCF
             return strProcessorId + "-" + strVolumeSerial + "-" + strBoardSerialNumber;
         }
 
-        public static decimal ObtenerPrecioRedondeado(decimal decValorRedondeo, decimal decPrecioVenta)
+        public static decimal ObtenerTotalRedondeado(decimal decValorRedondeo, decimal decTotal)
         {
-            decimal decPrecioRedondeado = decPrecioVenta;
-            string[] arrPrecioConDescuento = decPrecioVenta.ToString().Split('.');
+            decimal decTotalRedondeado = decTotal;
+            if (decValorRedondeo == 0) return decTotal;
+            string[] arrPrecioConDescuento = decTotal.ToString().Split('.');
             decimal decDecimales = arrPrecioConDescuento.Length > 1 ? decimal.Parse("0." + arrPrecioConDescuento[1].ToString()) : 0;
             decimal decTotalIncremento = decDecimales > 0 ? 1 - decDecimales : 0;
             decimal decDigitos = decimal.Parse(arrPrecioConDescuento[0].Substring(arrPrecioConDescuento[0].Length - 2)) + decDecimales;
@@ -61,8 +62,8 @@ namespace LeandroSoftware.ClienteWCF
             {
                 decTotalIncremento += 1;
             }
-            if (decTotalIncremento > 0) decPrecioRedondeado += decTotalIncremento;
-            return decPrecioRedondeado;
+            if (decTotalIncremento > 0) decTotalRedondeado += decTotalIncremento;
+            return decTotalRedondeado;
         }
 
         public static async Task<string> ObtenerUltimaVersionApp()

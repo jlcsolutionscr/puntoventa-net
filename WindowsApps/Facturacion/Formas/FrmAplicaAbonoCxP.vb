@@ -368,7 +368,7 @@ Public Class FrmAplicaAbonoCxP
         btnGuardar.Enabled = False
         If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
             Dim formPagoFactura As New FrmPagoEfectivo()
-            formPagoFactura.decTotalEfectivo = decPagoEfectivo
+            formPagoFactura.decTotalEfectivo = Puntoventa.ObtenerTotalRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoFactura, decPagoEfectivo)
             formPagoFactura.decPagoCliente = 0
             FrmPrincipal.intBusqueda = 0
             formPagoFactura.ShowDialog()
