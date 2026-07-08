@@ -1708,7 +1708,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenServicio.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.TipoContrato < 6) throw new Exception("El plan de servicios contratado no permite registrar órdenes de servicio. Por favor consulte con su proveedor del servicio.");
+                    if (empresa.TipoContrato < 5) throw new Exception("El plan de servicios contratado no permite registrar órdenes de servicio. Por favor consulte con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     ordenServicio.Fecha = Validador.ObtenerFechaHoraCostaRica();
@@ -1761,7 +1761,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenServicio.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.TipoContrato < 6) throw new Exception("El plan de servicios contratado no permite actualizar órdenes de servicio. Por favor consulte con su proveedor del servicio.");
+                    if (empresa.TipoContrato < 5) throw new Exception("El plan de servicios contratado no permite actualizar órdenes de servicio. Por favor consulte con su proveedor del servicio.");
                     OrdenServicio ordenNoTracking = dbContext.OrdenServicioRepository.AsNoTracking().Where(x => x.IdOrden == ordenServicio.IdOrden).FirstOrDefault();
                     if (ordenNoTracking != null && ordenNoTracking.Aplicado) throw new BusinessException("La orden de servicio no puede ser modificada porque ya fue facturada.");
                     ordenServicio.Vendedor = null;
@@ -1955,7 +1955,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (ordenServicio.Aplicado) throw new BusinessException("La orden de servicio no puede ser anulada porque ya fue facturada.");
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenServicio.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.TipoContrato < 6) throw new Exception("El plan de servicios contratado no permite anular órdenes de servicio. Por favor consulte con su proveedor del servicio.");
+                    if (empresa.TipoContrato < 5) throw new Exception("El plan de servicios contratado no permite anular órdenes de servicio. Por favor consulte con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
