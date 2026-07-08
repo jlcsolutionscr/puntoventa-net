@@ -822,6 +822,7 @@ Public Class FrmApartado
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = txtDescuento.Text,
                     .strImpuesto = txtImpuesto.Text,
+                    .strRedondeo = txtRedondeo.Text,
                     .strTotal = txtTotal.Text,
                     .strAdelanto = FormatNumber(apartado.MontoAdelanto, 2),
                     .strSaldo = FormatNumber(apartado.Total - apartado.MontoAdelanto, 2),

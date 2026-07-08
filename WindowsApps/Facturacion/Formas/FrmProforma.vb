@@ -673,6 +673,7 @@ Public Class FrmProforma
                     .strSubTotal = FormatNumber(proforma.Excento + proforma.Gravado + proforma.Exonerado + proforma.Descuento, 2),
                     .strDescuento = FormatNumber(proforma.Descuento, 2),
                     .strImpuesto = FormatNumber(proforma.Impuesto, 2),
+                    .strRedondeo = txtRedondeo.Text,
                     .strTotal = FormatNumber(proforma.Total, 2)
                 }
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)

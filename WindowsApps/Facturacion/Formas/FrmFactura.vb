@@ -1344,6 +1344,7 @@ Public Class FrmFactura
                     .strSubTotal = txtSubTotal.Text,
                     .strDescuento = txtDescuento.Text,
                     .strImpuesto = txtImpuesto.Text,
+                    .strRedondeo = txtRedondeo.Text,
                     .strTotal = txtTotal.Text,
                     .strPagoCon = FormatNumber(decPagoCliente, 2),
                     .strCambio = FormatNumber(decPagoCliente - decPagoEfectivo, 2)

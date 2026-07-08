@@ -903,6 +903,7 @@ Public Class FrmOrdenServicio
                     .strSubTotal = FormatNumber(ordenServicio.Gravado + ordenServicio.Excento + ordenServicio.Exonerado + ordenServicio.Descuento, 2),
                     .strDescuento = FormatNumber(ordenServicio.Descuento, 2),
                     .strImpuesto = FormatNumber(ordenServicio.Impuesto, 2),
+                    .strRedondeo = txtRedondeo.Text,
                     .strTotal = FormatNumber(ordenServicio.Total, 2),
                     .strAdelanto = FormatNumber(ordenServicio.MontoAdelanto, 2),
                     .strSaldo = FormatNumber(decTotal - ordenServicio.MontoAdelanto, 2),

@@ -114,6 +114,7 @@ Public Class ModuloImpresion
         Public strSubTotal As String
         Public strDescuento As String
         Public strImpuesto As String
+        Public strRedondeo As String
         Public strTotal As String
         Public strAdelanto As String
         Public strSaldo As String
@@ -257,6 +258,10 @@ Public Class ModuloImpresion
         End If
         lineas.Add(New ClsLineaImpresion(0, "Impuesto:", 0, 54, 10, StringAlignment.Far, False))
         lineas.Add(New ClsLineaImpresion(1, objComprobante.strImpuesto, 54, 46, 10, StringAlignment.Far, False))
+        If objComprobante.strRedondeo <> "" Then
+            lineas.Add(New ClsLineaImpresion(0, "Redondeo:", 0, 54, 10, StringAlignment.Far, False))
+            lineas.Add(New ClsLineaImpresion(1, objComprobante.strRedondeo, 54, 46, 10, StringAlignment.Far, False))
+        End If
         lineas.Add(New ClsLineaImpresion(0, "Total:", 0, 54, 10, StringAlignment.Far, True))
         lineas.Add(New ClsLineaImpresion(1, objComprobante.strTotal, 54, 46, 10, StringAlignment.Far, True))
     End Sub
