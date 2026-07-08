@@ -51,7 +51,7 @@ Public Class FrmCompra
         dtbDetalleCompra.Columns.Add("PRECIOVENTA", GetType(Decimal))
         dtbDetalleCompra.Columns.Add("PRECIOVENTAANT", GetType(Decimal))
         dtbDetalleCompra.Columns.Add("UTILIDAD", GetType(Decimal))
-        dtbDetalleCompra.PrimaryKey = {dtbDetalleCompra.Columns(11)}
+        dtbDetalleCompra.PrimaryKey = {dtbDetalleCompra.Columns(0)}
 
         dtbDesglosePago = New DataTable()
         dtbDesglosePago.Columns.Add("IDFORMAPAGO", GetType(Integer))
