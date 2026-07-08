@@ -345,7 +345,7 @@ Public Class FrmOrdenServicio
         decTotal = Math.Round(decSubTotal + decImpuesto, 2)
         decTotalRedondeado = Puntoventa.ObtenerTotalRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoFactura, decTotal)
         decRedondeo = decTotalRedondeado - decTotal
-        decSaldoPorPagar = decTotal - decMontoAdelanto
+        decSaldoPorPagar = decTotalRedondeado - decMontoAdelanto
         txtSubTotal.Text = FormatNumber(decSubTotal + decDescuento, 2)
         txtDescuento.Text = FormatNumber(decDescuento, 2)
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
@@ -362,7 +362,7 @@ Public Class FrmOrdenServicio
             If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(6))
             decMontoAdelanto = decMontoAdelanto + CDbl(dtbDesglosePago.Rows(I).Item(6))
         Next
-        decSaldoPorPagar = decTotal - decMontoAdelanto
+        decSaldoPorPagar = decTotalRedondeado - decMontoAdelanto
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
     End Sub

@@ -449,7 +449,7 @@ Public Class FrmFactura
         txtImpuesto.Text = FormatNumber(decImpuesto, 2)
         txtRedondeo.Text = FormatNumber(decRedondeo, 2)
         txtTotal.Text = FormatNumber(decTotalRedondeado, 2)
-        decSaldoPorPagar = decTotal - decMontoAdelanto - decTotalPago
+        decSaldoPorPagar = decTotalRedondeado - decMontoAdelanto - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         btnNotaCredito.Enabled = decSaldoPorPagar > 0 And txtIdFactura.Text = ""
@@ -462,7 +462,7 @@ Public Class FrmFactura
             If dtbDesglosePago.Rows(I).Item(0) = StaticFormaPago.Efectivo Then decPagoEfectivo = CDbl(dtbDesglosePago.Rows(I).Item(6))
             decTotalPago = decTotalPago + CDbl(dtbDesglosePago.Rows(I).Item(6))
         Next
-        decSaldoPorPagar = decTotal - decMontoAdelanto - decTotalPago
+        decSaldoPorPagar = decTotalRedondeado - decMontoAdelanto - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
         btnNotaCredito.Enabled = decSaldoPorPagar > 0 And txtIdFactura.Text = ""
