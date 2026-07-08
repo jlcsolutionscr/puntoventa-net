@@ -811,7 +811,7 @@ Public Class FrmCompra
                 detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
                     .strDescripcion = dtbDetalleCompra.Rows(I).Item(3) & " - " & dtbDetalleCompra.Rows(I).Item(2) & " - " & dtbDetalleCompra.Rows(I).Item(4),
                     .strCantidad = CDec(dtbDetalleCompra.Rows(I).Item(5)),
-                    .strPrecio = FormatNumber(dtbDetalleCompra.Rows(I).Item(6), 2)
+                    .strPrecio = FormatNumber(dtbDetalleCompra.Rows(I).Item(10), 2)
                 }
                 arrDetalleCompra.Add(detalleComprobante)
             Next
