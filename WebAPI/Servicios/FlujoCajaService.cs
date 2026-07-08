@@ -1090,7 +1090,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    List<MovimientoCuentaPorCobrar> movimientosCxC = dbContext.MovimientoCuentaPorCobrarRepository.Include("CuentaPorCobrar").Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<MovimientoCuentaPorCobrar> movimientosCxC = dbContext.MovimientoCuentaPorCobrarRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (movimientosCxC.Count > 0)
                     {
                         var pagosCxC = movimientosCxC.Join(dbContext.DesglosePagoMovimientoCuentaPorCobrarRepository, x => x.IdMovCxC, y => y.IdMovCxC, (x, y) => new { x, y })
