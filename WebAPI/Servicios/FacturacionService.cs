@@ -1707,6 +1707,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(sucursal);
                     ordenServicio.ConsecOrdenServicio = sucursal.ConsecOrdenServicio;
                     dbContext.OrdenServicioRepository.Add(ordenServicio);
+                    dbContext.Commit();
                     if (empresa.Modalidad == StaticModalidadEmpresa.Restaurante)
                     {
                         if (ordenServicio.IdPuntoDeServicio > 0)
