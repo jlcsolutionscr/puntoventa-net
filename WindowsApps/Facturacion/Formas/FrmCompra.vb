@@ -349,9 +349,9 @@ Public Class FrmCompra
         For I As Short = 0 To dtbDetalleCompra.Rows.Count - 1
             If dtbDetalleCompra.Rows(I).Item(8) = 0 Then
                 decTasaIva = dtbDetalleCompra.Rows(I).Item(9)
-                decGravado += dtbDetalleCompra.Rows(I).Item(6)
+                decGravado += dtbDetalleCompra.Rows(I).Item(7)
             Else
-                decExcento += dtbDetalleCompra.Rows(I).Item(6)
+                decExcento += dtbDetalleCompra.Rows(I).Item(7)
             End If
         Next
         decSubTotal = decGravado + decExcento
