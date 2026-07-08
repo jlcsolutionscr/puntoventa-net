@@ -1840,7 +1840,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     string strCodigoEspecial = intIdTipo == 4 ? StaticTipoProductoEspecial.Transitorio : StaticTipoProductoEspecial.ImpuestoServicio;
-                    return dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Codigo == strCodigoEspecial);
+                    return dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.Codigo == strCodigoEspecial);
                 }
                 catch (Exception ex)
                 {

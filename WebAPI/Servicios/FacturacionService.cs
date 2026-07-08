@@ -450,7 +450,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     foreach (var detalleFactura in factura.DetalleFactura)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la factura no existe!");
                         if (!empresa.RegimenSimplificado && producto.CodigoClasificacion == "")
@@ -874,7 +874,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(factura);
                     foreach (var detalleFactura in factura.DetalleFactura)
                     {
-                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
@@ -1291,7 +1291,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         foreach (DetalleProforma detalle in proforma.DetalleProforma)
                         {
-                            Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
+                            Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalle.IdProducto);
                             if (producto == null)
                                 throw new BusinessException("El producto con código " + producto.Codigo + " asignado al detalle de la proforma no existe!");
                             if (!empresa.RegimenSimplificado && producto.CodigoClasificacion == "")
@@ -2206,7 +2206,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     devolucion.IdSucursal = factura.IdSucursal;
                     foreach (var detalleDevolucion in devolucion.DetalleDevolucionCliente)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
@@ -2520,7 +2520,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     devolucion.IdSucursal = factura.IdSucursal;
                     foreach (var detalleDevolucion in devolucion.DetalleDevolucionCliente)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                         if (producto == null) throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
                         DetalleFactura detalleFactura = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura && x.IdProducto == detalleDevolucion.IdProducto).FirstOrDefault();
@@ -3202,7 +3202,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (cliente.IdCliente == 1) cliente.Nombre = factura.Cliente.Nombre;
                         foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                         {
-                            Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                            Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                             if (producto != null) detalleFactura.Producto = producto;
                         }
                         if ((int)TipoDocumento.FacturaElectronica == documento.IdTipoDocumento)
@@ -3221,7 +3221,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe!");
                             foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                             {
-                                Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                                Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                                 if (producto != null) detalleFactura.Producto = producto;
                             }
                             nuevoDocumento = ComprobanteElectronicoService.GenerarNotaDeCreditoElectronica(factura, empresa, sucursal, factura.Cliente, dbContext);
@@ -3511,7 +3511,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe!");
                     foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto != null) detalleFactura.Producto = producto;
                     }
                     Empresa empresa = dbContext.EmpresaRepository.Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
@@ -3630,7 +3630,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe!");
                     foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto != null) detalleFactura.Producto = producto;
                     }
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
@@ -3676,7 +3676,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en la factura no existe!");
                     foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
                         if (producto != null) detalleFactura.Producto = producto;
                     }
                     Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
@@ -4380,7 +4380,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal == null) throw new BusinessException("La sucursal registrada en la orden de servicio no existe!");
                     foreach (DetalleOrdenServicio detalleOrden in ordenServicio.DetalleOrdenServicio)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleOrden.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleOrden.IdProducto);
                         if (producto != null) detalleOrden.Producto = producto;
                     }
                     EstructuraDocumentoPDF datos = GenerarEstructuraOrdenServicioPDF(empresa, ordenServicio, sucursal, bytLogo);

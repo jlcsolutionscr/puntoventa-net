@@ -558,7 +558,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(compra);
                     foreach (var detalleCompra in compra.DetalleCompra)
                     {
-                        Producto producto = dbContext.ProductoRepository.FirstOrDefault(x => x.IdProducto == detalleCompra.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleCompra.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la compra no existe!");
                         if (producto.Imagen == null) producto.Imagen = new byte[0];
@@ -759,7 +759,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     {
                         if (detalleDevolucion.CantDevolucion > 0)
                         {
-                            Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                            Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                             if (producto == null)
                                 throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                             if (producto.EsServicio)
@@ -821,7 +821,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(devolucion);
                     foreach (var detalleDevolucion in devolucion.DetalleDevolucionProveedor)
                     {
-                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
                         if (producto == null)
                             throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
                         if (producto.EsServicio)

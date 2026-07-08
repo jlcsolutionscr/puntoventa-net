@@ -108,7 +108,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(traslado);
                     foreach (var detalleTraslado in traslado.DetalleTraslado)
                     {
-                        Producto producto = dbContext.ProductoRepository.AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleTraslado.IdProducto);
+                        Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleTraslado.IdProducto);
                         if (producto == null)
                             throw new Exception("El producto asignado al detalle del traslado no existe");
                         if (producto.EsServicio)
