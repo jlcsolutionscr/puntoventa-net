@@ -809,7 +809,7 @@ Public Class FrmCompra
             arrDetalleCompra = New List(Of ModuloImpresion.ClsDetalleComprobante)
             For I As Short = 0 To dtbDetalleCompra.Rows.Count - 1
                 detalleComprobante = New ModuloImpresion.ClsDetalleComprobante With {
-                    .strDescripcion = dtbDetalleCompra.Rows(I).Item(2) & " - " & dtbDetalleCompra.Rows(I).Item(3) & " - " & dtbDetalleCompra.Rows(I).Item(4),
+                    .strDescripcion = dtbDetalleCompra.Rows(I).Item(3) & " - " & dtbDetalleCompra.Rows(I).Item(2) & " - " & dtbDetalleCompra.Rows(I).Item(4),
                     .strCantidad = CDec(dtbDetalleCompra.Rows(I).Item(5)),
                     .strPrecio = FormatNumber(dtbDetalleCompra.Rows(I).Item(6), 2)
                 }
