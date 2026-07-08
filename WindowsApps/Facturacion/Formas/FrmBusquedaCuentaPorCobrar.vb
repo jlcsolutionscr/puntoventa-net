@@ -58,7 +58,7 @@ Public Class FrmBusquedaCuentaPorCobrar
         Try
             Dim listado = New List(Of CuentaPorProcesar)
             If intCantidadDePaginas > 0 Then
-                listado = Await Puntoventa.ObtenerListadoCuentasPorCobrar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, bolPendientes, intNumeroPagina, intFilasPorPagina, txtReferencia.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+                listado = Await Puntoventa.ObtenerListadoCuentasPorCobrar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolPendientes, intNumeroPagina, intFilasPorPagina, txtReferencia.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
             End If
             dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
@@ -72,7 +72,7 @@ Public Class FrmBusquedaCuentaPorCobrar
 
     Private Async Function ValidarCantidadCxC() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaCuentasPorCobrar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, 1, bolPendientes, txtReferencia.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaCuentasPorCobrar(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolPendientes, txtReferencia.Text, txtNombre.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
