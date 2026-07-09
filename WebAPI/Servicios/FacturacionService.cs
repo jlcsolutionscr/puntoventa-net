@@ -3527,7 +3527,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     string strUsuario = "";
                     if (usuario != null) strUsuario = usuario.CodigoUsuario;
                     EstructuraDocumentoPDF datos = GenerarEstructuraNotaCreditoPDF(empresa, notaCredito, strUsuario, bytLogo);
-                    return Generador.GenerarTiquetePDF(datos, intLargoLinea);
+                    return Generador.GenerarTiqueteNotaCreditoPDF(datos, intLargoLinea);
                 }
                 catch (BusinessException)
                 {
