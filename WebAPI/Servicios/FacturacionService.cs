@@ -54,7 +54,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<TiqueteDespachoMercancia> ObtenerListadoTiqueteOrdenServicio(int intIdEmpresa, int intIdSucursal, int intIdOrden, string strCategoria, bool bolFiltrarPendientes, bool bolSortedDesc);
         void ActualizarEstadoTiqueteOrdenServicio(int intIdTiquete, bool bolImpreso);
         string AgregarDevolucionCliente(DevolucionCliente devolucion);
-        void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion);
         DevolucionCliente ObtenerDevolucionCliente(int intIdDevolucion);
         NotaCreditoCliente ObtenerNotaCreditoCliente(int intIdEmpresa, int intIdNotaCredito);
         int ObtenerTotalListaDevolucionesPorCliente(int intIdEmpresa, int intIdSucursal, int intIdDevolucion, string strNombre, string strFechaFinal);
@@ -982,41 +981,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (decSaldoAFavorDelCliente > 0)
                         {
-                            if (!empresa.DevolucionEnEfectivo) {
-                                notaCredito = new NotaCreditoCliente
-                                {
-                                    IdEmpresa = factura.IdEmpresa,
-                                    IdCliente = factura.IdCliente,
-                                    IdUsuario = factura.IdUsuario,
-                                    Fecha = Validador.ObtenerFechaHoraCostaRica(),
-                                    Detalle = "Nota de crédito por anulación de factura: " + factura.ConsecFactura,
-                                    Referencia = factura.ConsecFactura,
-                                    MontoOriginal = decSaldoAFavorDelCliente,
-                                    Saldo = decSaldoAFavorDelCliente,
-                                    Nulo = false
-                                };
-                                dbContext.NotaCreditoClienteRepository.Add(notaCredito);
-                            }
-                            else if (factura.Procesado)
+                            notaCredito = new NotaCreditoCliente
                             {
-                                cuentaEgresos = dbContext.CuentaEgresoRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
-                                if (cuentaEgresos == null)
-                                    throw new BusinessException("La empresa no posee ninguna cuenta de egresos parametrizada para devoluciones de clientes");
-                                Egreso egreso = new Egreso
-                                {
-                                    IdEmpresa = factura.IdEmpresa,
-                                    IdSucursal = factura.IdSucursal,
-                                    IdUsuario = factura.IdUsuario,
-                                    Fecha = Validador.ObtenerFechaHoraCostaRica(),
-                                    IdCuenta = cuentaEgresos.IdCuenta,
-                                    Beneficiario = factura.NombreCliente,
-                                    Detalle = "Anulación de factura posterior a cierre de efectivo " + factura.ConsecFactura,
-                                    Monto = decSaldoAFavorDelCliente,
-                                    Nulo = false,
-                                    Procesado = false
-                                };
-                                dbContext.EgresoRepository.Add(egreso);
-                            }
+                                IdEmpresa = factura.IdEmpresa,
+                                IdCliente = factura.IdCliente,
+                                IdUsuario = factura.IdUsuario,
+                                Fecha = Validador.ObtenerFechaHoraCostaRica(),
+                                Detalle = "Nota de crédito por anulación de factura: " + factura.ConsecFactura,
+                                Referencia = factura.ConsecFactura,
+                                MontoOriginal = decSaldoAFavorDelCliente,
+                                Saldo = decSaldoAFavorDelCliente,
+                                Nulo = false
+                            };
+                            dbContext.NotaCreditoClienteRepository.Add(notaCredito);
                         }
                     }
                     DocumentoElectronico documentoNC = null;
@@ -2326,42 +2303,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (decSaldoAFavorDelCliente > 0)
                     {
-                        if (!empresa.DevolucionEnEfectivo)
+                        notaCredito = new NotaCreditoCliente
                         {
-                            notaCredito = new NotaCreditoCliente
-                            {
-                                IdEmpresa = factura.IdEmpresa,
-                                IdCliente = factura.IdCliente,
-                                IdUsuario = factura.IdUsuario,
-                                Fecha = Validador.ObtenerFechaHoraCostaRica(),
-                                Detalle = "Nota de crédito por devolución de mercancía de factura: " + factura.ConsecFactura,
-                                Referencia = factura.ConsecFactura,
-                                MontoOriginal = decSaldoAFavorDelCliente,
-                                Saldo = decSaldoAFavorDelCliente,
-                                Nulo = false
-                            };
-                            dbContext.NotaCreditoClienteRepository.Add(notaCredito);
-                        }
-                        else if (factura.Procesado)
-                        {
-                            cuentaEgresos = dbContext.CuentaEgresoRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
-                            if (cuentaEgresos == null)
-                                throw new BusinessException("La empresa no posee ninguna cuenta de egresos parametrizada para devoluciones de clientes");
-                            Egreso egreso = new Egreso
-                            {
-                                IdEmpresa = factura.IdEmpresa,
-                                IdSucursal = factura.IdSucursal,
-                                IdUsuario = factura.IdUsuario,
-                                Fecha = Validador.ObtenerFechaHoraCostaRica(),
-                                IdCuenta = cuentaEgresos.IdCuenta,
-                                Beneficiario = factura.NombreCliente,
-                                Detalle = "Anulación de factura posterior a cierre de efectivo " + factura.ConsecFactura,
-                                Monto = decSaldoAFavorDelCliente,
-                                Nulo = false,
-                                Procesado = false
-                            };
-                            dbContext.EgresoRepository.Add(egreso);
-                        }
+                            IdEmpresa = factura.IdEmpresa,
+                            IdCliente = factura.IdCliente,
+                            IdUsuario = factura.IdUsuario,
+                            Fecha = Validador.ObtenerFechaHoraCostaRica(),
+                            Detalle = "Nota de crédito por devolución de mercancía de factura: " + factura.ConsecFactura,
+                            Referencia = factura.ConsecFactura,
+                            MontoOriginal = decSaldoAFavorDelCliente,
+                            Saldo = decSaldoAFavorDelCliente,
+                            Nulo = false
+                        };
+                        dbContext.NotaCreditoClienteRepository.Add(notaCredito);
                     }
                     DocumentoElectronico documentoNC = null;
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
@@ -2507,134 +2461,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     else throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
                 }
 
-            }
-        }
-
-        public void AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    DateTime fechaActual = Validador.ObtenerFechaHoraCostaRica();
-                    DevolucionCliente devolucion = dbContext.DevolucionClienteRepository.Include("Cliente").Include("DetalleDevolucionCliente").FirstOrDefault(x => x.IdDevolucion == intIdDevolucion);
-                    if (devolucion == null) throw new BusinessException("La devolución por anular no existe!");
-                    if (devolucion.Nulo) throw new BusinessException("La devolución ya ha sido anulada.");
-                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == devolucion.IdEmpresa).FirstOrDefault();
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.TipoContrato < 6) throw new BusinessException("El plan de servicios contratado no permite anular devoluciones de clientes. Por favor consulte con su proveedor del servicio.");
-                    if (devolucion.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
-                    Factura factura = dbContext.FacturaRepository.AsNoTracking().Include("DetalleFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
-                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
-                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    if (factura == null) throw new BusinessException("La factura asignada a la devolución no existe!");
-                    if (factura.Nulo) throw new BusinessException("La factura asingada a la devolución ya ha sido anulada.");
-                    devolucion.Nulo = true;
-                    devolucion.IdAnuladoPor = intIdUsuario;
-                    devolucion.MotivoAnulacion = strMotivoAnulacion;
-                    devolucion.IdSucursal = factura.IdSucursal;
-                    foreach (var detalleDevolucion in devolucion.DetalleDevolucionCliente)
-                    {
-                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
-                        if (producto == null) throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
-                        if (producto.Imagen == null) producto.Imagen = new byte[0];
-                        DetalleFactura detalleFactura = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura && x.IdProducto == detalleDevolucion.IdProducto).FirstOrDefault();
-                        if (detalleFactura == null)
-                            throw new BusinessException("El producto " + producto.IdProducto + " no posee registro en el detalle de la factura con id " + factura.IdFactura + ". Por favor consulte con su proveedor.");
-                        detalleFactura.CantDevuelto -= detalleDevolucion.Cantidad;
-                        dbContext.NotificarModificacion(detalleFactura);
-                        if (!producto.EsServicio && producto.Codigo != StaticTipoProductoEspecial.Transitorio && producto.Codigo != StaticTipoProductoEspecial.ImpuestoServicio)
-                        {
-                            ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == factura.IdSucursal).FirstOrDefault();
-                            if (existencias == null)
-                                throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
-                            existencias.Cantidad -= detalleDevolucion.Cantidad;
-                            dbContext.NotificarModificacion(existencias);
-                            MovimientoProducto movimiento = new MovimientoProducto
-                            {
-                                IdProducto = producto.IdProducto,
-                                IdSucursal = factura.IdSucursal,
-                                Fecha = fechaActual,
-                                Tipo = StaticTipoMovimientoProducto.Salida,
-                                Origen = "Anulación de registro de devolución de mercancía del cliente de factura " + factura.ConsecFactura,
-                                Cantidad = detalleDevolucion.Cantidad,
-                                PrecioCosto = detalleDevolucion.PrecioCosto
-                            };
-                            dbContext.MovimientoProductoRepository.Add(movimiento);
-                        }
-                    }
-                    if (devolucion.IdMovimientoCxC > 0)
-                    {
-                        MovimientoCuentaPorCobrar movimiento = dbContext.MovimientoCuentaPorCobrarRepository.Include("DetalleMovimientoCuentaPorCobrar").FirstOrDefault(x => x.IdMovCxC == devolucion.IdMovimientoCxC);
-                        if (movimiento == null)
-                            throw new BusinessException("El movimiento de la cuenta por cobrar correspondiente a la devolución no existe!");
-                        movimiento.Nulo = true;
-                        movimiento.IdAnuladoPor = intIdUsuario;
-                        dbContext.NotificarModificacion(movimiento);
-                        foreach (var detalle in movimiento.DetalleMovimientoCuentaPorCobrar)
-                        {
-                            CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(detalle.IdCxC);
-                            if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada al movimiento no existe");
-                            cxc.Saldo += detalle.Monto;
-                            dbContext.NotificarModificacion(cxc);
-                        }
-                    }
-                    else
-                    {
-                        CuentaIngreso cuenta = dbContext.CuentaIngresoRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
-                        if (cuenta == null) throw new BusinessException("La empresa no posee ninguna cuenta de ingresos parametrizada para devoluciones de clientes");
-                        Ingreso ingreso = new Ingreso
-                        {
-                            IdEmpresa = devolucion.IdEmpresa,
-                            IdSucursal = devolucion.IdSucursal,
-                            IdUsuario = devolucion.IdUsuario,
-                            Fecha = fechaActual,
-                            IdCuenta = cuenta.IdCuenta,
-                            RecibidoDe = devolucion.Cliente.Nombre,
-                            Detalle = "Anulación de devolución de mercancías de factura " + factura.ConsecFactura,
-                            Monto = devolucion.Total,
-                            Nulo = false,
-                            Procesado = false
-                        };
-                        dbContext.IngresoRepository.Add(ingreso);
-                    }
-                    DocumentoElectronico documentoND = null;
-                    if (!empresa.RegimenSimplificado && devolucion.IdDocElectronico != null)
-                    {
-                        DocumentoElectronico documento = dbContext.DocumentoElectronicoRepository.FirstOrDefault(x => x.ClaveNumerica == devolucion.IdDocElectronico);
-                        if (documento == null)
-                            throw new BusinessException("El documento electrónico relacionado con la devolución no existe!");
-                        if (documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Aceptado && documento.EstadoEnvio != StaticEstadoDocumentoElectronico.Rechazado)
-                        {
-                            throw new BusinessException("El documento electrónico de la devolución no ha sido procesado. No se puede proceder con la anulación en este momento");
-                        }
-                        if (documento.EstadoEnvio == StaticEstadoDocumentoElectronico.Aceptado)
-                        {
-                            documentoND = ComprobanteElectronicoService.GenerarNotaDeDebitoElectronicaParcial(devolucion, factura, empresa, sucursal, devolucion.Cliente, dbContext);
-                            devolucion.IdDocElectronicoRev = documentoND.ClaveNumerica;
-                        }
-                    }
-                    dbContext.NotificarModificacion(devolucion);
-                    dbContext.Commit();
-                    if (documentoND != null)
-                    {
-                        Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoND));
-                    }
-                }
-                catch (BusinessException)
-                {
-                    dbContext.RollBack();
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    if (_logger != null) _logger.LogError("Error al anular el registro de devolución: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error anulando la devolución. Por favor consulte con su proveedor.");
-                }
             }
         }
 
