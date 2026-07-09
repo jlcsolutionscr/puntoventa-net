@@ -268,6 +268,7 @@ Public Class FrmDevolucionDeClientes
 
     Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdDevolucion.Text = ""
+        txtIdNotaCredito.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         cliente = Nothing
         factura = Nothing
@@ -327,7 +328,7 @@ Public Class FrmDevolucionDeClientes
             If devolucion IsNot Nothing Then
                 txtIdDevolucion.Text = devolucion.IdDevolucion
                 txtIdFactura.Text = devolucion.ConsecFactura
-                txtIdNotaCredito.Text = devolucion.IdNotaCredito
+                txtIdNotaCredito.Text = IIf(devolucion.IdNotaCredito > 0, devolucion.IdNotaCredito, "")
                 cliente = devolucion.Cliente
                 txtCliente.Text = cliente.Nombre
                 txtFecha.Text = devolucion.Fecha
@@ -346,6 +347,7 @@ Public Class FrmDevolucionDeClientes
     Private Sub btnBuscarFactura_Click(sender As Object, e As EventArgs) Handles btnBuscarFactura.Click
         Dim formBusqueda As New FrmBusquedaFactura()
         formBusqueda.bolExcluyeNulos = True
+        formBusqueda.intIndiceDePagina = 1
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
@@ -395,7 +397,7 @@ Public Class FrmDevolucionDeClientes
                     txtIdNotaCredito.Text = arrIds(1)
                     devolucion.IdNotaCredito = Integer.Parse(arrIds(1))
                     btnImpNotaCredito.Enabled = True
-                    Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdEmpresa, factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                    Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdEmpresa, devolucion.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
                     comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
                         .usuario = FrmPrincipal.usuarioGlobal,
                         .empresa = FrmPrincipal.empresaGlobal,
@@ -418,6 +420,7 @@ Public Class FrmDevolucionDeClientes
                 End If
             Catch ex As Exception
                 txtIdDevolucion.Text = ""
+                txtIdNotaCredito.Text = ""
                 btnGuardar.Enabled = True
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
