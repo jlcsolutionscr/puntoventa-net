@@ -997,7 +997,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 };
                                 dbContext.NotaCreditoClienteRepository.Add(notaCredito);
                             }
-                            else
+                            else if (factura.Procesado)
                             {
                                 cuentaEgresos = dbContext.CuentaEgresoRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
                                 if (cuentaEgresos == null)
@@ -2342,7 +2342,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             };
                             dbContext.NotaCreditoClienteRepository.Add(notaCredito);
                         }
-                        else
+                        else if (factura.Procesado)
                         {
                             cuentaEgresos = dbContext.CuentaEgresoRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.Descripcion.ToUpper().Contains("DEVOLUCION"));
                             if (cuentaEgresos == null)
@@ -2408,7 +2408,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     SaldoAnterior = dbContext.CatalogoContableRepository.Find(notaCreditoClientesParam.IdCuenta).SaldoActual
                                 };
                             }
-                            else
+                            else if (factura.Procesado)
                             {
                                 egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentaDeEgresos") & x.IdProducto == cuentaEgresos.IdCuenta).FirstOrDefault();
                                 if (egresoParam == null)
