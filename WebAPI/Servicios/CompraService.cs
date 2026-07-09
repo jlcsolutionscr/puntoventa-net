@@ -26,7 +26,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         IList<CompraDetalle> ObtenerListadoCompras(int intIdEmpresa, int intIdSucursal,  int numPagina, int cantRec, int intIdCompra, string strRefFactura, string strNombre, string strFechaFinal);
         IList<Compra> ObtenerListadoComprasPorProveedor(int intIdProveedor);
         void AgregarDevolucionProveedor(DevolucionProveedor devolucion);
-        void AnularDevolucionProveedor(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion);
         DevolucionProveedor ObtenerDevolucionProveedor(int intIdDevolucion);
         int ObtenerTotalListaDevolucionesPorProveedor(int intIdEmpresa, int intIdDevolucion, string strNombre);
         IList<DevolucionProveedor> ObtenerListadoDevolucionesPorProveedor(int intIdEmpresa, int numPagina, int cantRec, int intIdDevolucion, string strNombre);
@@ -799,87 +798,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (_logger != null) _logger.LogError("Error al agregar el registro de devolución: ", ex);
                     if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
                     else throw new Exception("Se produjo un error agregando la información de la devolución. Por favor consulte con su proveedor.");
-                }
-            }
-        }
-
-        public void AnularDevolucionProveedor(int intIdDevolucion, int intIdUsuario, string strMotivoAnulacion)
-        {
-            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
-            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
-            {
-                try
-                {
-                    DevolucionProveedor devolucion = dbContext.DevolucionProveedorRepository.Include("DetalleDevolucionProveedor").FirstOrDefault(x => x.IdDevolucion == intIdDevolucion);
-                    if (devolucion == null) throw new BusinessException("La devolución por anular no existe!");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(devolucion.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.TipoContrato < 6) throw new BusinessException("El plan de servicios contratado no permite anular devoluciones de proveedores. Por favor consulte con su proveedor del servicio.");
-                    //if (empresa.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    if (devolucion.Procesado) throw new BusinessException("El registro ya fue procesado por el cierre. No es posible registrar la transacción.");
-                    Compra compra = dbContext.CompraRepository.AsNoTracking().Where(x => x.IdCompra == devolucion.IdCompra).FirstOrDefault();
-                    if (compra == null) throw new BusinessException("La compra asignada a la devolución no existe!");
-                    if (compra.Nulo) throw new BusinessException("La compra asingada a la devolución está anulada.");
-                    devolucion.Nulo = true;
-                    devolucion.IdAnuladoPor = intIdUsuario;
-                    dbContext.NotificarModificacion(devolucion);
-                    foreach (var detalleDevolucion in devolucion.DetalleDevolucionProveedor)
-                    {
-                        Producto producto = dbContext.ProductoRepository.Include("Linea").AsNoTracking().FirstOrDefault(x => x.IdProducto == detalleDevolucion.IdProducto);
-                        if (producto == null)
-                            throw new BusinessException("El producto asignado al detalle de la devolución no existe!");
-                        if (producto.EsServicio)
-                            throw new BusinessException("El tipo de producto por devolver no puede ser un servicio. Por favor verificar.");
-                        ExistenciaPorSucursal existencias = dbContext.ExistenciaPorSucursalRepository.Where(x => x.IdEmpresa == producto.IdEmpresa && x.IdProducto == producto.IdProducto && x.IdSucursal == compra.IdSucursal).FirstOrDefault();
-                        if (existencias == null)
-                            throw new BusinessException("El producto " + producto.IdProducto + " no posee registro de existencias. Por favor consulte con su proveedor.");
-                        existencias.Cantidad += detalleDevolucion.Cantidad;
-                        dbContext.NotificarModificacion(existencias);
-                        MovimientoProducto movimiento = new MovimientoProducto
-                        {
-                            IdProducto = producto.IdProducto,
-                            IdSucursal = compra.IdSucursal,
-                            Fecha = Validador.ObtenerFechaHoraCostaRica(),
-                            Tipo = StaticTipoMovimientoProducto.Entrada,
-                            Origen = "Anulación de registro de devolución de mercancía al proveedor de factura " + compra.NoDocumento,
-                            Cantidad = detalleDevolucion.CantDevolucion,
-                            PrecioCosto = detalleDevolucion.PrecioCosto
-                        };
-                        dbContext.MovimientoProductoRepository.Add(movimiento);
-                    }
-                    if (devolucion.IdMovimientoCxP > 0)
-                    {
-                        MovimientoCuentaPorPagar movimiento = dbContext.MovimientoCuentaPorPagarRepository.Include("DetalleMovimientoCuentaPorPagar").FirstOrDefault(x => x.IdMovCxP == devolucion.IdMovimientoCxP);
-                        if (movimiento == null)
-                            throw new BusinessException("El movimiento de la cuenta por pagar correspondiente a la devolución no existe!");
-                        movimiento.Nulo = true;
-                        movimiento.IdAnuladoPor = intIdUsuario;
-                        dbContext.NotificarModificacion(movimiento);
-                        foreach (var detalle in movimiento.DetalleMovimientoCuentaPorPagar)
-                        {
-                            CuentaPorPagar cuentaPorPagar = dbContext.CuentaPorPagarRepository.Find(detalle.IdCxP);
-                            cuentaPorPagar.Saldo += detalle.Monto;
-                            dbContext.NotificarModificacion(cuentaPorPagar);
-                        }
-                    }
-                    if (devolucion.IdAsiento > 0)
-                    {
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
-                        servicioContabilidad.ReversarAsientoContable(devolucion.IdAsiento, dbContext);
-                    }
-                    dbContext.Commit();
-                }
-                catch (BusinessException)
-                {
-                    dbContext.RollBack();
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    dbContext.RollBack();
-                    if (_logger != null) _logger.LogError("Error al anular el registro de devolución: ", ex);
-                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
-                    else throw new Exception("Se produjo un error anulando la devolución. Por favor consulte con su proveedor.");
                 }
             }
         }

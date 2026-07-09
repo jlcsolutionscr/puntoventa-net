@@ -813,7 +813,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.RetiroEfectivo = 0;
                     cierre.LiquidacionTarjeta = 0;
 
-                    List<Factura> facturas = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    List<Factura> facturas = dbContext.FacturaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (facturas.Count > 0)
                     {
                         var pagosFacturas = facturas.Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
