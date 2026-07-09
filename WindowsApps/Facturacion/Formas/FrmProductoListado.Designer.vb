@@ -281,6 +281,7 @@ Partial Class FrmProductoListado
         Me.Controls.Add(Me.txtDescripcion)
         Me.Controls.Add(Me.dgvListado)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.KeyPreview = True
         Me.MaximumSize = New System.Drawing.Size(861, 543)
         Me.MinimumSize = New System.Drawing.Size(861, 543)
         Me.Name = "FrmProductoListado"

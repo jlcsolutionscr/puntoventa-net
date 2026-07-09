@@ -761,11 +761,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
+                CultureInfo provider = CultureInfo.InvariantCulture;
                 SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.Include("Empresa").FirstOrDefault(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
+                if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                 try
                 {
-                    CultureInfo provider = CultureInfo.InvariantCulture;
-                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     sucursal.CierreEnEjecucion = true;
                     dbContext.Commit();

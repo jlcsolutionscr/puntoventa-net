@@ -53,7 +53,7 @@ namespace LeandroSoftware.ClienteWCF
         public static decimal ObtenerTotalRedondeado(decimal decValorRedondeo, decimal decTotal)
         {
             decimal decTotalRedondeado = decTotal;
-            if (decValorRedondeo == 0) return decTotal;
+            if (decValorRedondeo == 0 || decTotal == 0) return decTotal;
             string[] arrPrecioConDescuento = decTotal.ToString().Split('.');
             decimal decDecimales = arrPrecioConDescuento.Length > 1 ? decimal.Parse("0." + arrPrecioConDescuento[1].ToString()) : 0;
             decimal decTotalIncremento = decDecimales > 0 ? 1 - decDecimales : 0;

@@ -161,7 +161,6 @@ Public Class FrmEmpresa
             txtLeyendaProforma.Text = datos.LeyendaProforma
             txtFechaRenovacion.Text = Format(datos.FechaVence, "dd/MM/yyyy")
             chkPrecioVentaIncluyeIVA.Checked = datos.PrecioVentaIncluyeIVA
-            chkDevolucionEnEfectivo.Checked = datos.DevolucionEnEfectivo
             chkImprimeTiqueteAlFacturar.Checked = datos.ImprimeTiqueteAlFacturar
             chkImprimeTiqueteDespachoMercancia.Checked = datos.ImprimeTiqueteDespachoMercancia
             chkIngresaPagoCliente.Checked = datos.IngresaPagoCliente
@@ -266,7 +265,6 @@ Public Class FrmEmpresa
         datos.LeyendaApartado = txtLeyendaApartado.Text
         datos.LeyendaProforma = txtLeyendaProforma.Text
         datos.PrecioVentaIncluyeIVA = chkPrecioVentaIncluyeIVA.Checked
-        datos.DevolucionEnEfectivo = chkDevolucionEnEfectivo.Checked
         datos.ImprimeTiqueteAlFacturar = chkImprimeTiqueteAlFacturar.Checked
         datos.ImprimeTiqueteDespachoMercancia = chkImprimeTiqueteDespachoMercancia.Checked
         datos.IngresaPagoCliente = chkIngresaPagoCliente.Checked

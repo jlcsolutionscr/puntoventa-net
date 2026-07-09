@@ -136,6 +136,18 @@ Public Class FrmProductoListado
         Next
     End Sub
 
+    Private Sub FrmProductoListado_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.F2 Then
+            If FrmPrincipal.empresaGlobal.HabilitaCodigoTransitorio And FrmPrincipal.productoTranstorio IsNot Nothing And FrmPrincipal.usuarioGlobal.IdUsuario = 1 Then
+                Dim formMant As New FrmProducto With {
+                    .intIdProducto = FrmPrincipal.productoTranstorio.IdProducto
+                    }
+                formMant.ShowDialog()
+            End If
+        End If
+        e.Handled = False
+    End Sub
+
     Private Sub EnterTexboxHandler(sender As Object, e As EventArgs)
         Dim textbox As TextBox = DirectCast(sender, TextBox)
         textbox.BackColor = Color.PeachPuff

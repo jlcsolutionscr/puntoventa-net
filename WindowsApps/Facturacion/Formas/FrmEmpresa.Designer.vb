@@ -124,7 +124,6 @@ Partial Class FrmEmpresa
         Me.chkPrecioVentaIncluyeIVA = New System.Windows.Forms.CheckBox()
         Me.txtMontoRedondeo = New System.Windows.Forms.TextBox()
         Me.Label23 = New System.Windows.Forms.Label()
-        Me.chkDevolucionEnEfectivo = New System.Windows.Forms.CheckBox()
         Me.chkIngresaPagoCliente = New System.Windows.Forms.CheckBox()
         Me.chkImprimeTiqueteAlFacturar = New System.Windows.Forms.CheckBox()
         Me.chkImprimeTiqueteDespachoMercancia = New System.Windows.Forms.CheckBox()
@@ -1483,17 +1482,6 @@ Partial Class FrmEmpresa
         Me.Label23.Text = "Monto redondeo:"
         Me.Label23.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
-        'chkDevolucionEnEfectivo
-        '
-        Me.chkDevolucionEnEfectivo.AutoSize = True
-        Me.chkDevolucionEnEfectivo.Location = New System.Drawing.Point(30, 455)
-        Me.chkDevolucionEnEfectivo.Name = "chkDevolucionEnEfectivo"
-        Me.chkDevolucionEnEfectivo.Size = New System.Drawing.Size(177, 17)
-        Me.chkDevolucionEnEfectivo.TabIndex = 294
-        Me.chkDevolucionEnEfectivo.TabStop = False
-        Me.chkDevolucionEnEfectivo.Text = "Aplica devoluciones en efectivo"
-        Me.chkDevolucionEnEfectivo.UseVisualStyleBackColor = True
-        '
         'chkIngresaPagoCliente
         '
         Me.chkIngresaPagoCliente.AutoSize = True
@@ -1519,7 +1507,7 @@ Partial Class FrmEmpresa
         'chkImprimeTiqueteDespachoMercancia
         '
         Me.chkImprimeTiqueteDespachoMercancia.AutoSize = True
-        Me.chkImprimeTiqueteDespachoMercancia.Location = New System.Drawing.Point(30, 478)
+        Me.chkImprimeTiqueteDespachoMercancia.Location = New System.Drawing.Point(30, 455)
         Me.chkImprimeTiqueteDespachoMercancia.Name = "chkImprimeTiqueteDespachoMercancia"
         Me.chkImprimeTiqueteDespachoMercancia.Size = New System.Drawing.Size(147, 17)
         Me.chkImprimeTiqueteDespachoMercancia.TabIndex = 297
@@ -1552,7 +1540,7 @@ Partial Class FrmEmpresa
         'chkHabilitaFacturacionMonedaExtranjera
         '
         Me.chkHabilitaFacturacionMonedaExtranjera.AutoSize = True
-        Me.chkHabilitaFacturacionMonedaExtranjera.Location = New System.Drawing.Point(227, 501)
+        Me.chkHabilitaFacturacionMonedaExtranjera.Location = New System.Drawing.Point(30, 478)
         Me.chkHabilitaFacturacionMonedaExtranjera.Name = "chkHabilitaFacturacionMonedaExtranjera"
         Me.chkHabilitaFacturacionMonedaExtranjera.Size = New System.Drawing.Size(151, 17)
         Me.chkHabilitaFacturacionMonedaExtranjera.TabIndex = 300
@@ -1572,7 +1560,6 @@ Partial Class FrmEmpresa
         Me.Controls.Add(Me.chkImprimeTiqueteDespachoMercancia)
         Me.Controls.Add(Me.chkImprimeTiqueteAlFacturar)
         Me.Controls.Add(Me.chkIngresaPagoCliente)
-        Me.Controls.Add(Me.chkDevolucionEnEfectivo)
         Me.Controls.Add(Me.txtMontoRedondeo)
         Me.Controls.Add(Me.Label23)
         Me.Controls.Add(Me.chkPrecioVentaIncluyeIVA)
@@ -1723,7 +1710,6 @@ Partial Class FrmEmpresa
     Public WithEvents btnEliminar As Button
     Public WithEvents txtCorreoSucursal As TextBox
     Public WithEvents Label7 As Label
-    Friend WithEvents chkDevolucionEnEfectivo As CheckBox
     Friend WithEvents chkIngresaPagoCliente As CheckBox
     Friend WithEvents chkImprimeTiqueteAlFacturar As CheckBox
     Friend WithEvents chkImprimeTiqueteDespachoMercancia As CheckBox

@@ -670,11 +670,11 @@ Public Class FrmProforma
                     .strTelefono = proforma.Telefono,
                     .strDocumento = proforma.TextoAdicional,
                     .strFecha = proforma.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
-                    .strSubTotal = FormatNumber(proforma.Excento + proforma.Gravado + proforma.Exonerado + proforma.Descuento, 2),
-                    .strDescuento = FormatNumber(proforma.Descuento, 2),
-                    .strImpuesto = FormatNumber(proforma.Impuesto, 2),
+                    .strSubTotal = txtSubTotal.Text,
+                    .strDescuento = txtDescuento.Text,
+                    .strImpuesto = txtImpuesto.Text,
                     .strRedondeo = txtRedondeo.Text,
-                    .strTotal = FormatNumber(proforma.Total, 2)
+                    .strTotal = txtTotal.Text
                 }
                 arrDetalleOrden = New List(Of ModuloImpresion.ClsDetalleComprobante)
                 For Each item As DetalleProforma In proforma.DetalleProforma

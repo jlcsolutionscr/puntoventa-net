@@ -926,73 +926,73 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                             }
                         }
-                        MovimientoCuentaPorCobrar mov = null;
-                        if (factura.IdCxC > 0)
+                    }
+                    MovimientoCuentaPorCobrar mov = null;
+                    if (factura.IdCxC > 0)
+                    {
+                        BancoAdquiriente cuentaBanco = dbContext.BancoAdquirienteRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa);
+                        if (cuentaBanco == null) throw new BusinessException("La empresa no posee ningun banco adquiriente parametrizado");
+                        CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
+                        if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada a la factura de la devolución no existe");
+                        decSaldoAbonoCxCCliente = factura.Total;
+                        if (cxc.Saldo < factura.Total)
                         {
-                            BancoAdquiriente cuentaBanco = dbContext.BancoAdquirienteRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa);
-                            if (cuentaBanco == null) throw new BusinessException("La empresa no posee ningun banco adquiriente parametrizado");
-                            CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
-                            if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada a la factura de la devolución no existe");
-                            decSaldoAbonoCxCCliente = factura.Total;
-                            if (cxc.Saldo < factura.Total)
-                            {
-                                decSaldoAbonoCxCCliente = cxc.Saldo;
-                                decSaldoAFavorDelCliente = factura.Total - decSaldoAbonoCxCCliente;
-                            }
-                            mov = new MovimientoCuentaPorCobrar
-                            {
-                                IdEmpresa = devolucion.IdEmpresa,
-                                IdUsuario = devolucion.IdUsuario,
-                                IdSucursal = devolucion.IdSucursal,
-                                Observaciones = "Abono por anulación de factura nro. " + factura.ConsecFactura,
-                                Fecha = devolucion.Fecha
-                            };
-                            DetalleMovimientoCuentaPorCobrar detalleMov = new DetalleMovimientoCuentaPorCobrar
-                            {
-                                IdCxC = factura.IdCxC,
-                                Monto = decSaldoAbonoCxCCliente,
-                                SaldoActual = cxc.Saldo,
-                            };
-                            mov.DetalleMovimientoCuentaPorCobrar = new List<DetalleMovimientoCuentaPorCobrar>
-                            {
-                                detalleMov
-                            };
-                            DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar
-                            {
-                                IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario,
-                                IdReferencia = cuentaBanco.IdBanco,
-                                TipoTarjeta = "",
-                                NroMovimiento = "",
-                                MontoLocal = decSaldoAbonoCxCCliente,
-                            };
-                            mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>
-                            {
-                                desglosePagoMovimiento
-                            };
-                            dbContext.MovimientoCuentaPorCobrarRepository.Add(mov);
-                            cxc.Saldo -= decSaldoAbonoCxCCliente;
-                            dbContext.NotificarModificacion(cxc);
+                            decSaldoAbonoCxCCliente = cxc.Saldo;
+                            decSaldoAFavorDelCliente = factura.Total - decSaldoAbonoCxCCliente;
                         }
-                        else
+                        mov = new MovimientoCuentaPorCobrar
                         {
-                            decSaldoAFavorDelCliente = factura.Total;
-                        }
-                        if (decSaldoAFavorDelCliente > 0)
+                            IdEmpresa = devolucion.IdEmpresa,
+                            IdUsuario = devolucion.IdUsuario,
+                            IdSucursal = devolucion.IdSucursal,
+                            Observaciones = "Abono por anulación de factura nro. " + factura.ConsecFactura,
+                            Fecha = devolucion.Fecha
+                        };
+                        DetalleMovimientoCuentaPorCobrar detalleMov = new DetalleMovimientoCuentaPorCobrar
                         {
-                            notaCredito = new NotaCreditoCliente
-                            {
-                                IdEmpresa = factura.IdEmpresa,
-                                IdCliente = factura.IdCliente,
-                                IdUsuario = factura.IdUsuario,
-                                Fecha = Validador.ObtenerFechaHoraCostaRica(),
-                                Detalle = "Nota de crédito por anulación de factura: " + factura.ConsecFactura,
-                                Referencia = factura.ConsecFactura,
-                                MontoOriginal = decSaldoAFavorDelCliente,
-                                Saldo = decSaldoAFavorDelCliente,
-                                Nulo = false
-                            };
-                            dbContext.NotaCreditoClienteRepository.Add(notaCredito);
-                        }
+                            IdCxC = factura.IdCxC,
+                            Monto = decSaldoAbonoCxCCliente,
+                            SaldoActual = cxc.Saldo,
+                        };
+                        mov.DetalleMovimientoCuentaPorCobrar = new List<DetalleMovimientoCuentaPorCobrar>
+                        {
+                            detalleMov
+                        };
+                        DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar
+                        {
+                            IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario,
+                            IdReferencia = cuentaBanco.IdBanco,
+                            TipoTarjeta = "",
+                            NroMovimiento = "",
+                            MontoLocal = decSaldoAbonoCxCCliente,
+                        };
+                        mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>
+                        {
+                            desglosePagoMovimiento
+                        };
+                        dbContext.MovimientoCuentaPorCobrarRepository.Add(mov);
+                        cxc.Saldo -= decSaldoAbonoCxCCliente;
+                        dbContext.NotificarModificacion(cxc);
+                    }
+                    else
+                    {
+                        decSaldoAFavorDelCliente = factura.Total;
+                    }
+                    if (decSaldoAFavorDelCliente > 0)
+                    {
+                        notaCredito = new NotaCreditoCliente
+                        {
+                            IdEmpresa = factura.IdEmpresa,
+                            IdCliente = factura.IdCliente,
+                            IdUsuario = factura.IdUsuario,
+                            Fecha = Validador.ObtenerFechaHoraCostaRica(),
+                            Detalle = "Nota de crédito por anulación de factura: " + factura.ConsecFactura,
+                            Referencia = factura.ConsecFactura,
+                            MontoOriginal = decSaldoAFavorDelCliente,
+                            Saldo = decSaldoAFavorDelCliente,
+                            Nulo = false
+                        };
+                        dbContext.NotaCreditoClienteRepository.Add(notaCredito);
                     }
                     DocumentoElectronico documentoNC = null;
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
@@ -1010,7 +1010,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             factura.IdDocElectronicoRev = documentoNC.ClaveNumerica;
                         }
                     }
-                    if (empresa.Contabiliza)
+                    if (empresa.TipoContrato >= 6 && empresa.Contabiliza)
                     {
                         int intLineaDetalleAsiento = 0;
                         asiento = new Asiento
@@ -1049,17 +1049,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         detalleAsiento = new DetalleAsiento
                         {
                             Linea = 2,
-                            IdCuenta = devolucionSobreVentasParam.IdCuenta,
-                            Debito = factura.Total - factura.Impuesto,
-                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(devolucionSobreVentasParam.IdCuenta).SaldoActual
-                        };
-                        detalleAsiento = new DetalleAsiento
-                        {
-                            Linea = 2,
                             IdCuenta = ivaDevengadoParam.IdCuenta,
                             Debito = factura.Impuesto,
                             SaldoAnterior = dbContext.CatalogoContableRepository.Find(ivaDevengadoParam.IdCuenta).SaldoActual
                         };
+                        detalleAsiento = new DetalleAsiento
+                        {
+                            Linea = 2,
+                            IdCuenta = devolucionSobreVentasParam.IdCuenta,
+                            Debito = factura.Total - factura.Impuesto,
+                            SaldoAnterior = dbContext.CatalogoContableRepository.Find(devolucionSobreVentasParam.IdCuenta).SaldoActual
+                        };
+                        asiento.DetalleAsiento.Add(detalleAsiento);
+                        asiento.TotalCredito += detalleAsiento.Credito;
                         if (decTotalCostoVentas > 0)
                         {
                             detalleAsiento = new DetalleAsiento
@@ -2140,6 +2142,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decTotalCostoVentas = 0;
                 decimal decSaldoAbonoCxCCliente = 0;
                 decimal decSaldoAFavorDelCliente = 0;
+                ParametroContable ingresosVentasParam = null;
                 ParametroContable notaCreditoClientesParam = null;
                 ParametroContable cuentasPorCobrarClientesParam = null;
                 ParametroContable otraCondicionVentaParam = null;
@@ -2166,13 +2169,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     if (empresa.Contabiliza)
                     {
+                        ingresosVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("IngresosPorVentas")).FirstOrDefault();
                         notaCreditoClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("NotaCreditoClientes")).FirstOrDefault();
                         cuentasPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentasPorPagarClientes")).FirstOrDefault();
                         otraCondicionVentaParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("OtraCondicionVenta")).FirstOrDefault();
                         ivaDevengadoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("IVAPorLiquidar")).FirstOrDefault();
                         costoVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CostosDeVentas")).FirstOrDefault();
                         devolucionSobreVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("DevolucionSobreVentas")).FirstOrDefault();
-                        if (notaCreditoClientesParam == null || cuentasPorCobrarClientesParam == null || otraCondicionVentaParam == null || ivaDevengadoParam == null || costoVentasParam == null || devolucionSobreVentasParam == null)
+                        if (ingresosVentasParam == null || notaCreditoClientesParam == null || cuentasPorCobrarClientesParam == null || otraCondicionVentaParam == null || ivaDevengadoParam == null || costoVentasParam == null || devolucionSobreVentasParam == null)
                             throw new BusinessException("La parametrización contable está incompleta y no es posible procesar la transacción. Por favor verificar.");
                     }
                     devolucion.IdAsiento = 0;
