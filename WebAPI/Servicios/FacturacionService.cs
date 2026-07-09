@@ -839,10 +839,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 ParametroContable costoVentasParam = null;
                 ParametroContable cuentasPorCobrarClientesParam = null;
                 ParametroContable devolucionSobreVentasParam = null;
-                ParametroContable egresoParam = null;
                 ParametroContable lineaParam = null;
                 NotaCreditoCliente notaCredito = null;
-                CuentaEgreso cuentaEgresos = null;
                 DataTable dtbInventarios = new DataTable();
                 dtbInventarios.Columns.Add("IdLinea", typeof(int));
                 dtbInventarios.Columns.Add("Total", typeof(decimal));
@@ -1038,29 +1036,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (decSaldoAFavorDelCliente > 0)
                         {
-                            if (!empresa.DevolucionEnEfectivo)
+                            detalleAsiento = new DetalleAsiento
                             {
-                                detalleAsiento = new DetalleAsiento
-                                {
-                                    Linea = 1,
-                                    IdCuenta = notaCreditoClientesParam.IdCuenta,
-                                    Credito = decSaldoAFavorDelCliente,
-                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(notaCreditoClientesParam.IdCuenta).SaldoActual
-                                };
-                            }
-                            else
-                            {
-                                egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentaDeEgresos") & x.IdProducto == cuentaEgresos.IdCuenta).FirstOrDefault();
-                                if (egresoParam == null)
-                                    throw new BusinessException("No existe parametrización contable para la cuenta de egresos " + cuentaEgresos.IdCuenta + " y no es posible procesar la transacción. Por favor verificar.");
-                                detalleAsiento = new DetalleAsiento
-                                {
-                                    Linea = intLineaDetalleAsiento += 1,
-                                    IdCuenta = egresoParam.IdCuenta,
-                                    Debito = decSaldoAFavorDelCliente,
-                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(egresoParam.IdCuenta).SaldoActual
-                                };
-                            }
+                                Linea = 1,
+                                IdCuenta = notaCreditoClientesParam.IdCuenta,
+                                Credito = decSaldoAFavorDelCliente,
+                                SaldoAnterior = dbContext.CatalogoContableRepository.Find(notaCreditoClientesParam.IdCuenta).SaldoActual
+                            };
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalCredito += detalleAsiento.Credito;
                         }
@@ -2159,7 +2141,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decSaldoAbonoCxCCliente = 0;
                 decimal decSaldoAFavorDelCliente = 0;
                 ParametroContable notaCreditoClientesParam = null;
-                ParametroContable egresoParam = null;
                 ParametroContable cuentasPorCobrarClientesParam = null;
                 ParametroContable otraCondicionVentaParam = null;
                 ParametroContable ivaDevengadoParam = null;
@@ -2167,7 +2148,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 ParametroContable devolucionSobreVentasParam = null;
                 ParametroContable lineaParam = null;
                 NotaCreditoCliente notaCredito = null;
-                CuentaEgreso cuentaEgresos = null;
                 DataTable dtbInventarios = new DataTable();
                 dtbInventarios.Columns.Add("IdLinea", typeof(int));
                 dtbInventarios.Columns.Add("Total", typeof(decimal));
@@ -2352,29 +2332,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         if (decSaldoAFavorDelCliente > 0)
                         {
-                            if (!empresa.DevolucionEnEfectivo)
+                            detalleAsiento = new DetalleAsiento
                             {
-                                detalleAsiento = new DetalleAsiento
-                                {
-                                    Linea = 1,
-                                    IdCuenta = notaCreditoClientesParam.IdCuenta,
-                                    Credito = decSaldoAFavorDelCliente,
-                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(notaCreditoClientesParam.IdCuenta).SaldoActual
-                                };
-                            }
-                            else if (factura.Procesado)
-                            {
-                                egresoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentaDeEgresos") & x.IdProducto == cuentaEgresos.IdCuenta).FirstOrDefault();
-                                if (egresoParam == null)
-                                    throw new BusinessException("No existe parametrización contable para la cuenta de egresos " + cuentaEgresos.IdCuenta + " y no es posible procesar la transacción. Por favor verificar.");
-                                detalleAsiento = new DetalleAsiento
-                                {
-                                    Linea = intLineaDetalleAsiento += 1,
-                                    IdCuenta = egresoParam.IdCuenta,
-                                    Debito = decSaldoAFavorDelCliente,
-                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(egresoParam.IdCuenta).SaldoActual
-                                };
-                            }
+                                Linea = 1,
+                                IdCuenta = notaCreditoClientesParam.IdCuenta,
+                                Credito = decSaldoAFavorDelCliente,
+                                SaldoAnterior = dbContext.CatalogoContableRepository.Find(notaCreditoClientesParam.IdCuenta).SaldoActual
+                            };
                             asiento.DetalleAsiento.Add(detalleAsiento);
                             asiento.TotalCredito += detalleAsiento.Credito;
                         }
