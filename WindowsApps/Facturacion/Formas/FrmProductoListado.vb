@@ -136,13 +136,27 @@ Public Class FrmProductoListado
         Next
     End Sub
 
-    Private Sub FrmProductoListado_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+    Private Async Sub FrmProductoListado_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
         If e.KeyCode = Keys.F2 Then
-            If FrmPrincipal.empresaGlobal.HabilitaCodigoTransitorio And FrmPrincipal.productoTranstorio IsNot Nothing And FrmPrincipal.usuarioGlobal.IdUsuario = 1 Then
-                Dim formMant As New FrmProducto With {
+            If FrmPrincipal.empresaGlobal.HabilitaCodigoTransitorio And FrmPrincipal.usuarioGlobal.IdUsuario = 1 Then
+                Dim intIdProductoTransitorio = 0
+                If FrmPrincipal.productoTranstorio Is Nothing Then
+                    Dim productoCMD = Await Puntoventa.ObtenerProductoTransitorio(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
+                    If productoCMD IsNot Nothing Then
+                        FrmPrincipal.productoTranstorio = productoCMD
+                        intIdProductoTransitorio = productoCMD.IdProducto
+                    End If
+                Else
+                    intIdProductoTransitorio = FrmPrincipal.productoTranstorio.IdProducto
+                End If
+                If intIdProductoTransitorio > 0 Then
+                    Dim formMant As New FrmProducto With {
                     .intIdProducto = FrmPrincipal.productoTranstorio.IdProducto
                     }
-                formMant.ShowDialog()
+                    formMant.ShowDialog()
+                Else
+                    MessageBox.Show("El producto transitorio no se encuentra parametrizado!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                End If
             End If
         End If
         e.Handled = False

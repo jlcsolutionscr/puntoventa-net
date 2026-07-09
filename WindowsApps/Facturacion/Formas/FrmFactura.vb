@@ -580,22 +580,6 @@ Public Class FrmFactura
             BtnBuscar_Click(btnBuscar, New EventArgs())
         ElseIf e.KeyCode = Keys.F4 Then
             BtnAgregar_Click(btnAgregar, New EventArgs())
-        ElseIf e.KeyCode = Keys.F5 Then
-            If FrmPrincipal.empresaGlobal.Modalidad = 2 Then
-                If FrmPrincipal.empresaGlobal.HabilitaCodigoImpuestoServicio And FrmPrincipal.productoImpuestoServicio Is Nothing Then
-                    MessageBox.Show("El impuesto de servicio no se encuentra configurado. Contacte con su proveedor del sistema.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Else
-                    If bolImpuestoCargado Then
-                        MessageBox.Show("El impuesto de servicio ya se encuentra cargado. Debe eliminarlo si desea recalcularlo.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    Else
-                        Dim decMontoImpuesto As Decimal = (decExonerado + decExcento + decGravado) * 0.1
-                        If decMontoImpuesto > 0 Then
-                            CargarLineaDetalleFactura(FrmPrincipal.productoImpuestoServicio, FrmPrincipal.productoImpuestoServicio.Descripcion, 1, decMontoImpuesto, 0, True)
-                            bolImpuestoCargado = True
-                        End If
-                    End If
-                End If
-            End If
         ElseIf e.KeyCode = Keys.F10 And btnGuardar.Enabled Then
             BtnGuardar_Click(btnGuardar, New EventArgs())
         ElseIf e.KeyCode = Keys.F11 And btnImprimir.Enabled Then
@@ -752,33 +736,43 @@ Public Class FrmFactura
                         factura.IdNotaCredito = Integer.Parse(strIdNotaCredito)
                         txtIdNotaCredito.Text = strIdNotaCredito
                         btnNotaCreditoPDF.Enabled = True
-                        Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdEmpresa, factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
-                        comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
-                            .usuario = FrmPrincipal.usuarioGlobal,
-                            .empresa = FrmPrincipal.empresaGlobal,
-                            .equipo = FrmPrincipal.equipoGlobal,
-                            .strId = notaCredito.IdNotaCredito,
-                            .strFecha = notaCredito.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
-                            .strVendedor = "",
-                            .strNombre = "",
-                            .strDocumento = "",
-                            .strTelefono = "",
-                            .strDetalle = notaCredito.Detalle,
-                            .strSubTotal = "",
-                            .strDescuento = "",
-                            .strImpuesto = "",
-                            .strTotal = FormatNumber(notaCredito.MontoOriginal, 2),
-                            .strPagoCon = "",
-                            .strCambio = ""
-                        }
-                        ModuloImpresion.ImprimirNotaCreditoCliente(comprobanteImpresion)
+                        If FrmPrincipal.empresaGlobal.ImprimeTiqueteAlFacturar Then
+                            Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdEmpresa, factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
+                            comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
+                                .usuario = FrmPrincipal.usuarioGlobal,
+                                .empresa = FrmPrincipal.empresaGlobal,
+                                .equipo = FrmPrincipal.equipoGlobal,
+                                .strId = notaCredito.IdNotaCredito,
+                                .strFecha = notaCredito.Fecha.ToString("dd/MM/yyyy hh:mm:ss"),
+                                .strVendedor = "",
+                                .strNombre = "",
+                                .strDocumento = "",
+                                .strTelefono = "",
+                                .strDetalle = notaCredito.Detalle,
+                                .strSubTotal = "",
+                                .strDescuento = "",
+                                .strImpuesto = "",
+                                .strTotal = FormatNumber(notaCredito.MontoOriginal, 2),
+                                .strPagoCon = "",
+                                .strCambio = ""
+                            }
+                            ModuloImpresion.ImprimirNotaCreditoCliente(comprobanteImpresion)
+                        End If
                     End If
                 Catch ex As Exception
                     MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Exit Sub
                 End Try
                 MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                BtnAgregar_Click(btnAgregar, New EventArgs())
+                btnAnular.Enabled = False
+                btnImprimir.Enabled = False
+                btnGenerarPDF.Enabled = False
+                btnInsertar.Enabled = False
+                btnEliminar.Enabled = False
+                btnInsertarPago.Enabled = False
+                btnEliminarPago.Enabled = False
+                btnNotaCredito.Enabled = False
+                btnNotaCreditoPDF.Enabled = True
             End If
         End If
     End Sub
@@ -846,9 +840,6 @@ Public Class FrmFactura
                 btnNotaCreditoPDF.Enabled = factura.IdNotaCredito > 0
                 btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
-                btnOrdenServicio.Enabled = False
-                btnApartado.Enabled = False
-                btnProforma.Enabled = False
                 btnNotaCredito.Enabled = False
                 btnAnular.Enabled = Not factura.Nulo And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False

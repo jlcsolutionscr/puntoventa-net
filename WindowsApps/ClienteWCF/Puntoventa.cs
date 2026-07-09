@@ -1115,17 +1115,7 @@ namespace LeandroSoftware.ClienteWCF
 
         public static async Task<Producto> ObtenerProductoTransitorio(int intIdEmpresa, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerProductoEspecial', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdTipo: 4}}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            Producto producto = null;
-            if (respuesta != "")
-                producto = JsonConvert.DeserializeObject<Producto>(respuesta);
-            return producto;
-        }
-
-        public static async Task<Producto> ObtenerProductoImpuestoServicio(int intIdEmpresa, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerProductoEspecial', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdTipo: 5}}";
+            string strDatos = "{NombreMetodo: 'ObtenerProductoTransitorio', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             Producto producto = null;
             if (respuesta != "")

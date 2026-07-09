@@ -36,7 +36,6 @@ Public Class FrmPrincipal
     Public bolModificaCliente As Boolean = False
     Public bolModificaPrecioVenta As Boolean = False
     Public productoTranstorio As Producto
-    Public productoImpuestoServicio As Producto
     Public bolDescargaCancelada As Boolean = False
     Public decDescAutorizado As Decimal
     Public listaProductos As New List(Of ProductoDetalle)
@@ -249,8 +248,13 @@ Public Class FrmPrincipal
         If Not IsNothing(tipoDeCambioDolar) Then
             If tipoDeCambioDolar.Descripcion = strFecha Then Return tipoDeCambioDolar.Valor
         Else
-            decTipoDeCambioDolar = Decimal.Parse(Await Puntoventa.ObtenerTipoCambioDolarHacienda())
-            tipoDeCambioDolar = New LlaveDescripcionValor(1, strFecha, decTipoDeCambioDolar)
+            Try
+                decTipoDeCambioDolar = Decimal.Parse(Await Puntoventa.ObtenerTipoCambioDolarHacienda())
+                tipoDeCambioDolar = New LlaveDescripcionValor(1, strFecha, decTipoDeCambioDolar)
+            Catch ex As Exception
+                MessageBox.Show("No se logro obtener el tipo de cambio en el Ministerio de Hacienda!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                decTipoDeCambioDolar = 1
+            End Try
         End If
         Return decTipoDeCambioDolar
     End Function
@@ -804,11 +808,6 @@ Public Class FrmPrincipal
             productoTranstorio = Await Puntoventa.ObtenerProductoTransitorio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
         Catch
             productoTranstorio = Nothing
-        End Try
-        Try
-            productoImpuestoServicio = Await Puntoventa.ObtenerProductoImpuestoServicio(empresaGlobal.IdEmpresa, usuarioGlobal.Token)
-        Catch
-            productoImpuestoServicio = Nothing
         End Try
         dgvDecimal = New DataGridViewCellStyle With {
             .Format = "N2",

@@ -379,8 +379,6 @@ Public Class FrmProforma
             txtCodigo.Focus()
             CargarCombos()
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
-            txtTipoCambio.Text = 1
-            If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
             cboTipoMoneda.Enabled = FrmPrincipal.empresaGlobal.HabilitaFacturacionMonedaExtranjera
             bolReady = True
         Catch ex As Exception
@@ -395,8 +393,6 @@ Public Class FrmProforma
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         cboTipoMoneda.Enabled = FrmPrincipal.empresaGlobal.HabilitaFacturacionMonedaExtranjera
-        txtTipoCambio.Text = 1
-        If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
         txtTextoAdicional.Text = ""
         txtTelefono.Text = ""
         txtPorcentajeExoneracion.Text = "0"
@@ -647,6 +643,7 @@ Public Class FrmProforma
             End Try
         End If
         MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        btnGuardar.Enabled = True
         btnImprimir.Enabled = True
         btnImprimir.Focus()
         btnGenerarPDF.Enabled = True
@@ -750,13 +747,6 @@ Public Class FrmProforma
                 decPrecioVenta = Math.Round(CDbl(txtPrecio.Text), 2)
                 txtPorcDesc.Text = "0"
             End If
-        End If
-    End Sub
-
-    Private Async Sub cboTipoMoneda_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboTipoMoneda.SelectedIndexChanged
-        If bolReady And cboTipoMoneda.SelectedValue IsNot Nothing Then
-            txtTipoCambio.Text = 1
-            If cboTipoMoneda.SelectedValue = 2 Then txtTipoCambio.Text = Await FrmPrincipal.ObtenerTipoDeCambioDolar()
         End If
     End Sub
 

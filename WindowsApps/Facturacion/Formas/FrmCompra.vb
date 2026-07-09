@@ -866,7 +866,8 @@ Public Class FrmCompra
         If producto IsNot Nothing Then
             Dim strError As String = ""
             If txtDescripcion.Text = "" Then strError = "La descripción no puede estar en blanco"
-            If txtPrecioCosto.Text <= "0" Then strError = "El precio de costo del producto no puede estar ser 0"
+            If txtPrecioCosto.Text <> "" And CDec(txtPrecioCosto.Text) = 0 Then strError = "El precio de costo del producto no puede estar ser 0"
+            If decPrecioVenta = 0 Then strError = "El precio de venta del producto no puede estar ser 0"
             If strError <> "" Then
                 MessageBox.Show(strError, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub

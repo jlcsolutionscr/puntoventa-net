@@ -80,7 +80,6 @@ Public Class FrmLinea
         cboSucursal.DisplayMember = "Descripcion"
         cboSucursal.DataSource = FrmPrincipal.ObtenerListadoSucursales()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
-        cboSucursal.Enabled = FrmPrincipal.bolSeleccionaSucursal
     End Sub
 #End Region
 

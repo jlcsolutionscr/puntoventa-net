@@ -1,8 +1,9 @@
-Imports LeandroSoftware.ClienteWCF
-Imports LeandroSoftware.Common.Dominio.Entidades
-Imports LeandroSoftware.Common.Constantes
 Imports System.Collections.Generic
 Imports System.IO
+Imports LeandroSoftware.ClienteWCF
+Imports LeandroSoftware.Common.Constantes
+Imports LeandroSoftware.Common.Dominio.Entidades
+Imports LeandroSoftware.Common.Parametros
 
 Public Class FrmDevolucionDeClientes
 #Region "Variables"
@@ -140,7 +141,7 @@ Public Class FrmDevolucionDeClientes
     Private Sub CargarDetalleFactura(ByVal factura As Factura)
         dtbDetalleDevolucion.Rows.Clear()
         For Each detalle As DetalleFactura In factura.DetalleFactura
-            If detalle.Producto.Codigo = StaticTipoProductoEspecial.Transitorio Or detalle.Producto.Linea.Tipo = 1 Then
+            If detalle.Producto.Codigo <> StaticParametrosGenerales.CodigoProductoTransitorio And detalle.Producto.Linea.Tipo = 1 Then
                 dtrRowDetDevolucion = dtbDetalleDevolucion.NewRow
                 dtrRowDetDevolucion.Item(0) = detalle.IdProducto
                 dtrRowDetDevolucion.Item(1) = detalle.Producto.Codigo
