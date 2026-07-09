@@ -1439,6 +1439,14 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (tiqueteFacturaPDF.Length > 0)
                         strRespuesta = JsonConvert.SerializeObject(tiqueteFacturaPDF);
                     break;
+                case "GenerarTiqueteNotaCreditoPDF":
+                    intIdLlave1 = int.Parse(parametrosJO.Property("IdNotaCredito").Value.ToString());
+                    intLargoLinea = int.Parse(parametrosJO.Property("LargoLinea").Value.ToString());
+                    bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
+                    byte[] tiqueteNotaCreditoPDF = _servicioFacturacion.GenerarTiqueteNotaCreditoPDF(intIdLlave1, intLargoLinea, bytLogo);
+                    if (tiqueteNotaCreditoPDF.Length > 0)
+                        strRespuesta = JsonConvert.SerializeObject(tiqueteNotaCreditoPDF);
+                    break;
                 case "GenerarTiqueteOrdenServicioPDF":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdOrdenServicio").Value.ToString());
                     intLargoLinea = int.Parse(parametrosJO.Property("LargoLinea").Value.ToString());
@@ -1452,14 +1460,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     byte[] tiqueteCierreCajaPDF = _servicioFacturacion.GenerarTiqueteCierreCajaPDF(intIdLlave1, intLargoLinea);
                     if (tiqueteCierreCajaPDF.Length > 0)
                         strRespuesta = JsonConvert.SerializeObject(tiqueteCierreCajaPDF);
-                    break;
-                case "GenerarTiqueteNotaCreditoPDF":
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdNotaCredito").Value.ToString());
-                    intLargoLinea = int.Parse(parametrosJO.Property("LargoLinea").Value.ToString());
-                    bytLogo = System.IO.File.ReadAllBytes(strLogoPath);
-                    byte[] tiqueteNotaCreditoPDF = _servicioFacturacion.GenerarTiqueteNotaCreditoClientePDF(intIdLlave1, intLargoLinea, bytLogo);
-                    if (tiqueteNotaCreditoPDF.Length > 0)
-                        strRespuesta = JsonConvert.SerializeObject(tiqueteNotaCreditoPDF);
                     break;
                 case "ObtenerListadoPuntoDeServicio":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
