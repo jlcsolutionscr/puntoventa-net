@@ -414,7 +414,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento += 1,
+                                Linea = intLineaDetalleAsiento++,
                                 IdCuenta = ivaSoportadoParam.IdCuenta,
                                 Debito = decTotalImpuesto,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(ivaSoportadoParam.IdCuenta).SaldoActual
@@ -426,7 +426,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento += 1,
+                                Linea = intLineaDetalleAsiento++,
                                 IdCuenta = cuentasPorPagarProveedoresParam.IdCuenta,
                                 Credito = compra.Total,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(cuentasPorPagarProveedoresParam.IdCuenta).SaldoActual
@@ -442,7 +442,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 {
                                     detalleAsiento = new DetalleAsiento
                                     {
-                                        Linea = intLineaDetalleAsiento += 1,
+                                        Linea = intLineaDetalleAsiento++,
                                         IdCuenta = efectivoPorLiquidarParam.IdCuenta,
                                         Credito = desglosePago.MontoLocal,
                                         SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoPorLiquidarParam.IdCuenta).SaldoActual
@@ -457,7 +457,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                         throw new BusinessException("No existe parametrización contable para la cuenta bancaría " + desglosePago.IdReferencia + " y no se puede continuar. Por favor verificar.");
                                     detalleAsiento = new DetalleAsiento
                                     {
-                                        Linea = intLineaDetalleAsiento += 1,
+                                        Linea = intLineaDetalleAsiento++,
                                         IdCuenta = bancoParam.IdCuenta,
                                         Credito = desglosePago.MontoLocal,
                                         SaldoAnterior = dbContext.CatalogoContableRepository.Find(bancoParam.IdCuenta).SaldoActual
@@ -471,7 +471,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         {
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento += 1,
+                                Linea = intLineaDetalleAsiento++,
                                 IdCuenta = otraCondicionVentaParam.IdCuenta,
                                 Credito = compra.Total,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(otraCondicionVentaParam.IdCuenta).SaldoActual
@@ -487,7 +487,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 throw new BusinessException("No existe parametrización contable para la línea de producto " + intIdLinea + " y no se puede continuar. Por favor verificar.");
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento += 1,
+                                Linea = intLineaDetalleAsiento++,
                                 IdCuenta = lineaParam.IdCuenta,
                                 Debito = (decimal)data["Total"],
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(lineaParam.IdCuenta).SaldoActual

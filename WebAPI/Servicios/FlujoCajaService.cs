@@ -241,7 +241,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         DetalleAsiento detalleAsiento = null;
                         detalleAsiento = new DetalleAsiento
                         {
-                            Linea = intLineaDetalleAsiento += 1,
+                            Linea = intLineaDetalleAsiento++,
                             IdCuenta = efectivoPorLiquidarParam.IdCuenta,
                             Debito = ingreso.Monto,
                             SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoPorLiquidarParam.IdCuenta).SaldoActual
@@ -250,7 +250,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         asiento.TotalDebito += detalleAsiento.Debito;
                         detalleAsiento = new DetalleAsiento
                         {
-                            Linea = intLineaDetalleAsiento += 1,
+                            Linea = intLineaDetalleAsiento++,
                             IdCuenta = ingresoParam.IdCuenta,
                             Credito = ingreso.Monto,
                             SaldoAnterior = dbContext.CatalogoContableRepository.Find(ingresoParam.IdCuenta).SaldoActual
@@ -586,7 +586,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         };
                         DetalleAsiento detalleAsiento = new DetalleAsiento
                         {
-                            Linea = intLineaDetalleAsiento += 1,
+                            Linea = intLineaDetalleAsiento++,
                             IdCuenta = egresoParam.IdCuenta,
                             Debito = egreso.Monto,
                             SaldoAnterior = dbContext.CatalogoContableRepository.Find(egresoParam.IdCuenta).SaldoActual
@@ -595,7 +595,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         asiento.TotalDebito += detalleAsiento.Debito;
                         detalleAsiento = new DetalleAsiento
                         {
-                            Linea = intLineaDetalleAsiento += 1,
+                            Linea = intLineaDetalleAsiento++,
                             IdCuenta = efectivoPorLiquidarParam.IdCuenta,
                             Credito = egreso.Monto,
                             SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoPorLiquidarParam.IdCuenta).SaldoActual

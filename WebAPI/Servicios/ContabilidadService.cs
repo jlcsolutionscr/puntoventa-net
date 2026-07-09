@@ -790,7 +790,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decTotalEgresos += value.SaldoActual;
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento += 1,
+                                Linea = intLineaDetalleAsiento++,
                                 IdCuenta = value.IdCuenta,
                                 Credito = value.SaldoActual,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(value.IdCuenta).SaldoActual
@@ -802,7 +802,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             decTotalIngresos += value.SaldoActual;
                             detalleAsiento = new DetalleAsiento
                             {
-                                Linea = intLineaDetalleAsiento += 1,
+                                Linea = intLineaDetalleAsiento++,
                                 IdCuenta = value.IdCuenta,
                                 Debito = value.SaldoActual,
                                 SaldoAnterior = dbContext.CatalogoContableRepository.Find(value.IdCuenta).SaldoActual
@@ -812,7 +812,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     detalleAsiento = new DetalleAsiento
                     {
-                        Linea = intLineaDetalleAsiento += 1,
+                        Linea = intLineaDetalleAsiento++,
                         IdCuenta = perdidaGananciaParam.IdCuenta
                     };
                     decimal decDiferencia;
