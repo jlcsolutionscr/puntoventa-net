@@ -654,6 +654,7 @@ Public Class FrmFactura
 
     Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdFactura.Text = ""
+        txtIdNotaCredito.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         txtTelefono.Text = ""
         txtReferencia.Text = ""
@@ -749,6 +750,7 @@ Public Class FrmFactura
                     Dim strIdNotaCredito As String = Await Puntoventa.AnularFactura(factura.IdFactura, FrmPrincipal.usuarioGlobal.IdUsuario, formAnulacion.strMotivo, FrmPrincipal.usuarioGlobal.Token)
                     If strIdNotaCredito <> "" Then
                         factura.IdNotaCredito = Integer.Parse(strIdNotaCredito)
+                        txtIdNotaCredito.Text = strIdNotaCredito
                         btnNotaCreditoPDF.Enabled = True
                         Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdEmpresa, factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
                         comprobanteImpresion = New ModuloImpresion.ClsComprobante With {
@@ -796,6 +798,7 @@ Public Class FrmFactura
             End Try
             If factura IsNot Nothing Then
                 txtIdFactura.Text = factura.ConsecFactura
+                txtIdNotaCredito.Text = factura.IdNotaCredito
                 cliente = factura.Cliente
                 txtNombreCliente.Text = factura.NombreCliente
                 txtFecha.Text = factura.Fecha
@@ -872,6 +875,7 @@ Public Class FrmFactura
             End Try
             If ordenServicio IsNot Nothing Then
                 txtIdFactura.Text = ""
+                txtIdNotaCredito.Text = ""
                 cliente = ordenServicio.Cliente
                 cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
                 txtReferencia.Text = "Orden de servicio nro. " & ordenServicio.ConsecOrdenServicio
@@ -942,6 +946,7 @@ Public Class FrmFactura
             End Try
             If apartado IsNot Nothing Then
                 txtIdFactura.Text = ""
+                txtIdNotaCredito.Text = ""
                 cliente = apartado.Cliente
                 cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
                 txtReferencia.Text = "Apartado nro. " & apartado.ConsecApartado
@@ -1012,6 +1017,7 @@ Public Class FrmFactura
             End Try
             If proforma IsNot Nothing Then
                 txtIdFactura.Text = ""
+                txtIdNotaCredito.Text = ""
                 cliente = proforma.Cliente
                 cboTipoMoneda.SelectedValue = proforma.IdTipoMoneda
                 txtReferencia.Text = "Proforma nro. " & proforma.ConsecProforma
@@ -1288,6 +1294,7 @@ Public Class FrmFactura
                 txtIdFactura.Text = factura.ConsecFactura
             Catch ex As Exception
                 txtIdFactura.Text = ""
+                txtIdNotaCredito.Text = ""
                 btnGuardar.Enabled = True
                 btnGuardar.Focus()
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -1398,7 +1405,7 @@ Public Class FrmFactura
     End Sub
 
     Private Async Sub BtnNotaCreditoPDF_Click(sender As Object, e As EventArgs) Handles btnNotaCreditoPDF.Click
-        If factura IsNot Nothing And factura.IdNotaCredito > 0 Then
+        If txtIdNotaCredito.Text <> "" Then
             Try
                 Dim notaCredito As NotaCreditoCliente = Await Puntoventa.ObtenerNotaCreditoCliente(factura.IdEmpresa, factura.IdNotaCredito, FrmPrincipal.usuarioGlobal.Token)
                 comprobanteImpresion = New ModuloImpresion.ClsComprobante With {

@@ -195,7 +195,7 @@ Partial Class FrmDevolucionDeClientes
         Me.txtIdFactura.Name = "txtIdFactura"
         Me.txtIdFactura.ReadOnly = True
         Me.txtIdFactura.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtIdFactura.Size = New System.Drawing.Size(81, 20)
+        Me.txtIdFactura.Size = New System.Drawing.Size(73, 20)
         Me.txtIdFactura.TabIndex = 1
         '
         'txtSubTotal
@@ -312,7 +312,7 @@ Partial Class FrmDevolucionDeClientes
         Me.lblLabel0.BackColor = System.Drawing.Color.Transparent
         Me.lblLabel0.Cursor = System.Windows.Forms.Cursors.Default
         Me.lblLabel0.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.lblLabel0.Location = New System.Drawing.Point(12, 40)
+        Me.lblLabel0.Location = New System.Drawing.Point(12, 41)
         Me.lblLabel0.Name = "lblLabel0"
         Me.lblLabel0.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblLabel0.Size = New System.Drawing.Size(82, 19)
@@ -337,7 +337,7 @@ Partial Class FrmDevolucionDeClientes
         'btnBuscarFactura
         '
         Me.btnBuscarFactura.Image = CType(resources.GetObject("btnBuscarFactura.Image"), System.Drawing.Image)
-        Me.btnBuscarFactura.Location = New System.Drawing.Point(179, 66)
+        Me.btnBuscarFactura.Location = New System.Drawing.Point(174, 66)
         Me.btnBuscarFactura.Name = "btnBuscarFactura"
         Me.btnBuscarFactura.Size = New System.Drawing.Size(20, 20)
         Me.btnBuscarFactura.TabIndex = 136
@@ -392,7 +392,7 @@ Partial Class FrmDevolucionDeClientes
         Me.txtIdNotaCredito.BackColor = System.Drawing.SystemColors.Window
         Me.txtIdNotaCredito.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtIdNotaCredito.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtIdNotaCredito.Location = New System.Drawing.Point(737, 40)
+        Me.txtIdNotaCredito.Location = New System.Drawing.Point(255, 40)
         Me.txtIdNotaCredito.MaxLength = 0
         Me.txtIdNotaCredito.Name = "txtIdNotaCredito"
         Me.txtIdNotaCredito.ReadOnly = True
@@ -406,7 +406,7 @@ Partial Class FrmDevolucionDeClientes
         Me.Label2.BackColor = System.Drawing.Color.Transparent
         Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(652, 40)
+        Me.Label2.Location = New System.Drawing.Point(170, 41)
         Me.Label2.Name = "Label2"
         Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label2.Size = New System.Drawing.Size(82, 19)

@@ -1612,12 +1612,6 @@ namespace LeandroSoftware.ClienteWCF
             return JsonConvert.DeserializeObject<string>(strId);
         }
 
-        public static async Task AnularDevolucionCliente(int intIdDevolucion, int intIdUsuario, string strMotivo, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'AnularDevolucionCliente', Parametros: {IdDevolucion: " + intIdDevolucion + ", IdUsuario: " + intIdUsuario + ", MotivoAnulacion: '" + strMotivo + "'}}";
-            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
-        }
-
         public static async Task<int> ObtenerTotalListaProformas(int intIdEmpresa, int intIdSucursal, bool bolFiltraEstado, bool bolAplicado, bool bolExcluyeAplicados, bool bolExcluyeNulos, int intIdProforma, string strNombre, string strFechaFinal, string strToken)
         {
             string strDatos = "{NombreMetodo: 'ObtenerTotalListaProformas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", FiltraEstado: '" + bolFiltraEstado + "', Aplicado: '" + bolAplicado + "', ExcluyeAplicados: '" + bolExcluyeAplicados + "', ExcluyeNulos: '" + bolExcluyeNulos + "', IdProforma: " + intIdProforma + ", Nombre: '" + strNombre + "', FechaFinal: '" + strFechaFinal + "'}}";

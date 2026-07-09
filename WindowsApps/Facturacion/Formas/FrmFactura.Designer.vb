@@ -129,6 +129,8 @@ Partial Class FrmFactura
         Me.btnNotaCreditoPDF = New System.Windows.Forms.Button()
         Me.txtRedondeo = New System.Windows.Forms.TextBox()
         Me.Label18 = New System.Windows.Forms.Label()
+        Me.txtIdNotaCredito = New System.Windows.Forms.TextBox()
+        Me.Label19 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleFactura, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdDesglosePago, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -480,7 +482,7 @@ Partial Class FrmFactura
         Me._lblLabels_2.BackColor = System.Drawing.Color.Transparent
         Me._lblLabels_2.Cursor = System.Windows.Forms.Cursors.Default
         Me._lblLabels_2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me._lblLabels_2.Location = New System.Drawing.Point(214, 38)
+        Me._lblLabels_2.Location = New System.Drawing.Point(317, 40)
         Me._lblLabels_2.Name = "_lblLabels_2"
         Me._lblLabels_2.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me._lblLabels_2.Size = New System.Drawing.Size(44, 19)
@@ -520,7 +522,7 @@ Partial Class FrmFactura
         'btnBuscarCliente
         '
         Me.btnBuscarCliente.Image = CType(resources.GetObject("btnBuscarCliente.Image"), System.Drawing.Image)
-        Me.btnBuscarCliente.Location = New System.Drawing.Point(671, 39)
+        Me.btnBuscarCliente.Location = New System.Drawing.Point(678, 39)
         Me.btnBuscarCliente.Name = "btnBuscarCliente"
         Me.btnBuscarCliente.Size = New System.Drawing.Size(20, 20)
         Me.btnBuscarCliente.TabIndex = 3
@@ -561,11 +563,11 @@ Partial Class FrmFactura
         Me.txtNombreCliente.BackColor = System.Drawing.SystemColors.Window
         Me.txtNombreCliente.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtNombreCliente.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtNombreCliente.Location = New System.Drawing.Point(264, 39)
+        Me.txtNombreCliente.Location = New System.Drawing.Point(367, 39)
         Me.txtNombreCliente.MaxLength = 0
         Me.txtNombreCliente.Name = "txtNombreCliente"
         Me.txtNombreCliente.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtNombreCliente.Size = New System.Drawing.Size(406, 20)
+        Me.txtNombreCliente.Size = New System.Drawing.Size(310, 20)
         Me.txtNombreCliente.TabIndex = 2
         Me.txtNombreCliente.TabStop = False
         '
@@ -868,10 +870,10 @@ Partial Class FrmFactura
         Me.cboCondicionVenta.ForeColor = System.Drawing.SystemColors.WindowText
         Me.cboCondicionVenta.IntegralHeight = False
         Me.cboCondicionVenta.ItemHeight = 13
-        Me.cboCondicionVenta.Location = New System.Drawing.Point(264, 65)
+        Me.cboCondicionVenta.Location = New System.Drawing.Point(360, 65)
         Me.cboCondicionVenta.Name = "cboCondicionVenta"
         Me.cboCondicionVenta.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboCondicionVenta.Size = New System.Drawing.Size(302, 21)
+        Me.cboCondicionVenta.Size = New System.Drawing.Size(215, 21)
         Me.cboCondicionVenta.TabIndex = 5
         '
         'Label7
@@ -879,7 +881,7 @@ Partial Class FrmFactura
         Me.Label7.BackColor = System.Drawing.Color.Transparent
         Me.Label7.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label7.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label7.Location = New System.Drawing.Point(169, 65)
+        Me.Label7.Location = New System.Drawing.Point(265, 64)
         Me.Label7.Name = "Label7"
         Me.Label7.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label7.Size = New System.Drawing.Size(89, 19)
@@ -1242,7 +1244,7 @@ Partial Class FrmFactura
         Me.cboActividadEconomica.Location = New System.Drawing.Point(102, 118)
         Me.cboActividadEconomica.Name = "cboActividadEconomica"
         Me.cboActividadEconomica.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboActividadEconomica.Size = New System.Drawing.Size(290, 21)
+        Me.cboActividadEconomica.Size = New System.Drawing.Size(403, 21)
         Me.cboActividadEconomica.TabIndex = 204
         Me.cboActividadEconomica.TabStop = False
         '
@@ -1286,7 +1288,7 @@ Partial Class FrmFactura
         Me.btnNotaCreditoPDF.Size = New System.Drawing.Size(64, 21)
         Me.btnNotaCreditoPDF.TabIndex = 207
         Me.btnNotaCreditoPDF.TabStop = False
-        Me.btnNotaCreditoPDF.Text = "N/C PDF"
+        Me.btnNotaCreditoPDF.Text = "Tiq. Nota"
         Me.btnNotaCreditoPDF.UseVisualStyleBackColor = False
         '
         'txtRedondeo
@@ -1318,6 +1320,34 @@ Partial Class FrmFactura
         Me.Label18.Text = "Redondeo:"
         Me.Label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
+        'txtIdNotaCredito
+        '
+        Me.txtIdNotaCredito.AcceptsReturn = True
+        Me.txtIdNotaCredito.BackColor = System.Drawing.SystemColors.Window
+        Me.txtIdNotaCredito.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtIdNotaCredito.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtIdNotaCredito.Location = New System.Drawing.Point(248, 40)
+        Me.txtIdNotaCredito.MaxLength = 0
+        Me.txtIdNotaCredito.Name = "txtIdNotaCredito"
+        Me.txtIdNotaCredito.ReadOnly = True
+        Me.txtIdNotaCredito.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtIdNotaCredito.Size = New System.Drawing.Size(65, 20)
+        Me.txtIdNotaCredito.TabIndex = 210
+        Me.txtIdNotaCredito.TabStop = False
+        '
+        'Label19
+        '
+        Me.Label19.BackColor = System.Drawing.Color.Transparent
+        Me.Label19.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label19.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label19.Location = New System.Drawing.Point(168, 41)
+        Me.Label19.Name = "Label19"
+        Me.Label19.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label19.Size = New System.Drawing.Size(74, 19)
+        Me.Label19.TabIndex = 211
+        Me.Label19.Text = "Id Nota Cred:"
+        Me.Label19.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmFactura
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
@@ -1325,6 +1355,8 @@ Partial Class FrmFactura
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(817, 642)
+        Me.Controls.Add(Me.txtIdNotaCredito)
+        Me.Controls.Add(Me.Label19)
         Me.Controls.Add(Me.txtRedondeo)
         Me.Controls.Add(Me.Label18)
         Me.Controls.Add(Me.btnNotaCreditoPDF)
@@ -1484,4 +1516,6 @@ Partial Class FrmFactura
     Public WithEvents btnNotaCreditoPDF As Button
     Public WithEvents txtRedondeo As TextBox
     Public WithEvents Label18 As Label
+    Public WithEvents txtIdNotaCredito As TextBox
+    Public WithEvents Label19 As Label
 End Class
