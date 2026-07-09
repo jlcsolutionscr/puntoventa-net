@@ -943,11 +943,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                         mov = new MovimientoCuentaPorCobrar
                         {
-                            IdEmpresa = devolucion.IdEmpresa,
-                            IdUsuario = devolucion.IdUsuario,
-                            IdSucursal = devolucion.IdSucursal,
+                            IdEmpresa = factura.IdEmpresa,
+                            IdUsuario = factura.IdUsuario,
+                            IdSucursal = factura.IdSucursal,
                             Observaciones = "Abono por anulación de factura nro. " + factura.ConsecFactura,
-                            Fecha = devolucion.Fecha
+                            Fecha = Validador.ObtenerFechaHoraCostaRica()
                         };
                         DetalleMovimientoCuentaPorCobrar detalleMov = new DetalleMovimientoCuentaPorCobrar
                         {
