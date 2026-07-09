@@ -2,7 +2,6 @@
 
 namespace LeandroSoftware.Common.Constantes
 {
-
     public static class StaticModalidadEmpresa
     {
         public static readonly short Puntoventa = 1;
@@ -50,12 +49,6 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly int ServicioProfesionales = 2;
         public static readonly int OtrosServicios = 3;
     };
-
-    public static class StaticTipoProductoEspecial
-    {
-        public static readonly string Transitorio = "CMD";
-        public static readonly string ImpuestoServicio = "IMPSER";
-    }
 
     public static class StaticTipoMovimientoProducto
     {

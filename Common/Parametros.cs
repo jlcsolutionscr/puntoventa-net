@@ -313,4 +313,9 @@ namespace LeandroSoftware.Common.Parametros
             return listado.FirstOrDefault(x => x.Id == intId);
         }
     }
+
+    public static class StaticParametrosGenerales
+    {
+        public static string CodigoProductoTransitorio = "CMD";
+    }
 }

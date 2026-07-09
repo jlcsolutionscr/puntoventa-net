@@ -664,10 +664,9 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (producto != null)
                         strRespuesta = JsonConvert.SerializeObject(producto);
                     break;
-                case "ObtenerProductoEspecial":
+                case "ObtenerProductoTransitorio":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdTipo").Value.ToString());
-                    producto = _servicioMantenimiento.ObtenerProductoEspecial(intIdEmpresa, intIdLlave1);
+                    producto = _servicioMantenimiento.ObtenerProductoTransitorio(intIdEmpresa);
                     if (producto != null)
                         strRespuesta = JsonConvert.SerializeObject(producto);
                     break;
