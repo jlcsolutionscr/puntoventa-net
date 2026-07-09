@@ -543,7 +543,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 detalleFactura.Producto = producto;
                 ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalleFactura.Producto.CodigoClasificacion);
                 if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalleFactura.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
-                if (producto.Linea.Tipo != clasificacion.Tipo)
+                if (clasificacion.Tipo == 1 && producto.Linea.Tipo > 1 || producto.Linea.Tipo == 1 && clasificacion.Tipo > 1)
                     throw new BusinessException("El producto: " + detalleFactura.Producto.Descripcion + " contiene un 'Tipo' que no corresponde al tipo del catálogo del Ministerio de Hacienda");
                 decimal decSubtotal = 0;
                 FacturaElectronicaLineaDetalle lineaDetalle = new FacturaElectronicaLineaDetalle
@@ -835,7 +835,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 detalleFactura.Producto = producto;
                 ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalleFactura.Producto.CodigoClasificacion);
                 if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalleFactura.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
-                if (producto.Linea.Tipo != clasificacion.Tipo)
+                if (clasificacion.Tipo == 1 && producto.Linea.Tipo > 1 || producto.Linea.Tipo == 1 && clasificacion.Tipo > 1)
                     throw new BusinessException("El producto: " + detalleFactura.Producto.Descripcion + " contiene un 'Tipo' que no corresponde al tipo del catálogo del Ministerio de Hacienda");
                 decimal decSubtotal = 0;
                 TiqueteElectronicoLineaDetalle lineaDetalle = new TiqueteElectronicoLineaDetalle
@@ -1135,7 +1135,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 detalleFactura.Producto = producto;
                 ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalleFactura.Producto.CodigoClasificacion);
                 if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalleFactura.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
-                if (producto.Linea.Tipo != clasificacion.Tipo)
+                if (clasificacion.Tipo == 1 && producto.Linea.Tipo > 1 || producto.Linea.Tipo == 1 && clasificacion.Tipo > 1)
                     throw new BusinessException("El producto: " + detalleFactura.Producto.Descripcion + " contiene un 'Tipo' que no corresponde al tipo del catálogo del Ministerio de Hacienda");
                 decimal decSubtotal = 0;
                 NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle
@@ -1448,7 +1448,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 detalle.Producto = producto;
                 ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalle.Producto.CodigoClasificacion);
                 if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalle.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
-                if (producto.Linea.Tipo != clasificacion.Tipo)
+                if (clasificacion.Tipo == 1 && producto.Linea.Tipo > 1 || producto.Linea.Tipo == 1 && clasificacion.Tipo > 1)
                     new BusinessException("El producto: " + detalle.Producto.Descripcion + " contiene un 'Tipo' que no corresponde al tipo del catálogo del Ministerio de Hacienda");
                 decimal decSubtotal = 0;
                 NotaCreditoElectronicaLineaDetalle lineaDetalle = new NotaCreditoElectronicaLineaDetalle
@@ -1751,7 +1751,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 detalle.Producto = producto;
                 ClasificacionProducto clasificacion = dbContext.ClasificacionProductoRepository.Find(detalle.Producto.CodigoClasificacion);
                 if (clasificacion == null) throw new BusinessException("El código de clasificación del producto: " + detalle.Producto.CodigoClasificacion + " no se encuentra registrado en el catálogo del Ministerio de Hacienda");
-                if (producto.Linea.Tipo != clasificacion.Tipo)
+                if (clasificacion.Tipo == 1 && producto.Linea.Tipo > 1 || producto.Linea.Tipo == 1 && clasificacion.Tipo > 1)
                     throw new BusinessException("El producto: " + detalle.Producto.Descripcion + " contiene un 'Tipo' que no corresponde al tipo del catálogo del Ministerio de Hacienda");
                 decimal decSubtotal = 0;
                 NotaDebitoElectronicaLineaDetalle lineaDetalle = new NotaDebitoElectronicaLineaDetalle
