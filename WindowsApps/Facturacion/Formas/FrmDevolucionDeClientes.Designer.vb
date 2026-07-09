@@ -13,7 +13,7 @@ Partial Class FrmDevolucionDeClientes
 
     'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
-    Public WithEvents btnAnular As System.Windows.Forms.Button
+    Public WithEvents btnImpNotaCredito As System.Windows.Forms.Button
     Public WithEvents btnAgregar As System.Windows.Forms.Button
     Public WithEvents btnBuscar As System.Windows.Forms.Button
     Public WithEvents btnImprimir As System.Windows.Forms.Button
@@ -37,7 +37,7 @@ Partial Class FrmDevolucionDeClientes
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmDevolucionDeClientes))
-        Me.btnAnular = New System.Windows.Forms.Button()
+        Me.btnImpNotaCredito = New System.Windows.Forms.Button()
         Me.btnAgregar = New System.Windows.Forms.Button()
         Me.btnBuscar = New System.Windows.Forms.Button()
         Me.btnImprimir = New System.Windows.Forms.Button()
@@ -60,24 +60,25 @@ Partial Class FrmDevolucionDeClientes
         Me.txtCliente = New System.Windows.Forms.TextBox()
         Me.txtDetalle = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.btnNotaCreditoPDF = New System.Windows.Forms.Button()
+        Me.txtIdNotaCredito = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
         CType(Me.grdDetalleDevolucion, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'btnAnular
+        'btnImpNotaCredito
         '
-        Me.btnAnular.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnAnular.Cursor = System.Windows.Forms.Cursors.Default
-        Me.btnAnular.Enabled = False
-        Me.btnAnular.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnAnular.Location = New System.Drawing.Point(200, 8)
-        Me.btnAnular.Name = "btnAnular"
-        Me.btnAnular.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.btnAnular.Size = New System.Drawing.Size(64, 21)
-        Me.btnAnular.TabIndex = 35
-        Me.btnAnular.TabStop = False
-        Me.btnAnular.Text = "&Anular"
-        Me.btnAnular.UseVisualStyleBackColor = False
+        Me.btnImpNotaCredito.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.btnImpNotaCredito.Cursor = System.Windows.Forms.Cursors.Default
+        Me.btnImpNotaCredito.Enabled = False
+        Me.btnImpNotaCredito.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnImpNotaCredito.Location = New System.Drawing.Point(200, 8)
+        Me.btnImpNotaCredito.Name = "btnImpNotaCredito"
+        Me.btnImpNotaCredito.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.btnImpNotaCredito.Size = New System.Drawing.Size(64, 21)
+        Me.btnImpNotaCredito.TabIndex = 35
+        Me.btnImpNotaCredito.TabStop = False
+        Me.btnImpNotaCredito.Text = "&Imp Orden"
+        Me.btnImpNotaCredito.UseVisualStyleBackColor = False
         '
         'btnAgregar
         '
@@ -385,20 +386,33 @@ Partial Class FrmDevolucionDeClientes
         Me.Label1.Text = "Detalle:"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'btnNotaCreditoPDF
+        'txtIdNotaCredito
         '
-        Me.btnNotaCreditoPDF.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.btnNotaCreditoPDF.Cursor = System.Windows.Forms.Cursors.Default
-        Me.btnNotaCreditoPDF.Enabled = False
-        Me.btnNotaCreditoPDF.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.btnNotaCreditoPDF.Location = New System.Drawing.Point(329, 8)
-        Me.btnNotaCreditoPDF.Name = "btnNotaCreditoPDF"
-        Me.btnNotaCreditoPDF.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.btnNotaCreditoPDF.Size = New System.Drawing.Size(64, 21)
-        Me.btnNotaCreditoPDF.TabIndex = 208
-        Me.btnNotaCreditoPDF.TabStop = False
-        Me.btnNotaCreditoPDF.Text = "N/C PDF"
-        Me.btnNotaCreditoPDF.UseVisualStyleBackColor = False
+        Me.txtIdNotaCredito.AcceptsReturn = True
+        Me.txtIdNotaCredito.BackColor = System.Drawing.SystemColors.Window
+        Me.txtIdNotaCredito.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtIdNotaCredito.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtIdNotaCredito.Location = New System.Drawing.Point(737, 40)
+        Me.txtIdNotaCredito.MaxLength = 0
+        Me.txtIdNotaCredito.Name = "txtIdNotaCredito"
+        Me.txtIdNotaCredito.ReadOnly = True
+        Me.txtIdNotaCredito.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtIdNotaCredito.Size = New System.Drawing.Size(73, 20)
+        Me.txtIdNotaCredito.TabIndex = 209
+        Me.txtIdNotaCredito.TabStop = False
+        '
+        'Label2
+        '
+        Me.Label2.BackColor = System.Drawing.Color.Transparent
+        Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label2.Location = New System.Drawing.Point(652, 40)
+        Me.Label2.Name = "Label2"
+        Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label2.Size = New System.Drawing.Size(82, 19)
+        Me.Label2.TabIndex = 210
+        Me.Label2.Text = "Nota cred:"
+        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'FrmDevolucionDeClientes
         '
@@ -406,13 +420,14 @@ Partial Class FrmDevolucionDeClientes
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(825, 458)
-        Me.Controls.Add(Me.btnNotaCreditoPDF)
+        Me.Controls.Add(Me.txtIdNotaCredito)
+        Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtDetalle)
         Me.Controls.Add(Me.btnBuscarFactura)
         Me.Controls.Add(Me.txtCliente)
         Me.Controls.Add(Me.grdDetalleDevolucion)
-        Me.Controls.Add(Me.btnAnular)
+        Me.Controls.Add(Me.btnImpNotaCredito)
         Me.Controls.Add(Me.btnAgregar)
         Me.Controls.Add(Me.btnBuscar)
         Me.Controls.Add(Me.btnImprimir)
@@ -453,5 +468,6 @@ Partial Class FrmDevolucionDeClientes
     Public WithEvents txtCliente As System.Windows.Forms.TextBox
     Public WithEvents txtDetalle As TextBox
     Public WithEvents Label1 As Label
-    Public WithEvents btnNotaCreditoPDF As Button
+    Public WithEvents txtIdNotaCredito As TextBox
+    Public WithEvents Label2 As Label
 End Class
