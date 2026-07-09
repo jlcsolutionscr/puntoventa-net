@@ -836,8 +836,8 @@ Public Class FrmCompra
             btnGenerarPDF.Enabled = False
             Dim datosReporte As New List(Of ReporteCompra)()
             For I As Short = 0 To dtbDetalleCompra.Rows.Count - 1
-                Dim decPrecioVenta As Decimal = Math.Round(dtbDetalleCompra.Rows(I).Item(9) * (1 + (dtbDetalleCompra.Rows(I).Item(8) / 100)), 2, MidpointRounding.AwayFromZero)
-                Dim item As New ReporteCompra(compra.IdCompra, compra.NoDocumento, txtProveedor.Text, compra.Fecha, compra.Observaciones, dtbDetalleCompra.Rows(I).Item(2), dtbDetalleCompra.Rows(I).Item(1), dtbDetalleCompra.Rows(I).Item(3), dtbDetalleCompra.Rows(I).Item(4), decPrecioVenta, dtbDetalleCompra.Rows(I).Item(12))
+                Dim decPrecioVenta As Decimal = Math.Round(dtbDetalleCompra.Rows(I).Item(10), 2, MidpointRounding.AwayFromZero)
+                Dim item As New ReporteCompra(compra.IdCompra, compra.NoDocumento, txtProveedor.Text, compra.Fecha, compra.Observaciones, dtbDetalleCompra.Rows(I).Item(3), dtbDetalleCompra.Rows(I).Item(2), dtbDetalleCompra.Rows(I).Item(4), dtbDetalleCompra.Rows(I).Item(5), decPrecioVenta, dtbDetalleCompra.Rows(I).Item(11))
                 datosReporte.Add(item)
             Next
             Dim strFecha As String = Now().ToString("dd/MM/yyyy hh:mm:ss")
