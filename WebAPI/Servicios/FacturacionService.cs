@@ -2426,7 +2426,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.Commit();
                     if (notaCredito != null)
                     {
-                        factura.IdNotaCredito = notaCredito.IdNotaCredito;
+                        devolucion.IdNotaCredito = notaCredito.IdNotaCredito;
                     }
                     if (mov != null)
                     {
