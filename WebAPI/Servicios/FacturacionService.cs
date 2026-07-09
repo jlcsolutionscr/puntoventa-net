@@ -77,6 +77,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         void GenerarNotificacionProforma(int intIdProforma, string strCorreoReceptor, byte[] bytLogo);
         void GenerarNotificacionOrdenServicio(int intIdOrden, string strCorreoReceptor, byte[] bytLogo);
         byte[] GenerarTiqueteFacturaPDF(int intIdFactura, int intLargoLinea, byte[] bytLogo);
+        byte[] GenerarTiqueteNotaCreditoPDF(int indIdNotaCredito, int intLargoLinea, byte[] bytLogo);
         byte[] GenerarTiqueteOrdenServicioPDF(int intIdOrdenServicio, int intLargoLinea, byte[] bytLogo);
         byte[] GenerarTiqueteCierreCajaPDF(int intIdCierre, int intLargoLinea);
         byte[] GenerarTiqueteNotaCreditoClientePDF(int intIdNotaCredito, int intLargoLinea, byte[] bytLogo);
@@ -3511,6 +3512,36 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
+        public byte[] GenerarTiqueteNotaCreditoPDF(int indIdNotaCredito, int intLargoLinea, byte[] bytLogo)
+        {
+            if (_serviceScopeFactory == null || _servicioCorreo == null) throw new Exception("Service factory or email service not set");
+            using (var dbContext = _serviceScopeFactory .CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    NotaCreditoCliente notaCredito = dbContext.NotaCreditoClienteRepository.FirstOrDefault(x => x.IdNotaCredito == indIdNotaCredito);
+                    if (notaCredito == null) throw new BusinessException("La registro de la nota de crédito no existe!");
+                    Empresa empresa = dbContext.EmpresaRepository.Include("Distrito.Canton.Provincia").Where(x => x.IdEmpresa == notaCredito.IdEmpresa).FirstOrDefault();
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    Usuario usuario = dbContext.UsuarioRepository.Where(x => x.IdUsuario == notaCredito.IdUsuario).FirstOrDefault();
+                    string strUsuario = "";
+                    if (usuario != null) strUsuario = usuario.CodigoUsuario;
+                    EstructuraDocumentoPDF datos = GenerarEstructuraNotaCreditoPDF(empresa, notaCredito, strUsuario, bytLogo);
+                    return Generador.GenerarTiquetePDF(datos, intLargoLinea);
+                }
+                catch (BusinessException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al enviar por correo la nota de crédito con ID: " + indIdNotaCredito, ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error al enviar el documento por correo. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
         public byte[] GenerarTiqueteCierreCajaPDF(int intIdCierre, int intLargoLinea)
         {
             if (_serviceScopeFactory == null || _servicioCorreo == null) throw new Exception("Service factory or email service not set");
@@ -3664,6 +3695,45 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             datos.MontoCambio = (factura.MontoPagado - decTotalFactura).ToString("N2", CultureInfo.InvariantCulture);
             datos.CodigoMoneda = factura.IdTipoMoneda == 1 ? "CRC" : "USD";
             datos.TipoDeCambio = "1";
+            return datos;
+        }
+
+        private EstructuraDocumentoPDF GenerarEstructuraNotaCreditoPDF(Empresa empresa, NotaCreditoCliente notaCredito, string codigoUsuario, byte[] bytLogo)
+        {
+            EstructuraDocumentoPDF datos = new EstructuraDocumentoPDF
+            {
+                PoweredByLogotipo = bytLogo,
+                EsDocumentoElectronico = false
+            };
+            if (empresa.Logotipo.Length > 0)
+            {
+                try
+                {
+                    datos.Logotipo = empresa.Logotipo;
+                }
+                catch (Exception)
+                {
+                    datos.Logotipo = null;
+                }
+            }
+            else
+            {
+                datos.Logotipo = null;
+            }
+            datos.TituloDocumento = "NOTA DE CREDITO";
+            datos.NombreEmpresa = empresa.NombreEmpresa;
+            datos.NombreComercial = empresa.NombreComercial;
+            datos.ConsecInterno = notaCredito.IdNotaCredito.ToString();
+            datos.Fecha = notaCredito.Fecha.ToString("dd/MM/yyyy");
+            datos.Usuario = codigoUsuario;
+            datos.NombreEmisor = empresa.NombreEmpresa;
+            datos.NombreComercialEmisor = empresa.NombreComercial;
+            datos.IdentificacionEmisor = empresa.Identificacion;
+            datos.CorreoElectronicoEmisor = empresa.CorreoNotificacion;
+            datos.TelefonoEmisor = empresa.Telefono1;
+            datos.FaxEmisor = "";
+            datos.DireccionEmisor = empresa.Direccion;
+            datos.TotalGeneral = notaCredito.MontoOriginal.ToString("N2", CultureInfo.InvariantCulture);
             return datos;
         }
 
