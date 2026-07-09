@@ -73,7 +73,6 @@ Partial Class FrmPrincipal
         Me.MnuCompraTraslado = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCompraAplicTraslado = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuCompraAjusteInv = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MnuCompraDevolucion = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuDocElect = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuDocElectFC = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuDocElectCDE = New System.Windows.Forms.ToolStripMenuItem()
@@ -347,7 +346,7 @@ Partial Class FrmPrincipal
         '
         'MnuCompra
         '
-        Me.MnuCompra.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuCompraRegistro, Me.MnuCompraTraslado, Me.MnuCompraAplicTraslado, Me.MnuCompraAjusteInv, Me.MnuCompraDevolucion})
+        Me.MnuCompra.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MnuCompraRegistro, Me.MnuCompraTraslado, Me.MnuCompraAplicTraslado, Me.MnuCompraAjusteInv})
         Me.MnuCompra.Name = "MnuCompra"
         Me.MnuCompra.Size = New System.Drawing.Size(163, 20)
         Me.MnuCompra.Text = "Movimientos de mercancia"
@@ -356,37 +355,30 @@ Partial Class FrmPrincipal
         'MnuCompraRegistro
         '
         Me.MnuCompraRegistro.Name = "MnuCompraRegistro"
-        Me.MnuCompraRegistro.Size = New System.Drawing.Size(207, 22)
+        Me.MnuCompraRegistro.Size = New System.Drawing.Size(196, 22)
         Me.MnuCompraRegistro.Text = "Compras"
         Me.MnuCompraRegistro.Visible = False
         '
         'MnuCompraTraslado
         '
         Me.MnuCompraTraslado.Name = "MnuCompraTraslado"
-        Me.MnuCompraTraslado.Size = New System.Drawing.Size(207, 22)
+        Me.MnuCompraTraslado.Size = New System.Drawing.Size(196, 22)
         Me.MnuCompraTraslado.Text = "Ingreso de traslados"
         Me.MnuCompraTraslado.Visible = False
         '
         'MnuCompraAplicTraslado
         '
         Me.MnuCompraAplicTraslado.Name = "MnuCompraAplicTraslado"
-        Me.MnuCompraAplicTraslado.Size = New System.Drawing.Size(207, 22)
+        Me.MnuCompraAplicTraslado.Size = New System.Drawing.Size(196, 22)
         Me.MnuCompraAplicTraslado.Text = "Aplicacion de traslados"
         Me.MnuCompraAplicTraslado.Visible = False
         '
         'MnuCompraAjusteInv
         '
         Me.MnuCompraAjusteInv.Name = "MnuCompraAjusteInv"
-        Me.MnuCompraAjusteInv.Size = New System.Drawing.Size(207, 22)
+        Me.MnuCompraAjusteInv.Size = New System.Drawing.Size(196, 22)
         Me.MnuCompraAjusteInv.Text = "Ajustes de inventario"
         Me.MnuCompraAjusteInv.Visible = False
-        '
-        'MnuCompraDevolucion
-        '
-        Me.MnuCompraDevolucion.Name = "MnuCompraDevolucion"
-        Me.MnuCompraDevolucion.Size = New System.Drawing.Size(207, 22)
-        Me.MnuCompraDevolucion.Text = "Devolucion de proveedor"
-        Me.MnuCompraDevolucion.Visible = False
         '
         'MnuDocElect
         '
@@ -606,7 +598,6 @@ Partial Class FrmPrincipal
     Friend WithEvents MnuCompraTraslado As ToolStripMenuItem
     Friend WithEvents MnuCompraAplicTraslado As ToolStripMenuItem
     Friend WithEvents MnuCompraAjusteInv As ToolStripMenuItem
-    Friend WithEvents MnuCompraDevolucion As ToolStripMenuItem
     Friend WithEvents mnuArchivoConsultaCierre As ToolStripMenuItem
     Friend WithEvents MnuApRApartado As ToolStripMenuItem
     Friend WithEvents MnuApROrdenServicio As ToolStripMenuItem
