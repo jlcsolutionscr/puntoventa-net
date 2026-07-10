@@ -839,7 +839,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 ParametroContable cuentasPorCobrarClientesParam = null;
                 ParametroContable devolucionSobreVentasParam = null;
                 ParametroContable lineaParam = null;
-                NotaCreditoCliente notaCredito = null;
                 DataTable dtbInventarios = new DataTable();
                 dtbInventarios.Columns.Add("IdLinea", typeof(int));
                 dtbInventarios.Columns.Add("Total", typeof(decimal));
@@ -1045,16 +1044,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         servicioContabilidad.AgregarAsiento(asiento, dbContext);
                     }
                     dbContext.Commit();
-                    if (notaCredito != null)
-                    {
-                        factura.IdNotaCredito = notaCredito.IdNotaCredito;
-                        dbContext.Commit();
-                    }
                     if (documentoNC != null)
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC));
                     }
-                    if (notaCredito != null) return notaCredito.IdNotaCredito.ToString();
                     return "";
                 }
                 catch (BusinessException)
