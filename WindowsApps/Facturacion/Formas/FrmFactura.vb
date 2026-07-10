@@ -1074,7 +1074,7 @@ Public Class FrmFactura
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-            Dim decSaldoFactura, decMontoPago, decTipoCambio As Decimal
+            Dim decSaldoFactura, decMontoPago As Decimal
             decSaldoFactura = CDbl(txtSaldoPorPagar.Text)
             decMontoPago = IIf(notaCreditoCliente.Saldo < decSaldoFactura, notaCreditoCliente.Saldo, decSaldoFactura)
             Dim objPkDesglose(1) As Object
