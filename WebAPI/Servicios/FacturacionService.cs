@@ -368,7 +368,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (factura.IdOrdenServicio > 0)
                     {
                         OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(factura.IdOrdenServicio);
-
                         foreach (var detalle in factura.DetalleFactura)
                         {
                             DetalleOrdenServicio detalleOrden = dbContext.DetalleOrdenServicioRepository.FirstOrDefault(x => x.IdOrden == factura.IdOrdenServicio && x.IdProducto == detalle.IdProducto);
