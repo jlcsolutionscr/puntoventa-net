@@ -213,6 +213,7 @@ Public Class FrmAplicaAbonoCxC
             txtMontoOriginal.Text = ""
             txtSaldoActual.Text = ""
             txtMonto.Text = ""
+            txtSaldoPosterior.Text = ""
             txtMontoTotal.Text = ""
             txtNombreCliente.Text = ""
         End If
@@ -329,6 +330,7 @@ Public Class FrmAplicaAbonoCxC
         txtMontoOriginal.Text = ""
         txtSaldoActual.Text = ""
         txtMonto.Text = ""
+        txtSaldoPosterior.Text = ""
         txtMontoTotal.Text = ""
         txtObservaciones.Text = ""
         decTotal = 0
@@ -631,6 +633,7 @@ Public Class FrmAplicaAbonoCxC
             txtNombreCliente.Text = cliente.Nombre
             txtSaldoActual.Text = FormatNumber(cuentaPorCobrar.Saldo, 2)
             txtMonto.Text = FormatNumber(cuentaPorCobrar.Saldo, 2)
+            txtSaldoPosterior.Text = FormatNumber(0, 2)
             txtMonto.Focus()
         End If
     End Sub
@@ -667,6 +670,7 @@ Public Class FrmAplicaAbonoCxC
                 MessageBox.Show("El monto del abono no puede ser mayor al saldo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 txtMonto.Text = FormatNumber(cuentaPorCobrar.Saldo, 2)
             End If
+            txtSaldoPosterior.Text = FormatNumber(cuentaPorCobrar.Saldo - CDec(txtMonto.Text), 2)
         End If
     End Sub
 
@@ -687,7 +691,7 @@ Public Class FrmAplicaAbonoCxC
         End If
     End Sub
 
-    Private Sub Valida_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtMonto.KeyPress, txtMontoPago.KeyPress
+    Private Sub Valida_KeyPress(ByVal sender As Object, ByVal e As KeyPressEventArgs) Handles txtMontoPago.KeyPress
         FrmPrincipal.ValidaNumero(e, sender, True, 2, ".")
     End Sub
 #End Region

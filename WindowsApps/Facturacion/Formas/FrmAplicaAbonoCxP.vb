@@ -206,6 +206,7 @@ Public Class FrmAplicaAbonoCxP
             txtMontoOriginal.Text = ""
             txtSaldoActual.Text = ""
             txtMonto.Text = ""
+            txtSaldoPosterior.Text = ""
             txtMontoTotal.Text = ""
             txtNombreProveedor.Text = ""
         End If
@@ -322,6 +323,7 @@ Public Class FrmAplicaAbonoCxP
         txtMontoOriginal.Text = ""
         txtSaldoActual.Text = ""
         txtMonto.Text = ""
+        txtSaldoPosterior.Text = ""
         txtMontoTotal.Text = ""
         txtObservaciones.Text = ""
         txtRecibo.Text = ""
@@ -585,6 +587,7 @@ Public Class FrmAplicaAbonoCxP
             txtNombreProveedor.Text = proveedor.Nombre
             txtSaldoActual.Text = FormatNumber(cuentaPorPagar.Saldo, 2)
             txtMonto.Text = FormatNumber(cuentaPorPagar.Saldo, 2)
+            txtSaldoPosterior.Text = FormatNumber(0, 2)
             txtMonto.Focus()
         End If
     End Sub
@@ -621,6 +624,7 @@ Public Class FrmAplicaAbonoCxP
                 MessageBox.Show("El monto del abono no puede ser mayor al saldo", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 txtMonto.Text = FormatNumber(cuentaPorPagar.Saldo, 2)
             End If
+            txtSaldoPosterior.Text = FormatNumber(cuentaPorPagar.Saldo - CDec(txtMonto.Text), 2)
         End If
     End Sub
 
