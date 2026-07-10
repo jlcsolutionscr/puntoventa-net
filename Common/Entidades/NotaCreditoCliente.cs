@@ -6,7 +6,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
     public partial class NotaCreditoCliente
     {
         public int IdEmpresa { get; set; }
-        public int IdSucursal { get; set; }
         public int IdCliente { get; set; }
         public int IdNotaCredito { get; set; }
         public int IdUsuario { get; set; }

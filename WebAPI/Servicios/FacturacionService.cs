@@ -2237,7 +2237,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         notaCredito = new NotaCreditoCliente
                         {
                             IdEmpresa = factura.IdEmpresa,
-                            IdSucursal = factura.IdSucursal,
                             IdCliente = factura.IdCliente,
                             IdUsuario = factura.IdUsuario,
                             Fecha = Validador.ObtenerFechaHoraCostaRica(),
