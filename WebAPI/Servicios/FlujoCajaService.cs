@@ -814,12 +814,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.ComisionTarjeta = 0;
                     cierre.VentasCredito = 0;
                     cierre.ComprasCredito = 0;
-                    cierre.NotasCreditoCliente = 0;
                     cierre.EfectivoCierreSiguiente = 0;
                     cierre.RetiroEfectivo = 0;
                     cierre.LiquidacionTarjeta = 0;
 
-                    List<Factura> facturas = dbContext.FacturaRepository.Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    List<Factura> facturas = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (facturas.Count > 0)
                     {
                         var pagosFacturas = facturas.Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
@@ -1271,23 +1270,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 Fecha = dato.Fecha,
                                 Descripcion = "Egreso de efectivo: " + dato.Detalle,
                                 Total = dato.Monto
-                            });
-                        }
-                    }
-
-                    List<NotaCreditoCliente> notasCredito = dbContext.NotaCreditoClienteRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
-                    if (notasCredito.Count > 0)
-                    {
-                        foreach (var dato in notasCredito)
-                        {
-                            cierre.NotasCreditoCliente += dato.MontoOriginal;
-                            listaMovimientos.Add(new DetalleMovimientoCierreCaja
-                            {
-                                IdReferencia = dato.IdNotaCredito,
-                                Tipo = 21,
-                                Fecha = dato.Fecha,
-                                Descripcion = "Nota de crédito nro.: " + dato.IdNotaCredito,
-                                Total = dato.MontoOriginal
                             });
                         }
                     }

@@ -17,7 +17,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal Saldo { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
-        public bool Procesado { get; set; }
         public Cliente Cliente { get; set; }
         public List<MovimientoNotaCreditoCliente> MovimientoNotaCreditoCliente { get; set; }
         

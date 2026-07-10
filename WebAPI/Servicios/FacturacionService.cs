@@ -405,18 +405,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         apartado.Aplicado = true;
                         dbContext.NotificarModificacion(apartado);
                     }
-                    if (empresa.Contabiliza)
-                    {
-                        ingresosVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("IngresosPorVentas")).FirstOrDefault();
-                        costoVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CostosDeVentas")).FirstOrDefault();
-                        ivaDevengadoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("IVAPorAcreditar")).FirstOrDefault();
-                        efectivoPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("Efectivo")).FirstOrDefault();
-                        cuentasPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentasPorCobrarClientes")).FirstOrDefault();
-                        tarjetasPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentasPorCobrarTarjeta")).FirstOrDefault();
-                        notaCreditoClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("NotaCreditoClientes")).FirstOrDefault();
-                        if (ingresosVentasParam == null || costoVentasParam == null || ivaDevengadoParam == null || efectivoPorLiquidarParam == null || cuentasPorCobrarClientesParam == null || otraCondicionVentaParam == null || tarjetasPorLiquidarParam == null || notaCreditoClientesParam == null)
-                            throw new BusinessException("La parametrización contable está incompleta y no es posible procesar la transacción. Por favor verificar.");
-                    }
                     factura.IdCxC = 0;
                     factura.IdAsiento = 0;
                     factura.IdMovBanco = 0;
@@ -493,6 +481,15 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                             if (empresa.Contabiliza)
                             {
+                                ingresosVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("IngresosPorVentas")).FirstOrDefault();
+                                costoVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CostosDeVentas")).FirstOrDefault();
+                                ivaDevengadoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("IVAPorAcreditar")).FirstOrDefault();
+                                efectivoPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("Efectivo")).FirstOrDefault();
+                                cuentasPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentasPorCobrarClientes")).FirstOrDefault();
+                                tarjetasPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentasPorCobrarTarjeta")).FirstOrDefault();
+                                notaCreditoClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("NotaCreditoClientes")).FirstOrDefault();
+                                if (ingresosVentasParam == null || costoVentasParam == null || ivaDevengadoParam == null || efectivoPorLiquidarParam == null || cuentasPorCobrarClientesParam == null || otraCondicionVentaParam == null || tarjetasPorLiquidarParam == null || notaCreditoClientesParam == null)
+                                    throw new BusinessException("La parametrización contable está incompleta y no es posible procesar la transacción. Por favor verificar.");
                                 decimal decTotalPorLinea = Math.Round(detalleFactura.PrecioVenta * detalleFactura.Cantidad, 2, MidpointRounding.AwayFromZero);
                                 if (!detalleFactura.Excento)
                                     decTotalPorLinea = Math.Round(decTotalPorLinea / (1 + (detalleFactura.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
@@ -853,18 +850,9 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (factura.Nulo) throw new BusinessException("La factura ya ha sido anulada.");
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (factura.Procesado && empresa.TipoContrato >= 6) throw new BusinessException("La factura ya fue procesada por el cierre y no puede ser anulada.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
-                    if (empresa.Contabiliza)
-                    {
-                        notaCreditoClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("NotaCreditoClientes")).FirstOrDefault();
-                        ivaDevengadoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("ivaDevengado")).FirstOrDefault();
-                        costoVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CostosDeVentas")).FirstOrDefault();
-                        cuentasPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentasPorCobrarClientes")).FirstOrDefault();
-                        devolucionSobreVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("DevolucionSobreVentas")).FirstOrDefault();
-                        if (notaCreditoClientesParam == null || ivaDevengadoParam == null || cuentasPorCobrarClientesParam == null || devolucionSobreVentasParam == null)
-                            throw new BusinessException("La parametrización contable está incompleta y no es posible procesar la transacción. Por favor verificar.");
-                    }
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
@@ -907,6 +895,13 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                                 if (empresa.Contabiliza)
                                 {
+                                    notaCreditoClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("NotaCreditoClientes")).FirstOrDefault();
+                                    ivaDevengadoParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("ivaDevengado")).FirstOrDefault();
+                                    costoVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CostosDeVentas")).FirstOrDefault();
+                                    cuentasPorCobrarClientesParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentasPorCobrarClientes")).FirstOrDefault();
+                                    devolucionSobreVentasParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("DevolucionSobreVentas")).FirstOrDefault();
+                                    if (notaCreditoClientesParam == null || ivaDevengadoParam == null || cuentasPorCobrarClientesParam == null || devolucionSobreVentasParam == null)
+                                        throw new BusinessException("La parametrización contable está incompleta y no es posible procesar la transacción. Por favor verificar.");
                                     decimal decTotalPorLinea = Math.Round(detalleFactura.PrecioVenta * cantPorAnular, 2, MidpointRounding.AwayFromZero);
                                     if (!detalleFactura.Excento)
                                         decTotalPorLinea = Math.Round(decTotalPorLinea / (1 + (detalleFactura.PorcentajeIVA / 100)), 2, MidpointRounding.AwayFromZero);
@@ -929,73 +924,26 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             }
                         }
                     }
-                    MovimientoCuentaPorCobrar mov = null;
                     if (factura.IdCxC > 0)
                     {
-                        BancoAdquiriente cuentaBanco = dbContext.BancoAdquirienteRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa);
-                        if (cuentaBanco == null) throw new BusinessException("La empresa no posee ningun banco adquiriente parametrizado");
-                        CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
-                        if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada a la factura de la devolución no existe");
-                        decSaldoAbonoCxCCliente = factura.Total;
-                        if (cxc.Saldo < factura.Total)
-                        {
-                            decSaldoAbonoCxCCliente = cxc.Saldo;
-                            decSaldoAFavorDelCliente = factura.Total - decSaldoAbonoCxCCliente;
-                        }
-                        mov = new MovimientoCuentaPorCobrar
-                        {
-                            IdEmpresa = factura.IdEmpresa,
-                            IdUsuario = factura.IdUsuario,
-                            IdSucursal = factura.IdSucursal,
-                            Observaciones = "Abono por anulación de factura nro. " + factura.ConsecFactura,
-                            Fecha = Validador.ObtenerFechaHoraCostaRica()
-                        };
-                        DetalleMovimientoCuentaPorCobrar detalleMov = new DetalleMovimientoCuentaPorCobrar
-                        {
-                            IdCxC = factura.IdCxC,
-                            Monto = decSaldoAbonoCxCCliente,
-                            SaldoActual = cxc.Saldo,
-                        };
-                        mov.DetalleMovimientoCuentaPorCobrar = new List<DetalleMovimientoCuentaPorCobrar>
-                        {
-                            detalleMov
-                        };
-                        DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar
-                        {
-                            IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario,
-                            IdReferencia = cuentaBanco.IdBanco,
-                            TipoTarjeta = "",
-                            NroMovimiento = "",
-                            MontoLocal = decSaldoAbonoCxCCliente,
-                        };
-                        mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>
-                        {
-                            desglosePagoMovimiento
-                        };
-                        dbContext.MovimientoCuentaPorCobrarRepository.Add(mov);
-                        cxc.Saldo -= decSaldoAbonoCxCCliente;
-                        dbContext.NotificarModificacion(cxc);
+                        CuentaPorCobrar cuentaPorCobrar = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
+                        if (cuentaPorCobrar == null)
+                            throw new BusinessException("La cuenta por cobrar correspondiente a la factura no existe.");
+                        if (cuentaPorCobrar.Total > cuentaPorCobrar.Saldo)
+                            throw new BusinessException("El registro de facturación posee una cuenta por cobrar asociada con abonos procesados. No puede ser reversada.");
+                        cuentaPorCobrar.Nulo = true;
+                        cuentaPorCobrar.IdAnuladoPor = intIdUsuario;
+                        dbContext.NotificarModificacion(cuentaPorCobrar);
                     }
-                    else
+                    if (factura.IdMovBanco > 0)
                     {
-                        decSaldoAFavorDelCliente = factura.Total;
+                        IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
+                        servicioAuxiliarBancario.AnularMovimientoBanco(factura.IdMovBanco, intIdUsuario, "Anulación de registro de factura " + factura.ConsecFactura, dbContext);
                     }
-                    if (decSaldoAFavorDelCliente > 0)
+                    if (factura.IdAsiento > 0)
                     {
-                        notaCredito = new NotaCreditoCliente
-                        {
-                            IdEmpresa = factura.IdEmpresa,
-                            IdSucursal = factura.IdSucursal,
-                            IdCliente = factura.IdCliente,
-                            IdUsuario = factura.IdUsuario,
-                            Fecha = Validador.ObtenerFechaHoraCostaRica(),
-                            Detalle = "Nota de crédito por anulación de factura: " + factura.ConsecFactura,
-                            Referencia = factura.ConsecFactura,
-                            MontoOriginal = decSaldoAFavorDelCliente,
-                            Saldo = decSaldoAFavorDelCliente,
-                            Nulo = false
-                        };
-                        dbContext.NotaCreditoClienteRepository.Add(notaCredito);
+                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
+                        servicioContabilidad.ReversarAsientoContable(factura.IdAsiento, dbContext);
                     }
                     DocumentoElectronico documentoNC = null;
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
@@ -2164,6 +2112,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Factura factura = dbContext.FacturaRepository.Include("DetalleFactura").FirstOrDefault(x => x.IdFactura == devolucion.IdFactura);
                     if (factura == null) throw new BusinessException("La factura asignada a la devolución no existe!");
                     if (factura.Nulo) throw new BusinessException("La factura asingada a la devolución ya ha sido anulada.");
+                    if (!factura.Procesado) throw new BusinessException("La factura asingada a la devolución no ha sido procesada por el cierre y puede ser anulada.");
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == devolucion.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.TipoContrato < StaticTipoContrato.PlanEmpresarial2) throw new BusinessException("El plan de servicios contratado no permite registrar la transacción. Por favor consulte con su proveedor del servicio.");
