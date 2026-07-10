@@ -6,6 +6,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
     public partial class NotaCreditoCliente
     {
         public int IdEmpresa { get; set; }
+        public int IdSucursal { get; set; }
         public int IdCliente { get; set; }
         public int IdNotaCredito { get; set; }
         public int IdUsuario { get; set; }
@@ -16,6 +17,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public decimal Saldo { get; set; }
         public bool Nulo { get; set; }
         public int? IdAnuladoPor { get; set; }
+        public bool Procesado { get; set; }
         public Cliente Cliente { get; set; }
         public List<MovimientoNotaCreditoCliente> MovimientoNotaCreditoCliente { get; set; }
         

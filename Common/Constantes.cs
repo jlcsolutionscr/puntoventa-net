@@ -2,6 +2,20 @@
 
 namespace LeandroSoftware.Common.Constantes
 {
+
+    public static class StaticTipoContrato
+    {
+        public static readonly int Plan24Documentos = 1;
+        public static readonly int Plan60Documentos = 2;
+        public static readonly int Plan150Documentos = 3;
+        public static readonly int PlanPYMES = 4;
+        public static readonly int PlanEmpresarial1 = 5;
+        public static readonly int PlanEmpresarial2 = 6;
+        public static readonly int PlanEmpresarial3 = 7;
+        public static readonly int PlanEmpresarial4 = 8;
+        public static readonly int PlanEmpresarialPro = 9;
+    };
+
     public static class StaticModalidadEmpresa
     {
         public static readonly short Puntoventa = 1;

@@ -635,14 +635,14 @@ namespace LeandroSoftware.ServicioWeb.Utilitario
             lineaPos += 12;
             gfx.DrawString("Fecha emisión: " + notaCredito.Fecha.ToString("dd/MM/yyyy hh:mm:ss tt"), font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 12;
-            gfx.DrawString("REFERENCIA", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            gfx.DrawString("Monto total: " + notaCredito.MontoOriginal.ToString("N2", CultureInfo.InvariantCulture), font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
+            lineaPos += 12;
+            gfx.DrawString("Detalle", font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             for (int intPos = 0; intPos < lineasDetalle.Count; intPos++)
             {
                 lineaPos += 12;
                 gfx.DrawString(lineasDetalle[intPos], font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             }
-            lineaPos += 12;
-            gfx.DrawString("Monto total: " + notaCredito.MontoOriginal.ToString("N2", CultureInfo.InvariantCulture), font, XBrushes.Black, new XRect(0, lineaPos, pageWidth, 12), XStringFormats.Center);
             lineaPos += 24;
             font = new XFont("Arial", 8, XFontStyle.BoldItalic, options);
             tf.DrawString("Powered by", font, XBrushes.Black, new XRect(1, lineaPos + 13, pageWidth - 100, 12), XStringFormats.TopLeft);

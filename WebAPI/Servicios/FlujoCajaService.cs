@@ -5,6 +5,7 @@ using LeandroSoftware.Common.DatosComunes;
 using LeandroSoftware.Common.Parametros;
 using LeandroSoftware.Common.Dominio.Entidades;
 using LeandroSoftware.ServicioWeb.Contexto;
+using LeandroSoftware.ServicioWeb.Utilitario;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LeandroSoftware.ServicioWeb.Servicios
@@ -209,6 +210,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(ingreso.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.TipoContrato < StaticTipoContrato.PlanEmpresarial2) throw new BusinessException("El plan de servicios contratado no permite registrar la transacción. Por favor consulte con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == ingreso.IdEmpresa && x.IdSucursal == ingreso.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
@@ -221,6 +223,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     CuentaIngreso cuentaIngreso = dbContext.CuentaIngresoRepository.Find(ingreso.IdCuenta);
                     if (cuentaIngreso == null)
                         throw new BusinessException("La cuenta de ingreso asignada al registro no existe");
+                    ingreso.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     ingreso.IdAsiento = 0;
                     ingreso.IdMovBanco = 0;
                     dbContext.IngresoRepository.Add(ingreso);
@@ -555,6 +558,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(egreso.IdEmpresa); ;
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.TipoContrato < StaticTipoContrato.PlanEmpresarial2) throw new BusinessException("El plan de servicios contratado no permite registrar la transacción. Por favor consulte con su proveedor del servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == egreso.IdEmpresa && x.IdSucursal == egreso.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
@@ -567,6 +571,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     CuentaEgreso cuentaEgreso = dbContext.CuentaEgresoRepository.Find(egreso.IdCuenta);
                     if (cuentaEgreso == null)
                         throw new BusinessException("La cuenta de egreso asignada al registro no existe");
+                    egreso.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     egreso.IdAsiento = 0;
                     egreso.IdMovBanco = 0;
                     dbContext.EgresoRepository.Add(egreso);
@@ -809,6 +814,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.ComisionTarjeta = 0;
                     cierre.VentasCredito = 0;
                     cierre.ComprasCredito = 0;
+                    cierre.NotasCreditoCliente = 0;
                     cierre.EfectivoCierreSiguiente = 0;
                     cierre.RetiroEfectivo = 0;
                     cierre.LiquidacionTarjeta = 0;
@@ -1268,6 +1274,24 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             });
                         }
                     }
+
+                    List<NotaCreditoCliente> notasCredito = dbContext.NotaCreditoClienteRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    if (notasCredito.Count > 0)
+                    {
+                        foreach (var dato in notasCredito)
+                        {
+                            cierre.NotasCreditoCliente += dato.MontoOriginal;
+                            listaMovimientos.Add(new DetalleMovimientoCierreCaja
+                            {
+                                IdReferencia = dato.IdNotaCredito,
+                                Tipo = 21,
+                                Fecha = dato.Fecha,
+                                Descripcion = "Nota de crédito nro.: " + dato.IdNotaCredito,
+                                Total = dato.MontoOriginal
+                            });
+                        }
+                    }
+
                     cierre.DetalleMovimientoCierreCaja = listaMovimientos;
                     cierre.RetiroEfectivo = cierre.FondoInicio + cierre.EfectivoCierreAnterior + cierre.VentasEfectivo + cierre.AdelantosApartadoEfectivo + cierre.AdelantosOrdenEfectivo + cierre.PagosCxCEfectivo + cierre.IngresosEfectivo - cierre.ComprasEfectivo - cierre.PagosCxPEfectivo - cierre.EgresosEfectivo - cierre.FondoCierre;
                     return cierre;
