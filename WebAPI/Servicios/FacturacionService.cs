@@ -336,6 +336,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
                 if (factura.Fecha.ToShortDateString() != Validador.ObtenerFechaHoraCostaRica().ToShortDateString()) throw new BusinessException("La fecha del registro de factura (" + factura.Fecha.ToShortDateString() + ") no coincide con la fecha del servidor (" + Validador.ObtenerFechaHoraCostaRica().ToShortDateString() + "). Por favor verifique la información");
+                if (factura.Total == 0) throw new BusinessException("El monto de la factura no puede ser 0. Por favor, verifique la información!");
                 decimal decTotalCostoVentas = 0;
                 ParametroContable ingresosVentasParam = null;
                 ParametroContable costoVentasParam = null;
