@@ -836,6 +836,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 decimal decSaldoAbonoCxCCliente = 0;
                 decimal decSaldoAFavorDelCliente = 0;
                 Asiento asiento = null;
+                NotaCreditoCliente notaCredito = null;
                 ParametroContable notaCreditoClientesParam = null;
                 ParametroContable ivaDevengadoParam = null;
                 ParametroContable costoVentasParam = null;
@@ -852,7 +853,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (factura.Nulo) throw new BusinessException("La factura ya ha sido anulada.");
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (factura.Procesado && empresa.TipoContrato >= 6) throw new BusinessException("La factura ya fue procesada por el cierre y no puede ser anulada.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
@@ -925,27 +925,100 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                 }
                             }
                         }
-                    }
-                    if (factura.IdCxC > 0)
-                    {
-                        CuentaPorCobrar cuentaPorCobrar = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
-                        if (cuentaPorCobrar == null)
-                            throw new BusinessException("La cuenta por cobrar correspondiente a la factura no existe.");
-                        if (cuentaPorCobrar.Total > cuentaPorCobrar.Saldo)
-                            throw new BusinessException("El registro de facturación posee una cuenta por cobrar asociada con abonos procesados. No puede ser reversada.");
-                        cuentaPorCobrar.Nulo = true;
-                        cuentaPorCobrar.IdAnuladoPor = intIdUsuario;
-                        dbContext.NotificarModificacion(cuentaPorCobrar);
-                    }
-                    if (factura.IdMovBanco > 0)
-                    {
-                        IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
-                        servicioAuxiliarBancario.AnularMovimientoBanco(factura.IdMovBanco, intIdUsuario, "Anulación de registro de factura " + factura.ConsecFactura, dbContext);
-                    }
-                    if (factura.IdAsiento > 0)
-                    {
-                        IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
-                        servicioContabilidad.ReversarAsientoContable(factura.IdAsiento, dbContext);
+                        if (!factura.Procesado)
+                        {
+                            if (factura.IdCxC > 0)
+                            {
+                                CuentaPorCobrar cuentaPorCobrar = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
+                                if (cuentaPorCobrar == null)
+                                    throw new BusinessException("La cuenta por cobrar correspondiente a la factura no existe.");
+                                if (cuentaPorCobrar.Total > cuentaPorCobrar.Saldo)
+                                    throw new BusinessException("El registro de facturación posee una cuenta por cobrar asociada con abonos procesados. No puede ser reversada.");
+                                cuentaPorCobrar.Nulo = true;
+                                cuentaPorCobrar.IdAnuladoPor = intIdUsuario;
+                                dbContext.NotificarModificacion(cuentaPorCobrar);
+                            }
+                            if (factura.IdMovBanco > 0)
+                            {
+                                IBancaService servicioAuxiliarBancario = new BancaService(_logger, _config);
+                                servicioAuxiliarBancario.AnularMovimientoBanco(factura.IdMovBanco, intIdUsuario, "Anulación de registro de factura " + factura.ConsecFactura, dbContext);
+                            }
+                            if (factura.IdAsiento > 0)
+                            {
+                                IContabilidadService servicioContabilidad = new ContabilidadService(_logger, _config);
+                                servicioContabilidad.ReversarAsientoContable(factura.IdAsiento, dbContext);
+                            }
+                        }
+                        else
+                        {
+                            if (factura.IdCxC > 0)
+                            {
+                                BancoAdquiriente cuentaBanco = dbContext.BancoAdquirienteRepository.FirstOrDefault(x => x.IdEmpresa == devolucion.IdEmpresa);
+                                if (cuentaBanco == null) throw new BusinessException("La empresa no posee ningun banco adquiriente parametrizado");
+                                CuentaPorCobrar cxc = dbContext.CuentaPorCobrarRepository.Find(factura.IdCxC);
+                                if (cxc == null) throw new BusinessException("La cuenta por cobrar asignada a la factura de la devolución no existe");
+                                decSaldoAbonoCxCCliente = devolucion.Total;
+                                if (cxc.Saldo < devolucion.Total)
+                                {
+                                    decSaldoAbonoCxCCliente = cxc.Saldo;
+                                    decSaldoAFavorDelCliente = devolucion.Total - decSaldoAbonoCxCCliente;
+                                }
+                                MovimientoCuentaPorCobrar mov = new MovimientoCuentaPorCobrar
+                                {
+                                    IdEmpresa = devolucion.IdEmpresa,
+                                    IdUsuario = devolucion.IdUsuario,
+                                    IdSucursal = devolucion.IdSucursal,
+                                    Observaciones = "Abono por devolución de mercancía nro." + devolucion.IdDevolucion,
+                                    Fecha = devolucion.Fecha
+                                };
+                                DetalleMovimientoCuentaPorCobrar detalleMov = new DetalleMovimientoCuentaPorCobrar
+                                {
+                                    IdCxC = factura.IdCxC,
+                                    Monto = decSaldoAbonoCxCCliente,
+                                    SaldoActual = cxc.Saldo,
+                                };
+                                DesglosePagoMovimientoCuentaPorCobrar desglosePagoMovimiento = new DesglosePagoMovimientoCuentaPorCobrar
+                                {
+                                    IdFormaPago = StaticFormaPago.TransferenciaDepositoBancario,
+                                    IdReferencia = cuentaBanco.IdBanco,
+                                    TipoTarjeta = "",
+                                    NroMovimiento = "",
+                                    MontoLocal = decSaldoAbonoCxCCliente,
+                                };
+                                mov.DetalleMovimientoCuentaPorCobrar = new List<DetalleMovimientoCuentaPorCobrar>
+                                {
+                                    detalleMov
+                                };
+                                mov.DesglosePagoMovimientoCuentaPorCobrar = new List<DesglosePagoMovimientoCuentaPorCobrar>
+                                {
+                                    desglosePagoMovimiento
+                                };
+                                dbContext.MovimientoCuentaPorCobrarRepository.Add(mov);
+                                cxc.Saldo -= decSaldoAbonoCxCCliente;
+                                dbContext.NotificarModificacion(cxc);
+                            }
+                            else
+                            {
+                                decSaldoAFavorDelCliente = devolucion.Total;
+                            }
+                            if (decSaldoAFavorDelCliente > 0)
+                            {
+                                notaCredito = new NotaCreditoCliente
+                                {
+                                    IdEmpresa = factura.IdEmpresa,
+                                    IdCliente = factura.IdCliente,
+                                    IdUsuario = factura.IdUsuario,
+                                    Fecha = Validador.ObtenerFechaHoraCostaRica(),
+                                    Detalle = "Nota de crédito por anulación de factura: " + factura.ConsecFactura,
+                                    Referencia = factura.ConsecFactura,
+                                    MontoOriginal = decSaldoAFavorDelCliente,
+                                    Saldo = decSaldoAFavorDelCliente,
+                                    Nulo = false
+                                };
+                                dbContext.NotaCreditoClienteRepository.Add(notaCredito);
+                            }
+                            dbContext.NotaCreditoClienteRepository.Add(notaCredito);
+                        }
                     }
                     DocumentoElectronico documentoNC = null;
                     if (!empresa.RegimenSimplificado && factura.IdDocElectronico != null)
@@ -1047,10 +1120,17 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         servicioContabilidad.AgregarAsiento(asiento, dbContext);
                     }
                     dbContext.Commit();
+                    if (notaCredito != null)
+                    {
+                        factura.IdNotaCredito = notaCredito.IdNotaCredito;
+                        dbContext.NotificarModificacion(factura);
+                        dbContext.Commit();
+                    }
                     if (documentoNC != null)
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC));
                     }
+                    if (notaCredito != null) return notaCredito.IdNotaCredito.ToString();
                     return "";
                 }
                 catch (BusinessException)
@@ -2341,23 +2421,19 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         servicioContabilidad.AgregarAsiento(asiento, dbContext);
                     }
                     dbContext.Commit();
-                    if (notaCredito != null)
-                    {
-                        devolucion.IdNotaCredito = notaCredito.IdNotaCredito;
-                    }
-                    if (mov != null)
-                    {
-                        devolucion.IdMovimientoCxC = mov.IdMovCxC;
-                        dbContext.NotificarModificacion(devolucion);
-                    }
+                    if (notaCredito != null) devolucion.IdNotaCredito = notaCredito.IdNotaCredito;
+                    if (mov != null) devolucion.IdMovimientoCxC = mov.IdMovCxC;
                     if (asiento != null)
                     {
                         devolucion.IdAsiento = asiento.IdAsiento;
-                        dbContext.NotificarModificacion(devolucion);
                         asiento.Detalle += devolucion.IdDevolucion;
                         dbContext.NotificarModificacion(asiento);
                     }
-                    if (mov != null || asiento != null || notaCredito != null) dbContext.Commit();
+                    if (mov != null || asiento != null || notaCredito != null)
+                    {
+                        dbContext.NotificarModificacion(devolucion);
+                        dbContext.Commit();
+                    }
                     if (documentoNC != null)
                     {
                         Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoNC));
