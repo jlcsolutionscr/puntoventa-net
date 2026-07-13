@@ -1131,6 +1131,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
                     if (usuario.CodigoUsuario == "ADMIN" || usuario.CodigoUsuario == "CONTADOR") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
                     if (usuario.IdEmpresa == null || usuario.IdSucursal == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (usuario.CodigoPIN > 0 && usuario.CodigoPIN > 9999) throw new BusinessException("El código PIN del usuario no puede contener más de 4 dígitos. Por favor, verifique la información suministrada!");
                     Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     Usuario usuarioExistente = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == empresa.IdEmpresa && x.CodigoUsuario.Contains(usuario.CodigoUsuario.ToUpper()));
@@ -1163,6 +1164,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     usuario.CodigoUsuario = usuario.CodigoUsuario.ToUpper();
                     if (usuario.CodigoUsuario == "ADMIN" || usuario.CodigoUsuario == "CONTADOR") throw new BusinessException("El código de usuario ingresado no se encuentra disponible. Por favor modifique la información suministrada.");
                     if (usuario.IdEmpresa == null || usuario.IdSucursal == null) throw new BusinessException("El usuario por modificar debe estar vinculado a la empresa actual. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (usuario.CodigoPIN > 0 && usuario.CodigoPIN > 9999) throw new BusinessException("El código PIN del usuario no puede contener más de 4 dígitos. Por favor, verifique la información suministrada!");
                     Empresa empresa = dbContext.EmpresaRepository.Find(usuario.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     List<RolePorUsuario> listadoDetalleAnterior = dbContext.RolePorUsuarioRepository.Where(x => x.IdUsuario == usuario.IdUsuario).ToList();
