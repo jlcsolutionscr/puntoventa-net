@@ -1712,7 +1712,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.AsNoTracking().FirstOrDefault(x => x.IdEmpresa == producto.IdEmpresa);
                     if (empresa == null) throw new BusinessException("La Empresa asignada al producto no está registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (producto.Codigo == StaticParametrosGenerales.CodigoProductoTransitorio)
-                        throw new BusinessException("El código ingresado es un código reservado para el sistema y no puede ser utilizado.");
+                        if (producto.IdUsuario > 1)
+                            throw new BusinessException("El código ingresado es un código reservado para el sistema y no puede ser utilizado.");
                     if (!empresa.RegimenSimplificado && producto.CodigoClasificacion.Length < 13) throw new BusinessException("El código CABYS debe tener una longitud mínima de 13 caracteres.");
                     dbContext.NotificarModificacion(producto);
                     dbContext.Commit();
