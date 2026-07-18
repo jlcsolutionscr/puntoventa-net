@@ -13,7 +13,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdSucursal { get; set; }
         public string CorreoNotificacion { get; set; }
         public bool CorreoVerificado { get; set; }
-        public int CodigoPIN { get; set; }
+        public string CodigoPIN { get; set; }
         public string Token;
 
         public List<RolePorUsuario> RolePorUsuario { get; set; }
