@@ -1075,13 +1075,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             {
                 try
                 {
-                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
+                    Factura factura = dbContext.FacturaRepository.Include("Cliente").Include("Vendedor").Include("DetalleFactura.Producto").Include("DesglosePagoFactura").FirstOrDefault(x => x.IdFactura == intIdFactura);
                     if (factura == null) throw new BusinessException("La registro de la factura no existe!");
-                    foreach (DetalleFactura detalleFactura in factura.DetalleFactura)
-                    {
-                        Producto producto = dbContext.ProductoRepository.Include("Linea").FirstOrDefault(x => x.IdProducto == detalleFactura.IdProducto);
-                        if (producto != null) detalleFactura.Producto = producto;
-                    }
+                    foreach (DetalleFactura detalle in factura.DetalleFactura)
+                        detalle.Producto.Imagen = new byte[0];
                     foreach (DesglosePagoFactura desglosePago in factura.DesglosePagoFactura)
                     {
                         if (!new int[] { StaticFormaPago.Efectivo, StaticFormaPago.NotaCredito }.Contains(desglosePago.IdFormaPago))
@@ -1314,7 +1311,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     Proforma proforma = dbContext.ProformaRepository.Include("Cliente").Include("Vendedor").Include("DetalleProforma.Producto").FirstOrDefault(x => x.IdProforma == intIdProforma);
                     foreach (DetalleProforma detalle in proforma.DetalleProforma)
+                    {
+                        detalle.Producto.Imagen = new byte[0];
                         detalle.Codigo = detalle.Producto.Codigo;
+                    }
                     return proforma;
                 }
                 catch (Exception ex)
@@ -1495,6 +1495,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Apartado apartado = dbContext.ApartadoRepository.Include("Cliente").Include("Vendedor").Include("DetalleApartado.Producto").Include("DesglosePagoApartado").FirstOrDefault(x => x.IdApartado == intIdApartado);
+                    foreach (DetalleApartado detalle in apartado.DetalleApartado)
+                        detalle.Producto.Imagen = new byte[0];
                     foreach (DesglosePagoApartado desglosePago in apartado.DesglosePagoApartado)
                     {
                         if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
@@ -1906,7 +1908,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Include("Cliente").Include("Vendedor").Include("DetalleOrdenServicio.Producto").Include("DesglosePagoOrdenServicio").FirstOrDefault(x => x.IdOrden == intIdOrdenServicio);
                     foreach (DetalleOrdenServicio detalle in ordenServicio.DetalleOrdenServicio)
+                    {
+                        detalle.Producto.Imagen = new byte[0];
                         detalle.Codigo = detalle.Producto.Codigo;
+                    }
                     foreach (DesglosePagoOrdenServicio desglosePago in ordenServicio.DesglosePagoOrdenServicio)
                     {
                         if (desglosePago.IdFormaPago != StaticFormaPago.Efectivo)
