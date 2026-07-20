@@ -31,7 +31,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static CuentaEgreso? cuentaEgreso;
         private static CuentaIngreso? cuentaIngreso;
         private static CuentaBanco? cuentaBanco;
-        private static Vendedor? vendedor;
         private static Egreso? egreso;
         private static Ingreso? ingreso;
         private static Factura? factura;
@@ -805,25 +804,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     IList<EfectivoDetalle> listadoMovimientos = _servicioBanca.ObtenerListadoMovimientos(intIdEmpresa, intIdSucursal, intNumeroPagina, intFilasPorPagina, strDescripcion, strFechaFinal);
                     if (listadoMovimientos.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoMovimientos);
-                    break;
-                case "ObtenerListadoVendedores":
-                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                    strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
-                    IList<LlaveDescripcion> listadoVendedores = _servicioMantenimiento.ObtenerListadoVendedores(intIdEmpresa, strNombre);
-                    if (listadoVendedores.Count > 0)
-                        strRespuesta = JsonConvert.SerializeObject(listadoVendedores);
-                    break;
-                case "ObtenerVendedor":
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdVendedor").Value.ToString());
-                    vendedor = _servicioMantenimiento.ObtenerVendedor(intIdLlave1);
-                    if (vendedor != null)
-                        strRespuesta = JsonConvert.SerializeObject(vendedor);
-                    break;
-                case "ObtenerVendedorPorDefecto":
-                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
-                    vendedor = _servicioMantenimiento.ObtenerVendedorPorDefecto(intIdEmpresa);
-                    if (vendedor != null)
-                        strRespuesta = JsonConvert.SerializeObject(vendedor);
                     break;
                 case "ObtenerTotalListaEgresos":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());

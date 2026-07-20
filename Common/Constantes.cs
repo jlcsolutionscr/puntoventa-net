@@ -50,7 +50,6 @@ namespace LeandroSoftware.Common.Constantes
     public static class StaticValoresPorDefecto
     {
         public static readonly short ClienteContado = 1;
-        public static readonly short CodigoVendedor = 1;
         public static readonly int MonedaDelSistema = 1;
         public static readonly int TasaImpuesto = 8;
         public static readonly int TipoExoneracion = 1;

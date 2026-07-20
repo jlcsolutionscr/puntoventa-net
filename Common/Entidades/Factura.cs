@@ -55,7 +55,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool CerrarOrdenServicio{ get; set; }
 
         public Cliente Cliente { get; set; }
-        public Vendedor Vendedor { get; set; }
         public List<DetalleFactura> DetalleFactura { get; set; }
         public List<DesglosePagoFactura> DesglosePagoFactura { get; set; }
     }

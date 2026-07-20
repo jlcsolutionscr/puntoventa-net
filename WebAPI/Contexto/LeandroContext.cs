@@ -100,7 +100,6 @@ namespace LeandroSoftware.ServicioWeb.Contexto
         public DbSet<TiqueteDespachoMercancia> TiqueteDespachoMercanciaRepository { get; set; }
         public DbSet<Traslado> TrasladoRepository { get; set; }
         public DbSet<Usuario> UsuarioRepository { get; set; }
-        public DbSet<Vendedor> VendedorRepository { get; set; }
 
         public void NotificarModificacion<TEntity>(TEntity entidad) where TEntity : class
         {

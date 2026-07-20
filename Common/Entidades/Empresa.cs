@@ -27,7 +27,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool RegimenSimplificado { get; set; }
         public bool PermiteFacturar { get; set; }
         public bool RecepcionGastos { get; set; }
-        public bool AsignaVendedorPorDefecto { get; set; }
         public bool IngresaPagoCliente { get; set; }
         public bool PrecioVentaIncluyeIVA { get; set; }
         public bool ImprimeTiqueteDespachoMercancia { get; set; }

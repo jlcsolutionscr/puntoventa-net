@@ -31,7 +31,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool Aplicado { get; set; }
 
         public Cliente Cliente { get; set; }
-        public Vendedor Vendedor { get; set; }
         public List<DetalleProforma> DetalleProforma { get; set; }
     }
 }

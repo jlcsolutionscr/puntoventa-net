@@ -392,15 +392,16 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteVentasPorVendedor> listaReporte = new List<ReporteVentasPorVendedor>();
-                    var detalleVentas = dbContext.FacturaRepository.Include("Vendedor").Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == false)
-                        .Select(x => new { x.IdVendedor, x.Vendedor.Nombre, x.Nulo, x.ConsecFactura, x.Fecha, NombreCliente = x.Cliente.Nombre, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto, x.TotalCosto, x.Impuesto });
+                    var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == false)
+                        .Select(x => new { x.IdVendedor, x.Nulo, x.ConsecFactura, x.Fecha, NombreCliente = x.Cliente.Nombre, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto, x.TotalCosto, x.Impuesto });
                     if (intIdVendedor > 0)
                         detalleVentas = detalleVentas.Where(x => x.IdVendedor == intIdVendedor);
                     foreach (var value in detalleVentas)
                     {
+                        Usuario vendedor = dbContext.UsuarioRepository.Find(value.IdVendedor);
                         ReporteVentasPorVendedor reporteLinea = new ReporteVentasPorVendedor
                         {
-                            NombreVendedor = value.Nombre,
+                            NombreVendedor = vendedor.CodigoUsuario,
                             IdFactura = value.ConsecFactura,
                             Fecha = value.Fecha.ToString("dd/MM/yyyy"),
                             NombreCliente = value.NombreCliente,

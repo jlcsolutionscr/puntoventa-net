@@ -33,7 +33,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static CuentaEgreso? cuentaEgreso;
         private static CuentaIngreso? cuentaIngreso;
         private static CuentaBanco? cuentaBanco;
-        private static Vendedor? vendedor;
         private static Proforma? proforma;
         private static OrdenServicio? ordenServicio;
         private static MovimientoApartado? movimientoApartado;
@@ -292,18 +291,6 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                 case "EliminarCuentaBanco":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdReferencia").Value.ToString());
                     _servicioBanca.EliminarCuentaBanco(intIdLlave1);
-                    break;
-                case "AgregarVendedor":
-                    vendedor = JsonConvert.DeserializeObject<Vendedor>(strEntidad);
-                    _servicioMantenimiento.AgregarVendedor(vendedor);
-                    break;
-                case "ActualizarVendedor":
-                    vendedor = JsonConvert.DeserializeObject<Vendedor>(strEntidad);
-                    _servicioMantenimiento.ActualizarVendedor(vendedor);
-                    break;
-                case "EliminarVendedor":
-                    intIdLlave1 = int.Parse(parametrosJO.Property("IdVendedor").Value.ToString());
-                    _servicioMantenimiento.EliminarVendedor(intIdLlave1);
                     break;
                 case "AnularEgreso":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdEgreso").Value.ToString());

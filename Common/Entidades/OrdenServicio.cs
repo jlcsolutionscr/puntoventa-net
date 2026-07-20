@@ -35,7 +35,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public bool Aplicado { get; set; }
         public bool Procesado { get; set; }
         public Cliente Cliente { get; set; }
-        public Vendedor Vendedor { get; set; }
         public List<DetalleOrdenServicio> DetalleOrdenServicio { get; set; }
         public List<DesglosePagoOrdenServicio> DesglosePagoOrdenServicio { get; set; }
         public int IdPuntoDeServicio { get; set; }

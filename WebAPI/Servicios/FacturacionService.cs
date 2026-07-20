@@ -1324,7 +1324,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.TipoContrato < StaticTipoContrato.PlanPYMES) throw new BusinessException("El plan de servicios contratado no permite actualizar proformas. Por favor consulte con su proveedor del servicio.");
                     Proforma ordenNoTracking = dbContext.ProformaRepository.AsNoTracking().Where(x => x.IdProforma == proforma.IdProforma).FirstOrDefault();
                     if (ordenNoTracking != null && ordenNoTracking.Aplicado) throw new BusinessException("La proforma no puede ser modificada porque ya fue facturada.");
-                    proforma.Vendedor = null;
                     List<DetalleProforma> listadoDetalleAnterior = dbContext.DetalleProformaRepository.Where(x => x.IdProforma == proforma.IdProforma).ToList();
                     List<DetalleProforma> listadoDetalle = proforma.DetalleProforma.ToList();
                     proforma.DetalleProforma = null;
@@ -1755,7 +1754,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (empresa.TipoContrato < StaticTipoContrato.PlanEmpresarial1) throw new BusinessException("El plan de servicios contratado no permite actualizar órdenes de servicio. Por favor consulte con su proveedor del servicio.");
                     OrdenServicio ordenNoTracking = dbContext.OrdenServicioRepository.AsNoTracking().Where(x => x.IdOrden == ordenServicio.IdOrden).FirstOrDefault();
                     if (ordenNoTracking != null && ordenNoTracking.Aplicado) throw new BusinessException("La orden de servicio no puede ser modificada porque ya fue facturada.");
-                    ordenServicio.Vendedor = null;
                     if (ordenServicio.MontoAdelanto != ordenNoTracking.MontoAdelanto) ordenServicio.MontoAdelanto = ordenNoTracking.MontoAdelanto;
                     List<DetalleOrdenServicio> listadoDetalleAnterior = dbContext.DetalleOrdenServicioRepository.Where(x => x.IdOrden == ordenServicio.IdOrden).ToList();
                     List<DetalleOrdenServicio> listadoDetalle = ordenServicio.DetalleOrdenServicio.ToList();
