@@ -58,6 +58,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         Usuario ActualizarClaveUsuario(int intIdUsuario, string strClave);
         void EliminarUsuario(int intIdUsuario);
         Usuario ObtenerUsuario(int intIdUsuario);
+        Usuario ObtenerUsuarioPorPIN(int intIdEmpresa, string strCodigoPIN);
         IList<LlaveDescripcion> ObtenerListadoUsuarios(int intIdEmpresa, string strCodigo);
         // Métodos para administrar los vendedores del sistema
         void AgregarVendedor(Vendedor vendedor);
@@ -1265,6 +1266,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Usuario usuario = dbContext.UsuarioRepository.Include("RolePorUsuario.Role").FirstOrDefault(x => x.IdUsuario == intIdUsuario);
                     if (usuario == null)
                         throw new BusinessException("El usuario por consultar no existe");
+                    return usuario;
+                }
+                catch (BusinessException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    if (_logger != null) _logger.LogError("Error al obtener el usuario: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error consultando la información del usuario. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
+        public Usuario ObtenerUsuarioPorPIN(int intIdEmpresa, string strCodigoPIN)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    Usuario usuario = dbContext.UsuarioRepository.FirstOrDefault(x => x.IdEmpresa == intIdEmpresa & x.CodigoPIN == strCodigoPIN);
+                    if (usuario == null)
+                        throw new BusinessException("El usuario para el codigoPIN suministrado no existe!");
                     return usuario;
                 }
                 catch (BusinessException)

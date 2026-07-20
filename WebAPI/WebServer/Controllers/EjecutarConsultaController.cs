@@ -723,6 +723,13 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     if (usuario != null)
                         strRespuesta = JsonConvert.SerializeObject(usuario);
                     break;
+                case "ObtenerUsuarioPorPIN":
+                    intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
+                    strCodigo = parametrosJO.Property("CodigoPIN").Value.ToString();
+                    usuario = _servicioMantenimiento.ObtenerUsuarioPorPIN(intIdEmpresa, strCodigo);
+                    if (usuario != null)
+                        strRespuesta = JsonConvert.SerializeObject(usuario);
+                    break;
                 case "ActualizarClaveUsuario":
                     intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                     strClave = parametrosJO.Property("Clave").Value.ToString();
