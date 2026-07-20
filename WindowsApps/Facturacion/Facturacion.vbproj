@@ -177,6 +177,12 @@
     <Compile Include="Formas\FrmAplicaAbonoApartado.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Formas\FrmCodigoPIN.Designer.vb">
+      <DependentUpon>FrmCodigoPIN.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\FrmCodigoPIN.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Formas\FrmListadoTiqueteOrdenServicio.Designer.vb">
       <DependentUpon>FrmListadoTiqueteOrdenServicio.vb</DependentUpon>
     </Compile>
@@ -253,12 +259,6 @@
       <DependentUpon>FrmCierreDeCajaListado.vb</DependentUpon>
     </Compile>
     <Compile Include="Formas\FrmCierreDeCajaListado.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmBusquedaVendedor.Designer.vb">
-      <DependentUpon>FrmBusquedaVendedor.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmBusquedaVendedor.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formas\FrmAjusteInventario.Designer.vb">
@@ -555,18 +555,6 @@
     <Compile Include="Formas\FrmBusquedaCliente.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formas\FrmVendedor.Designer.vb">
-      <DependentUpon>FrmVendedor.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmVendedor.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Formas\FrmVendedorListado.Designer.vb">
-      <DependentUpon>FrmVendedorListado.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Formas\FrmVendedorListado.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Formas\FrmUsuarioListado.Designer.vb">
       <DependentUpon>FrmUsuarioListado.vb</DependentUpon>
     </Compile>
@@ -798,6 +786,9 @@
     <EmbeddedResource Include="Formas\FrmAplicaAbonoApartado.resx">
       <DependentUpon>FrmAplicaAbonoApartado.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Formas\FrmCodigoPIN.resx">
+      <DependentUpon>FrmCodigoPIN.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmListadoTiqueteOrdenServicio.resX">
       <DependentUpon>FrmListadoTiqueteOrdenServicio.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -844,10 +835,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmCierreDeCajaListado.resX">
       <DependentUpon>FrmCierreDeCajaListado.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmBusquedaVendedor.resX">
-      <DependentUpon>FrmBusquedaVendedor.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmAjusteInventario.resx">
@@ -1021,12 +1008,6 @@
     <EmbeddedResource Include="Formas\FrmBusquedaCliente.resX">
       <DependentUpon>FrmBusquedaCliente.vb</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmVendedor.resx">
-      <DependentUpon>FrmVendedor.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Formas\FrmVendedorListado.resx">
-      <DependentUpon>FrmVendedorListado.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\FrmUsuarioListado.resx">
       <DependentUpon>FrmUsuarioListado.vb</DependentUpon>

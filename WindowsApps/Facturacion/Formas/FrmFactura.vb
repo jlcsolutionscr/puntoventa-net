@@ -628,7 +628,7 @@ Public Class FrmFactura
         End Try
     End Sub
 
-    Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+    Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdFactura.Text = ""
         txtIdNotaCredito.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
@@ -764,7 +764,7 @@ Public Class FrmFactura
             intUltPaginaBusqueda = FrmPrincipal.intUltPaginaBusqueda
             Try
                 factura = Await Puntoventa.ObtenerFactura(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
-                usuarioVendedor = Await Puntoventa.ObtenerUsuarioPorCodigoPIN(FrmPrincipal.empresaGlobal.IdEmpresa, factura.IdVendedor, FrmPrincipal.usuarioGlobal.Token)
+                usuarioVendedor = Await Puntoventa.ObtenerUsuario(factura.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -1167,7 +1167,7 @@ Public Class FrmFactura
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdTerminal = FrmPrincipal.equipoGlobal.IdTerminal,
-                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .IdUsuario = usuarioVendedor.IdUsuario,
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
@@ -1178,7 +1178,6 @@ Public Class FrmFactura
                 .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .Telefono = txtTelefono.Text,
                 .TextoAdicional = txtObservaciones.Text,
-                .IdVendedor = usuarioVendedor.IdUsuario,
                 .Excento = decExcento,
                 .Gravado = decGravado,
                 .Exonerado = decExonerado,

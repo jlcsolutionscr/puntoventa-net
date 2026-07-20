@@ -30,6 +30,8 @@ Partial Class FrmActualizarClave
         Me.CmdCancelar = New System.Windows.Forms.Button()
         Me.LblClave1 = New System.Windows.Forms.Label()
         Me.LblClave2 = New System.Windows.Forms.Label()
+        Me.txtCodigoPIN = New System.Windows.Forms.TextBox()
+        Me.Label6 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'TxtClave1
@@ -67,7 +69,7 @@ Partial Class FrmActualizarClave
         Me.CmdAceptar.BackColor = System.Drawing.SystemColors.ControlLightLight
         Me.CmdAceptar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdAceptar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdAceptar.Location = New System.Drawing.Point(25, 72)
+        Me.CmdAceptar.Location = New System.Drawing.Point(25, 97)
         Me.CmdAceptar.Name = "CmdAceptar"
         Me.CmdAceptar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdAceptar.Size = New System.Drawing.Size(81, 25)
@@ -82,7 +84,7 @@ Partial Class FrmActualizarClave
         Me.CmdCancelar.Cursor = System.Windows.Forms.Cursors.Default
         Me.CmdCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.CmdCancelar.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.CmdCancelar.Location = New System.Drawing.Point(121, 72)
+        Me.CmdCancelar.Location = New System.Drawing.Point(121, 97)
         Me.CmdCancelar.Name = "CmdCancelar"
         Me.CmdCancelar.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.CmdCancelar.Size = New System.Drawing.Size(81, 25)
@@ -115,6 +117,33 @@ Partial Class FrmActualizarClave
         Me.LblClave2.TabIndex = 4
         Me.LblClave2.Text = "Reingrese clave"
         '
+        'txtCodigoPIN
+        '
+        Me.txtCodigoPIN.AcceptsReturn = True
+        Me.txtCodigoPIN.BackColor = System.Drawing.SystemColors.Window
+        Me.txtCodigoPIN.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtCodigoPIN.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtCodigoPIN.Location = New System.Drawing.Point(112, 66)
+        Me.txtCodigoPIN.MaxLength = 4
+        Me.txtCodigoPIN.Name = "txtCodigoPIN"
+        Me.txtCodigoPIN.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
+        Me.txtCodigoPIN.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtCodigoPIN.Size = New System.Drawing.Size(44, 20)
+        Me.txtCodigoPIN.TabIndex = 63
+        '
+        'Label6
+        '
+        Me.Label6.BackColor = System.Drawing.Color.Transparent
+        Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label6.Location = New System.Drawing.Point(76, 67)
+        Me.Label6.Name = "Label6"
+        Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label6.Size = New System.Drawing.Size(30, 17)
+        Me.Label6.TabIndex = 64
+        Me.Label6.Text = "PIN:"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmActualizarClave
         '
         Me.AcceptButton = Me.CmdAceptar
@@ -122,8 +151,10 @@ Partial Class FrmActualizarClave
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.CancelButton = Me.CmdCancelar
-        Me.ClientSize = New System.Drawing.Size(227, 110)
+        Me.ClientSize = New System.Drawing.Size(227, 136)
         Me.ControlBox = False
+        Me.Controls.Add(Me.txtCodigoPIN)
+        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.TxtClave1)
         Me.Controls.Add(Me.TxtClave2)
         Me.Controls.Add(Me.CmdAceptar)
@@ -132,6 +163,10 @@ Partial Class FrmActualizarClave
         Me.Controls.Add(Me.LblClave2)
         Me.Cursor = System.Windows.Forms.Cursors.Default
         Me.Location = New System.Drawing.Point(4, 23)
+        Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(243, 175)
+        Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(243, 175)
         Me.Name = "FrmActualizarClave"
         Me.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -140,4 +175,7 @@ Partial Class FrmActualizarClave
         Me.PerformLayout()
 
     End Sub
+
+    Public WithEvents txtCodigoPIN As TextBox
+    Public WithEvents Label6 As Label
 End Class

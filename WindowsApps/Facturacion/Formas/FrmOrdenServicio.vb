@@ -531,7 +531,7 @@ Public Class FrmOrdenServicio
         End Try
     End Sub
 
-    Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+    Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdOrdenServicio.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         txtFechaEntrega.Value = Today()
@@ -614,7 +614,7 @@ Public Class FrmOrdenServicio
             intUltPaginaBusqueda = FrmPrincipal.intUltPaginaBusqueda
             Try
                 ordenServicio = Await Puntoventa.ObtenerOrdenServicio(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
-                usuarioVendedor = Await Puntoventa.ObtenerUsuarioPorCodigoPIN(FrmPrincipal.empresaGlobal.IdEmpresa, ordenServicio.IdVendedor, FrmPrincipal.usuarioGlobal.Token)
+                usuarioVendedor = Await Puntoventa.ObtenerUsuario(ordenServicio.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -741,12 +741,11 @@ Public Class FrmOrdenServicio
             ordenServicio = New OrdenServicio With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
-                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .IdUsuario = usuarioVendedor.IdUsuario,
                 .IdModificadoPor = 0,
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
                 .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
-                .IdVendedor = usuarioVendedor.IdUsuario,
                 .Telefono = txtTelefono.Text,
                 .Direccion = txtDireccion.Text,
                 .Descripcion = txtDescripcionOrden.Text,
@@ -801,6 +800,22 @@ Public Class FrmOrdenServicio
             End Try
             MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
+            Dim intIdModificadorPor = FrmPrincipal.usuarioGlobal.IdUsuario
+            If FrmPrincipal.empresaGlobal.HabilitaCodigoPIN Then
+                Dim formCodigoPIN As New FrmCodigoPIN()
+                FrmPrincipal.strBusqueda = ""
+                formCodigoPIN.ShowDialog()
+                If FrmPrincipal.strBusqueda <> "" Then
+                    Try
+                        Dim usuario As Usuario = Await Puntoventa.ObtenerUsuarioPorCodigoPIN(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.strBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                        intIdModificadorPor = usuario.IdUsuario
+                    Catch ex As Exception
+                        MessageBox.Show("El codigo ingresado no pertenece a ningun usuario registrado en la empresa!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                        Exit Sub
+                    End Try
+                End If
+            End If
+            btnGuardar.Enabled = False
             ordenServicio.NombreCliente = txtNombreCliente.Text
             ordenServicio.Telefono = txtTelefono.Text
             ordenServicio.Direccion = txtDireccion.Text
@@ -813,7 +828,7 @@ Public Class FrmOrdenServicio
             ordenServicio.Exonerado = decExonerado
             ordenServicio.Descuento = decDescuento
             ordenServicio.Impuesto = CDbl(txtImpuesto.Text)
-            ordenServicio.IdModificadoPor = FrmPrincipal.usuarioGlobal.IdUsuario
+            ordenServicio.IdModificadoPor = intIdModificadorPor
             ordenServicio.DetalleOrdenServicio.Clear()
             For I As Short = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                 detalleOrdenServicio = New DetalleOrdenServicio

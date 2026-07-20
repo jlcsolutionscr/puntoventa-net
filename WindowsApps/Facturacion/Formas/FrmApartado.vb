@@ -575,7 +575,7 @@ Public Class FrmApartado
             intUltPaginaBusqueda = FrmPrincipal.intUltPaginaBusqueda
             Try
                 apartado = Await Puntoventa.ObtenerApartado(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
-                usuarioVendedor = Await Puntoventa.ObtenerUsuario(apartado.IdVendedor, FrmPrincipal.usuarioGlobal.Token)
+                usuarioVendedor = Await Puntoventa.ObtenerUsuario(apartado.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -704,13 +704,12 @@ Public Class FrmApartado
             apartado = New Apartado With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
-                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .IdUsuario = usuarioVendedor.IdUsuario,
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
                 .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .Telefono = txtTelefono.Text,
                 .TextoAdicional = txtDocumento.Text,
-                .IdVendedor = usuarioVendedor.IdUsuario,
                 .Excento = decExcento,
                 .Gravado = decGravado,
                 .Exonerado = decExonerado,

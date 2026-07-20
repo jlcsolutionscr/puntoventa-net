@@ -8,7 +8,7 @@
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_App.exe" Value="..\WindowsApps\Facturacion\bin"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_App.exe.config" Value="..\WindowsApps\Facturacion\bin"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_ClienteWCF.dll" Value="..\WindowsApps\ClienteWCF\bin"/>
-    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Common.dll" Value="..\Common\bin\Release\netstandard2.0"/>
+    <ROW Property="AI_PROPPATH_DIR_PERBUILD_Common.dll" Value="..\Common\bin\Debug\netstandard2.0"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_EnvDTE.dll" Value="..\..\..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.Common.dll" Value="..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1484.0\lib\net40"/>
     <ROW Property="AI_PROPPATH_DIR_PERBUILD_Microsoft.ReportViewer.DataVisualization.dll" Value="..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1484.0\lib\net40"/>

@@ -442,7 +442,7 @@ Public Class FrmProforma
             intUltPaginaBusqueda = FrmPrincipal.intUltPaginaBusqueda
             Try
                 proforma = Await Puntoventa.ObtenerProforma(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
-                usuarioVendedor = Await Puntoventa.ObtenerUsuarioPorCodigoPIN(FrmPrincipal.empresaGlobal.IdEmpresa, proforma.IdVendedor, FrmPrincipal.usuarioGlobal.Token)
+                usuarioVendedor = Await Puntoventa.ObtenerUsuario(proforma.IdUsuario, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -520,7 +520,6 @@ Public Class FrmProforma
             Exit Sub
         End If
         btnImprimir.Focus()
-        btnGuardar.Enabled = False
         If txtIdProforma.Text = "" Then
             If FrmPrincipal.empresaGlobal.HabilitaCodigoPIN Then
                 Dim formCodigoPIN As New FrmCodigoPIN()
@@ -537,10 +536,11 @@ Public Class FrmProforma
             Else
                 usuarioVendedor = FrmPrincipal.usuarioGlobal
             End If
+            btnGuardar.Enabled = False
             proforma = New Proforma With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = cboSucursal.SelectedValue,
-                .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .IdUsuario = usuarioVendedor.IdUsuario,
                 .IdModificadoPor = 0,
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
@@ -548,7 +548,6 @@ Public Class FrmProforma
                 .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .TextoAdicional = txtTextoAdicional.Text,
                 .Telefono = txtTelefono.Text,
-                .IdVendedor = usuarioVendedor.IdUsuario,
                 .Excento = decExcento,
                 .Gravado = decGravado,
                 .Exonerado = decExonerado,
@@ -584,15 +583,31 @@ Public Class FrmProforma
                 Exit Sub
             End Try
         Else
+            Dim intIdModificadorPor = FrmPrincipal.usuarioGlobal.IdUsuario
+            If FrmPrincipal.empresaGlobal.HabilitaCodigoPIN Then
+                Dim formCodigoPIN As New FrmCodigoPIN()
+                FrmPrincipal.strBusqueda = ""
+                formCodigoPIN.ShowDialog()
+                If FrmPrincipal.strBusqueda <> "" Then
+                    Try
+                        Dim usuario As Usuario = Await Puntoventa.ObtenerUsuarioPorCodigoPIN(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.strBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                        intIdModificadorPor = usuario.IdUsuario
+                    Catch ex As Exception
+                        MessageBox.Show("El codigo ingresado no pertenece a ningun usuario registrado en la empresa!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                        Exit Sub
+                    End Try
+                End If
+            End If
+            btnGuardar.Enabled = False
             proforma.NombreCliente = txtNombreCliente.Text
             proforma.TextoAdicional = txtTextoAdicional.Text
             proforma.Excento = decExcento
             proforma.Gravado = decGravado
             proforma.Descuento = decDescuento
             proforma.Impuesto = CDbl(txtImpuesto.Text)
-            proforma.IdModificadoPor = FrmPrincipal.usuarioGlobal.IdUsuario
+            proforma.IdModificadoPor = intIdModificadorPor
             proforma.DetalleProforma.Clear()
-            For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
+        For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
                 detalleProforma = New DetalleProforma
                 detalleProforma.IdProforma = proforma.IdProforma
                 detalleProforma.IdProducto = dtbDetalleProforma.Rows(I).Item(0)
