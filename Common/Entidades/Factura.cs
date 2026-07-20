@@ -22,7 +22,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public DateTime Fecha { get; set; }
         public string Telefono { get; set; }
         public string TextoAdicional { get; set; }
-        public int IdVendedor { get; set; }
         public int IdTipoExoneracion { get; set; }
         public string NumDocExoneracion { get; set; }
         public string ArticuloExoneracion { get; set; }

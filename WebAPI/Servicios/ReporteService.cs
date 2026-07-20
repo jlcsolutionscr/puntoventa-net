@@ -393,12 +393,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteVentasPorVendedor> listaReporte = new List<ReporteVentasPorVendedor>();
                     var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == false)
-                        .Select(x => new { x.IdVendedor, x.Nulo, x.ConsecFactura, x.Fecha, NombreCliente = x.Cliente.Nombre, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto, x.TotalCosto, x.Impuesto });
+                        .Select(x => new { x.IdUsuario, x.Nulo, x.ConsecFactura, x.Fecha, NombreCliente = x.Cliente.Nombre, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto, x.TotalCosto, x.Impuesto });
                     if (intIdVendedor > 0)
-                        detalleVentas = detalleVentas.Where(x => x.IdVendedor == intIdVendedor);
+                        detalleVentas = detalleVentas.Where(x => x.IdUsuario == intIdVendedor);
                     foreach (var value in detalleVentas)
                     {
-                        Usuario vendedor = dbContext.UsuarioRepository.Find(value.IdVendedor);
+                        Usuario vendedor = dbContext.UsuarioRepository.Find(value.IdUsuario);
                         ReporteVentasPorVendedor reporteLinea = new ReporteVentasPorVendedor
                         {
                             NombreVendedor = vendedor.CodigoUsuario,

@@ -356,7 +356,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 MovimientoBanco movimientoBanco = null;
                 try
                 {
-                    if (factura.IdVendedor == 0) throw new BusinessException("La factura no posee el identificador del vendedor. Por favor verifique la información.");
                     Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");

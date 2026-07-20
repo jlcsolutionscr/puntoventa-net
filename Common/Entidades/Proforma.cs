@@ -16,7 +16,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public DateTime Fecha { get; set; }
         public string TextoAdicional { get; set; }
         public string Telefono { get; set; }
-        public int IdVendedor { get; set; }
         public decimal Excento { get; set; }
         public decimal Gravado { get; set; }
         public decimal Exonerado { get; set; }

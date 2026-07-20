@@ -12,7 +12,6 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int IdUsuario { get; set; }
         public int IdCliente { get; set; }
         public string NombreCliente { get; set; }
-        public int IdVendedor { get; set; }
         public DateTime Fecha { get; set; }
         public string Telefono { get; set; }
         public string Direccion { get; set; }
