@@ -167,6 +167,7 @@ Public Class FrmEmpresa
             chkHabilitaCodigoTransitorio.Checked = datos.HabilitaCodigoTransitorio
             chkHabilitaCodigoImpuestoServicio.Checked = datos.HabilitaCodigoImpuestoServicio
             chkHabilitaFacturacionMonedaExtranjera.Checked = datos.HabilitaFacturacionMonedaExtranjera
+            chkHabilitaCodigoPIN.Checked = datos.HabilitaCodigoPIN
             txtMontoRedondeo.Text = datos.MontoRedondeoFactura
             If credenciales IsNot Nothing Then
                 txtNombreCertificado.Text = credenciales.NombreCertificado
@@ -271,6 +272,7 @@ Public Class FrmEmpresa
         datos.HabilitaCodigoTransitorio = chkHabilitaCodigoTransitorio.Checked
         datos.HabilitaCodigoImpuestoServicio = chkHabilitaCodigoImpuestoServicio.Checked
         datos.HabilitaFacturacionMonedaExtranjera = chkHabilitaFacturacionMonedaExtranjera.Checked
+        datos.HabilitaCodigoPIN = chkHabilitaCodigoPIN.Checked
         datos.MontoRedondeoFactura = txtMontoRedondeo.Text
         datos.Distrito = Nothing
         datos.ActividadEconomicaEmpresa.Clear()

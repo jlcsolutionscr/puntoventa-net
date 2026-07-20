@@ -18,7 +18,7 @@ Public Class FrmApartado
     Private desglosePago As DesglosePagoApartado
     Private producto As Producto
     Private cliente As Cliente
-    Private vendedor As Vendedor
+    Private usuarioVendedor As Usuario
     Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
     Private provider As CultureInfo = CultureInfo.InvariantCulture
@@ -462,7 +462,7 @@ Public Class FrmApartado
         e.Handled = False
     End Sub
 
-    Private Async Sub FrmApartado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmApartado_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
@@ -477,16 +477,9 @@ Public Class FrmApartado
             txtImpuesto.Text = FormatNumber(0, 2)
             txtTotal.Text = FormatNumber(0, 2)
             cliente = FrmPrincipal.ObtenerClienteDeContado()
+            usuarioVendedor = Nothing
             txtNombreCliente.Text = cliente.Nombre
             txtPorcentajeExoneracion.Text = "0"
-            If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
-                Try
-                    vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                    txtVendedor.Text = vendedor.Nombre
-                Catch ex As Exception
-                    Throw New Exception("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.")
-                End Try
-            End If
             decSaldoPorPagar = 0
             txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
             If FrmPrincipal.bolModificaDescripcion Then txtDescripcion.ReadOnly = False
@@ -501,7 +494,7 @@ Public Class FrmApartado
         End Try
     End Sub
 
-    Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+    Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdApartado.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         txtTelefono.Text = ""
@@ -534,25 +527,12 @@ Public Class FrmApartado
         btnGuardar.Enabled = True
         btnImprimir.Enabled = False
         btnGenerarPDF.Enabled = False
-        btnBuscaVendedor.Enabled = True
         btnBuscarCliente.Enabled = True
         cliente = FrmPrincipal.ObtenerClienteDeContado()
+        usuarioVendedor = Nothing
         txtNombreCliente.Text = cliente.Nombre
         txtNombreCliente.ReadOnly = True
         grdDetalleApartado.ReadOnly = False
-        If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
-            Try
-                vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                txtVendedor.Text = vendedor.Nombre
-            Catch ex As Exception
-                MessageBox.Show("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Close()
-                Exit Sub
-            End Try
-        Else
-            vendedor = Nothing
-            txtVendedor.Text = ""
-        End If
         cboFormaPago.Enabled = True
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoBanco.DataSource = New List(Of LlaveDescripcion)
@@ -595,6 +575,7 @@ Public Class FrmApartado
             intUltPaginaBusqueda = FrmPrincipal.intUltPaginaBusqueda
             Try
                 apartado = Await Puntoventa.ObtenerApartado(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                usuarioVendedor = Await Puntoventa.ObtenerUsuario(apartado.IdVendedor, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -608,8 +589,6 @@ Public Class FrmApartado
                 txtTelefono.Text = apartado.Telefono
                 txtDocumento.Text = apartado.TextoAdicional
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
-                vendedor = apartado.Vendedor
-                txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 CargarDetalleApartado(apartado)
                 CargarDesglosePago(apartado)
                 CargarTotales()
@@ -624,7 +603,6 @@ Public Class FrmApartado
                 btnEliminarPago.Enabled = False
                 btnImprimir.Enabled = Not apartado.Nulo
                 btnGenerarPDF.Enabled = Not apartado.Nulo
-                btnBuscaVendedor.Enabled = False
                 btnBuscarCliente.Enabled = False
                 btnAnular.Enabled = Not apartado.Nulo And Not apartado.Aplicado And FrmPrincipal.bolAnularTransacciones
                 btnGuardar.Enabled = False
@@ -632,25 +610,6 @@ Public Class FrmApartado
                 grdDetalleApartado.ReadOnly = True
             Else
                 MessageBox.Show("No existe registro de proforma asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End If
-        End If
-    End Sub
-
-    Private Async Sub BtnBuscaVendedor_Click(sender As Object, e As EventArgs) Handles btnBuscaVendedor.Click
-        Dim formBusqueda As New FrmBusquedaVendedor()
-        FrmPrincipal.intBusqueda = 0
-        formBusqueda.ShowDialog()
-        If FrmPrincipal.intBusqueda > 0 Then
-            Try
-                vendedor = Await Puntoventa.ObtenerVendedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
-                txtVendedor.Text = vendedor.Nombre
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            If vendedor Is Nothing Then
-                MessageBox.Show("El vendedor seleccionado no existe! Consulte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
             End If
         End If
     End Sub
@@ -699,11 +658,7 @@ Public Class FrmApartado
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If vendedor Is Nothing Then
-            MessageBox.Show("Debe seleccionar el vendedor para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            BtnBuscaVendedor_Click(btnBuscaVendedor, New EventArgs())
-            Exit Sub
-        ElseIf decTotal = 0 Then
+        If decTotal = 0 Then
             MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         ElseIf decSaldoPorPagar = 0 Then
@@ -714,6 +669,21 @@ Public Class FrmApartado
             Exit Sub
         End If
         If txtIdApartado.Text = "" Then
+            If FrmPrincipal.empresaGlobal.HabilitaCodigoPIN Then
+                Dim formCodigoPIN As New FrmCodigoPIN()
+                FrmPrincipal.strBusqueda = ""
+                formCodigoPIN.ShowDialog()
+                If FrmPrincipal.strBusqueda <> "" Then
+                    Try
+                        usuarioVendedor = Await Puntoventa.ObtenerUsuarioPorCodigoPIN(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.strBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                    Catch ex As Exception
+                        MessageBox.Show("El codigo ingresado no pertenece a ningun usuario registrado en la empresa!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                        Exit Sub
+                    End Try
+                End If
+            Else
+                usuarioVendedor = FrmPrincipal.usuarioGlobal
+            End If
             If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
                 Dim formPagoFactura As New FrmPagoEfectivo()
                 formPagoFactura.decTotalEfectivo = Puntoventa.ObtenerTotalRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoFactura, decPagoEfectivo)
@@ -740,7 +710,7 @@ Public Class FrmApartado
                 .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .Telefono = txtTelefono.Text,
                 .TextoAdicional = txtDocumento.Text,
-                .IdVendedor = vendedor.IdVendedor,
+                .IdVendedor = usuarioVendedor.IdUsuario,
                 .Excento = decExcento,
                 .Gravado = decGravado,
                 .Exonerado = decExonerado,
@@ -801,7 +771,6 @@ Public Class FrmApartado
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
         btnBusProd.Enabled = False
-        btnBuscaVendedor.Enabled = False
         btnBuscarCliente.Enabled = False
         grdDetalleApartado.ReadOnly = True
     End Sub
@@ -814,7 +783,7 @@ Public Class FrmApartado
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
                     .strId = apartado.ConsecApartado,
-                    .strVendedor = txtVendedor.Text,
+                    .strVendedor = usuarioVendedor.CodigoUsuario,
                     .strNombre = txtNombreCliente.Text,
                     .strTelefono = apartado.Telefono,
                     .strDetalle = apartado.TextoAdicional,

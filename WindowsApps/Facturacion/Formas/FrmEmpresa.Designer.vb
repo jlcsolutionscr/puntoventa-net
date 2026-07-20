@@ -130,6 +130,7 @@ Partial Class FrmEmpresa
         Me.chkHabilitaCodigoTransitorio = New System.Windows.Forms.CheckBox()
         Me.chkHabilitaCodigoImpuestoServicio = New System.Windows.Forms.CheckBox()
         Me.chkHabilitaFacturacionMonedaExtranjera = New System.Windows.Forms.CheckBox()
+        Me.chkHabilitaCodigoPIN = New System.Windows.Forms.CheckBox()
         Me.gpbSucursal.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         CType(Me.dgvActividadEconomica, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1518,7 +1519,7 @@ Partial Class FrmEmpresa
         'chkHabilitaCodigoTransitorio
         '
         Me.chkHabilitaCodigoTransitorio.AutoSize = True
-        Me.chkHabilitaCodigoTransitorio.Location = New System.Drawing.Point(227, 478)
+        Me.chkHabilitaCodigoTransitorio.Location = New System.Drawing.Point(227, 501)
         Me.chkHabilitaCodigoTransitorio.Name = "chkHabilitaCodigoTransitorio"
         Me.chkHabilitaCodigoTransitorio.Size = New System.Drawing.Size(154, 17)
         Me.chkHabilitaCodigoTransitorio.TabIndex = 298
@@ -1548,12 +1549,24 @@ Partial Class FrmEmpresa
         Me.chkHabilitaFacturacionMonedaExtranjera.Text = "Habilita moneda extranjera"
         Me.chkHabilitaFacturacionMonedaExtranjera.UseVisualStyleBackColor = True
         '
+        'chkHabilitaCodigoPIN
+        '
+        Me.chkHabilitaCodigoPIN.AutoSize = True
+        Me.chkHabilitaCodigoPIN.Location = New System.Drawing.Point(227, 478)
+        Me.chkHabilitaCodigoPIN.Name = "chkHabilitaCodigoPIN"
+        Me.chkHabilitaCodigoPIN.Size = New System.Drawing.Size(195, 17)
+        Me.chkHabilitaCodigoPIN.TabIndex = 301
+        Me.chkHabilitaCodigoPIN.TabStop = False
+        Me.chkHabilitaCodigoPIN.Text = "Usuario se identifica por codigo PIN"
+        Me.chkHabilitaCodigoPIN.UseVisualStyleBackColor = True
+        '
         'FrmEmpresa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(1257, 639)
+        Me.Controls.Add(Me.chkHabilitaCodigoPIN)
         Me.Controls.Add(Me.chkHabilitaFacturacionMonedaExtranjera)
         Me.Controls.Add(Me.chkHabilitaCodigoImpuestoServicio)
         Me.Controls.Add(Me.chkHabilitaCodigoTransitorio)
@@ -1716,4 +1729,5 @@ Partial Class FrmEmpresa
     Friend WithEvents chkHabilitaCodigoTransitorio As CheckBox
     Friend WithEvents chkHabilitaCodigoImpuestoServicio As CheckBox
     Friend WithEvents chkHabilitaFacturacionMonedaExtranjera As CheckBox
+    Friend WithEvents chkHabilitaCodigoPIN As CheckBox
 End Class

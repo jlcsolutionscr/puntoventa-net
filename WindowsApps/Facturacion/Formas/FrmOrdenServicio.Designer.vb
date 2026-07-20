@@ -48,9 +48,6 @@ Partial Class FrmOrdenServicio
         Me.grdDetalleOrdenServicio = New System.Windows.Forms.DataGridView()
         Me.btnBuscarCliente = New System.Windows.Forms.Button()
         Me.txtNombreCliente = New System.Windows.Forms.TextBox()
-        Me.btnBuscaVendedor = New System.Windows.Forms.Button()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.txtVendedor = New System.Windows.Forms.TextBox()
         Me.txtTelefono = New System.Windows.Forms.TextBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.txtOtrosDetalles = New System.Windows.Forms.TextBox()
@@ -334,44 +331,6 @@ Partial Class FrmOrdenServicio
         Me.txtNombreCliente.Size = New System.Drawing.Size(498, 20)
         Me.txtNombreCliente.TabIndex = 2
         Me.txtNombreCliente.TabStop = False
-        '
-        'btnBuscaVendedor
-        '
-        Me.btnBuscaVendedor.Image = CType(resources.GetObject("btnBuscaVendedor.Image"), System.Drawing.Image)
-        Me.btnBuscaVendedor.Location = New System.Drawing.Point(783, 9)
-        Me.btnBuscaVendedor.Name = "btnBuscaVendedor"
-        Me.btnBuscaVendedor.Size = New System.Drawing.Size(20, 20)
-        Me.btnBuscaVendedor.TabIndex = 2
-        Me.btnBuscaVendedor.TabStop = False
-        Me.btnBuscaVendedor.UseVisualStyleBackColor = True
-        '
-        'Label2
-        '
-        Me.Label2.BackColor = System.Drawing.Color.Transparent
-        Me.Label2.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label2.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label2.Location = New System.Drawing.Point(462, 9)
-        Me.Label2.Name = "Label2"
-        Me.Label2.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label2.Size = New System.Drawing.Size(65, 19)
-        Me.Label2.TabIndex = 82
-        Me.Label2.Text = "Vendedor:"
-        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'txtVendedor
-        '
-        Me.txtVendedor.AcceptsReturn = True
-        Me.txtVendedor.BackColor = System.Drawing.SystemColors.Window
-        Me.txtVendedor.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtVendedor.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtVendedor.Location = New System.Drawing.Point(533, 9)
-        Me.txtVendedor.MaxLength = 0
-        Me.txtVendedor.Name = "txtVendedor"
-        Me.txtVendedor.ReadOnly = True
-        Me.txtVendedor.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtVendedor.Size = New System.Drawing.Size(250, 20)
-        Me.txtVendedor.TabIndex = 1
-        Me.txtVendedor.TabStop = False
         '
         'txtTelefono
         '
@@ -1228,9 +1187,6 @@ Partial Class FrmOrdenServicio
         Me.Controls.Add(Me.txtOtrosDetalles)
         Me.Controls.Add(Me.txtTelefono)
         Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.txtVendedor)
-        Me.Controls.Add(Me.btnBuscaVendedor)
-        Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.txtNombreCliente)
         Me.Controls.Add(Me.btnBuscarCliente)
         Me.Controls.Add(Me.grdDetalleOrdenServicio)
@@ -1267,9 +1223,6 @@ Partial Class FrmOrdenServicio
     End Sub
     Friend WithEvents btnBuscarCliente As System.Windows.Forms.Button
     Public WithEvents txtNombreCliente As System.Windows.Forms.TextBox
-    Friend WithEvents btnBuscaVendedor As System.Windows.Forms.Button
-    Public WithEvents Label2 As System.Windows.Forms.Label
-    Public WithEvents txtVendedor As System.Windows.Forms.TextBox
     Public WithEvents txtTelefono As System.Windows.Forms.TextBox
     Public WithEvents Label3 As System.Windows.Forms.Label
     Public WithEvents txtOtrosDetalles As System.Windows.Forms.TextBox

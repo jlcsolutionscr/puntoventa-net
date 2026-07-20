@@ -48,9 +48,6 @@ Partial Class FrmApartado
         Me.grdDetalleApartado = New System.Windows.Forms.DataGridView()
         Me.btnBuscarCliente = New System.Windows.Forms.Button()
         Me.txtNombreCliente = New System.Windows.Forms.TextBox()
-        Me.txtVendedor = New System.Windows.Forms.TextBox()
-        Me.btnBuscaVendedor = New System.Windows.Forms.Button()
-        Me.Label11 = New System.Windows.Forms.Label()
         Me.txtFecha = New System.Windows.Forms.TextBox()
         Me.Label15 = New System.Windows.Forms.Label()
         Me.txtPorcentajeExoneracion = New System.Windows.Forms.TextBox()
@@ -324,44 +321,6 @@ Partial Class FrmApartado
         Me.txtNombreCliente.Size = New System.Drawing.Size(362, 20)
         Me.txtNombreCliente.TabIndex = 3
         Me.txtNombreCliente.TabStop = False
-        '
-        'txtVendedor
-        '
-        Me.txtVendedor.AcceptsReturn = True
-        Me.txtVendedor.BackColor = System.Drawing.SystemColors.Window
-        Me.txtVendedor.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtVendedor.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtVendedor.Location = New System.Drawing.Point(510, 9)
-        Me.txtVendedor.MaxLength = 0
-        Me.txtVendedor.Name = "txtVendedor"
-        Me.txtVendedor.ReadOnly = True
-        Me.txtVendedor.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtVendedor.Size = New System.Drawing.Size(250, 20)
-        Me.txtVendedor.TabIndex = 1
-        Me.txtVendedor.TabStop = False
-        '
-        'btnBuscaVendedor
-        '
-        Me.btnBuscaVendedor.Image = CType(resources.GetObject("btnBuscaVendedor.Image"), System.Drawing.Image)
-        Me.btnBuscaVendedor.Location = New System.Drawing.Point(762, 8)
-        Me.btnBuscaVendedor.Name = "btnBuscaVendedor"
-        Me.btnBuscaVendedor.Size = New System.Drawing.Size(20, 20)
-        Me.btnBuscaVendedor.TabIndex = 2
-        Me.btnBuscaVendedor.TabStop = False
-        Me.btnBuscaVendedor.UseVisualStyleBackColor = True
-        '
-        'Label11
-        '
-        Me.Label11.BackColor = System.Drawing.Color.Transparent
-        Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(439, 9)
-        Me.Label11.Name = "Label11"
-        Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label11.Size = New System.Drawing.Size(65, 19)
-        Me.Label11.TabIndex = 96
-        Me.Label11.Text = "Vendedor:"
-        Me.Label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'txtFecha
         '
@@ -1074,9 +1033,6 @@ Partial Class FrmApartado
         Me.Controls.Add(Me.txtPorcentajeExoneracion)
         Me.Controls.Add(Me.txtFecha)
         Me.Controls.Add(Me.Label15)
-        Me.Controls.Add(Me.txtVendedor)
-        Me.Controls.Add(Me.btnBuscaVendedor)
-        Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.txtNombreCliente)
         Me.Controls.Add(Me.btnBuscarCliente)
         Me.Controls.Add(Me.grdDetalleApartado)
@@ -1113,9 +1069,6 @@ Partial Class FrmApartado
     End Sub
     Friend WithEvents btnBuscarCliente As System.Windows.Forms.Button
     Public WithEvents txtNombreCliente As System.Windows.Forms.TextBox
-    Public WithEvents txtVendedor As System.Windows.Forms.TextBox
-    Friend WithEvents btnBuscaVendedor As System.Windows.Forms.Button
-    Public WithEvents Label11 As System.Windows.Forms.Label
     Public WithEvents txtFecha As TextBox
     Public WithEvents Label15 As Label
     Public WithEvents txtPorcentajeExoneracion As TextBox

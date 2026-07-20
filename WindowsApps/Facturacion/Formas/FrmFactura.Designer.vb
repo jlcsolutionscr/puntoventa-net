@@ -93,9 +93,6 @@ Partial Class FrmFactura
         Me.Label10 = New System.Windows.Forms.Label()
         Me.txtCodigo = New System.Windows.Forms.TextBox()
         Me.btnOrdenServicio = New System.Windows.Forms.Button()
-        Me.txtVendedor = New System.Windows.Forms.TextBox()
-        Me.btnBuscaVendedor = New System.Windows.Forms.Button()
-        Me.Label11 = New System.Windows.Forms.Label()
         Me.btnProforma = New System.Windows.Forms.Button()
         Me.cboCondicionVenta = New System.Windows.Forms.ComboBox()
         Me.Label7 = New System.Windows.Forms.Label()
@@ -807,44 +804,6 @@ Partial Class FrmFactura
         Me.btnOrdenServicio.Text = "Cargar Orden"
         Me.btnOrdenServicio.UseVisualStyleBackColor = False
         '
-        'txtVendedor
-        '
-        Me.txtVendedor.AcceptsReturn = True
-        Me.txtVendedor.BackColor = System.Drawing.SystemColors.Window
-        Me.txtVendedor.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtVendedor.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtVendedor.Location = New System.Drawing.Point(568, 9)
-        Me.txtVendedor.MaxLength = 0
-        Me.txtVendedor.Name = "txtVendedor"
-        Me.txtVendedor.ReadOnly = True
-        Me.txtVendedor.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.txtVendedor.Size = New System.Drawing.Size(219, 20)
-        Me.txtVendedor.TabIndex = 1
-        Me.txtVendedor.TabStop = False
-        '
-        'btnBuscaVendedor
-        '
-        Me.btnBuscaVendedor.Image = CType(resources.GetObject("btnBuscaVendedor.Image"), System.Drawing.Image)
-        Me.btnBuscaVendedor.Location = New System.Drawing.Point(786, 8)
-        Me.btnBuscaVendedor.Name = "btnBuscaVendedor"
-        Me.btnBuscaVendedor.Size = New System.Drawing.Size(20, 20)
-        Me.btnBuscaVendedor.TabIndex = 2
-        Me.btnBuscaVendedor.TabStop = False
-        Me.btnBuscaVendedor.UseVisualStyleBackColor = True
-        '
-        'Label11
-        '
-        Me.Label11.BackColor = System.Drawing.Color.Transparent
-        Me.Label11.Cursor = System.Windows.Forms.Cursors.Default
-        Me.Label11.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label11.Location = New System.Drawing.Point(497, 9)
-        Me.Label11.Name = "Label11"
-        Me.Label11.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.Label11.Size = New System.Drawing.Size(65, 19)
-        Me.Label11.TabIndex = 96
-        Me.Label11.Text = "Vendedor:"
-        Me.Label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
         'btnProforma
         '
         Me.btnProforma.BackColor = System.Drawing.SystemColors.ButtonHighlight
@@ -1390,9 +1349,6 @@ Partial Class FrmFactura
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.cboCondicionVenta)
         Me.Controls.Add(Me.btnProforma)
-        Me.Controls.Add(Me.txtVendedor)
-        Me.Controls.Add(Me.btnBuscaVendedor)
-        Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.btnOrdenServicio)
         Me.Controls.Add(Me.txtCodigo)
         Me.Controls.Add(Me.txtSaldoPorPagar)
@@ -1480,9 +1436,6 @@ Partial Class FrmFactura
     Public WithEvents Label10 As System.Windows.Forms.Label
     Friend WithEvents txtCodigo As System.Windows.Forms.TextBox
     Public WithEvents btnOrdenServicio As System.Windows.Forms.Button
-    Public WithEvents txtVendedor As System.Windows.Forms.TextBox
-    Friend WithEvents btnBuscaVendedor As System.Windows.Forms.Button
-    Public WithEvents Label11 As System.Windows.Forms.Label
     Public WithEvents btnProforma As System.Windows.Forms.Button
     Public WithEvents cboCondicionVenta As ComboBox
     Public WithEvents Label7 As Label

@@ -16,7 +16,7 @@ Public Class FrmProforma
     Private detalleProforma As DetalleProforma
     Private producto As Producto
     Private cliente As Cliente
-    Private vendedor As Vendedor
+    Private usuarioVendedor As Usuario
     Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
     Public intUltPaginaBusqueda As Integer = 1
@@ -350,7 +350,7 @@ Public Class FrmProforma
         e.Handled = False
     End Sub
 
-    Private Async Sub FrmProforma_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+    Private Sub FrmProforma_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Try
             IniciaTablasDeDetalle()
             EstablecerPropiedadesDataGridView()
@@ -366,14 +366,7 @@ Public Class FrmProforma
             cliente = FrmPrincipal.ObtenerClienteDeContado()
             txtNombreCliente.Text = cliente.Nombre
             txtPorcentajeExoneracion.Text = "0"
-            If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
-                Try
-                    vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                    txtVendedor.Text = vendedor.Nombre
-                Catch ex As Exception
-                    Throw New Exception("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.")
-                End Try
-            End If
+            usuarioVendedor = Nothing
             If FrmPrincipal.bolModificaDescripcion Then txtDescripcion.ReadOnly = False
             If FrmPrincipal.bolModificaCliente Then txtPorcDesc.ReadOnly = False
             txtCodigo.Focus()
@@ -387,7 +380,7 @@ Public Class FrmProforma
         End Try
     End Sub
 
-    Private Async Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+    Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
         txtIdProforma.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
         cboSucursal.SelectedValue = FrmPrincipal.equipoGlobal.IdSucursal
@@ -414,23 +407,10 @@ Public Class FrmProforma
         btnImprimir.Enabled = False
         btnGenerarPDF.Enabled = False
         btnEnviar.Enabled = False
-        btnBuscaVendedor.Enabled = True
         cliente = FrmPrincipal.ObtenerClienteDeContado()
         txtNombreCliente.Text = cliente.Nombre
         txtNombreCliente.ReadOnly = True
-        If FrmPrincipal.empresaGlobal.AsignaVendedorPorDefecto Then
-            Try
-                vendedor = Await Puntoventa.ObtenerVendedorPorDefecto(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.usuarioGlobal.Token)
-                txtVendedor.Text = vendedor.Nombre
-            Catch ex As Exception
-                MessageBox.Show("Debe agregar al menos un vendedor al catalogo de vendedores para poder continuar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Close()
-                Exit Sub
-            End Try
-        Else
-            vendedor = Nothing
-            txtVendedor.Text = ""
-        End If
+        usuarioVendedor = Nothing
         txtCodigo.Focus()
     End Sub
 
@@ -462,6 +442,7 @@ Public Class FrmProforma
             intUltPaginaBusqueda = FrmPrincipal.intUltPaginaBusqueda
             Try
                 proforma = Await Puntoventa.ObtenerProforma(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                usuarioVendedor = Await Puntoventa.ObtenerUsuarioPorCodigoPIN(FrmPrincipal.empresaGlobal.IdEmpresa, proforma.IdVendedor, FrmPrincipal.usuarioGlobal.Token)
             Catch ex As Exception
                 MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
@@ -476,8 +457,6 @@ Public Class FrmProforma
                 txtTextoAdicional.Text = proforma.TextoAdicional
                 txtTelefono.Text = proforma.Telefono
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
-                vendedor = proforma.Vendedor
-                txtVendedor.Text = IIf(vendedor IsNot Nothing, vendedor.Nombre, "")
                 CargarDetalleProforma(proforma)
                 CargarTotales()
                 cboTipoMoneda.Enabled = False
@@ -485,29 +464,9 @@ Public Class FrmProforma
                 btnImprimir.Enabled = Not proforma.Nulo
                 btnGenerarPDF.Enabled = Not proforma.Nulo
                 btnEnviar.Enabled = Not proforma.Nulo
-                btnBuscaVendedor.Enabled = False
                 btnAnular.Enabled = Not proforma.Nulo And Not proforma.Aplicado And FrmPrincipal.bolAnularTransacciones
             Else
                 MessageBox.Show("No existe registro de proforma asociado al identificador seleccionado", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End If
-        End If
-    End Sub
-
-    Private Async Sub BtnBuscaVendedor_Click(sender As Object, e As EventArgs) Handles btnBuscaVendedor.Click
-        Dim formBusqueda As New FrmBusquedaVendedor()
-        FrmPrincipal.intBusqueda = 0
-        formBusqueda.ShowDialog()
-        If FrmPrincipal.intBusqueda > 0 Then
-            Try
-                vendedor = Await Puntoventa.ObtenerVendedor(FrmPrincipal.intBusqueda, FrmPrincipal.usuarioGlobal.Token)
-                txtVendedor.Text = vendedor.Nombre
-            Catch ex As Exception
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-            If vendedor Is Nothing Then
-                MessageBox.Show("El vendedor seleccionado no existe! Consulte a su proveedor.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
             End If
         End If
     End Sub
@@ -556,17 +515,28 @@ Public Class FrmProforma
     End Sub
 
     Private Async Sub BtnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If vendedor Is Nothing Then
-            MessageBox.Show("Debe seleccionar el vendedor para poder guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            BtnBuscaVendedor_Click(btnBuscaVendedor, New EventArgs())
-            Exit Sub
-        ElseIf decTotal = 0 Then
+        If decTotal = 0 Then
             MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
         End If
         btnImprimir.Focus()
         btnGuardar.Enabled = False
         If txtIdProforma.Text = "" Then
+            If FrmPrincipal.empresaGlobal.HabilitaCodigoPIN Then
+                Dim formCodigoPIN As New FrmCodigoPIN()
+                FrmPrincipal.strBusqueda = ""
+                formCodigoPIN.ShowDialog()
+                If FrmPrincipal.strBusqueda <> "" Then
+                    Try
+                        usuarioVendedor = Await Puntoventa.ObtenerUsuarioPorCodigoPIN(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.strBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                    Catch ex As Exception
+                        MessageBox.Show("El codigo ingresado no pertenece a ningun usuario registrado en la empresa!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                        Exit Sub
+                    End Try
+                End If
+            Else
+                usuarioVendedor = FrmPrincipal.usuarioGlobal
+            End If
             proforma = New Proforma With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = cboSucursal.SelectedValue,
@@ -578,7 +548,7 @@ Public Class FrmProforma
                 .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
                 .TextoAdicional = txtTextoAdicional.Text,
                 .Telefono = txtTelefono.Text,
-                .IdVendedor = vendedor.IdVendedor,
+                .IdVendedor = usuarioVendedor.IdUsuario,
                 .Excento = decExcento,
                 .Gravado = decGravado,
                 .Exonerado = decExonerado,
@@ -653,7 +623,6 @@ Public Class FrmProforma
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         cboTipoMoneda.Enabled = False
-        btnBuscaVendedor.Enabled = False
     End Sub
 
     Private Sub BtnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
@@ -664,7 +633,7 @@ Public Class FrmProforma
                     .empresa = FrmPrincipal.empresaGlobal,
                     .equipo = FrmPrincipal.equipoGlobal,
                     .strId = proforma.ConsecProforma,
-                    .strVendedor = txtVendedor.Text,
+                    .strVendedor = usuarioVendedor.CodigoUsuario,
                     .strNombre = proforma.NombreCliente,
                     .strTelefono = proforma.Telefono,
                     .strDocumento = proforma.TextoAdicional,

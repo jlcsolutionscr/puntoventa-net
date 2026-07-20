@@ -440,13 +440,6 @@ Public Class FrmPrincipal
         formInventario.Show()
     End Sub
 
-    Public Sub MnuMantVend_Click(sender As Object, e As EventArgs) Handles MnuMantVend.Click
-        Dim formVendedorListado As New FrmVendedorListado With {
-            .MdiParent = Me
-        }
-        formVendedorListado.Show()
-    End Sub
-
     Private Sub MnuMantPuntServicio_Click(sender As Object, e As EventArgs) Handles MnuMantPuntServicio.Click
         Dim formPuntoDeServicioListado As New FrmPuntoDeServicioListado With {
             .MdiParent = Me

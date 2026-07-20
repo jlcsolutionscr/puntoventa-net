@@ -1193,6 +1193,16 @@ namespace LeandroSoftware.ClienteWCF
             return usuario;
         }
 
+        public static async Task<Usuario> ObtenerUsuarioPorCodigoPIN(int intIdEmpresa, string strCodigoPIN, string strToken)
+        {
+            string strDatos = "{NombreMetodo: 'ObtenerUsuarioPorPIN', Parametros: {IdEmpresa: " + intIdEmpresa + ", CodigoPIN: '" + strCodigoPIN + "'}}";
+            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
+            Usuario usuario = null;
+            if (respuesta != "")
+                usuario = JsonConvert.DeserializeObject<Usuario>(respuesta);
+            return usuario;
+        }
+
         public static async Task EliminarUsuario(int intIdUsuario, string strToken)
         {
             string strDatos = "{NombreMetodo: 'EliminarUsuario', Parametros: {IdUsuario: " + intIdUsuario + "}}";
@@ -1361,56 +1371,6 @@ namespace LeandroSoftware.ClienteWCF
             if (respuesta != "")
                 listado = JsonConvert.DeserializeObject<List<EfectivoDetalle>>(respuesta);
             return listado;
-        }
-
-        public static async Task<List<LlaveDescripcion>> ObtenerListadoVendedores(int intIdEmpresa, string strNombre, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoVendedores', Parametros: {IdEmpresa: " + intIdEmpresa + ", Nombre: '" + strNombre + "'}}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            List<LlaveDescripcion> listado = new List<LlaveDescripcion>();
-            if (respuesta != "")
-                listado = JsonConvert.DeserializeObject<List<LlaveDescripcion>>(respuesta);
-            return listado;
-        }
-
-        public static async Task AgregarVendedor(Vendedor vendedor, string strToken)
-        {
-            string strEntidad = JsonConvert.SerializeObject(vendedor);
-            string strDatos = "{NombreMetodo: 'AgregarVendedor', Entidad: " + strEntidad + "}";
-            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
-        }
-
-        public static async Task ActualizarVendedor(Vendedor vendedor, string strToken)
-        {
-            string strEntidad = JsonConvert.SerializeObject(vendedor);
-            string strDatos = "{NombreMetodo: 'ActualizarVendedor', Entidad: " + strEntidad + "}";
-            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
-        }
-
-        public static async Task<Vendedor> ObtenerVendedor(int intIdVendedor, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerVendedor', Parametros: {IdVendedor: " + intIdVendedor + "}}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            Vendedor vendedor = null;
-            if (respuesta != "")
-                vendedor = JsonConvert.DeserializeObject<Vendedor>(respuesta);
-            return vendedor;
-        }
-
-        public static async Task<Vendedor> ObtenerVendedorPorDefecto(int intIdEmpresa, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'ObtenerVendedorPorDefecto', Parametros: {IdEmpresa: " + intIdEmpresa + "}}";
-            string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
-            Vendedor vendedor = null;
-            if (respuesta != "")
-                vendedor = JsonConvert.DeserializeObject<Vendedor>(respuesta);
-            return vendedor;
-        }
-
-        public static async Task EliminarVendedor(int intIdVendedor, string strToken)
-        {
-            string strDatos = "{NombreMetodo: 'EliminarVendedor', Parametros: {IdVendedor: " + intIdVendedor + "}}";
-            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
         public static async Task<int> ObtenerTotalListaEgresos(int intIdEmpresa, int intIdSucursal, int intIdEgreso, string strBeneficiario, string strDetalle, string strFechaFinal, string strToken)
