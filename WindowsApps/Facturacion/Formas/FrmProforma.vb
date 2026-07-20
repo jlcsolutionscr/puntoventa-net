@@ -571,6 +571,7 @@ Public Class FrmProforma
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = cboSucursal.SelectedValue,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .IdModificadoPor = 0,
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
@@ -619,6 +620,7 @@ Public Class FrmProforma
             proforma.Gravado = decGravado
             proforma.Descuento = decDescuento
             proforma.Impuesto = CDbl(txtImpuesto.Text)
+            proforma.IdModificadoPor = FrmPrincipal.usuarioGlobal.IdUsuario
             proforma.DetalleProforma.Clear()
             For I As Short = 0 To dtbDetalleProforma.Rows.Count - 1
                 detalleProforma = New DetalleProforma

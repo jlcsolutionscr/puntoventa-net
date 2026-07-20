@@ -26,6 +26,8 @@ Public Class FrmPrincipal
     Public dgvInteger As DataGridViewCellStyle
     Public lstListaReportes As New List(Of String)
     Public listaEmpresas As New List(Of LlaveDescripcion)
+    Private listaBancoAdquiriente As New List(Of LlaveDescripcion)
+    Private listaCuentaBanco As New List(Of LlaveDescripcion)
     Public strCodigoUsuario As String
     Public strContrasena As String
     Public strIdEmpresa As String
@@ -276,20 +278,30 @@ Public Class FrmPrincipal
     End Function
 
     Public Async Function CargarListaBancoAdquiriente() As Task(Of List(Of LlaveDescripcion))
-        Dim lista As IList = Await Puntoventa.ObtenerListadoBancoAdquiriente(empresaGlobal.IdEmpresa, "", usuarioGlobal.Token)
-        If lista.Count() = 0 Then
-            Throw New Exception("Debe parametrizar la lista de bancos adquirientes para pagos con tarjeta.")
+        If listaBancoAdquiriente.Count() = 0 Then
+            Dim lista As IList = Await Puntoventa.ObtenerListadoBancoAdquiriente(empresaGlobal.IdEmpresa, "", usuarioGlobal.Token)
+            If lista.Count() = 0 Then
+                Throw New Exception("Debe parametrizar la lista de bancos adquirientes para pagos con tarjeta.")
+            Else
+                listaBancoAdquiriente = lista
+                Return lista
+            End If
         Else
-            Return lista
+            Return listaBancoAdquiriente
         End If
     End Function
 
     Public Async Function CargarListaCuentaBanco() As Task(Of List(Of LlaveDescripcion))
-        Dim lista As IList = Await Puntoventa.ObtenerListadoCuentasBanco(empresaGlobal.IdEmpresa, "", usuarioGlobal.Token)
-        If lista.Count() = 0 Then
-            Throw New Exception("Debe parametrizar la lista de bancos para registrar movimientos.")
+        If listaCuentaBanco.Count() = 0 Then
+            Dim lista As IList = Await Puntoventa.ObtenerListadoCuentasBanco(empresaGlobal.IdEmpresa, "", usuarioGlobal.Token)
+            If lista.Count() = 0 Then
+                Throw New Exception("Debe parametrizar la lista de bancos para registrar movimientos.")
+            Else
+                listaCuentaBanco = lista
+                Return lista
+            End If
         Else
-            Return lista
+            Return listaCuentaBanco
         End If
     End Function
 #End Region

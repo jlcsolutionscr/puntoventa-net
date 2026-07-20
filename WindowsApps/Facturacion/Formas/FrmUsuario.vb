@@ -128,6 +128,7 @@ Public Class FrmUsuario
                 txtIdUsuario.Text = datos.IdUsuario
                 txtUsuario.Text = datos.CodigoUsuario
                 txtPassword.Text = strDecryptedPassword
+                txtCodigoPIN.Text = datos.CodigoPIN
                 txtPorcMaxDescuento.Text = datos.PorcMaxDescuento
                 txtCorreoNotificacion.Text = datos.CorreoNotificacion
                 chkRegistraDispositivo.Checked = datos.PermiteRegistrarDispositivo
@@ -169,6 +170,7 @@ Public Class FrmUsuario
         datos.IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa
         datos.IdSucursal = cboSucursal.SelectedValue
         datos.CodigoUsuario = txtUsuario.Text
+        datos.CodigoPIN = txtCodigoPIN.Text
         datos.Clave = strEncryptedPassword
         datos.PorcMaxDescuento = txtPorcMaxDescuento.Text
         datos.CorreoNotificacion = txtCorreoNotificacion.Text

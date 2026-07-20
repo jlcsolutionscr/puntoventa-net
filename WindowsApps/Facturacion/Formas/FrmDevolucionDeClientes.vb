@@ -141,7 +141,7 @@ Public Class FrmDevolucionDeClientes
     Private Sub CargarDetalleFactura(ByVal factura As Factura)
         dtbDetalleDevolucion.Rows.Clear()
         For Each detalle As DetalleFactura In factura.DetalleFactura
-            If detalle.Producto.Codigo <> StaticParametrosGenerales.CodigoProductoTransitorio And detalle.Producto.Linea.Tipo = 1 Then
+            If detalle.Producto.Codigo <> StaticParametrosGenerales.CodigoProductoTransitorio And Not detalle.Producto.EsServicio Then
                 dtrRowDetDevolucion = dtbDetalleDevolucion.NewRow
                 dtrRowDetDevolucion.Item(0) = detalle.IdProducto
                 dtrRowDetDevolucion.Item(1) = detalle.Producto.Codigo

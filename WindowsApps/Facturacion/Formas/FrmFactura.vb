@@ -709,7 +709,6 @@ Public Class FrmFactura
         End If
         cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
         cboTipoMoneda.Enabled = FrmPrincipal.empresaGlobal.HabilitaFacturacionMonedaExtranjera
-        cboFormaPago.Enabled = True
         cboFormaPago.SelectedValue = StaticFormaPago.Efectivo
         cboTipoBanco.DataSource = New List(Of LlaveDescripcion)
         cboTipoBanco.Width = 325
@@ -831,7 +830,6 @@ Public Class FrmFactura
                 txtNombreCliente.ReadOnly = True
                 btnInsertar.Enabled = False
                 btnEliminar.Enabled = False
-                cboFormaPago.Enabled = False
                 btnInsertarPago.Enabled = False
                 btnEliminarPago.Enabled = False
                 btnBusProd.Enabled = False
@@ -1307,7 +1305,6 @@ Public Class FrmFactura
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
         btnInsertar.Enabled = False
         btnEliminar.Enabled = False
-        cboFormaPago.Enabled = False
         btnInsertarPago.Enabled = False
         btnEliminarPago.Enabled = False
         btnBusProd.Enabled = False

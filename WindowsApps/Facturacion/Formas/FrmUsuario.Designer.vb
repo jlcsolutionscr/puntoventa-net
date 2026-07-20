@@ -41,6 +41,8 @@ Partial Class FrmUsuario
         Me.cboSucursal = New System.Windows.Forms.ComboBox()
         Me.txtCorreoNotificacion = New System.Windows.Forms.TextBox()
         Me.Label5 = New System.Windows.Forms.Label()
+        Me.txtCodigoPIN = New System.Windows.Forms.TextBox()
+        Me.Label6 = New System.Windows.Forms.Label()
         CType(Me.dgvRoleXUsuario, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -133,6 +135,7 @@ Partial Class FrmUsuario
         Me.cboRole.Name = "cboRole"
         Me.cboRole.Size = New System.Drawing.Size(342, 21)
         Me.cboRole.TabIndex = 3
+        Me.cboRole.TabStop = False
         '
         'Label2
         '
@@ -200,8 +203,7 @@ Partial Class FrmUsuario
         Me.chkRegistraDispositivo.Location = New System.Drawing.Point(313, 388)
         Me.chkRegistraDispositivo.Name = "chkRegistraDispositivo"
         Me.chkRegistraDispositivo.Size = New System.Drawing.Size(153, 17)
-        Me.chkRegistraDispositivo.TabIndex = 0
-        Me.chkRegistraDispositivo.TabStop = False
+        Me.chkRegistraDispositivo.TabIndex = 7
         Me.chkRegistraDispositivo.Text = "Permite registrar dispositivo"
         Me.chkRegistraDispositivo.UseVisualStyleBackColor = True
         '
@@ -230,19 +232,19 @@ Partial Class FrmUsuario
         Me.txtPorcMaxDescuento.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
         Me.txtPorcMaxDescuento.Cursor = System.Windows.Forms.Cursors.IBeam
         Me.txtPorcMaxDescuento.ForeColor = System.Drawing.SystemColors.WindowText
-        Me.txtPorcMaxDescuento.Location = New System.Drawing.Point(417, 62)
+        Me.txtPorcMaxDescuento.Location = New System.Drawing.Point(417, 91)
         Me.txtPorcMaxDescuento.MaxLength = 10
         Me.txtPorcMaxDescuento.Name = "txtPorcMaxDescuento"
         Me.txtPorcMaxDescuento.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtPorcMaxDescuento.Size = New System.Drawing.Size(44, 20)
-        Me.txtPorcMaxDescuento.TabIndex = 3
+        Me.txtPorcMaxDescuento.TabIndex = 5
         '
         'Label3
         '
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Cursor = System.Windows.Forms.Cursors.Default
         Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label3.Location = New System.Drawing.Point(364, 63)
+        Me.Label3.Location = New System.Drawing.Point(364, 92)
         Me.Label3.Name = "Label3"
         Me.Label3.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.Label3.Size = New System.Drawing.Size(47, 17)
@@ -268,8 +270,8 @@ Partial Class FrmUsuario
         Me.cboSucursal.FormattingEnabled = True
         Me.cboSucursal.Location = New System.Drawing.Point(119, 90)
         Me.cboSucursal.Name = "cboSucursal"
-        Me.cboSucursal.Size = New System.Drawing.Size(342, 21)
-        Me.cboSucursal.TabIndex = 59
+        Me.cboSucursal.Size = New System.Drawing.Size(239, 21)
+        Me.cboSucursal.TabIndex = 4
         '
         'txtCorreoNotificacion
         '
@@ -282,7 +284,7 @@ Partial Class FrmUsuario
         Me.txtCorreoNotificacion.Name = "txtCorreoNotificacion"
         Me.txtCorreoNotificacion.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.txtCorreoNotificacion.Size = New System.Drawing.Size(342, 20)
-        Me.txtCorreoNotificacion.TabIndex = 60
+        Me.txtCorreoNotificacion.TabIndex = 6
         '
         'Label5
         '
@@ -297,6 +299,33 @@ Partial Class FrmUsuario
         Me.Label5.Text = "Correo electrónico:"
         Me.Label5.TextAlign = System.Drawing.ContentAlignment.TopRight
         '
+        'txtCodigoPIN
+        '
+        Me.txtCodigoPIN.AcceptsReturn = True
+        Me.txtCodigoPIN.BackColor = System.Drawing.SystemColors.Window
+        Me.txtCodigoPIN.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.txtCodigoPIN.ForeColor = System.Drawing.SystemColors.WindowText
+        Me.txtCodigoPIN.Location = New System.Drawing.Point(417, 64)
+        Me.txtCodigoPIN.MaxLength = 4
+        Me.txtCodigoPIN.Name = "txtCodigoPIN"
+        Me.txtCodigoPIN.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
+        Me.txtCodigoPIN.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.txtCodigoPIN.Size = New System.Drawing.Size(44, 20)
+        Me.txtCodigoPIN.TabIndex = 3
+        '
+        'Label6
+        '
+        Me.Label6.BackColor = System.Drawing.Color.Transparent
+        Me.Label6.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Label6.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label6.Location = New System.Drawing.Point(381, 65)
+        Me.Label6.Name = "Label6"
+        Me.Label6.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.Label6.Size = New System.Drawing.Size(30, 17)
+        Me.Label6.TabIndex = 62
+        Me.Label6.Text = "PIN:"
+        Me.Label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'FrmUsuario
         '
         Me.AcceptButton = Me.btnInsertarRole
@@ -304,6 +333,8 @@ Partial Class FrmUsuario
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
         Me.ClientSize = New System.Drawing.Size(475, 414)
+        Me.Controls.Add(Me.txtCodigoPIN)
+        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.txtCorreoNotificacion)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.Label4)
@@ -358,4 +389,6 @@ Partial Class FrmUsuario
     Friend WithEvents cboSucursal As ComboBox
     Public WithEvents txtCorreoNotificacion As TextBox
     Public WithEvents Label5 As Label
+    Public WithEvents txtCodigoPIN As TextBox
+    Public WithEvents Label6 As Label
 End Class

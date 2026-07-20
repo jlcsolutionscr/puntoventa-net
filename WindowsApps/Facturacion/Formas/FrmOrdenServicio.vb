@@ -774,6 +774,7 @@ Public Class FrmOrdenServicio
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdUsuario = FrmPrincipal.usuarioGlobal.IdUsuario,
+                .IdModificadoPor = 0,
                 .IdCliente = cliente.IdCliente,
                 .NombreCliente = txtNombreCliente.Text,
                 .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
@@ -844,6 +845,7 @@ Public Class FrmOrdenServicio
             ordenServicio.Exonerado = decExonerado
             ordenServicio.Descuento = decDescuento
             ordenServicio.Impuesto = CDbl(txtImpuesto.Text)
+            ordenServicio.IdModificadoPor = FrmPrincipal.usuarioGlobal.IdUsuario
             ordenServicio.DetalleOrdenServicio.Clear()
             For I As Short = 0 To dtbDetalleOrdenServicio.Rows.Count - 1
                 detalleOrdenServicio = New DetalleOrdenServicio
