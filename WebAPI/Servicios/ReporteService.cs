@@ -62,7 +62,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         private static CultureInfo provider = CultureInfo.InvariantCulture;
         private static string strFormat = "dd/MM/yyyy HH:mm:ss";
         private static Assembly assembly = Assembly.LoadFrom(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Common.dll");
-         private static int[] formaPagoDigital = new int[] { StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.SinpeMovil, StaticFormaPago.PlataformaDigital };
+        private static int[] formaPagoDigital = new int[] { StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.SinpeMovil, StaticFormaPago.NotaCredito };
 
         public ReporteService(ILoggerManager logger, IServiceScopeFactory serviceScopeFactory, ICorreoService servicioCorreo, IConfiguracionGeneral config)
         {
