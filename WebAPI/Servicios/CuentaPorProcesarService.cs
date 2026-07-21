@@ -641,6 +641,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 movimiento.Fecha = Validador.ObtenerFechaHoraCostaRica();
                 ParametroContable efectivoPorLiquidarParam = null;
                 ParametroContable cuentaPorPagarProveedoresParam = null;
+                ParametroContable notaCreditoProveedoresParam = null;
                 ParametroContable bancoParam = null;
                 Asiento asiento = null;
                 MovimientoBanco movimientoBanco = null;
@@ -652,13 +653,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == movimiento.IdEmpresa && x.IdSucursal == movimiento.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
-                    if (empresa.Contabiliza)
-                    {
-                        efectivoPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("Efectivo")).FirstOrDefault();
-                        cuentaPorPagarProveedoresParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentasPorPagarProveedores")).FirstOrDefault();
-                        if (efectivoPorLiquidarParam == null || cuentaPorPagarProveedoresParam == null)
-                            throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
-                    }
                     movimiento.IdAsiento = 0;
                     movimiento.IdMovBanco = 0;
                     dbContext.MovimientoCuentaPorPagarRepository.Add(movimiento);
@@ -703,6 +697,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     }
                     if (empresa.Contabiliza)
                     {
+                        efectivoPorLiquidarParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("Efectivo")).FirstOrDefault();
+                        cuentaPorPagarProveedoresParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("CuentasPorPagarProveedores")).FirstOrDefault();
+                        notaCreditoProveedoresParam = dbContext.ParametroContableRepository.Where(x => x.IdTipo == TipoParametroContableClase.ObtenerId("NotaCreditoProveedores")).FirstOrDefault();
+                        if (efectivoPorLiquidarParam == null || cuentaPorPagarProveedoresParam == null || notaCreditoProveedoresParam == null)
+                            throw new BusinessException("La parametrización contable está incompleta y no se puede continuar. Por favor verificar.");
                         int intLineaDetalleAsiento = 0;
                         asiento = new Asiento
                         {
@@ -731,6 +730,18 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                                     IdCuenta = efectivoPorLiquidarParam.IdCuenta,
                                     Credito = desglosePago.MontoLocal,
                                     SaldoAnterior = dbContext.CatalogoContableRepository.Find(efectivoPorLiquidarParam.IdCuenta).SaldoActual
+                                };
+                                asiento.DetalleAsiento.Add(detalleAsiento);
+                                asiento.TotalCredito += detalleAsiento.Credito;
+                            }
+                            else if (desglosePago.IdFormaPago == StaticFormaPago.NotaCredito)
+                            {
+                                detalleAsiento = new DetalleAsiento
+                                {
+                                    Linea = intLineaDetalleAsiento++,
+                                    IdCuenta = notaCreditoProveedoresParam.IdCuenta,
+                                    Credito = desglosePago.MontoLocal,
+                                    SaldoAnterior = dbContext.CatalogoContableRepository.Find(notaCreditoProveedoresParam.IdCuenta).SaldoActual
                                 };
                                 asiento.DetalleAsiento.Add(detalleAsiento);
                                 asiento.TotalCredito += detalleAsiento.Credito;
