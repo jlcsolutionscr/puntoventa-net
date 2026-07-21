@@ -257,8 +257,9 @@ namespace LeandroSoftware.Common.Parametros
             new TipoParametroContable(13, "Cuentas por pagar a proveedores", StaticTipoParametroContable.CuentasPorPagarProveedores, false),
             new TipoParametroContable(14, "Cuentas de ingresos en efectivo", StaticTipoParametroContable.CuentaDeIngresos, true),
             new TipoParametroContable(15, "Cuentas de egresos en efectivo", StaticTipoParametroContable.CuentaDeEgresos, true),
-            new TipoParametroContable(16, "Notas de credito de clientes", StaticTipoParametroContable.NotaCreditoClientes, true),
-            new TipoParametroContable(17, "Cuenta de perdidas y ganancias", StaticTipoParametroContable.PerdidasyGanancias, false)
+            new TipoParametroContable(16, "Notas de credito de clientes", StaticTipoParametroContable.NotaCreditoClientes, false),
+            new TipoParametroContable(17, "Notas de credito de proveedores", StaticTipoParametroContable.NotaCreditoProveedores, false),
+            new TipoParametroContable(18, "Cuenta de perdidas y ganancias", StaticTipoParametroContable.PerdidasyGanancias, false)
         };
 
         public static IList<TipoParametroContable> ObtenerListado()

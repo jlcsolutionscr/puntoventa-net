@@ -1967,7 +1967,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
 
         IList<LlaveDescripcion> ObtenerListadoFormaPagoEmpresa()
         {
-            return FormaDePago.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque }.Contains(x.Id)).ToList();
+            return FormaDePago.ObtenerListado().Where(x => new[] { StaticFormaPago.Efectivo, StaticFormaPago.TransferenciaDepositoBancario, StaticFormaPago.Cheque, StaticFormaPago.NotaCredito }.Contains(x.Id)).ToList();
         }
 
         public void AgregarBancoAdquiriente(BancoAdquiriente bancoAdquiriente)

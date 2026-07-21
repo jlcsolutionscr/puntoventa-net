@@ -165,6 +165,7 @@ namespace LeandroSoftware.Common.Constantes
         public static readonly string CuentaDeIngresos = "CuentaDeIngresos";
         public static readonly string CuentaDeEgresos = "CuentaDeEgresos";
         public static readonly string NotaCreditoClientes = "NotaCreditoClientes";
+        public static readonly string NotaCreditoProveedores = "NotaCreditoProveedores";
         public static readonly string PerdidasyGanancias = "PerdidasyGanancias";
     };
 }
