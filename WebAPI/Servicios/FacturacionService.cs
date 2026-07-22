@@ -33,8 +33,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarFacturaCompra(FacturaCompra facturaCompra);
         string AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion);
         Factura ObtenerFactura(int intIdFactura);
-        int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolExcluyePendientesPago, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
-        IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolExcluyePendientesPago, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
+        int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolFiltraPendientesPago, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
+        IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolFiltraPendientesPago, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
         string AgregarProforma(Proforma proforma);
         void ActualizarProforma(Proforma proforma);
         void AnularProforma(int intIdProforma, int intIdUsuario, string strMotivoAnulacion);
@@ -1251,7 +1251,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolExcluyePendientesPago, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal)
+        public int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolFiltraPendientesPago, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1261,8 +1261,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
-                    if (bolExcluyePendientesPago)
-                        listado = listado.Where(x => !x.PendientePago);
+                    if (bolFiltraPendientesPago)
+                        listado = listado.Where(x => x.PendientePago);
                     if (intIdFactura > 0)
                         listado = listado.Where(x => x.ConsecFactura == intIdFactura);
                     if (!strNombre.Equals(string.Empty))
@@ -1285,7 +1285,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolExcluyePendientesPago, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal)
+        public IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolFiltraPendientesPago, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1296,8 +1296,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
-                    if (bolExcluyePendientesPago)
-                        listado = listado.Where(x => !x.PendientePago);
+                    if (bolFiltraPendientesPago)
+                        listado = listado.Where(x => x.PendientePago);
                     if (intIdFactura > 0)
                         listado = listado.Where(x => x.ConsecFactura == intIdFactura);
                     if (!strNombre.Equals(string.Empty))
@@ -1313,7 +1313,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var factura in listado)
                     {
                         string strEstado = factura.IdDocElectronicoRev != null ? "Anulando" : "Activa";
-                        FacturaDetalle item = new FacturaDetalle(factura.IdFactura, factura.ConsecFactura, factura.NombreCliente, factura.Cliente.Identificacion, factura.Fecha.ToString("dd/MM/yyyy"), factura.Gravado, factura.Exonerado, factura.Excento, factura.Impuesto, factura.Total, 0, strEstado, "", factura.Nulo);
+                        FacturaDetalle item = new FacturaDetalle(factura.IdFactura, factura.ConsecFactura, factura.NombreCliente, factura.Cliente.Identificacion, factura.Fecha.ToString("dd/MM/yyyy"), factura.Gravado, factura.Exonerado, factura.Excento, factura.Impuesto, factura.Total, 0, strEstado, "", factura.Nulo, factura.PendientePago);
                         listaFactura.Add(item);
                     }
                     return listaFactura;
@@ -1539,7 +1539,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var proforma in proformas)
                     {
                         string strEstado = "Activa";
-                        FacturaDetalle item = new FacturaDetalle(proforma.IdProforma, proforma.ConsecProforma, proforma.NombreCliente, proforma.Cliente.Identificacion, proforma.Fecha.ToString("dd/MM/yyyy"), proforma.Gravado, proforma.Exonerado, proforma.Excento, proforma.Impuesto, proforma.Total, 0, strEstado, "", proforma.Nulo);
+                        FacturaDetalle item = new FacturaDetalle(proforma.IdProforma, proforma.ConsecProforma, proforma.NombreCliente, proforma.Cliente.Identificacion, proforma.Fecha.ToString("dd/MM/yyyy"), proforma.Gravado, proforma.Exonerado, proforma.Excento, proforma.Impuesto, proforma.Total, 0, strEstado, "", proforma.Nulo, false);
                         listaProforma.Add(item);
                     }
                     return listaProforma;
@@ -1737,7 +1737,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var apartado in listado)
                     {
                         string strEstado = "Activa";
-                        FacturaDetalle item = new FacturaDetalle(apartado.IdApartado, apartado.ConsecApartado, apartado.NombreCliente, apartado.Cliente.Identificacion, apartado.Fecha.ToString("dd/MM/yyyy"), apartado.Gravado, apartado.Exonerado, apartado.Excento, apartado.Impuesto, apartado.Total, apartado.Total - apartado.MontoAdelanto, strEstado, "", apartado.Nulo);
+                        FacturaDetalle item = new FacturaDetalle(apartado.IdApartado, apartado.ConsecApartado, apartado.NombreCliente, apartado.Cliente.Identificacion, apartado.Fecha.ToString("dd/MM/yyyy"), apartado.Gravado, apartado.Exonerado, apartado.Excento, apartado.Impuesto, apartado.Total, apartado.Total - apartado.MontoAdelanto, strEstado, "", apartado.Nulo, false);
                         listaApartado.Add(item);
                     }
                     return listaApartado;
@@ -2159,7 +2159,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var ordenServicio in listado)
                     {
                         string strEstado = "Activa";
-                        FacturaDetalle item = new FacturaDetalle(ordenServicio.IdOrden, ordenServicio.ConsecOrdenServicio, ordenServicio.NombreCliente, ordenServicio.Cliente.Identificacion, ordenServicio.Fecha.ToString("dd/MM/yyyy"), ordenServicio.Gravado, 0, ordenServicio.Excento, ordenServicio.Impuesto, ordenServicio.Total, ordenServicio.Total - ordenServicio.MontoAdelanto, strEstado, ordenServicio.Descripcion, ordenServicio.Nulo);
+                        FacturaDetalle item = new FacturaDetalle(ordenServicio.IdOrden, ordenServicio.ConsecOrdenServicio, ordenServicio.NombreCliente, ordenServicio.Cliente.Identificacion, ordenServicio.Fecha.ToString("dd/MM/yyyy"), ordenServicio.Gravado, 0, ordenServicio.Excento, ordenServicio.Impuesto, ordenServicio.Total, ordenServicio.Total - ordenServicio.MontoAdelanto, strEstado, ordenServicio.Descripcion, ordenServicio.Nulo, false);
                         listaOrdenServicio.Add(item);
                     }
                     return listaOrdenServicio;
@@ -2612,7 +2612,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var devolucion in listado)
                     {
                         string strEstado = "Activa";
-                        FacturaDetalle item = new FacturaDetalle(devolucion.IdDevolucion, devolucion.IdDevolucion, devolucion.NombreCliente, devolucion.Cliente.Identificacion, devolucion.Fecha.ToString("dd/MM/yyyy"), devolucion.Gravado, 0, devolucion.Excento, devolucion.Impuesto, devolucion.Total, 0, strEstado, "", devolucion.Nulo);
+                        FacturaDetalle item = new FacturaDetalle(devolucion.IdDevolucion, devolucion.IdDevolucion, devolucion.NombreCliente, devolucion.Cliente.Identificacion, devolucion.Fecha.ToString("dd/MM/yyyy"), devolucion.Gravado, 0, devolucion.Excento, devolucion.Impuesto, devolucion.Total, 0, strEstado, "", devolucion.Nulo, false);
                         listaDevoluciones.Add(item);
                     }
                     return listaDevoluciones;

@@ -414,7 +414,7 @@ namespace LeandroSoftware.Common.DatosComunes
     {
         public FacturaDetalle() { }
 
-        public FacturaDetalle(int id, int consecutivo, string nombreCliente, string identificacion, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total, decimal saldo, string estado, string descripcion, bool nulo)
+        public FacturaDetalle(int id, int consecutivo, string nombreCliente, string identificacion, string fecha, decimal gravado, decimal exonerado, decimal excento, decimal impuesto, decimal total, decimal saldo, string estado, string descripcion, bool nulo, bool pendiente)
         {
             IdFactura = id;
             Consecutivo = consecutivo;
@@ -430,6 +430,7 @@ namespace LeandroSoftware.Common.DatosComunes
             Estado = estado;
             Descripcion = descripcion;
             Nulo = nulo;
+            PendientePago = pendiente;
         }
         public int IdFactura { get; set; }
         public int Consecutivo { get; set; }
@@ -445,6 +446,7 @@ namespace LeandroSoftware.Common.DatosComunes
         public string Estado { get; set; }
         public string Descripcion { get; set; }
         public bool Nulo { get; set; }
+        public bool PendientePago { get; set; }
     }
 
     public class TrasladoDetalle

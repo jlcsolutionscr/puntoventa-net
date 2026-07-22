@@ -76,7 +76,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static bool bolAplicado;
         private static bool bolExcluyeAplicados;
         private static bool bolExcluyeNulos;
-        private static bool bolExcluyePendientesPago;
+        private static bool bolFiltraPendientesPago;
         private static string strIdentificacion;
         private static string strCodigo;
         private static string strCodigoProveedor;
@@ -877,26 +877,26 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     bolExcluyeNulos = parametrosJO.Property("ExcluyeNulos") != null ? bool.Parse(parametrosJO.Property("ExcluyeNulos").Value.ToString()) : false;
-                    bolExcluyePendientesPago = parametrosJO.Property("ExcluyePendientesPago") != null ? bool.Parse(parametrosJO.Property("ExcluyePendientesPago").Value.ToString()) : true;
+                    bolFiltraPendientesPago = parametrosJO.Property("FiltraPendientesPago") != null ? bool.Parse(parametrosJO.Property("FiltraPendientesPago").Value.ToString()) : false;
                     intIdLlave1 = parametrosJO.Property("IdFactura") != null ? int.Parse(parametrosJO.Property("IdFactura").Value.ToString()) : 0;
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
                     strIdentificacion = parametrosJO.Property("Identificacion") != null ? parametrosJO.Property("Identificacion").Value.ToString() : "";
                     strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
-                    intTotalLista = _servicioFacturacion.ObtenerTotalListaFacturas(intIdEmpresa, intIdSucursal, bolExcluyeNulos, bolExcluyePendientesPago, intIdLlave1, strNombre, strIdentificacion, strFechaFinal);
+                    intTotalLista = _servicioFacturacion.ObtenerTotalListaFacturas(intIdEmpresa, intIdSucursal, bolExcluyeNulos, bolFiltraPendientesPago, intIdLlave1, strNombre, strIdentificacion, strFechaFinal);
                     strRespuesta = JsonConvert.SerializeObject(intTotalLista);
                     break;
                 case "ObtenerListadoFacturas":
                     intIdEmpresa = int.Parse(parametrosJO.Property("IdEmpresa").Value.ToString());
                     intIdSucursal = int.Parse(parametrosJO.Property("IdSucursal").Value.ToString());
                     bolExcluyeNulos = parametrosJO.Property("ExcluyeNulos") != null ? bool.Parse(parametrosJO.Property("ExcluyeNulos").Value.ToString()) : false;
-                    bolExcluyePendientesPago = parametrosJO.Property("ExcluyePendientesPago") != null ? bool.Parse(parametrosJO.Property("ExcluyePendientesPago").Value.ToString()) : true;
+                    bolFiltraPendientesPago = parametrosJO.Property("FiltraPendientesPago") != null ? bool.Parse(parametrosJO.Property("FiltraPendientesPago").Value.ToString()) : false;
                     intNumeroPagina = int.Parse(parametrosJO.Property("NumeroPagina").Value.ToString());
                     intFilasPorPagina = int.Parse(parametrosJO.Property("FilasPorPagina").Value.ToString());
                     intIdLlave1 = parametrosJO.Property("IdFactura") != null ? int.Parse(parametrosJO.Property("IdFactura").Value.ToString()) : 0;
                     strNombre = parametrosJO.Property("Nombre") != null ? parametrosJO.Property("Nombre").Value.ToString() : "";
                     strIdentificacion = parametrosJO.Property("Identificacion") != null ? parametrosJO.Property("Identificacion").Value.ToString() : "";
                     strFechaFinal = parametrosJO.Property("FechaFinal") != null ? parametrosJO.Property("FechaFinal").Value.ToString() : "";
-                    IList<FacturaDetalle> listadoFacturas = _servicioFacturacion.ObtenerListadoFacturas(intIdEmpresa, intIdSucursal, bolExcluyeNulos, bolExcluyePendientesPago, intNumeroPagina, intFilasPorPagina, intIdLlave1, strNombre, strIdentificacion, strFechaFinal);
+                    IList<FacturaDetalle> listadoFacturas = _servicioFacturacion.ObtenerListadoFacturas(intIdEmpresa, intIdSucursal, bolExcluyeNulos, bolFiltraPendientesPago, intNumeroPagina, intFilasPorPagina, intIdLlave1, strNombre, strIdentificacion, strFechaFinal);
                     if (listadoFacturas.Count > 0)
                         strRespuesta = JsonConvert.SerializeObject(listadoFacturas);
                     break;
