@@ -49,6 +49,7 @@ namespace LeandroSoftware.Common.Dominio.Entidades
         public int? IdAnuladoPor { get; set; }
         public string MotivoAnulacion { get; set; }
         public bool Procesado { get; set; }
+        public bool PendientePago { get; set; }
         public string IdDocElectronico { get; set; }
         public string IdDocElectronicoRev { get; set; }
         public bool CerrarOrdenServicio{ get; set; }

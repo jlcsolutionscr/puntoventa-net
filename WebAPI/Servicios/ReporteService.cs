@@ -251,7 +251,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<ReporteDetalle> listaReporte = new List<ReporteDetalle>();
                     if (intTipoPago == -1)
                     {
-                        var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
+                        var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo && s.PendientePago == false)
                             .Select(x => new { x.IdCliente, x.Nulo, x.IdCondicionVenta, x.ConsecFactura, x.Fecha, x.NombreCliente, x.Impuesto, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto });
                         if (intIdCliente > 0)
                             detalleVentas = detalleVentas.Where(x => x.IdCliente == intIdCliente);
@@ -274,7 +274,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         var pagosEfectivo = new[] { StaticReporteCondicionVentaFormaPago.ContadoEfectivo, StaticReporteCondicionVentaFormaPago.ContadoTarjeta, StaticReporteCondicionVentaFormaPago.ContadoCheque, StaticReporteCondicionVentaFormaPago.ContadoTransferenciaDepositoBancario };
                         if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito || !pagosEfectivo.Contains(intTipoPago))
                         {
-                            var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo)
+                            var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == bolNulo && s.PendientePago == false)
                                 .Select(x => new { x.IdCliente, x.Nulo, x.IdCondicionVenta, x.ConsecFactura, x.Fecha, x.NombreCliente, x.Impuesto, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto });
                             if (intTipoPago == StaticReporteCondicionVentaFormaPago.Credito)
                                 detalleVentas = detalleVentas.Where(x => x.IdCondicionVenta == StaticCondicionVenta.Credito);
@@ -392,7 +392,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteVentasPorVendedor> listaReporte = new List<ReporteVentasPorVendedor>();
-                    var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == false)
+                    var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == false && s.PendientePago == false)
                         .Select(x => new { x.IdUsuario, x.Nulo, x.ConsecFactura, x.Fecha, NombreCliente = x.Cliente.Nombre, Total = x.Excento + x.Gravado + x.Exonerado + x.Impuesto, x.TotalCosto, x.Impuesto });
                     if (intIdVendedor > 0)
                         detalleVentas = detalleVentas.Where(x => x.IdUsuario == intIdVendedor);
@@ -971,7 +971,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<DescripcionValor> listaReporte = new List<DescripcionValor>();
-                    var ventasResumen = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
+                    var ventasResumen = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.PendientePago == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
                         .Join(dbContext.DetalleFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
                         .Join(dbContext.ProductoRepository, x => x.y.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
                         .Join(dbContext.LineaRepository, x => x.y.IdLinea, y => y.IdLinea, (x, y) => new { x, y })
@@ -1007,7 +1007,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteGrupoLineaDetalle> listaReporte = new List<ReporteGrupoLineaDetalle>();
-                    var ventasDetalle = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
+                    var ventasDetalle = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.PendientePago == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
                         .Join(dbContext.DetalleFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
                         .Join(dbContext.ProductoRepository, x => x.y.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
                         .Join(dbContext.LineaRepository, x => x.y.IdLinea, y => y.IdLinea, (x, y) => new { x, y });
@@ -1048,7 +1048,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
                     List<ReporteProductoTransitorio> listaReporte = new List<ReporteProductoTransitorio>();
-                    var ventasDetalle = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
+                    var ventasDetalle = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Nulo == false && s.PendientePago == false && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal)
                         .Join(dbContext.DetalleFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
                         .Join(dbContext.ProductoRepository, x => x.y.IdProducto, y => y.IdProducto, (x, y) => new { x, y })
                         .Join(dbContext.LineaRepository, x => x.y.IdLinea, y => y.IdLinea, (x, y) => new { x, y })
@@ -1884,7 +1884,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 {
                     DateTime datFechaInicial = DateTime.ParseExact(strFechaInicial + " 00:00:01", strFormat, provider);
                     DateTime datFechaFinal = DateTime.ParseExact(strFechaFinal + " 23:59:59", strFormat, provider);
-                    var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == false)
+                    var detalleVentas = dbContext.FacturaRepository.Where(s => s.IdEmpresa == intIdEmpresa && s.IdSucursal == intIdSucursal && s.Fecha >= datFechaInicial && s.Fecha <= datFechaFinal && s.Nulo == false && s.PendientePago == false)
                         .GroupBy(x => new { Month = x.Fecha.Month, Year = x.Fecha.Year })
                         .Select(x => new { Total = x.Sum(f => f.Excento + f.Gravado + f.Exonerado + f.Impuesto), Annio = x.Key.Year, Mes = x.Key.Month })
                         .OrderBy(x => x.Annio).ThenBy(x => x.Mes).ToList();
