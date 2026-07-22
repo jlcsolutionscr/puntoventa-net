@@ -33,8 +33,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         string AgregarFacturaCompra(FacturaCompra facturaCompra);
         string AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion);
         Factura ObtenerFactura(int intIdFactura);
-        int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
-        IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
+        int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolExcluyePendientesPago, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
+        IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolExcluyePendientesPago, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal);
         string AgregarProforma(Proforma proforma);
         void ActualizarProforma(Proforma proforma);
         void AnularProforma(int intIdProforma, int intIdUsuario, string strMotivoAnulacion);
@@ -1251,7 +1251,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal)
+        public int ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolExcluyePendientesPago, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1261,6 +1261,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
+                    if (bolExcluyePendientesPago)
+                        listado = listado.Where(x => !x.PendientePago);
                     if (intIdFactura > 0)
                         listado = listado.Where(x => x.ConsecFactura == intIdFactura);
                     if (!strNombre.Equals(string.Empty))
@@ -1283,7 +1285,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
-        public IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal)
+        public IList<FacturaDetalle> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolExcluyePendientesPago, int numPagina, int cantRec, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal)
         {
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
@@ -1294,6 +1296,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     var listado = dbContext.FacturaRepository.Include("Cliente").Where(x => x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal);
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
+                    if (bolExcluyePendientesPago)
+                        listado = listado.Where(x => !x.PendientePago);
                     if (intIdFactura > 0)
                         listado = listado.Where(x => x.ConsecFactura == intIdFactura);
                     if (!strNombre.Equals(string.Empty))
