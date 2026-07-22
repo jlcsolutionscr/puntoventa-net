@@ -33,6 +33,7 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
         private static CuentaEgreso? cuentaEgreso;
         private static CuentaIngreso? cuentaIngreso;
         private static CuentaBanco? cuentaBanco;
+        private static Factura? factura;
         private static Proforma? proforma;
         private static OrdenServicio? ordenServicio;
         private static MovimientoApartado? movimientoApartado;
@@ -309,6 +310,10 @@ namespace LeandroSoftware.ServicioWeb.WebServer.Controllers
                     intIdUsuario = int.Parse(parametrosJO.Property("IdUsuario").Value.ToString());
                     strMotivoAnulacion = parametrosJO.Property("MotivoAnulacion") != null ? parametrosJO.Property("MotivoAnulacion").Value.ToString() : "";
                     _servicioCompra.AnularCompra(intIdLlave1, intIdUsuario, strMotivoAnulacion);
+                    break;
+                case "ActualizarFactura":
+                    factura = JsonConvert.DeserializeObject<Factura>(strEntidad);
+                    _servicioFacturacion.ActualizarFactura(factura);
                     break;
                 case "AnularProforma":
                     intIdLlave1 = int.Parse(parametrosJO.Property("IdProforma").Value.ToString());

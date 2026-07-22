@@ -29,6 +29,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
         int ObtenerTotalListaClientes(int intIdEmpresa, string strNombre);
         IList<LlaveDescripcion> ObtenerListadoClientes(int intIdEmpresa, int numPagina, int cantRec, string strNombre);
         string AgregarFactura(Factura factura);
+        void ActualizarFactura(Factura factura);
         string AgregarFacturaCompra(FacturaCompra facturaCompra);
         string AnularFactura(int intIdFactura, int intIdUsuario, string strMotivoAnulacion);
         Factura ObtenerFactura(int intIdFactura);
@@ -354,44 +355,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (terminal == null) throw new BusinessException("No se logró obtener la información de la terminal que envia la solicitud. Por favor, pongase en contacto con su proveedor del servicio.");
                     factura.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     factura.Procesado = empresa.TipoContrato < StaticTipoContrato.PlanEmpresarial2;
-                    if (factura.IdOrdenServicio > 0)
-                    {
-                        OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(factura.IdOrdenServicio);
-                        foreach (var detalle in factura.DetalleFactura)
-                        {
-                            DetalleOrdenServicio detalleOrden = dbContext.DetalleOrdenServicioRepository.FirstOrDefault(x => x.IdOrden == factura.IdOrdenServicio && x.IdProducto == detalle.IdProducto);
-                            if (detalleOrden != null)
-                            {
-                                detalleOrden.Pagado = true;
-                                dbContext.NotificarModificacion(detalleOrden);
-                            }
-                        }
-                        if (factura.CerrarOrdenServicio == true)
-                        {
-                            ordenServicio.Aplicado = true;
-                            dbContext.NotificarModificacion(ordenServicio);
-                            PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdOrden == factura.IdOrdenServicio);
-                            if (puntoDeServicio != null)
-                            {
-                                puntoDeServicio.IdOrden = 0;
-                                dbContext.NotificarModificacion(puntoDeServicio);
-                            }
-                            List<TiqueteDespachoMercancia> listadoTiquete = dbContext.TiqueteDespachoMercanciaRepository.Where(x => x.IdReferencia == ordenServicio.IdOrden).ToList();
-                            dbContext.TiqueteDespachoMercanciaRepository.RemoveRange(listadoTiquete);
-                        }
-                    }
-                    if (factura.IdProforma > 0)
-                    {
-                        Proforma proforma = dbContext.ProformaRepository.Find(factura.IdProforma);
-                        proforma.Aplicado = true;
-                        dbContext.NotificarModificacion(proforma);
-                    }
-                    if (factura.IdApartado > 0)
-                    {
-                        Apartado apartado = dbContext.ApartadoRepository.Find(factura.IdApartado);
-                        apartado.Aplicado = true;
-                        dbContext.NotificarModificacion(apartado);
-                    }
                     factura.IdCxC = 0;
                     factura.IdAsiento = 0;
                     factura.IdMovBanco = 0;
@@ -461,6 +424,42 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             }
         }
 
+        public void ActualizarFactura(Factura factura)
+        {
+            if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
+            using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
+            {
+                try
+                {
+                    Empresa empresa = dbContext.EmpresaRepository.Find(factura.IdEmpresa);
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    Factura invoiceNoTracking = dbContext.FacturaRepository.AsNoTracking().Where(x => x.IdFactura == factura.IdFactura).FirstOrDefault();
+                    if (invoiceNoTracking == null) throw new BusinessException("La factura no está registrada en el sistema. Por favor verifiue la información suministrada!");
+                    if (invoiceNoTracking.Nulo) throw new BusinessException("La factura no puede ser actualizada porque se encuentra anulada!");
+                    if (invoiceNoTracking.Procesado) throw new BusinessException("La factura no puede ser actualizada porque ya fue procesada en el cierre de efectivo!");
+                    if (!invoiceNoTracking.PendientePago) throw new BusinessException("La factura no puede ser actualizada porque ya fue cancelada!");
+                    List<DetalleFactura> listadoDetalleAnterior = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura).ToList();
+                    List<DetalleFactura> listadoDetalle = factura.DetalleFactura.ToList();
+                    factura.DetalleFactura = null;
+                    dbContext.NotificarModificacion(factura);
+                    dbContext.DetalleFacturaRepository.RemoveRange(listadoDetalleAnterior);
+                    dbContext.DetalleFacturaRepository.AddRange(listadoDetalle);
+                    dbContext.Commit();
+                }
+                catch (BusinessException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    dbContext.RollBack();
+                    if (_logger != null) _logger.LogError("Error al actualizar el registro de factura: ", ex);
+                    if (_config?.EsModoDesarrollo ?? false) throw ex.InnerException ?? ex;
+                    else throw new Exception("Se produjo un error actualizando la información de la factura. Por favor consulte con su proveedor.");
+                }
+            }
+        }
+
         private void FinalizarFactura(Factura factura, Cliente cliente, SucursalPorEmpresa sucursal, Empresa empresa, CuentaPorCobrar cuentaPorCobrar, Asiento asiento, MovimientoBanco movimientoBanco, DocumentoElectronico documentoFE, LeandroContext dbContext)
         {
             decimal decTotalCostoVentas = 0;
@@ -478,6 +477,44 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             dtbInventarios.Columns.Add("Total", typeof(decimal));
             dtbInventarios.PrimaryKey = new DataColumn[] { dtbInventarios.Columns[0] };
             factura.PendientePago = false;
+            if (factura.IdOrdenServicio > 0)
+            {
+                OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(factura.IdOrdenServicio);
+                foreach (var detalle in factura.DetalleFactura)
+                {
+                    DetalleOrdenServicio detalleOrden = dbContext.DetalleOrdenServicioRepository.FirstOrDefault(x => x.IdOrden == factura.IdOrdenServicio && x.IdProducto == detalle.IdProducto);
+                    if (detalleOrden != null)
+                    {
+                        detalleOrden.Pagado = true;
+                        dbContext.NotificarModificacion(detalleOrden);
+                    }
+                }
+                if (factura.CerrarOrdenServicio == true)
+                {
+                    ordenServicio.Aplicado = true;
+                    dbContext.NotificarModificacion(ordenServicio);
+                    PuntoDeServicio puntoDeServicio = dbContext.PuntoDeServicioRepository.FirstOrDefault(x => x.IdEmpresa == ordenServicio.IdEmpresa && x.IdSucursal == ordenServicio.IdSucursal && x.IdOrden == factura.IdOrdenServicio);
+                    if (puntoDeServicio != null)
+                    {
+                        puntoDeServicio.IdOrden = 0;
+                        dbContext.NotificarModificacion(puntoDeServicio);
+                    }
+                    List<TiqueteDespachoMercancia> listadoTiquete = dbContext.TiqueteDespachoMercanciaRepository.Where(x => x.IdReferencia == ordenServicio.IdOrden).ToList();
+                    dbContext.TiqueteDespachoMercanciaRepository.RemoveRange(listadoTiquete);
+                }
+            }
+            if (factura.IdProforma > 0)
+            {
+                Proforma proforma = dbContext.ProformaRepository.Find(factura.IdProforma);
+                proforma.Aplicado = true;
+                dbContext.NotificarModificacion(proforma);
+            }
+            if (factura.IdApartado > 0)
+            {
+                Apartado apartado = dbContext.ApartadoRepository.Find(factura.IdApartado);
+                apartado.Aplicado = true;
+                dbContext.NotificarModificacion(apartado);
+            }
             if (empresa.TipoContrato >= 6)
             {
                 foreach (var detalleFactura in factura.DetalleFactura)
@@ -1338,10 +1375,12 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     Empresa empresa = dbContext.EmpresaRepository.Find(proforma.IdEmpresa);
-                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
-                    if (empresa.TipoContrato < StaticTipoContrato.PlanPYMES) throw new BusinessException("El plan de servicios contratado no permite actualizar proformas. Por favor consulte con su proveedor del servicio.");
-                    Proforma ordenNoTracking = dbContext.ProformaRepository.AsNoTracking().Where(x => x.IdProforma == proforma.IdProforma).FirstOrDefault();
-                    if (ordenNoTracking != null && ordenNoTracking.Aplicado) throw new BusinessException("La proforma no puede ser modificada porque ya fue facturada.");
+                    if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio!");
+                    if (empresa.TipoContrato < StaticTipoContrato.PlanPYMES) throw new BusinessException("El plan de servicios contratado no permite actualizar proformas. Por favor consulte con su proveedor del servicio!");
+                    Proforma proformaNoTracking = dbContext.ProformaRepository.AsNoTracking().Where(x => x.IdProforma == proforma.IdProforma).FirstOrDefault();
+                    if (proformaNoTracking == null) throw new BusinessException("La proforma no está registrada en el sistema. Por favor verifique la información suministrada!");
+                    if (proformaNoTracking.Nulo) throw new BusinessException("La proforma no puede ser modificada porque ya se encuentra anulada!");
+                    if (proformaNoTracking.Aplicado) throw new BusinessException("La proforma no puede ser modificada porque ya fue facturada!");
                     List<DetalleProforma> listadoDetalleAnterior = dbContext.DetalleProformaRepository.Where(x => x.IdProforma == proforma.IdProforma).ToList();
                     List<DetalleProforma> listadoDetalle = proforma.DetalleProforma.ToList();
                     proforma.DetalleProforma = null;
@@ -1770,9 +1809,11 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     Empresa empresa = dbContext.EmpresaRepository.Find(ordenServicio.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (empresa.TipoContrato < StaticTipoContrato.PlanEmpresarial1) throw new BusinessException("El plan de servicios contratado no permite actualizar órdenes de servicio. Por favor consulte con su proveedor del servicio.");
-                    OrdenServicio ordenNoTracking = dbContext.OrdenServicioRepository.AsNoTracking().Where(x => x.IdOrden == ordenServicio.IdOrden).FirstOrDefault();
-                    if (ordenNoTracking != null && ordenNoTracking.Aplicado) throw new BusinessException("La orden de servicio no puede ser modificada porque ya fue facturada.");
-                    if (ordenServicio.MontoAdelanto != ordenNoTracking.MontoAdelanto) ordenServicio.MontoAdelanto = ordenNoTracking.MontoAdelanto;
+                    OrdenServicio orderNoTracking = dbContext.OrdenServicioRepository.AsNoTracking().Where(x => x.IdOrden == ordenServicio.IdOrden).FirstOrDefault();
+                    if (orderNoTracking == null) throw new BusinessException("La orden de servicio no está registrada en el sistema. Por favor verifique la información suministrada!");
+                    if (orderNoTracking.Nulo) throw new BusinessException("La orden de servicio no puede ser modificada porque ya se encuentra anulada!");
+                    if (orderNoTracking.Aplicado) throw new BusinessException("La orden de servicio no puede ser modificada porque ya fue facturada!");
+                    if (ordenServicio.MontoAdelanto != orderNoTracking.MontoAdelanto) ordenServicio.MontoAdelanto = orderNoTracking.MontoAdelanto;
                     List<DetalleOrdenServicio> listadoDetalleAnterior = dbContext.DetalleOrdenServicioRepository.Where(x => x.IdOrden == ordenServicio.IdOrden).ToList();
                     List<DetalleOrdenServicio> listadoDetalle = ordenServicio.DetalleOrdenServicio.ToList();
                     foreach (DetalleOrdenServicio detalle in listadoDetalle)
