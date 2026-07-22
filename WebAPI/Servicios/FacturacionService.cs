@@ -355,7 +355,6 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (terminal == null) throw new BusinessException("No se logró obtener la información de la terminal que envia la solicitud. Por favor, pongase en contacto con su proveedor del servicio.");
                     factura.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     factura.Procesado = empresa.TipoContrato < StaticTipoContrato.PlanEmpresarial2;
-                    factura.PendientePago = true;
                     factura.IdCxC = 0;
                     factura.IdAsiento = 0;
                     factura.IdMovBanco = 0;
@@ -377,10 +376,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(sucursal);
                     factura.ConsecFactura = sucursal.ConsecFactura;
                     dbContext.FacturaRepository.Add(factura);
-                    if (!empresa.HabilitaPreFactura || factura.IdCondicionVenta == StaticCondicionVenta.Credito)
-                    {
+                    if (factura.PendientePago == false)
                         FinalizarFactura(factura, cliente, sucursal, empresa, cuentaPorCobrar, asiento, movimientoBanco, documentoFE, dbContext);
-                    }
                     dbContext.Commit();
                     if (cuentaPorCobrar != null)
                     {
@@ -430,10 +427,31 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             if (_serviceScopeFactory == null) throw new Exception("Service factory not set");
             using (var dbContext = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<LeandroContext>())
             {
+                CuentaPorCobrar cuentaPorCobrar = null;
+                Asiento asiento = null;
+                MovimientoBanco movimientoBanco = null;
+                DocumentoElectronico documentoFE = null;
                 try
                 {
+                    if (factura.Total == 0) throw new BusinessException("El monto de la factura no puede ser 0. Por favor, verifique la información!");
                     Empresa empresa = dbContext.EmpresaRepository.Find(factura.IdEmpresa);
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
+                    if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
+                    TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal && x.IdTerminal == factura.IdTerminal).FirstOrDefault();
+                    if (terminal == null) throw new BusinessException("No se logró obtener la información de la terminal que envia la solicitud. Por favor, pongase en contacto con su proveedor del servicio.");
+                    Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
+                    if (cliente == null) throw new BusinessException("El cliente asignado a la factura no existe!");
+                    if (cliente.IdCliente > 1)
+                    {
+                        if (cliente.IdTipoIdentificacion == 0 && cliente.Identificacion.Length != 9)
+                            throw new BusinessException("El cliente posee una identificación de tipo 'Cedula física' con una longitud inadecuada. Deben ser 9 caracteres.");
+                        if (cliente.IdTipoIdentificacion == 1 && cliente.Identificacion.Length != 10)
+                            throw new BusinessException("El cliente posee una identificación de tipo 'Cedula jurídica' con una longitud inadecuada. Deben ser 10 caracteres");
+                        if (cliente.IdTipoIdentificacion > 1 && (cliente.Identificacion.Length < 11 || cliente.Identificacion.Length > 12))
+                            throw new BusinessException("El cliente posee una identificación de tipo 'DIMEX o DITE' con una longitud inadecuada. Deben ser 11 o 12 caracteres");
+                    }
                     Factura invoiceNoTracking = dbContext.FacturaRepository.AsNoTracking().Where(x => x.IdFactura == factura.IdFactura).FirstOrDefault();
                     if (invoiceNoTracking == null) throw new BusinessException("La factura no está registrada en el sistema. Por favor verifiue la información suministrada!");
                     if (invoiceNoTracking.Nulo) throw new BusinessException("La factura no puede ser actualizada porque se encuentra anulada!");
@@ -445,7 +463,35 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.NotificarModificacion(factura);
                     dbContext.DetalleFacturaRepository.RemoveRange(listadoDetalleAnterior);
                     dbContext.DetalleFacturaRepository.AddRange(listadoDetalle);
+                    if (factura.PendientePago == false)
+                        FinalizarFactura(factura, cliente, sucursal, empresa, cuentaPorCobrar, asiento, movimientoBanco, documentoFE, dbContext);
                     dbContext.Commit();
+                    if (cuentaPorCobrar != null)
+                    {
+                        factura.IdCxC = cuentaPorCobrar.IdCxC;
+                        dbContext.NotificarModificacion(factura);
+                        cuentaPorCobrar.NroDocOrig = factura.IdFactura;
+                        dbContext.NotificarModificacion(cuentaPorCobrar);
+                    }
+                    if (asiento != null)
+                    {
+                        factura.IdAsiento = asiento.IdAsiento;
+                        dbContext.NotificarModificacion(factura);
+                        asiento.Detalle += factura.IdFactura;
+                        dbContext.NotificarModificacion(asiento);
+                    }
+                    if (movimientoBanco != null)
+                    {
+                        factura.IdMovBanco = movimientoBanco.IdMov;
+                        dbContext.NotificarModificacion(factura);
+                        movimientoBanco.Descripcion += factura.IdFactura;
+                        dbContext.NotificarModificacion(movimientoBanco);
+                    }
+                    if (cuentaPorCobrar != null || asiento != null || movimientoBanco != null) dbContext.Commit();
+                    if (documentoFE != null)
+                    {
+                        Task.Run(() => EnviarDocumentoElectronico(empresa.IdEmpresa, documentoFE));
+                    }
                 }
                 catch (BusinessException)
                 {
