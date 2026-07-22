@@ -355,6 +355,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (terminal == null) throw new BusinessException("No se logró obtener la información de la terminal que envia la solicitud. Por favor, pongase en contacto con su proveedor del servicio.");
                     factura.Fecha = Validador.ObtenerFechaHoraCostaRica();
                     factura.Procesado = empresa.TipoContrato < StaticTipoContrato.PlanEmpresarial2;
+                    factura.PendientePago = true;
                     factura.IdCxC = 0;
                     factura.IdAsiento = 0;
                     factura.IdMovBanco = 0;
