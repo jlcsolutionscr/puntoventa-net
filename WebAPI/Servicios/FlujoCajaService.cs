@@ -818,7 +818,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     cierre.RetiroEfectivo = 0;
                     cierre.LiquidacionTarjeta = 0;
 
-                    List<Factura> facturas = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.PendientePago == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    List<Factura> facturas = dbContext.FacturaRepository.Where(x => !x.Nulo && !x.PendientePago && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (facturas.Count > 0)
                     {
                         var pagosFacturas = facturas.Join(dbContext.DesglosePagoFacturaRepository, x => x.IdFactura, y => y.IdFactura, (x, y) => new { x, y })
@@ -870,7 +870,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    List<Factura> facturasCredito = dbContext.FacturaRepository.Where(x => x.Nulo == false && x.PendientePago == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    List<Factura> facturasCredito = dbContext.FacturaRepository.Where(x => !x.Nulo && !x.PendientePago && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (facturasCredito.Count > 0)
                     {
                         foreach (var dato in facturasCredito)
@@ -887,7 +887,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    List<Apartado> apartados = dbContext.ApartadoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<Apartado> apartados = dbContext.ApartadoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (apartados.Count > 0)
                     {
                         var pagosApartados = apartados.Join(dbContext.DesglosePagoApartadoRepository, x => x.IdApartado, y => y.IdApartado, (x, y) => new { x, y })
@@ -939,7 +939,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    List<MovimientoApartado> movimientosapartado = dbContext.MovimientoApartadoRepository.Include("Apartado").Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<MovimientoApartado> movimientosapartado = dbContext.MovimientoApartadoRepository.Include("Apartado").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (movimientosapartado.Count > 0)
                     {
                         var pagosApartados = movimientosapartado.Join(dbContext.DesglosePagoMovimientoApartadoRepository, x => x.IdMovApartado, y => y.IdMovApartado, (x, y) => new { x, y })
@@ -991,7 +991,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    List<OrdenServicio> ordenes = dbContext.OrdenServicioRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<OrdenServicio> ordenes = dbContext.OrdenServicioRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (ordenes.Count > 0)
                     {
                         var pagosOrdenes = ordenes.Join(dbContext.DesglosePagoOrdenServicioRepository, x => x.IdOrden, y => y.IdOrden, (x, y) => new { x, y })
@@ -1043,7 +1043,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    List<MovimientoOrdenServicio> movimientosOrdenServicio = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<MovimientoOrdenServicio> movimientosOrdenServicio = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (movimientosOrdenServicio.Count > 0)
                     {
                         var pagosOrdenes = movimientosOrdenServicio.Join(dbContext.DesglosePagoMovimientoOrdenServicioRepository, x => x.IdMovOrden, y => y.IdMovOrden, (x, y) => new { x, y })
@@ -1095,7 +1095,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    List<MovimientoCuentaPorCobrar> movimientosCxC = dbContext.MovimientoCuentaPorCobrarRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<MovimientoCuentaPorCobrar> movimientosCxC = dbContext.MovimientoCuentaPorCobrarRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (movimientosCxC.Count > 0)
                     {
                         var pagosCxC = movimientosCxC.Join(dbContext.DesglosePagoMovimientoCuentaPorCobrarRepository, x => x.IdMovCxC, y => y.IdMovCxC, (x, y) => new { x, y })
@@ -1147,7 +1147,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    List<Ingreso> ingresosEfectivo = dbContext.IngresoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<Ingreso> ingresosEfectivo = dbContext.IngresoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (ingresosEfectivo.Count > 0)
                     {
                         foreach (var dato in ingresosEfectivo)
@@ -1164,7 +1164,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    /*List<DevolucionProveedor> movDevolucionesProveedores = dbContext.DevolucionProveedorRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).Join(dbContext.DesglosePagoDevolucionProveedorRepository, x => x.IdDevolucion, y => y.IdDevolucion, (x, y) => new { x, y })
+                    /*List<DevolucionProveedor> movDevolucionesProveedores = dbContext.DevolucionProveedorRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).Join(dbContext.DesglosePagoDevolucionProveedorRepository, x => x.IdDevolucion, y => y.IdDevolucion, (x, y) => new { x, y })
                         .GroupBy(x => x.y.IdFormaPago).Select(x => new { x.Key, Total = x.Sum(y => y.y.MontoLocal) });
                     foreach (var dato in movDevolucionesProveedores)
                     {
@@ -1172,7 +1172,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                             cierre.DevolucionesProveedores = dato.Total;
                     }*/
 
-                    List<Compra> compras = dbContext.CompraRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    List<Compra> compras = dbContext.CompraRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta != StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (compras.Count > 0)
                     {
                         var pagosCompras = compras.Join(dbContext.DesglosePagoCompraRepository, x => x.IdCompra, y => y.IdCompra, (x, y) => new { x, y })
@@ -1206,7 +1206,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    List<Compra> comprasCredito = dbContext.CompraRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
+                    List<Compra> comprasCredito = dbContext.CompraRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && x.IdCondicionVenta == StaticCondicionVenta.Credito && !x.Procesado).ToList();
                     if (comprasCredito.Count > 0)
                     {
                         foreach (var dato in comprasCredito)
@@ -1223,7 +1223,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    List<MovimientoCuentaPorPagar> movimientosCxP = dbContext.MovimientoCuentaPorPagarRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    List<MovimientoCuentaPorPagar> movimientosCxP = dbContext.MovimientoCuentaPorPagarRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (movimientosCxP.Count > 0)
                     {
                         var pagosCxP = movimientosCxP.Join(dbContext.DesglosePagoMovimientoCuentaPorPagarRepository, x => x.IdMovCxP, y => y.IdMovCxP, (x, y) => new { x, y })
@@ -1257,7 +1257,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    var egresosEfectivo = dbContext.EgresoRepository.Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    var egresosEfectivo = dbContext.EgresoRepository.Where(x => !x.Nulo && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
                     if (egresosEfectivo.Count > 0)
                     {
                         foreach (var dato in egresosEfectivo)
