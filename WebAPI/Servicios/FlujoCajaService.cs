@@ -1043,10 +1043,10 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         }
                     }
 
-                    List<MovimientoOrdenServicio> MovimientosordenServicio = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
-                    if (MovimientosordenServicio.Count > 0)
+                    List<MovimientoOrdenServicio> movimientosOrdenServicio = dbContext.MovimientoOrdenServicioRepository.Include("OrdenServicio").Where(x => x.Nulo == false && x.IdEmpresa == intIdEmpresa && x.IdSucursal == intIdSucursal && !x.Procesado).ToList();
+                    if (movimientosOrdenServicio.Count > 0)
                     {
-                        var pagosOrdenes = MovimientosordenServicio.Join(dbContext.DesglosePagoMovimientoOrdenServicioRepository, x => x.IdMovOrden, y => y.IdMovOrden, (x, y) => new { x, y })
+                        var pagosOrdenes = movimientosOrdenServicio.Join(dbContext.DesglosePagoMovimientoOrdenServicioRepository, x => x.IdMovOrden, y => y.IdMovOrden, (x, y) => new { x, y })
                             .Select(y => new { y.x.IdMovOrden, y.x.Fecha, y.x.OrdenServicio.ConsecOrdenServicio, y.y.IdFormaPago, y.y.IdReferencia, y.y.MontoLocal });
                         foreach (var dato in pagosOrdenes)
                         {
