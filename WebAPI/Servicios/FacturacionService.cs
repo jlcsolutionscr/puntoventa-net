@@ -434,13 +434,21 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                 try
                 {
                     if (factura.Total == 0) throw new BusinessException("El monto de la factura no puede ser 0. Por favor, verifique la información!");
-                    Empresa empresa = dbContext.EmpresaRepository.Find(factura.IdEmpresa);
+                    Empresa empresa = dbContext.EmpresaRepository.Include("PlanFacturacion").Where(x => x.IdEmpresa == factura.IdEmpresa).FirstOrDefault();
                     if (empresa == null) throw new BusinessException("Empresa no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (!empresa.PermiteFacturar) throw new BusinessException("La empresa que envía la transacción no se encuentra activa en el sistema de facturación electrónica. Por favor, pongase en contacto con su proveedor del servicio.");
+                    if (empresa.FechaVence < Validador.ObtenerFechaHoraCostaRica()) throw new BusinessException("La vigencia del plan de facturación ha expirado. Por favor, pongase en contacto con su proveedor de servicio.");
                     SucursalPorEmpresa sucursal = dbContext.SucursalPorEmpresaRepository.FirstOrDefault(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal);
                     if (sucursal == null) throw new BusinessException("Sucursal no registrada en el sistema. Por favor, pongase en contacto con su proveedor del servicio.");
                     if (sucursal.CierreEnEjecucion) throw new BusinessException("Se está ejecutando el cierre en este momento. No es posible registrar la transacción.");
                     TerminalPorSucursal terminal = dbContext.TerminalPorSucursalRepository.Where(x => x.IdEmpresa == factura.IdEmpresa && x.IdSucursal == factura.IdSucursal && x.IdTerminal == factura.IdTerminal).FirstOrDefault();
                     if (terminal == null) throw new BusinessException("No se logró obtener la información de la terminal que envia la solicitud. Por favor, pongase en contacto con su proveedor del servicio.");
+                    factura.Fecha = Validador.ObtenerFechaHoraCostaRica();
+                    factura.Procesado = empresa.TipoContrato < StaticTipoContrato.PlanEmpresarial2;
+                    factura.IdCxC = 0;
+                    factura.IdAsiento = 0;
+                    factura.IdMovBanco = 0;
+                    factura.IdNotaCredito = 0;
                     Cliente cliente = dbContext.ClienteRepository.Find(factura.IdCliente);
                     if (cliente == null) throw new BusinessException("El cliente asignado a la factura no existe!");
                     if (cliente.IdCliente > 1)
@@ -452,6 +460,8 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                         if (cliente.IdTipoIdentificacion > 1 && (cliente.Identificacion.Length < 11 || cliente.Identificacion.Length > 12))
                             throw new BusinessException("El cliente posee una identificación de tipo 'DIMEX o DITE' con una longitud inadecuada. Deben ser 11 o 12 caracteres");
                     }
+                    if (factura.IdCondicionVenta == StaticCondicionVenta.Credito && empresa.TipoContrato < StaticTipoContrato.PlanEmpresarial2)
+                        throw new BusinessException("El plan de servicios contratado no permite registrar ventas de crédito. Por favor consulte con su proveedor del servicio.");
                     Factura invoiceNoTracking = dbContext.FacturaRepository.AsNoTracking().Where(x => x.IdFactura == factura.IdFactura).FirstOrDefault();
                     if (invoiceNoTracking == null) throw new BusinessException("La factura no está registrada en el sistema. Por favor verifiue la información suministrada!");
                     if (invoiceNoTracking.Nulo) throw new BusinessException("La factura no puede ser actualizada porque se encuentra anulada!");
@@ -523,7 +533,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
             dtbInventarios.Columns.Add("IdLinea", typeof(int));
             dtbInventarios.Columns.Add("Total", typeof(decimal));
             dtbInventarios.PrimaryKey = new DataColumn[] { dtbInventarios.Columns[0] };
-            factura.PendientePago = false;
+            //factura.PendientePago = false;
             if (factura.IdOrdenServicio > 0)
             {
                 OrdenServicio ordenServicio = dbContext.OrdenServicioRepository.Find(factura.IdOrdenServicio);
