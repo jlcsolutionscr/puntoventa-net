@@ -472,6 +472,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     List<DetalleFactura> listadoDetalleAnterior = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura).ToList();
                     List<DetalleFactura> listadoDetalle = factura.DetalleFactura.ToList();
                     List<DesglosePagoFactura> listadoDesglosePagoAnterior = dbContext.DesglosePagoFacturaRepository.Where(x => x.IdFactura == factura.IdFactura).ToList();
+                    List<DesglosePagoFactura> listadoDesglosePago = factura.DesglosePagoFactura.ToList();
                     factura.DetalleFactura = null;
                     factura.DesglosePagoFactura = null;
                     dbContext.NotificarModificacion(factura);
@@ -480,7 +481,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     dbContext.DesglosePagoFacturaRepository.RemoveRange(listadoDesglosePagoAnterior);
                     if (factura.PendientePago == false)
                     {
-                        dbContext.DesglosePagoFacturaRepository.AddRange(factura.DesglosePagoFactura);
+                        dbContext.DesglosePagoFacturaRepository.AddRange(listadoDesglosePago);
                         FinalizarFactura(factura, cliente, sucursal, empresa, cuentaPorCobrar, asiento, movimientoBanco, documentoFE, dbContext);
                     }
                     dbContext.Commit();
