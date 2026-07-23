@@ -469,11 +469,14 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (!invoiceNoTracking.PendientePago) throw new BusinessException("La factura no puede ser actualizada porque ya fue cancelada!");
                     List<DetalleFactura> listadoDetalleAnterior = dbContext.DetalleFacturaRepository.Where(x => x.IdFactura == factura.IdFactura).ToList();
                     List<DetalleFactura> listadoDetalle = factura.DetalleFactura.ToList();
+                    List<DesglosePagoFactura> listadoDesglosePagoAnterior = dbContext.DesglosePagoFacturaRepository.Where(x => x.IdFactura == factura.IdFactura).ToList();
                     factura.DetalleFactura = null;
                     dbContext.NotificarModificacion(factura);
                     dbContext.DetalleFacturaRepository.RemoveRange(listadoDetalleAnterior);
                     dbContext.DetalleFacturaRepository.AddRange(listadoDetalle);
+                    dbContext.DesglosePagoFacturaRepository.RemoveRange(listadoDesglosePagoAnterior);
                     if (factura.PendientePago == false)
+                        dbContext.DesglosePagoFacturaRepository.AddRange(factura.DesglosePagoFactura);
                         FinalizarFactura(factura, cliente, sucursal, empresa, cuentaPorCobrar, asiento, movimientoBanco, documentoFE, dbContext);
                     dbContext.Commit();
                     if (cuentaPorCobrar != null)
