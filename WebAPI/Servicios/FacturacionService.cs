@@ -1378,7 +1378,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var factura in listado)
                     {
                         string strEstado = factura.IdDocElectronicoRev != null ? "Anulando" : "Activa";
-                        FacturaDetalle item = new FacturaDetalle(factura.IdFactura, factura.ConsecFactura, factura.NombreCliente, factura.Cliente.Identificacion, factura.Fecha.ToString("dd/MM/yyyy"), factura.Gravado, factura.Exonerado, factura.Excento, factura.Impuesto, factura.Total, 0, strEstado, "", factura.Nulo, factura.PendientePago);
+                        FacturaDetalle item = new FacturaDetalle(factura.IdFactura, factura.ConsecFactura, factura.NombreCliente, factura.Cliente.IdCliente > 1 ? factura.Cliente.Identificacion : "", factura.Fecha.ToString("dd/MM/yyyy"), factura.Gravado, factura.Exonerado, factura.Excento, factura.Impuesto, factura.Total, 0, strEstado, "", factura.Nulo, factura.PendientePago);
                         listaFactura.Add(item);
                     }
                     return listaFactura;
@@ -1604,7 +1604,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var proforma in proformas)
                     {
                         string strEstado = "Activa";
-                        FacturaDetalle item = new FacturaDetalle(proforma.IdProforma, proforma.ConsecProforma, proforma.NombreCliente, proforma.Cliente.Identificacion, proforma.Fecha.ToString("dd/MM/yyyy"), proforma.Gravado, proforma.Exonerado, proforma.Excento, proforma.Impuesto, proforma.Total, 0, strEstado, "", proforma.Nulo, false);
+                        FacturaDetalle item = new FacturaDetalle(proforma.IdProforma, proforma.ConsecProforma, proforma.NombreCliente, proforma.Cliente.IdCliente > 1 ? proforma.Cliente.Identificacion : "", proforma.Fecha.ToString("dd/MM/yyyy"), proforma.Gravado, proforma.Exonerado, proforma.Excento, proforma.Impuesto, proforma.Total, 0, strEstado, "", proforma.Nulo, false);
                         listaProforma.Add(item);
                     }
                     return listaProforma;
@@ -1802,7 +1802,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var apartado in listado)
                     {
                         string strEstado = "Activa";
-                        FacturaDetalle item = new FacturaDetalle(apartado.IdApartado, apartado.ConsecApartado, apartado.NombreCliente, apartado.Cliente.Identificacion, apartado.Fecha.ToString("dd/MM/yyyy"), apartado.Gravado, apartado.Exonerado, apartado.Excento, apartado.Impuesto, apartado.Total, apartado.Total - apartado.MontoAdelanto, strEstado, "", apartado.Nulo, false);
+                        FacturaDetalle item = new FacturaDetalle(apartado.IdApartado, apartado.ConsecApartado, apartado.NombreCliente, apartado.Cliente.IdCliente > 1 ? apartado.Cliente.Identificacion : "", apartado.Fecha.ToString("dd/MM/yyyy"), apartado.Gravado, apartado.Exonerado, apartado.Excento, apartado.Impuesto, apartado.Total, apartado.Total - apartado.MontoAdelanto, strEstado, "", apartado.Nulo, false);
                         listaApartado.Add(item);
                     }
                     return listaApartado;
@@ -2224,7 +2224,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     foreach (var ordenServicio in listado)
                     {
                         string strEstado = "Activa";
-                        FacturaDetalle item = new FacturaDetalle(ordenServicio.IdOrden, ordenServicio.ConsecOrdenServicio, ordenServicio.NombreCliente, ordenServicio.Cliente.Identificacion, ordenServicio.Fecha.ToString("dd/MM/yyyy"), ordenServicio.Gravado, 0, ordenServicio.Excento, ordenServicio.Impuesto, ordenServicio.Total, ordenServicio.Total - ordenServicio.MontoAdelanto, strEstado, ordenServicio.Descripcion, ordenServicio.Nulo, false);
+                        FacturaDetalle item = new FacturaDetalle(ordenServicio.IdOrden, ordenServicio.ConsecOrdenServicio, ordenServicio.NombreCliente, ordenServicio.Cliente.IdCliente > 1 ? ordenServicio.Cliente.Identificacion : "", ordenServicio.Fecha.ToString("dd/MM/yyyy"), ordenServicio.Gravado, 0, ordenServicio.Excento, ordenServicio.Impuesto, ordenServicio.Total, ordenServicio.Total - ordenServicio.MontoAdelanto, strEstado, ordenServicio.Descripcion, ordenServicio.Nulo, false);
                         listaOrdenServicio.Add(item);
                     }
                     return listaOrdenServicio;
