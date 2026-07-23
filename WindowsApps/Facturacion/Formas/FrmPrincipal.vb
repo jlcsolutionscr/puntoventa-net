@@ -37,6 +37,7 @@ Public Class FrmPrincipal
     Public bolModificaDescripcion As Boolean = False
     Public bolModificaCliente As Boolean = False
     Public bolModificaPrecioVenta As Boolean = False
+    Public bolFinalizaPagoFactura As Boolean = False
     Public productoTranstorio As Producto
     Public bolDescargaCancelada As Boolean = False
     Public decDescAutorizado As Decimal
@@ -767,6 +768,7 @@ Public Class FrmPrincipal
             bolModificaDescripcion = True
             bolModificaCliente = True
             bolModificaPrecioVenta = True
+            bolFinalizaPagoFactura = True
             For Each item As ToolStripMenuItem In mnuMenuPrincipal.Items
                 item.Visible = True
                 For Each subItem As ToolStripItem In item.DropDownItems
@@ -798,6 +800,7 @@ Public Class FrmPrincipal
                             If permiso.IdRole = 50 Then bolModificaDescripcion = True
                             If permiso.IdRole = 51 Then bolModificaCliente = True
                             If permiso.IdRole = 52 Then bolModificaPrecioVenta = True
+                            If permiso.IdRole = 205 Then bolFinalizaPagoFactura = True
                             If permiso.Role.MenuPadre <> "" Then
                                 objMenu = mnuMenuPrincipal.Items(permiso.Role.MenuPadre)
                                 objMenu.Visible = True

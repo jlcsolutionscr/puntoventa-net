@@ -1461,9 +1461,9 @@ namespace LeandroSoftware.ClienteWCF
             await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
-        public static async Task<int> ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal, string strToken)
+        public static async Task<int> ObtenerTotalListaFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolFiltraSoloPendientes, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerTotalListaFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", ExcluyeNulos: '" + bolExcluyeNulos + "', IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "', Identificacion: '" + strIdentificacion + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerTotalListaFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", ExcluyeNulos: '" + bolExcluyeNulos + "', FiltraPendientesPago: '" + bolFiltraSoloPendientes + "', IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "', Identificacion: '" + strIdentificacion + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             int intCantidad = 0;
             if (respuesta != "")
@@ -1471,9 +1471,9 @@ namespace LeandroSoftware.ClienteWCF
             return intCantidad;
         }
 
-        public static async Task<List<FacturaDetalle>> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, int intNumeroPagina, int intFilasPorPagina, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal, string strToken)
+        public static async Task<List<FacturaDetalle>> ObtenerListadoFacturas(int intIdEmpresa, int intIdSucursal, bool bolExcluyeNulos, bool bolFiltraSoloPendientes, int intNumeroPagina, int intFilasPorPagina, int intIdFactura, string strNombre, string strIdentificacion, string strFechaFinal, string strToken)
         {
-            string strDatos = "{NombreMetodo: 'ObtenerListadoFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", ExcluyeNulos: '" + bolExcluyeNulos + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "', Identificacion: '" + strIdentificacion + "', FechaFinal: '" + strFechaFinal + "'}}";
+            string strDatos = "{NombreMetodo: 'ObtenerListadoFacturas', Parametros: {IdEmpresa: " + intIdEmpresa + ", IdSucursal: " + intIdSucursal + ", ExcluyeNulos: '" + bolExcluyeNulos + "', FiltraPendientesPago: '" + bolFiltraSoloPendientes + "', NumeroPagina: " + intNumeroPagina + ",FilasPorPagina: " + intFilasPorPagina + ", IdFactura: " + intIdFactura + ", Nombre: '" + strNombre + "', Identificacion: '" + strIdentificacion + "', FechaFinal: '" + strFechaFinal + "'}}";
             string respuesta = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             List<FacturaDetalle> listado = new List<FacturaDetalle>();
             if (respuesta != "")
@@ -1497,6 +1497,13 @@ namespace LeandroSoftware.ClienteWCF
             string strDatos = "{NombreMetodo: 'AgregarFactura', Entidad: " + strEntidad + "}";
             string strId = await EjecutarConsulta(strDatos, strServicioPuntoventaURL, strToken);
             return JsonConvert.DeserializeObject<string>(strId);
+        }
+
+        public static async Task ActualizarFactura(Factura factura, string strToken)
+        {
+            string strEntidad = JsonConvert.SerializeObject(factura);
+            string strDatos = "{NombreMetodo: 'ActualizarFactura', Entidad: " + strEntidad + "}";
+            await Ejecutar(strDatos, strServicioPuntoventaURL, strToken);
         }
 
         public static async Task<string> AgregarFacturaCompra(FacturaCompra facturaCompra, string strToken)

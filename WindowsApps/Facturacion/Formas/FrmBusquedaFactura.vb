@@ -12,6 +12,7 @@ Public Class FrmBusquedaFactura
     Private intId As Integer = 0
     Private bolCargado As Boolean = False
     Public bolExcluyeNulos As Boolean = False
+    Public bolFiltraSoloPendientes As Boolean = False
 #End Region
 
 #Region "Métodos"
@@ -31,7 +32,7 @@ Public Class FrmBusquedaFactura
         dvcId.Width = 0
         dvcId.Visible = False
         dgvListado.Columns.Add(dvcId)
-        dvcConsecutivo.HeaderText = "Consecutivo"
+        dvcConsecutivo.HeaderText = "Consec"
         dvcConsecutivo.DataPropertyName = "Consecutivo"
         dvcConsecutivo.Width = 50
         dgvListado.Columns.Add(dvcConsecutivo)
@@ -67,7 +68,7 @@ Public Class FrmBusquedaFactura
         Try
             Dim listado = New List(Of FacturaDetalle)
             If intCantidadDePaginas > 0 Then
-                listado = Await Puntoventa.ObtenerListadoFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolExcluyeNulos, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, txtIdentificacion.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+                listado = Await Puntoventa.ObtenerListadoFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolExcluyeNulos, bolFiltraSoloPendientes, intNumeroPagina, intFilasPorPagina, intId, txtNombre.Text, txtIdentificacion.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
             End If
             dgvListado.DataSource = listado
             lblPagina.Text = "Página " & intNumeroPagina & " de " & intCantidadDePaginas
@@ -81,7 +82,7 @@ Public Class FrmBusquedaFactura
 
     Private Async Function ValidarCantidadRegistros() As Task
         Try
-            intTotalRegistros = Await Puntoventa.ObtenerTotalListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolExcluyeNulos, intId, txtNombre.Text, txtIdentificacion.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
+            intTotalRegistros = Await Puntoventa.ObtenerTotalListaFacturas(FrmPrincipal.empresaGlobal.IdEmpresa, cboSucursal.SelectedValue, bolExcluyeNulos, bolFiltraSoloPendientes, intId, txtNombre.Text, txtIdentificacion.Text, FechaFinal.Text, FrmPrincipal.usuarioGlobal.Token)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()

@@ -832,7 +832,7 @@ Partial Class FrmFactura
         Me.cboCondicionVenta.Location = New System.Drawing.Point(360, 65)
         Me.cboCondicionVenta.Name = "cboCondicionVenta"
         Me.cboCondicionVenta.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.cboCondicionVenta.Size = New System.Drawing.Size(215, 21)
+        Me.cboCondicionVenta.Size = New System.Drawing.Size(206, 21)
         Me.cboCondicionVenta.TabIndex = 5
         '
         'Label7
@@ -853,7 +853,6 @@ Partial Class FrmFactura
         Me.txtPlazoCredito.AcceptsReturn = True
         Me.txtPlazoCredito.BackColor = System.Drawing.SystemColors.Window
         Me.txtPlazoCredito.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.txtPlazoCredito.Enabled = False
         Me.txtPlazoCredito.ForeColor = System.Drawing.SystemColors.WindowText
         Me.txtPlazoCredito.Location = New System.Drawing.Point(656, 64)
         Me.txtPlazoCredito.MaxLength = 300

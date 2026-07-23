@@ -27,6 +27,7 @@ Public Class FrmFactura
     Private bolReady As Boolean = False
     Private bolAutorizando As Boolean = False
     Private bolImpuestoCargado As Boolean = False
+    Private bolPermiteAgregarFormasDePago As Boolean = False
     Private intUltPaginaBusqueda As Integer = 1
     'Impresion de tiquete
     Private comprobanteImpresion As ModuloImpresion.ClsComprobante
@@ -452,7 +453,7 @@ Public Class FrmFactura
         decSaldoPorPagar = decTotalRedondeado - decMontoAdelanto - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
-        btnNotaCredito.Enabled = decSaldoPorPagar > 0 And txtIdFactura.Text = ""
+        btnNotaCredito.Enabled = Not FrmPrincipal.empresaGlobal.HabilitaPreFactura And decSaldoPorPagar > 0 And txtIdFactura.Text = ""
     End Sub
 
     Private Sub CargarTotalesPago()
@@ -465,7 +466,7 @@ Public Class FrmFactura
         decSaldoPorPagar = decTotalRedondeado - decMontoAdelanto - decTotalPago
         txtMontoPago.Text = FormatNumber(decSaldoPorPagar, 2)
         txtSaldoPorPagar.Text = FormatNumber(decSaldoPorPagar, 2)
-        btnNotaCredito.Enabled = decSaldoPorPagar > 0 And txtIdFactura.Text = ""
+        btnNotaCredito.Enabled = Not FrmPrincipal.empresaGlobal.HabilitaPreFactura And decSaldoPorPagar > 0 And txtIdFactura.Text = ""
     End Sub
 
     Private Sub CargarCombos()
@@ -541,6 +542,16 @@ Public Class FrmFactura
             txtPrecio.Text = FormatNumber(decPrecioVenta, 2)
         End If
     End Sub
+
+    Private Sub HabilitaPagoFactura(bolEnabled As Boolean)
+        cboFormaPago.Enabled = bolEnabled
+        cboTipoBanco.Enabled = bolEnabled
+        txtTipoTarjeta.ReadOnly = Not bolEnabled
+        txtAutorizacion.ReadOnly = Not bolEnabled
+        txtMontoPago.ReadOnly = Not bolEnabled
+        btnInsertarPago.Enabled = bolEnabled
+        btnEliminarPago.Enabled = bolEnabled
+    End Sub
 #End Region
 
 #Region "Eventos Controles"
@@ -581,7 +592,7 @@ Public Class FrmFactura
         ElseIf e.KeyCode = Keys.F4 Then
             BtnAgregar_Click(btnAgregar, New EventArgs())
         ElseIf e.KeyCode = Keys.F10 And btnGuardar.Enabled Then
-            BtnGuardar_Click(btnGuardar, New EventArgs())
+            btnGuardar_Click(btnGuardar, New EventArgs())
         ElseIf e.KeyCode = Keys.F11 And btnImprimir.Enabled Then
             btnImprimir_Click(btnImprimir, New EventArgs())
         End If
@@ -622,6 +633,8 @@ Public Class FrmFactura
             bolReady = True
             cboTipoMoneda.SelectedValue = FrmPrincipal.empresaGlobal.IdTipoMoneda
             cboTipoMoneda.Enabled = FrmPrincipal.empresaGlobal.HabilitaFacturacionMonedaExtranjera
+            bolPermiteAgregarFormasDePago = Not FrmPrincipal.empresaGlobal.HabilitaPreFactura Or FrmPrincipal.bolFinalizaPagoFactura
+            HabilitaPagoFactura(bolPermiteAgregarFormasDePago)
         Catch ex As Exception
             MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Close()
@@ -629,6 +642,7 @@ Public Class FrmFactura
     End Sub
 
     Private Sub BtnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+        factura = Nothing
         txtIdFactura.Text = ""
         txtIdNotaCredito.Text = ""
         txtFecha.Text = FrmPrincipal.ObtenerFechaCostaRica()
@@ -666,16 +680,16 @@ Public Class FrmFactura
         decPagoEfectivo = 0
         btnInsertar.Enabled = True
         btnEliminar.Enabled = True
-        btnInsertarPago.Enabled = True
-        btnEliminarPago.Enabled = True
         btnBusProd.Enabled = True
+        HabilitaPagoFactura(bolPermiteAgregarFormasDePago)
         btnAnular.Enabled = False
         btnGuardar.Enabled = True
         btnImprimir.Enabled = False
         btnGenerarPDF.Enabled = False
         btnBuscarCliente.Enabled = True
         btnNotaCredito.Enabled = False
-        grdDetalleFactura.ReadOnly = False
+        grdDetalleFactura.Columns(3).ReadOnly = False
+        grdDetalleFactura.Columns(4).ReadOnly = False
         Try
             cliente = FrmPrincipal.ObtenerClienteDeContado()
             txtNombreCliente.Text = cliente.Nombre
@@ -742,13 +756,14 @@ Public Class FrmFactura
                     Exit Sub
                 End Try
                 MessageBox.Show("Transacción procesada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                btnGuardar.Enabled = False
                 btnAnular.Enabled = False
                 btnImprimir.Enabled = False
                 btnGenerarPDF.Enabled = False
                 btnInsertar.Enabled = False
                 btnEliminar.Enabled = False
-                btnInsertarPago.Enabled = False
-                btnEliminarPago.Enabled = False
+                btnBusProd.Enabled = False
+                HabilitaPagoFactura(False)
                 btnNotaCredito.Enabled = False
                 btnNotaCreditoPDF.Enabled = True
             End If
@@ -758,6 +773,7 @@ Public Class FrmFactura
     Private Async Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
         Dim formBusqueda As New FrmBusquedaFactura()
         formBusqueda.intIndiceDePagina = intUltPaginaBusqueda
+        formBusqueda.bolFiltraSoloPendientes = FrmPrincipal.empresaGlobal.HabilitaPreFactura
         FrmPrincipal.intBusqueda = 0
         formBusqueda.ShowDialog()
         If FrmPrincipal.intBusqueda > 0 Then
@@ -770,6 +786,7 @@ Public Class FrmFactura
                 Exit Sub
             End Try
             If factura IsNot Nothing Then
+                Dim bolFacturaEditable = FrmPrincipal.empresaGlobal.HabilitaPreFactura And factura.PendientePago
                 txtIdFactura.Text = factura.ConsecFactura
                 txtIdNotaCredito.Text = factura.IdNotaCredito
                 cliente = factura.Cliente
@@ -804,21 +821,21 @@ Public Class FrmFactura
                 decPagoCliente = factura.MontoPagado
                 txtMontoAdelanto.Text = FormatNumber(decMontoAdelanto, 2)
                 cboTipoMoneda.Enabled = False
-                cboCondicionVenta.Enabled = False
-                txtNombreCliente.ReadOnly = True
-                btnInsertar.Enabled = False
-                btnEliminar.Enabled = False
-                btnInsertarPago.Enabled = False
-                btnEliminarPago.Enabled = False
-                btnBusProd.Enabled = False
-                btnImprimir.Enabled = Not factura.Nulo
-                btnGenerarPDF.Enabled = Not factura.Nulo
+                cboCondicionVenta.Enabled = bolPermiteAgregarFormasDePago And cboTipoMoneda.SelectedValue = 1 And cliente.PermiteCredito
+                txtNombreCliente.ReadOnly = Not bolFacturaEditable
+                btnInsertar.Enabled = bolFacturaEditable
+                btnEliminar.Enabled = bolFacturaEditable
+                btnBusProd.Enabled = bolFacturaEditable
+                HabilitaPagoFactura(bolPermiteAgregarFormasDePago)
+                btnImprimir.Enabled = Not factura.Nulo And Not bolFacturaEditable
+                btnGenerarPDF.Enabled = Not factura.Nulo And Not bolFacturaEditable
                 btnNotaCreditoPDF.Enabled = factura.IdNotaCredito > 0
-                btnBuscarCliente.Enabled = False
+                btnBuscarCliente.Enabled = bolFacturaEditable
                 btnNotaCredito.Enabled = False
                 btnAnular.Enabled = Not factura.Nulo And FrmPrincipal.bolAnularTransacciones
-                btnGuardar.Enabled = False
-                grdDetalleFactura.ReadOnly = True
+                btnGuardar.Enabled = factura.PendientePago
+                grdDetalleFactura.Columns(3).ReadOnly = Not bolFacturaEditable
+                grdDetalleFactura.Columns(4).ReadOnly = Not bolFacturaEditable
             Else
                 MessageBox.Show("No existe registro de la factura seleccionada", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
@@ -840,6 +857,7 @@ Public Class FrmFactura
                 Exit Sub
             End Try
             If ordenServicio IsNot Nothing Then
+                factura = Nothing
                 txtIdFactura.Text = ""
                 txtIdNotaCredito.Text = ""
                 cliente = ordenServicio.Cliente
@@ -852,7 +870,7 @@ Public Class FrmFactura
                 txtObservaciones.Text = ordenServicio.OtrosDetalles
                 If cboActividadEconomica.Items.Count > 0 Then cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
-                cboCondicionVenta.Enabled = cliente.PermiteCredito
+                cboCondicionVenta.Enabled = bolPermiteAgregarFormasDePago And cboTipoMoneda.SelectedValue = 1 And cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 usuarioVendedor = Nothing
@@ -872,16 +890,16 @@ Public Class FrmFactura
                 cboTipoMoneda.Enabled = False
                 btnInsertar.Enabled = True
                 btnEliminar.Enabled = True
-                btnInsertarPago.Enabled = True
-                btnEliminarPago.Enabled = True
                 btnBusProd.Enabled = True
+                HabilitaPagoFactura(bolPermiteAgregarFormasDePago)
                 btnAnular.Enabled = False
                 btnGuardar.Enabled = True
                 btnImprimir.Enabled = False
                 btnGenerarPDF.Enabled = False
                 btnNotaCreditoPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
-                grdDetalleFactura.ReadOnly = False
+                grdDetalleFactura.Columns(3).ReadOnly = False
+                grdDetalleFactura.Columns(4).ReadOnly = False
                 txtMontoPago.Focus()
                 txtMontoPago.SelectAll()
             Else
@@ -905,6 +923,7 @@ Public Class FrmFactura
                 Exit Sub
             End Try
             If apartado IsNot Nothing Then
+                factura = Nothing
                 txtIdFactura.Text = ""
                 txtIdNotaCredito.Text = ""
                 cliente = apartado.Cliente
@@ -917,7 +936,7 @@ Public Class FrmFactura
                 txtObservaciones.Text = apartado.TextoAdicional
                 If cboActividadEconomica.Items.Count > 0 Then cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
-                cboCondicionVenta.Enabled = cliente.PermiteCredito
+                cboCondicionVenta.Enabled = bolPermiteAgregarFormasDePago And cboTipoMoneda.SelectedValue = 1 And cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 usuarioVendedor = Nothing
@@ -937,16 +956,16 @@ Public Class FrmFactura
                 cboTipoMoneda.Enabled = False
                 btnInsertar.Enabled = True
                 btnEliminar.Enabled = True
-                btnInsertarPago.Enabled = True
-                btnEliminarPago.Enabled = True
                 btnBusProd.Enabled = True
+                HabilitaPagoFactura(bolPermiteAgregarFormasDePago)
                 btnAnular.Enabled = False
                 btnGuardar.Enabled = True
                 btnImprimir.Enabled = False
                 btnGenerarPDF.Enabled = False
                 btnNotaCreditoPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
-                grdDetalleFactura.ReadOnly = False
+                grdDetalleFactura.Columns(3).ReadOnly = False
+                grdDetalleFactura.Columns(4).ReadOnly = False
                 txtMontoPago.Focus()
                 txtMontoPago.SelectAll()
             Else
@@ -970,6 +989,7 @@ Public Class FrmFactura
                 Exit Sub
             End Try
             If proforma IsNot Nothing Then
+                factura = Nothing
                 txtIdFactura.Text = ""
                 txtIdNotaCredito.Text = ""
                 cliente = proforma.Cliente
@@ -982,7 +1002,7 @@ Public Class FrmFactura
                 txtObservaciones.Text = proforma.TextoAdicional
                 If cboActividadEconomica.Items.Count > 0 Then cboActividadEconomica.SelectedIndex = 0
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
-                cboCondicionVenta.Enabled = proforma.IdTipoMoneda = 1 And cliente.PermiteCredito
+                cboCondicionVenta.Enabled = bolPermiteAgregarFormasDePago And cboTipoMoneda.SelectedValue = 1 And cliente.PermiteCredito
                 txtPlazoCredito.Text = ""
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 usuarioVendedor = Nothing
@@ -1002,16 +1022,16 @@ Public Class FrmFactura
                 cboTipoMoneda.Enabled = False
                 btnInsertar.Enabled = True
                 btnEliminar.Enabled = True
-                btnInsertarPago.Enabled = True
-                btnEliminarPago.Enabled = True
                 btnBusProd.Enabled = True
+                HabilitaPagoFactura(bolPermiteAgregarFormasDePago)
                 btnAnular.Enabled = False
                 btnGuardar.Enabled = True
                 btnImprimir.Enabled = False
                 btnGenerarPDF.Enabled = False
                 btnNotaCreditoPDF.Enabled = False
                 btnBuscarCliente.Enabled = True
-                grdDetalleFactura.ReadOnly = False
+                grdDetalleFactura.Columns(3).ReadOnly = False
+                grdDetalleFactura.Columns(4).ReadOnly = False
                 txtMontoPago.Focus()
                 txtMontoPago.SelectAll()
             Else
@@ -1066,7 +1086,7 @@ Public Class FrmFactura
                 txtNombreCliente.ReadOnly = True
                 txtTelefono.Text = cliente.Telefono
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
-                cboCondicionVenta.Enabled = cboTipoMoneda.SelectedValue = 1 And cliente.PermiteCredito
+                cboCondicionVenta.Enabled = bolPermiteAgregarFormasDePago And cboTipoMoneda.SelectedValue = 1 And cliente.PermiteCredito
                 txtPorcentajeExoneracion.Text = cliente.PorcentajeExoneracion
                 If FrmPrincipal.empresaGlobal.RegimenSimplificado = False And cliente.CodigoActividad = "" Then MessageBox.Show("El cliente no posee el código de actividad económica registrada en el sistema por lo tanto se emitirá un tiquete electrónico.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 CargarTotales()
@@ -1106,12 +1126,14 @@ Public Class FrmFactura
         If decTotal = 0 Then
             MessageBox.Show("Debe agregar líneas de detalle para guardar el registro.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Exit Sub
-        ElseIf cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado And decSaldoPorPagar > 0 Then
-            MessageBox.Show("El total del desglose de pago no es suficiente para cubrir el saldo por pagar actual.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Exit Sub
-        ElseIf cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado And decSaldoPorPagar < 0 Then
-            MessageBox.Show("El total del desglose de pago del movimiento es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Exit Sub
+        ElseIf bolPermiteAgregarFormasDePago And cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado Then
+            If decSaldoPorPagar > 0 Then
+                MessageBox.Show("El total del desglose de pago no es suficiente para cubrir el saldo por pagar actual.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Exit Sub
+            ElseIf decSaldoPorPagar < 0 Then
+                MessageBox.Show("El total del desglose de pago del movimiento es superior al saldo por pagar.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Exit Sub
+            End If
         ElseIf cboCondicionVenta.SelectedValue = StaticCondicionVenta.Credito And (txtPlazoCredito.Text = "" Or txtPlazoCredito.Text = "0") Then
             MessageBox.Show("El valor del campo plazo no puede ser 0 o nulo para una factura de crédito.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             txtPlazoCredito.Focus()
@@ -1130,22 +1152,22 @@ Public Class FrmFactura
                 Exit Sub
             End Try
         End If
-        If txtIdFactura.Text = "" Then
-            If FrmPrincipal.empresaGlobal.HabilitaCodigoPIN Then
-                Dim formCodigoPIN As New FrmCodigoPIN()
-                FrmPrincipal.strBusqueda = ""
-                formCodigoPIN.ShowDialog()
-                If FrmPrincipal.strBusqueda <> "" Then
-                    Try
-                        usuarioVendedor = Await Puntoventa.ObtenerUsuarioPorCodigoPIN(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.strBusqueda, FrmPrincipal.usuarioGlobal.Token)
-                    Catch ex As Exception
-                        MessageBox.Show("El codigo ingresado no pertenece a ningun usuario registrado en la empresa!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                        Exit Sub
-                    End Try
-                End If
-            Else
-                usuarioVendedor = FrmPrincipal.usuarioGlobal
+        If FrmPrincipal.empresaGlobal.HabilitaCodigoPIN Then
+            Dim formCodigoPIN As New FrmCodigoPIN()
+            FrmPrincipal.strBusqueda = ""
+            formCodigoPIN.ShowDialog()
+            If FrmPrincipal.strBusqueda <> "" Then
+                Try
+                    usuarioVendedor = Await Puntoventa.ObtenerUsuarioPorCodigoPIN(FrmPrincipal.empresaGlobal.IdEmpresa, FrmPrincipal.strBusqueda, FrmPrincipal.usuarioGlobal.Token)
+                Catch ex As Exception
+                    MessageBox.Show("El codigo ingresado no pertenece a ningun usuario registrado en la empresa!", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Exit Sub
+                End Try
             End If
+        Else
+            usuarioVendedor = FrmPrincipal.usuarioGlobal
+        End If
+        If bolPermiteAgregarFormasDePago Then
             If FrmPrincipal.empresaGlobal.IngresaPagoCliente And decPagoEfectivo > 0 Then
                 Dim formPagoFactura As New FrmPagoEfectivo()
                 formPagoFactura.decTotalEfectivo = Puntoventa.ObtenerTotalRedondeado(FrmPrincipal.empresaGlobal.MontoRedondeoFactura, decPagoEfectivo)
@@ -1161,62 +1183,73 @@ Public Class FrmFactura
             Else
                 decPagoCliente = decPagoEfectivo
             End If
-            btnImprimir.Focus()
-            btnGuardar.Enabled = False
+        Else
+            decPagoCliente = 0
+        End If
+        btnImprimir.Focus()
+        btnGuardar.Enabled = False
+        If factura Is Nothing Then
             factura = New Factura With {
                 .IdEmpresa = FrmPrincipal.empresaGlobal.IdEmpresa,
                 .IdSucursal = FrmPrincipal.equipoGlobal.IdSucursal,
                 .IdTerminal = FrmPrincipal.equipoGlobal.IdTerminal,
                 .IdUsuario = usuarioVendedor.IdUsuario,
+                .IdFactura = 0,
+                .ConsecFactura = 0,
                 .IdTipoMoneda = cboTipoMoneda.SelectedValue,
-                .IdCliente = cliente.IdCliente,
-                .NombreCliente = txtNombreCliente.Text,
-                .CodigoActividad = IIf(FrmPrincipal.empresaGlobal.RegimenSimplificado, "", cboActividadEconomica.SelectedValue),
-                .CodigoActividadReceptor = cliente.CodigoActividad,
-                .IdCondicionVenta = cboCondicionVenta.SelectedValue,
-                .PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text),
-                .Fecha = FrmPrincipal.ObtenerFechaCostaRica(),
-                .Telefono = txtTelefono.Text,
-                .TextoAdicional = txtObservaciones.Text,
-                .Excento = decExcento,
-                .Gravado = decGravado,
-                .Exonerado = decExonerado,
-                .Descuento = decDescuento,
-                .Impuesto = decImpuesto,
-                .MontoPagado = decPagoCliente,
-                .MontoAdelanto = CDbl(txtMontoAdelanto.Text),
-                .TotalCosto = decTotalCosto,
-                .Nulo = False,
                 .IdOrdenServicio = intIdOrdenServicio,
                 .IdProforma = intIdProforma,
                 .IdApartado = intIdApartado,
-                .IdTipoExoneracion = cliente.IdTipoExoneracion,
-                .IdNombreInstExoneracion = cliente.IdNombreInstExoneracion,
-                .NumDocExoneracion = cliente.NumDocExoneracion,
-                .ArticuloExoneracion = cliente.ArticuloExoneracion,
-                .IncisoExoneracion = cliente.IncisoExoneracion,
-                .FechaEmisionDoc = cliente.FechaEmisionDoc,
-                .PorcentajeExoneracion = cliente.PorcentajeExoneracion,
-                .TipoDeCambioDolar = decTipoDeCambioDolar,
-                .CerrarOrdenServicio = True
+                .MontoAdelanto = CDbl(txtMontoAdelanto.Text),
+                .CerrarOrdenServicio = True,
+                .Nulo = False
             }
-            factura.DetalleFactura = New List(Of DetalleFactura)
-            For I As Short = 0 To dtbDetalleFactura.Rows.Count - 1
-                detalleFactura = New DetalleFactura With {
-                    .IdProducto = dtbDetalleFactura.Rows(I).Item(0),
-                    .Descripcion = dtbDetalleFactura.Rows(I).Item(2),
-                    .Cantidad = dtbDetalleFactura.Rows(I).Item(3),
-                    .PrecioVenta = dtbDetalleFactura.Rows(I).Item(4),
-                    .Excento = dtbDetalleFactura.Rows(I).Item(7),
-                    .PrecioCosto = dtbDetalleFactura.Rows(I).Item(8),
-                    .PorcentajeIVA = dtbDetalleFactura.Rows(I).Item(9),
-                    .PorcDescuento = dtbDetalleFactura.Rows(I).Item(10)
-                }
-                factura.DetalleFactura.Add(detalleFactura)
-            Next
-            factura.DesglosePagoFactura = New List(Of DesglosePagoFactura)
+        End If
+        factura.IdCliente = cliente.IdCliente
+        factura.NombreCliente = txtNombreCliente.Text
+        factura.CodigoActividad = IIf(FrmPrincipal.empresaGlobal.RegimenSimplificado, "", cboActividadEconomica.SelectedValue)
+        factura.CodigoActividadReceptor = cliente.CodigoActividad
+        factura.IdCondicionVenta = cboCondicionVenta.SelectedValue
+        factura.PlazoCredito = IIf(txtPlazoCredito.Text = "", 0, txtPlazoCredito.Text)
+        factura.Fecha = FrmPrincipal.ObtenerFechaCostaRica()
+        factura.Telefono = txtTelefono.Text
+        factura.TextoAdicional = txtObservaciones.Text
+        factura.Excento = decExcento
+        factura.Gravado = decGravado
+        factura.Exonerado = decExonerado
+        factura.Descuento = decDescuento
+        factura.Impuesto = decImpuesto
+        factura.MontoPagado = decPagoCliente
+        factura.TotalCosto = decTotalCosto
+        factura.PendientePago = Not bolPermiteAgregarFormasDePago
+        factura.IdTipoExoneracion = cliente.IdTipoExoneracion
+        factura.IdNombreInstExoneracion = cliente.IdNombreInstExoneracion
+        factura.NumDocExoneracion = cliente.NumDocExoneracion
+        factura.ArticuloExoneracion = cliente.ArticuloExoneracion
+        factura.IncisoExoneracion = cliente.IncisoExoneracion
+        factura.FechaEmisionDoc = cliente.FechaEmisionDoc
+        factura.PorcentajeExoneracion = cliente.PorcentajeExoneracion
+        factura.TipoDeCambioDolar = decTipoDeCambioDolar
+        factura.DetalleFactura = New List(Of DetalleFactura)
+        For I As Short = 0 To dtbDetalleFactura.Rows.Count - 1
+            detalleFactura = New DetalleFactura With {
+                .IdFactura = factura.IdFactura,
+                .IdProducto = dtbDetalleFactura.Rows(I).Item(0),
+                .Descripcion = dtbDetalleFactura.Rows(I).Item(2),
+                .Cantidad = dtbDetalleFactura.Rows(I).Item(3),
+                .PrecioVenta = dtbDetalleFactura.Rows(I).Item(4),
+                .Excento = dtbDetalleFactura.Rows(I).Item(7),
+                .PrecioCosto = dtbDetalleFactura.Rows(I).Item(8),
+                .PorcentajeIVA = dtbDetalleFactura.Rows(I).Item(9),
+                .PorcDescuento = dtbDetalleFactura.Rows(I).Item(10)
+            }
+            factura.DetalleFactura.Add(detalleFactura)
+        Next
+        factura.DesglosePagoFactura = New List(Of DesglosePagoFactura)
+        If bolPermiteAgregarFormasDePago Then
             For I As Short = 0 To dtbDesglosePago.Rows.Count - 1
                 desglosePago = New DesglosePagoFactura With {
+                    .IdFactura = factura.IdFactura,
                     .IdFormaPago = dtbDesglosePago.Rows(I).Item(0),
                     .IdReferencia = dtbDesglosePago.Rows(I).Item(2),
                     .TipoTarjeta = dtbDesglosePago.Rows(I).Item(4),
@@ -1225,42 +1258,48 @@ Public Class FrmFactura
                 }
                 factura.DesglosePagoFactura.Add(desglosePago)
             Next
-            Try
+        End If
+        Try
+            If txtIdFactura.Text = "" Then
                 Dim strIdConsec As String = Await Puntoventa.AgregarFactura(factura, FrmPrincipal.usuarioGlobal.Token)
                 Dim arrIdConsec = strIdConsec.Split("-")
                 factura.IdFactura = arrIdConsec(0)
                 factura.ConsecFactura = arrIdConsec(1)
                 txtIdFactura.Text = factura.ConsecFactura
-            Catch ex As Exception
-                txtIdFactura.Text = ""
-                txtIdNotaCredito.Text = ""
-                btnGuardar.Enabled = True
-                btnGuardar.Focus()
-                MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-            End Try
-        End If
+            Else
+                Await Puntoventa.ActualizarFactura(factura, FrmPrincipal.usuarioGlobal.Token)
+            End If
+        Catch ex As Exception
+            btnGuardar.Enabled = True
+            btnGuardar.Focus()
+            MessageBox.Show(ex.Message, "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
+        End Try
         If FrmPrincipal.empresaGlobal.ImprimeTiqueteAlFacturar Then
             btnImprimir_Click(btnImprimir, New EventArgs())
         End If
         MessageBox.Show("Transacción efectuada satisfactoriamente.", "JLC Solutions CR", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        btnImprimir.Enabled = True
-        btnImprimir.Focus()
+        btnImprimir.Enabled = Not factura.PendientePago
         cboTipoMoneda.Enabled = False
         cboCondicionVenta.Enabled = False
-        btnGuardar.Enabled = False
-        btnGenerarPDF.Enabled = True
+        btnGuardar.Enabled = factura.PendientePago
+        btnGenerarPDF.Enabled = Not factura.PendientePago
         btnNotaCreditoPDF.Enabled = False
         btnAgregar.Enabled = True
         btnAnular.Enabled = FrmPrincipal.bolAnularTransacciones
-        btnInsertar.Enabled = False
-        btnEliminar.Enabled = False
-        btnInsertarPago.Enabled = False
-        btnEliminarPago.Enabled = False
-        btnBusProd.Enabled = False
+        btnInsertar.Enabled = Not factura.PendientePago
+        btnEliminar.Enabled = Not factura.PendientePago
+        btnBusProd.Enabled = Not factura.PendientePago
+        HabilitaPagoFactura(factura.PendientePago)
         btnBuscarCliente.Enabled = False
         btnNotaCredito.Enabled = False
-        grdDetalleFactura.ReadOnly = True
+        grdDetalleFactura.Columns(3).ReadOnly = Not factura.PendientePago
+        grdDetalleFactura.Columns(4).ReadOnly = Not factura.PendientePago
+        If factura.PendientePago Then
+            btnGuardar.Focus()
+        Else
+            btnImprimir.Focus()
+        End If
     End Sub
 
     Private Async Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
@@ -1472,25 +1511,20 @@ Public Class FrmFactura
                 cboCondicionVenta.SelectedValue = StaticCondicionVenta.Contado
                 cboCondicionVenta.Enabled = False
             Else
-                cboCondicionVenta.Enabled = True
+                cboCondicionVenta.Enabled = bolPermiteAgregarFormasDePago And cliente.PermiteCredito
             End If
         End If
     End Sub
 
     Private Sub CboIdCondicionVenta_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboCondicionVenta.SelectedIndexChanged
         If cboCondicionVenta.SelectedValue = StaticCondicionVenta.Credito Then
-            txtPlazoCredito.Enabled = True
+            txtPlazoCredito.ReadOnly = False
             txtPlazoCredito.Text = "30"
+            HabilitaPagoFactura(False)
         Else
-            txtPlazoCredito.Enabled = False
+            txtPlazoCredito.ReadOnly = True
             txtPlazoCredito.Text = ""
-        End If
-        If cboCondicionVenta.SelectedValue <> StaticCondicionVenta.Contado Then
-            btnInsertarPago.Enabled = False
-            btnEliminarPago.Enabled = False
-        Else
-            btnInsertarPago.Enabled = True
-            btnEliminarPago.Enabled = True
+            HabilitaPagoFactura(bolPermiteAgregarFormasDePago)
         End If
     End Sub
 
