@@ -1364,7 +1364,7 @@ namespace LeandroSoftware.ServicioWeb.Servicios
                     if (bolExcluyeNulos)
                         listado = listado.Where(x => !x.Nulo);
                     if (bolFiltraPendientesPago)
-                        listado = listado.Where(x => x.PendientePago);
+                        listado = listado.Where(x => x.PendientePago && !x.Nulo);
                     if (intIdFactura > 0)
                         listado = listado.Where(x => x.ConsecFactura == intIdFactura);
                     if (!strNombre.Equals(string.Empty))
